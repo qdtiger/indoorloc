@@ -2,7 +2,7 @@
 
 <img src="assets/logo.png" width="600">
 
-**A Unified Framework for Indoor Localization**
+**Open Source Indoor Localization Toolbox**
 
 [![Build](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
