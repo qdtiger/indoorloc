@@ -1,6 +1,6 @@
 <div align="center">
 
-# IndoorLoc
+<img src="assets/logo.jpeg" width="600">
 
 **室内定位统一框架**
 
