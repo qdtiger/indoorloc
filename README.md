@@ -1,6 +1,6 @@
 <div align="center">
 
-# IndoorLoc
+<img src="assets/logo.jpeg" width="600">
 
 **A Unified Framework for Indoor Localization**
 
