@@ -1,0 +1,29 @@
+# UJIndoorLoc dataset configuration
+
+dataset:
+  type: UJIndoorLocDataset
+  data_root: data/ujindoorloc/
+
+  # Dataset statistics
+  num_waps: 520
+  num_buildings: 3
+  num_floors: 5
+
+  # Preprocessing
+  normalize: true
+  normalize_method: minmax  # 'minmax', 'positive', 'standard'
+
+  # Data splits
+  train:
+    file: trainingData.csv
+    shuffle: true
+
+  test:
+    file: validationData.csv
+    shuffle: false
+
+# DataLoader configuration
+dataloader:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: true

@@ -1,0 +1,204 @@
+"""
+Base Dataset Classes for IndoorLoc
+
+Provides abstract base classes for all dataset implementations.
+"""
+from abc import ABC, abstractmethod
+from typing import List, Tuple, Optional, Dict, Any, Iterator
+from pathlib import Path
+
+from ..signals.base import BaseSignal
+from ..locations.location import Location
+from ..registry import DATASETS
+
+
+class BaseDataset(ABC):
+    """Abstract base class for all indoor localization datasets.
+
+    All dataset implementations should inherit from this class and implement
+    the required abstract methods.
+
+    Args:
+        data_root: Root directory containing the dataset files.
+        split: Dataset split ('train', 'val', 'test').
+        transform: Optional transform to apply to signals.
+        normalize: Whether to normalize signal values.
+        normalize_method: Normalization method ('minmax', 'positive', 'standard').
+    """
+
+    def __init__(
+        self,
+        data_root: str,
+        split: str = 'train',
+        transform: Optional[Any] = None,
+        normalize: bool = True,
+        normalize_method: str = 'minmax',
+        **kwargs
+    ):
+        self.data_root = Path(data_root)
+        self.split = split
+        self.transform = transform
+        self.normalize = normalize
+        self.normalize_method = normalize_method
+
+        # Data storage
+        self._signals: List[BaseSignal] = []
+        self._locations: List[Location] = []
+        self._metadata: List[Dict[str, Any]] = []
+
+        # Load data
+        self._load_data()
+
+        if self.normalize:
+            self._normalize_signals()
+
+    @property
+    @abstractmethod
+    def dataset_name(self) -> str:
+        """Return the name of the dataset."""
+        pass
+
+    @property
+    @abstractmethod
+    def signal_type(self) -> str:
+        """Return the primary signal type of this dataset."""
+        pass
+
+    @abstractmethod
+    def _load_data(self) -> None:
+        """Load data from files. Must be implemented by subclasses."""
+        pass
+
+    def _normalize_signals(self) -> None:
+        """Normalize all signals using the specified method."""
+        self._signals = [
+            signal.normalize(method=self.normalize_method)
+            for signal in self._signals
+        ]
+
+    def __len__(self) -> int:
+        """Return the number of samples in the dataset."""
+        return len(self._signals)
+
+    def __getitem__(self, idx: int) -> Tuple[BaseSignal, Location]:
+        """Get a single sample by index.
+
+        Args:
+            idx: Sample index.
+
+        Returns:
+            Tuple of (signal, location).
+        """
+        signal = self._signals[idx]
+        location = self._locations[idx]
+
+        if self.transform is not None:
+            signal = self.transform(signal)
+
+        return signal, location
+
+    def __iter__(self) -> Iterator[Tuple[BaseSignal, Location]]:
+        """Iterate over all samples."""
+        for i in range(len(self)):
+            yield self[i]
+
+    @property
+    def signals(self) -> List[BaseSignal]:
+        """Return all signals."""
+        return self._signals
+
+    @property
+    def locations(self) -> List[Location]:
+        """Return all locations."""
+        return self._locations
+
+    @property
+    def metadata(self) -> List[Dict[str, Any]]:
+        """Return metadata for all samples."""
+        return self._metadata
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute and return dataset statistics.
+
+        Returns:
+            Dictionary containing dataset statistics.
+        """
+        import numpy as np
+
+        # Extract coordinates
+        xs = [loc.coordinate.x for loc in self._locations]
+        ys = [loc.coordinate.y for loc in self._locations]
+        floors = [loc.floor for loc in self._locations]
+        buildings = [loc.building_id for loc in self._locations]
+
+        return {
+            'num_samples': len(self),
+            'x_range': (min(xs), max(xs)),
+            'y_range': (min(ys), max(ys)),
+            'num_floors': len(set(floors)),
+            'floors': sorted(set(floors)),
+            'num_buildings': len(set(buildings)),
+            'buildings': sorted(set(buildings)),
+            'signal_type': self.signal_type,
+        }
+
+    def split_by_building(self) -> Dict[str, 'BaseDataset']:
+        """Split dataset by building.
+
+        Returns:
+            Dictionary mapping building_id to subset of data.
+        """
+        raise NotImplementedError("split_by_building not implemented for this dataset")
+
+    def split_by_floor(self) -> Dict[int, 'BaseDataset']:
+        """Split dataset by floor.
+
+        Returns:
+            Dictionary mapping floor number to subset of data.
+        """
+        raise NotImplementedError("split_by_floor not implemented for this dataset")
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}("
+            f"data_root='{self.data_root}', "
+            f"split='{self.split}', "
+            f"num_samples={len(self)})"
+        )
+
+
+class WiFiDataset(BaseDataset):
+    """Base class for WiFi fingerprint datasets.
+
+    Provides common functionality for WiFi RSSI-based datasets.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'wifi'
+
+    @property
+    @abstractmethod
+    def num_aps(self) -> int:
+        """Return the number of access points in this dataset."""
+        pass
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute WiFi-specific statistics."""
+        stats = super().get_statistics()
+        stats['num_aps'] = self.num_aps
+
+        # Compute AP detection statistics
+        import numpy as np
+
+        detection_counts = []
+        for signal in self._signals:
+            # Count detected APs (not equal to NOT_DETECTED_VALUE)
+            detected = np.sum(signal.rssi_values != 100)
+            detection_counts.append(detected)
+
+        stats['avg_detected_aps'] = np.mean(detection_counts)
+        stats['min_detected_aps'] = min(detection_counts)
+        stats['max_detected_aps'] = max(detection_counts)
+
+        return stats
