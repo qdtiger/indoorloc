@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.jpeg" width="600">
+<img src="assets/logo.png" width="600">
 
 **A Unified Framework for Indoor Localization**
 
