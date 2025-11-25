@@ -1,0 +1,28 @@
+# Default runtime configuration
+
+# Random seed for reproducibility
+seed: 42
+
+# Device configuration
+device: auto  # 'auto', 'cpu', 'cuda', 'cuda:0', etc.
+
+# Logging
+logging:
+  level: INFO
+  save_dir: logs/
+
+# Checkpointing
+checkpoint:
+  save_dir: checkpoints/
+  save_best: true
+  save_last: true
+
+# Evaluation
+evaluation:
+  metrics:
+    - type: MeanPositionError
+    - type: MedianPositionError
+    - type: PercentileError
+      percentile: 75
+    - type: FloorAccuracy
+    - type: BuildingAccuracy

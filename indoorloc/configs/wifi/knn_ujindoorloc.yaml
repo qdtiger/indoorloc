@@ -1,0 +1,32 @@
+# k-NN WiFi fingerprint localization on UJIndoorLoc
+
+_base_:
+  - ../_base_/datasets/ujindoorloc.yaml
+  - ../_base_/default.yaml
+
+# Model configuration
+model:
+  type: KNNLocalizer
+  k: 5
+  weights: distance    # 'uniform' or 'distance'
+  metric: euclidean    # 'euclidean', 'manhattan', 'cosine'
+  algorithm: auto      # 'auto', 'ball_tree', 'kd_tree', 'brute'
+  predict_floor: true
+  predict_building: true
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - type: MeanPositionError
+    - type: MedianPositionError
+    - type: PercentileError
+      percentile: 75
+    - type: PercentileError
+      percentile: 95
+    - type: FloorAccuracy
+    - type: BuildingAccuracy
+    - type: CDFAnalysis
+      error_thresholds: [1, 2, 3, 5, 10]
+
+# Work directory
+work_dir: work_dirs/knn_ujindoorloc/
