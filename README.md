@@ -16,7 +16,20 @@
 
 ## Introduction
 
-IndoorLoc is a unified framework for indoor localization, inspired by [MMPretrain](https://github.com/open-mmlab/mmpretrain). It provides a comprehensive solution for indoor positioning research and development.
+IndoorLoc is a unified framework for indoor localization, inspired by [MMPretrain](https://github.com/open-mmlab/mmpretrain). It provides a **one-stop solution** from datasets to algorithms, enabling **automatic adaptation** across different localization methods.
+
+### Who is this for?
+
+- **Beginners**: Get started with indoor localization quickly without worrying about implementation details
+- **Researchers**: Reproduce and compare state-of-the-art algorithms with consistent interfaces
+- **Developers**: Build and deploy indoor positioning systems with production-ready code
+
+### Why IndoorLoc?
+
+- **Zero Boilerplate**: Load datasets, train models, and evaluate results in just a few lines of code
+- **Fair Comparison**: All algorithms use the same data pipeline and evaluation metrics
+- **Easy Reproduction**: Built-in configs for reproducing published results
+- **Rapid Prototyping**: Focus on your novel ideas, not engineering details
 
 ## Features
 
