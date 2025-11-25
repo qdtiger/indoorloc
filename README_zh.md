@@ -2,7 +2,7 @@
 
 <img src="assets/logo.png" width="600">
 
-**室内定位统一框架**
+**开源室内定位工具箱**
 
 [![Build](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
