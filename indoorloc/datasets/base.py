@@ -241,3 +241,205 @@ class WiFiDataset(BaseDataset):
         stats['max_detected_aps'] = max(detection_counts)
 
         return stats
+
+
+class BLEDataset(BaseDataset):
+    """Base class for BLE (Bluetooth Low Energy) beacon datasets.
+
+    Provides common functionality for BLE RSSI-based indoor localization.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'ble'
+
+    @property
+    @abstractmethod
+    def num_beacons(self) -> int:
+        """Return the number of BLE beacons in this dataset."""
+        pass
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute BLE-specific statistics."""
+        stats = super().get_statistics()
+        stats['num_beacons'] = self.num_beacons
+
+        # Compute beacon detection statistics
+        import numpy as np
+
+        detection_counts = []
+        for signal in self._signals:
+            # Count detected beacons (not equal to NOT_DETECTED_VALUE)
+            detected = np.sum(signal.rssi_values != 100)
+            detection_counts.append(detected)
+
+        stats['avg_detected_beacons'] = np.mean(detection_counts)
+        stats['min_detected_beacons'] = min(detection_counts)
+        stats['max_detected_beacons'] = max(detection_counts)
+
+        return stats
+
+
+class UWBDataset(BaseDataset):
+    """Base class for UWB (Ultra-Wideband) ranging datasets.
+
+    Provides common functionality for UWB TOF/TDOA-based indoor localization.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'uwb'
+
+    @property
+    @abstractmethod
+    def num_anchors(self) -> int:
+        """Return the number of UWB anchors in this dataset."""
+        pass
+
+    @abstractmethod
+    def get_anchor_positions(self) -> Dict[str, Tuple[float, float, float]]:
+        """Get 3D positions of all UWB anchors.
+
+        Returns:
+            Dictionary mapping anchor IDs to (x, y, z) positions in meters.
+        """
+        pass
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute UWB-specific statistics."""
+        stats = super().get_statistics()
+        stats['num_anchors'] = self.num_anchors
+
+        # Compute distance statistics
+        import numpy as np
+
+        all_distances = []
+        for signal in self._signals:
+            distances = signal.to_numpy()
+            all_distances.extend(distances)
+
+        if all_distances:
+            stats['avg_distance'] = float(np.mean(all_distances))
+            stats['min_distance'] = float(np.min(all_distances))
+            stats['max_distance'] = float(np.max(all_distances))
+            stats['std_distance'] = float(np.std(all_distances))
+
+        return stats
+
+
+class HybridDataset(BaseDataset):
+    """Base class for hybrid multi-modal sensor datasets.
+
+    Combines multiple signal types (WiFi, BLE, IMU, Magnetometer, etc.)
+    for sensor fusion-based indoor localization.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'hybrid'
+
+    @abstractmethod
+    def get_signal_modalities(self) -> List[str]:
+        """Get list of signal modalities present in this dataset.
+
+        Returns:
+            List of signal type strings (e.g., ['wifi', 'magnetometer', 'imu']).
+        """
+        pass
+
+    def __getitem__(self, idx: int) -> Tuple[BaseSignal, Location]:
+        """Get a single sample by index.
+
+        For hybrid datasets, the signal is a HybridSignal containing
+        multiple modalities.
+
+        Args:
+            idx: Sample index.
+
+        Returns:
+            Tuple of (hybrid_signal, location).
+        """
+        signal = self._signals[idx]
+        location = self._locations[idx]
+
+        if self.transform is not None:
+            signal = self.transform(signal)
+
+        return signal, location
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute hybrid-specific statistics."""
+        stats = super().get_statistics()
+        stats['modalities'] = self.get_signal_modalities()
+        stats['num_modalities'] = len(self.get_signal_modalities())
+
+        # Compute per-modality statistics
+        from ..signals.hybrid import HybridSignal
+
+        modality_dims = {}
+        for signal in self._signals:
+            if isinstance(signal, HybridSignal):
+                dims = signal.get_feature_dims_by_modality()
+                for modality, dim in dims.items():
+                    if modality not in modality_dims:
+                        modality_dims[modality] = []
+                    modality_dims[modality].append(dim)
+
+        # Average feature dimension per modality
+        stats['modality_feature_dims'] = {
+            modality: int(sum(dims) / len(dims))
+            for modality, dims in modality_dims.items()
+        }
+
+        return stats
+
+
+class MagneticDataset(BaseDataset):
+    """Base class for magnetic field (geomagnetic) datasets.
+
+    Provides common functionality for magnetometer-based indoor localization
+    using magnetic field fingerprinting.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'magnetometer'
+
+    @property
+    @abstractmethod
+    def sampling_rate(self) -> float:
+        """Return the sampling rate in Hz.
+
+        Returns:
+            Sampling frequency in Hertz.
+        """
+        pass
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute magnetic field-specific statistics."""
+        stats = super().get_statistics()
+        stats['sampling_rate'] = self.sampling_rate
+
+        # Compute magnetic field statistics
+        import numpy as np
+
+        all_magnitudes = []
+        all_headings = []
+
+        for signal in self._signals:
+            magnitudes = signal.compute_magnitude()
+            headings = signal.compute_heading()
+            all_magnitudes.extend(magnitudes)
+            all_headings.extend(headings)
+
+        if all_magnitudes:
+            stats['avg_magnitude'] = float(np.mean(all_magnitudes))
+            stats['min_magnitude'] = float(np.min(all_magnitudes))
+            stats['max_magnitude'] = float(np.max(all_magnitudes))
+            stats['std_magnitude'] = float(np.std(all_magnitudes))
+
+        if all_headings:
+            stats['avg_heading'] = float(np.mean(all_headings))
+            stats['std_heading'] = float(np.std(all_headings))
+
+        return stats

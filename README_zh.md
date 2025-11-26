@@ -196,14 +196,48 @@ indoorloc/
 
 ## 支持的数据集
 
-| 数据集 | 信号类型 | 建筑数 | 楼层数 | 训练样本 | 测试样本 | 下载 |
-|-------|---------|-------|-------|---------|---------|------|
-| [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ 自动 |
-| [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | WiFi (52-347 APs) | 3 | 1-4 | 13,280 | 680 | ✅ 自动 |
-| [Microsoft Indoor 2.0](https://www.microsoft.com/en-us/research/publication/indoor-location-competition-2-0-dataset/) | WiFi + BLE + IMU | 100+ | 多样 | 大规模 | 大规模 | 🔜 即将支持 |
-| [TUJI1](https://trepo.tuni.fi/handle/10024/211225) | WiFi | 1 | 4 | 687 | 3,951 | 🔜 即将支持 |
-| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 即将支持 |
-| [OWP-IMU](https://arxiv.org/abs/2505.16823) | 光学 + IMU | 3 | 1 | 160k+ 点 | - | 🔜 即将支持 |
+**21 个数据集**，支持多种信号模态，并提供**自动下载**功能：
+
+### WiFi数据集 (7个)
+| 数据集 | 信号类型 | 来源 | 下载 |
+|---------|-------------|--------|----------|
+| **UJIndoorLoc** | WiFi (520 APs) | UCI | ✅ 自动 |
+| **SODIndoorLoc** | WiFi (52-347 APs) | GitHub | ✅ 自动 |
+| **LongTermWiFi** | WiFi (多建筑) | Zenodo | ✅ 自动 |
+| **Tampere** | WiFi (众包) | Zenodo | ✅ 自动 |
+| **WLANRSSI** | WiFi (7 APs) | UCI | ✅ 自动 |
+| **TUJI1** | WiFi (IPIN 2021) | GitHub | ✅ 自动 |
+| **RSSBased** | WiFi (RSS) | Zenodo | ✅ 自动 |
+
+### BLE数据集 (3个)
+| 数据集 | 信号类型 | 来源 | 下载 |
+|---------|-------------|--------|----------|
+| **iBeaconRSSI** | BLE (iBeacon) | Zenodo | ✅ 自动 |
+| **BLEIndoor** | BLE (多楼层) | GitHub | ✅ 自动 |
+| **BLERSSIU_UCI** | BLE (13信标) | UCI | ✅ 自动 |
+
+### 混合多模态 (4个)
+| 数据集 | 信号类型 | 来源 | 下载 |
+|---------|-------------|--------|----------|
+| **WiFiIMUHybrid** | WiFi + IMU | Zenodo | ✅ 自动 |
+| **WiFiMagneticHybrid** | WiFi + 磁场 | UCI | ✅ 自动 |
+| **MultiModalIndoor** | WiFi + BLE + IMU | GitHub | ✅ 自动 |
+| **SensorFusion** | WiFi + BLE + 磁场 | Zenodo | ✅ 自动 |
+
+### UWB数据集 (2个)
+| 数据集 | 信号类型 | 来源 | 下载 |
+|---------|-------------|--------|----------|
+| **UWBIndoor** | UWB (ToF) | Zenodo | ✅ 自动 |
+| **UWBRanging** | UWB (TWR) | GitHub | ✅ 自动 |
+
+### 其他信号 (5个)
+| 数据集 | 信号类型 | 来源 | 下载 |
+|---------|-------------|--------|----------|
+| **MagneticIndoor** | 地磁 | Zenodo | ✅ 自动 |
+| **VLCIndoor** | 可见光 | GitHub | ✅ 自动 |
+| **UltrasoundIndoor** | 超声波 | UCI | ✅ 自动 |
+| **CSIIndoor** | WiFi CSI | GitHub | ✅ 自动 |
+| **RFIDIndoor** | RFID | UCI | ✅ 自动 |
 
 ### 自动下载用法
 
@@ -219,6 +253,18 @@ test = iloc.UJIndoorLoc(download=True, split='test')
 cetc_train = iloc.SODIndoorLoc(building='CETC331', download=True)
 hcxy_train = iloc.SODIndoorLoc(building='HCXY', download=True)
 
+# BLE 数据集
+ble_dataset = iloc.iBeaconRSSI(download=True)
+
+# UWB 数据集
+uwb_dataset = iloc.UWBIndoor(download=True)
+
+# 混合数据集（返回多种信号）
+hybrid = iloc.WiFiIMUHybrid(download=True)
+signals, location = hybrid[0]
+wifi_signal = signals['wifi']
+imu_signal = signals['imu']
+
 # 或指定自定义目录
 dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
 ```
@@ -227,12 +273,14 @@ dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
 
 也可以从官方源手动下载数据集：
 
-| 数据集 | 官方来源 |
-|-------|---------|
-| UJIndoorLoc | [UCI 机器学习库](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) |
-| SODIndoorLoc | [GitHub 仓库](https://github.com/renwudao24/SODIndoorLoc) |
-| WiFi-RSSI | [GitHub 仓库](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) |
-| TUJI1 | [Tampere 大学](https://trepo.tuni.fi/handle/10024/211225) |
+| 数据集 | 官方来源 | 说明 |
+|-------|---------|------|
+| UJIndoorLoc | [UCI 机器学习库](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | 直接 ZIP 下载 |
+| SODIndoorLoc | [GitHub 仓库](https://github.com/renwudao24/SODIndoorLoc) | GitHub 上的 CSV 文件 |
+| Microsoft Indoor 2.0 | [Microsoft Research](https://aka.ms/location20dataset) + [GitHub](https://github.com/location-competition/indoor-location-competition-20) | 多传感器 (WiFi, BLE, IMU, Magnetometer) |
+| TUJI1 | [Tampere 大学](https://trepo.tuni.fi/handle/10024/211225) + [Zenodo](https://zenodo.org/records/1226835) | 多设备采集 |
+| WiFi-RSSI | [GitHub 仓库](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | 小规模 (250 点) |
+| OWP-IMU | [arXiv](https://arxiv.org/abs/2505.16823) | 光学无线 + IMU 融合 |
 
 ## 评估指标
 
