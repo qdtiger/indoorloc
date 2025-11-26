@@ -55,6 +55,12 @@ from .utils import (
     Config,
     load_config,
     merge_configs,
+    get_data_home,
+)
+
+from .datasets import (
+    UJIndoorLocDataset,
+    UJIndoorLoc,
 )
 
 
@@ -169,6 +175,11 @@ __all__ = [
     'Config',
     'load_config',
     'merge_configs',
+    'get_data_home',
+
+    # Datasets
+    'UJIndoorLocDataset',
+    'UJIndoorLoc',
 
     # Convenience functions
     'create_model',
