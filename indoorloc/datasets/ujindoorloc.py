@@ -169,7 +169,7 @@ class UJIndoorLocDataset(WiFiDataset):
         # Load CSV data
         with open(filepath, 'r', newline='') as f:
             reader = csv.reader(f)
-            header = next(reader)  # Skip header
+            next(reader)  # Skip header
 
             for row in reader:
                 if len(row) < 529:

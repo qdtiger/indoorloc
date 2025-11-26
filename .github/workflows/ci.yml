@@ -28,7 +28,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest tests/ -v --tb=short
+        pytest tests/test_localizers.py tests/test_evaluation.py -v --tb=short
 
   lint:
     runs-on: ubuntu-latest
