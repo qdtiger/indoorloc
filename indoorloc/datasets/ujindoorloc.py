@@ -22,6 +22,7 @@ from ..signals.wifi import WiFiSignal
 from ..locations.location import Location
 from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
+from ..utils.download import download_and_extract_zip
 
 
 @DATASETS.register_module()
@@ -32,11 +33,20 @@ class UJIndoorLocDataset(WiFiDataset):
     collected in 3 buildings at Universitat Jaume I.
 
     Args:
-        data_root: Root directory containing the dataset files.
+        data_root: Root directory containing the dataset files. If None,
+            uses the default cache directory (~/.cache/indoorloc/datasets/ujindoorloc).
         split: Dataset split ('train' or 'test').
+        download: Whether to download the dataset if not found.
         transform: Optional transform to apply to signals.
         normalize: Whether to normalize RSSI values.
         normalize_method: Normalization method ('minmax', 'positive', 'standard').
+
+    Example:
+        >>> import indoorloc as iloc
+        >>> # Auto-download to default cache directory
+        >>> dataset = iloc.UJIndoorLoc(download=True)
+        >>> # Or specify custom directory
+        >>> dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
 
     Dataset structure:
         data_root/
@@ -60,6 +70,14 @@ class UJIndoorLocDataset(WiFiDataset):
     NUM_WAPS = 520
     NOT_DETECTED_VALUE = 100
 
+    # Download URLs (primary and backup mirrors)
+    DOWNLOAD_URLS = [
+        'https://archive.ics.uci.edu/static/public/310/ujiindoorloc.zip',
+    ]
+
+    # Required files
+    REQUIRED_FILES = ['trainingData.csv', 'validationData.csv']
+
     # Column indices
     COL_LONGITUDE = 520
     COL_LATITUDE = 521
@@ -73,8 +91,9 @@ class UJIndoorLocDataset(WiFiDataset):
 
     def __init__(
         self,
-        data_root: str,
+        data_root: Optional[str] = None,
         split: str = 'train',
+        download: bool = False,
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
@@ -85,6 +104,7 @@ class UJIndoorLocDataset(WiFiDataset):
         super().__init__(
             data_root=data_root,
             split=split,
+            download=download,
             transform=transform,
             normalize=normalize,
             normalize_method=normalize_method,
@@ -99,6 +119,41 @@ class UJIndoorLocDataset(WiFiDataset):
     def num_aps(self) -> int:
         return self.NUM_WAPS
 
+    def _check_exists(self) -> bool:
+        """Check if dataset files exist."""
+        return all(
+            (self.data_root / f).exists()
+            for f in self.REQUIRED_FILES
+        )
+
+    def _download(self) -> None:
+        """Download UJIndoorLoc dataset from UCI repository."""
+        if self._check_exists():
+            print(f"Dataset already exists at {self.data_root}")
+            return
+
+        # Try each mirror until one succeeds
+        last_error = None
+        for url in self.DOWNLOAD_URLS:
+            try:
+                download_and_extract_zip(
+                    url=url,
+                    root=self.data_root,
+                    extract_files=self.REQUIRED_FILES,
+                )
+                return
+            except Exception as e:
+                last_error = e
+                print(f"Mirror {url} failed: {e}")
+                continue
+
+        raise RuntimeError(
+            f"Failed to download dataset from all mirrors.\n"
+            f"Last error: {last_error}\n"
+            f"Please download manually from:\n"
+            f"https://archive.ics.uci.edu/dataset/310/ujiindoorloc"
+        )
+
     def _load_data(self) -> None:
         """Load data from CSV files."""
         # Determine file to load
@@ -110,13 +165,6 @@ class UJIndoorLocDataset(WiFiDataset):
             raise ValueError(f"Unknown split: {self.split}. Use 'train' or 'test'.")
 
         filepath = self.data_root / filename
-
-        if not filepath.exists():
-            raise FileNotFoundError(
-                f"Dataset file not found: {filepath}\n"
-                f"Please download UJIndoorLoc dataset from:\n"
-                f"https://archive.ics.uci.edu/dataset/310/ujiindoorloc"
-            )
 
         # Load CSV data
         with open(filepath, 'r', newline='') as f:
@@ -134,10 +182,7 @@ class UJIndoorLocDataset(WiFiDataset):
                 )
 
                 # Create WiFi signal
-                signal = WiFiSignal(
-                    rssi_values=rssi_values,
-                    timestamp=float(row[self.COL_TIMESTAMP]) if row[self.COL_TIMESTAMP] else None
-                )
+                signal = WiFiSignal(rssi_values=rssi_values)
                 self._signals.append(signal)
 
                 # Parse location
@@ -193,57 +238,6 @@ class UJIndoorLocDataset(WiFiDataset):
 
         return stats
 
-    @classmethod
-    def download(cls, data_root: str, force: bool = False) -> None:
-        """Download UJIndoorLoc dataset.
-
-        Args:
-            data_root: Directory to save the dataset.
-            force: Whether to overwrite existing files.
-
-        Note:
-            This method requires internet connection and the 'requests' package.
-        """
-        import zipfile
-        import io
-
-        try:
-            import requests
-        except ImportError:
-            raise ImportError("Please install requests: pip install requests")
-
-        data_root = Path(data_root)
-        data_root.mkdir(parents=True, exist_ok=True)
-
-        # Check if already downloaded
-        train_file = data_root / 'trainingData.csv'
-        test_file = data_root / 'validationData.csv'
-
-        if train_file.exists() and test_file.exists() and not force:
-            print(f"Dataset already exists at {data_root}")
-            return
-
-        # UCI ML Repository URL
-        url = "https://archive.ics.uci.edu/static/public/310/ujiindoorloc.zip"
-
-        print(f"Downloading UJIndoorLoc dataset from {url}...")
-        response = requests.get(url, stream=True)
-        response.raise_for_status()
-
-        # Extract ZIP
-        print("Extracting files...")
-        with zipfile.ZipFile(io.BytesIO(response.content)) as zf:
-            for member in zf.namelist():
-                if member.endswith('.csv'):
-                    # Extract to data_root with just the filename
-                    filename = Path(member).name
-                    target_path = data_root / filename
-
-                    with zf.open(member) as source, open(target_path, 'wb') as target:
-                        target.write(source.read())
-                    print(f"  Extracted: {filename}")
-
-        print(f"Dataset downloaded to {data_root}")
 
 
 # Alias for convenience

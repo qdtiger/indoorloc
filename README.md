@@ -193,10 +193,35 @@ indoorloc/
 
 ## Supported Datasets
 
-- [x] UJIndoorLoc
-- [ ] Tampere
-- [ ] Microsoft Indoor Localization
-- [ ] Custom datasets
+| Dataset | Signal | Buildings | Floors | Train Samples | Test Samples | Download |
+|---------|--------|-----------|--------|---------------|--------------|----------|
+| [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ Auto |
+| Tampere | WiFi | 1 | 4 | - | - | 🔜 Soon |
+| Microsoft Indoor | WiFi | - | - | - | - | 🔜 Soon |
+
+### Auto-Download Usage
+
+```python
+import indoorloc as iloc
+
+# Auto-download to ~/.cache/indoorloc/datasets/
+dataset = iloc.UJIndoorLoc(download=True)
+
+# Or specify custom directory
+dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
+
+# Load train/test splits
+train_data = iloc.UJIndoorLoc(download=True, split='train')
+test_data = iloc.UJIndoorLoc(download=True, split='test')
+```
+
+### Manual Download
+
+You can also download datasets manually from official sources:
+
+| Dataset | Official Source |
+|---------|-----------------|
+| UJIndoorLoc | [UCI ML Repository](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) |
 
 ## Evaluation Metrics
 

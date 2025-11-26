@@ -10,6 +10,7 @@ from pathlib import Path
 from ..signals.base import BaseSignal
 from ..locations.location import Location
 from ..registry import DATASETS
+from ..utils.download import get_data_home
 
 
 class BaseDataset(ABC):
@@ -19,8 +20,10 @@ class BaseDataset(ABC):
     the required abstract methods.
 
     Args:
-        data_root: Root directory containing the dataset files.
+        data_root: Root directory containing the dataset files. If None,
+            uses the default cache directory (~/.cache/indoorloc/datasets/{dataset_name}).
         split: Dataset split ('train', 'val', 'test').
+        download: Whether to download the dataset if not found.
         transform: Optional transform to apply to signals.
         normalize: Whether to normalize signal values.
         normalize_method: Normalization method ('minmax', 'positive', 'standard').
@@ -28,18 +31,34 @@ class BaseDataset(ABC):
 
     def __init__(
         self,
-        data_root: str,
+        data_root: Optional[str] = None,
         split: str = 'train',
+        download: bool = False,
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
+        # Determine data root
+        if data_root is None:
+            data_root = get_data_home() / self.dataset_name.lower()
         self.data_root = Path(data_root)
+
         self.split = split
         self.transform = transform
         self.normalize = normalize
         self.normalize_method = normalize_method
+
+        # Handle download
+        if download:
+            self._download()
+
+        # Check if data exists
+        if not self._check_exists():
+            raise RuntimeError(
+                f"Dataset not found at {self.data_root}.\n"
+                f"Use download=True to download it automatically."
+            )
 
         # Data storage
         self._signals: List[BaseSignal] = []
@@ -68,6 +87,26 @@ class BaseDataset(ABC):
     def _load_data(self) -> None:
         """Load data from files. Must be implemented by subclasses."""
         pass
+
+    @abstractmethod
+    def _check_exists(self) -> bool:
+        """Check if the dataset files exist.
+
+        Returns:
+            True if all required files exist, False otherwise.
+        """
+        pass
+
+    def _download(self) -> None:
+        """Download the dataset.
+
+        Subclasses should override this method to implement download logic.
+        Default implementation raises NotImplementedError.
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not support automatic download.\n"
+            f"Please download the dataset manually."
+        )
 
     def _normalize_signals(self) -> None:
         """Normalize all signals using the specified method."""

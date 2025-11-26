@@ -195,10 +195,35 @@ indoorloc/
 
 ## 支持的数据集
 
-- [x] UJIndoorLoc
-- [ ] Tampere
-- [ ] Microsoft Indoor Localization
-- [ ] 自定义数据集
+| 数据集 | 信号类型 | 建筑数 | 楼层数 | 训练样本 | 测试样本 | 下载 |
+|-------|---------|-------|-------|---------|---------|------|
+| [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ 自动 |
+| Tampere | WiFi | 1 | 4 | - | - | 🔜 即将支持 |
+| Microsoft Indoor | WiFi | - | - | - | - | 🔜 即将支持 |
+
+### 自动下载用法
+
+```python
+import indoorloc as iloc
+
+# 自动下载到 ~/.cache/indoorloc/datasets/
+dataset = iloc.UJIndoorLoc(download=True)
+
+# 或指定自定义目录
+dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
+
+# 加载训练/测试集
+train_data = iloc.UJIndoorLoc(download=True, split='train')
+test_data = iloc.UJIndoorLoc(download=True, split='test')
+```
+
+### 手动下载
+
+也可以从官方源手动下载数据集：
+
+| 数据集 | 官方来源 |
+|-------|---------|
+| UJIndoorLoc | [UCI 机器学习库](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) |
 
 ## 评估指标
 
