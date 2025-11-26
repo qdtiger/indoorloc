@@ -247,7 +247,7 @@ class TraditionalLocalizer(BaseLocalizer):
         self._floor_model = None
         self._building_model = None
 
-    def _extract_features(self, signal: BaseSignal) -> 'np.ndarray':
+    def _extract_features(self, signal: BaseSignal):
         """
         Extract feature vector from signal.
 
@@ -262,7 +262,7 @@ class TraditionalLocalizer(BaseLocalizer):
     def _extract_labels(
         self,
         locations: List[Location]
-    ) -> Dict[str, 'np.ndarray']:
+    ) -> Dict[str, Any]:
         """
         Extract labels from locations.
 
