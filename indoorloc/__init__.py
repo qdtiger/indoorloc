@@ -61,6 +61,8 @@ from .utils import (
 from .datasets import (
     UJIndoorLocDataset,
     UJIndoorLoc,
+    SODIndoorLocDataset,
+    SODIndoorLoc,
 )
 
 
@@ -180,6 +182,8 @@ __all__ = [
     # Datasets
     'UJIndoorLocDataset',
     'UJIndoorLoc',
+    'SODIndoorLocDataset',
+    'SODIndoorLoc',
 
     # Convenience functions
     'create_model',
