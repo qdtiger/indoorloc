@@ -199,23 +199,26 @@ indoorloc/
 | 数据集 | 信号类型 | 建筑数 | 楼层数 | 训练样本 | 测试样本 | 下载 |
 |-------|---------|-------|-------|---------|---------|------|
 | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ 自动 |
-| Tampere | WiFi | 1 | 4 | - | - | 🔜 即将支持 |
-| Microsoft Indoor | WiFi | - | - | - | - | 🔜 即将支持 |
+| [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | WiFi (52-347 APs) | 3 | 1-4 | 13,280 | 680 | ✅ 自动 |
+| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 即将支持 |
+| [TUJI1](https://trepo.tuni.fi/handle/10024/211225) | WiFi | 1 | 4 | 687 | 3,951 | 🔜 即将支持 |
 
 ### 自动下载用法
 
 ```python
 import indoorloc as iloc
 
-# 自动下载到 ~/.cache/indoorloc/datasets/
+# UJIndoorLoc - 自动下载到 ~/.cache/indoorloc/datasets/
 dataset = iloc.UJIndoorLoc(download=True)
+train = iloc.UJIndoorLoc(download=True, split='train')
+test = iloc.UJIndoorLoc(download=True, split='test')
+
+# SODIndoorLoc - 指定建筑
+cetc_train = iloc.SODIndoorLoc(building='CETC331', download=True)
+hcxy_train = iloc.SODIndoorLoc(building='HCXY', download=True)
 
 # 或指定自定义目录
 dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
-
-# 加载训练/测试集
-train_data = iloc.UJIndoorLoc(download=True, split='train')
-test_data = iloc.UJIndoorLoc(download=True, split='test')
 ```
 
 ### 手动下载
@@ -225,6 +228,9 @@ test_data = iloc.UJIndoorLoc(download=True, split='test')
 | 数据集 | 官方来源 |
 |-------|---------|
 | UJIndoorLoc | [UCI 机器学习库](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) |
+| SODIndoorLoc | [GitHub 仓库](https://github.com/renwudao24/SODIndoorLoc) |
+| WiFi-RSSI | [GitHub 仓库](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) |
+| TUJI1 | [Tampere 大学](https://trepo.tuni.fi/handle/10024/211225) |
 
 ## 评估指标
 
