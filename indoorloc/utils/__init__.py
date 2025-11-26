@@ -9,6 +9,16 @@ from .download import (
     check_integrity,
     download_url,
     download_and_extract_zip,
+    download_from_zenodo,
+    download_from_uci,
+)
+from .data_loaders import (
+    load_hdf5,
+    load_mat,
+    save_hdf5,
+    load_csv_with_header,
+    check_optional_dependencies,
+    print_dependency_status,
 )
 
 __all__ = [
@@ -19,4 +29,12 @@ __all__ = [
     'check_integrity',
     'download_url',
     'download_and_extract_zip',
+    'download_from_zenodo',
+    'download_from_uci',
+    'load_hdf5',
+    'load_mat',
+    'save_hdf5',
+    'load_csv_with_header',
+    'check_optional_dependencies',
+    'print_dependency_status',
 ]

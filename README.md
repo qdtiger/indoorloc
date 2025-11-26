@@ -194,14 +194,48 @@ indoorloc/
 
 ## Supported Datasets
 
-| Dataset | Signal | Buildings | Floors | Train Samples | Test Samples | Download |
-|---------|--------|-----------|--------|---------------|--------------|----------|
-| [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ Auto |
-| [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | WiFi (52-347 APs) | 3 | 1-4 | 13,280 | 680 | ✅ Auto |
-| [Microsoft Indoor 2.0](https://www.microsoft.com/en-us/research/publication/indoor-location-competition-2-0-dataset/) | WiFi + BLE + IMU | 100+ | Various | Large-scale | Large-scale | 🔜 Soon |
-| [TUJI1](https://trepo.tuni.fi/handle/10024/211225) | WiFi | 1 | 4 | 687 | 3,951 | 🔜 Soon |
-| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 Soon |
-| [OWP-IMU](https://arxiv.org/abs/2505.16823) | Optical + IMU | 3 | 1 | 160k+ points | - | 🔜 Soon |
+**21 datasets** across multiple signal modalities with **auto-download** support:
+
+### WiFi-based (7 datasets)
+| Dataset | Signal Type | Source | Download |
+|---------|-------------|--------|----------|
+| **UJIndoorLoc** | WiFi (520 APs) | UCI | ✅ Auto |
+| **SODIndoorLoc** | WiFi (52-347 APs) | GitHub | ✅ Auto |
+| **LongTermWiFi** | WiFi (Multi-building) | Zenodo | ✅ Auto |
+| **Tampere** | WiFi (Crowdsourced) | Zenodo | ✅ Auto |
+| **WLANRSSI** | WiFi (7 APs) | UCI | ✅ Auto |
+| **TUJI1** | WiFi (IPIN 2021) | GitHub | ✅ Auto |
+| **RSSBased** | WiFi (RSS-based) | Zenodo | ✅ Auto |
+
+### BLE-based (3 datasets)
+| Dataset | Signal Type | Source | Download |
+|---------|-------------|--------|----------|
+| **iBeaconRSSI** | BLE (iBeacon) | Zenodo | ✅ Auto |
+| **BLEIndoor** | BLE (Multi-floor) | GitHub | ✅ Auto |
+| **BLERSSIU_UCI** | BLE (13 beacons) | UCI | ✅ Auto |
+
+### Hybrid Multi-modal (4 datasets)
+| Dataset | Signal Type | Source | Download |
+|---------|-------------|--------|----------|
+| **WiFiIMUHybrid** | WiFi + IMU | Zenodo | ✅ Auto |
+| **WiFiMagneticHybrid** | WiFi + Magnetic | UCI | ✅ Auto |
+| **MultiModalIndoor** | WiFi + BLE + IMU | GitHub | ✅ Auto |
+| **SensorFusion** | WiFi + BLE + Magnetic | Zenodo | ✅ Auto |
+
+### UWB-based (2 datasets)
+| Dataset | Signal Type | Source | Download |
+|---------|-------------|--------|----------|
+| **UWBIndoor** | UWB (ToF) | Zenodo | ✅ Auto |
+| **UWBRanging** | UWB (TWR) | GitHub | ✅ Auto |
+
+### Other Signals (5 datasets)
+| Dataset | Signal Type | Source | Download |
+|---------|-------------|--------|----------|
+| **MagneticIndoor** | Geomagnetic | Zenodo | ✅ Auto |
+| **VLCIndoor** | Visible Light | GitHub | ✅ Auto |
+| **UltrasoundIndoor** | Ultrasound | UCI | ✅ Auto |
+| **CSIIndoor** | WiFi CSI | GitHub | ✅ Auto |
+| **RFIDIndoor** | RFID | UCI | ✅ Auto |
 
 ### Auto-Download Usage
 

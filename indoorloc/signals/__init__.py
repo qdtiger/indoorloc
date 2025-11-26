@@ -7,6 +7,11 @@ from .base import BaseSignal, SignalMetadata
 from .wifi import WiFiSignal, APInfo
 from .ble import BLESignal, BLEBeacon
 from .imu import IMUSignal, IMUReading
+from .uwb import UWBSignal, UWBAnchor
+from .magnetometer import MagnetometerSignal
+from .vlc import VLCSignal, LEDTransmitter
+from .ultrasound import UltrasoundSignal, UltrasoundTransmitter
+from .hybrid import HybridSignal
 
 __all__ = [
     'BaseSignal',
@@ -17,4 +22,12 @@ __all__ = [
     'BLEBeacon',
     'IMUSignal',
     'IMUReading',
+    'UWBSignal',
+    'UWBAnchor',
+    'MagnetometerSignal',
+    'VLCSignal',
+    'LEDTransmitter',
+    'UltrasoundSignal',
+    'UltrasoundTransmitter',
+    'HybridSignal',
 ]
