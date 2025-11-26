@@ -200,8 +200,10 @@ indoorloc/
 |-------|---------|-------|-------|---------|---------|------|
 | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ 自动 |
 | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | WiFi (52-347 APs) | 3 | 1-4 | 13,280 | 680 | ✅ 自动 |
-| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 即将支持 |
+| [Microsoft Indoor 2.0](https://www.microsoft.com/en-us/research/publication/indoor-location-competition-2-0-dataset/) | WiFi + BLE + IMU | 100+ | 多样 | 大规模 | 大规模 | 🔜 即将支持 |
 | [TUJI1](https://trepo.tuni.fi/handle/10024/211225) | WiFi | 1 | 4 | 687 | 3,951 | 🔜 即将支持 |
+| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 即将支持 |
+| [OWP-IMU](https://arxiv.org/abs/2505.16823) | 光学 + IMU | 3 | 1 | 160k+ 点 | - | 🔜 即将支持 |
 
 ### 自动下载用法
 

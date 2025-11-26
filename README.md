@@ -198,8 +198,10 @@ indoorloc/
 |---------|--------|-----------|--------|---------------|--------------|----------|
 | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | WiFi (520 APs) | 3 | 4-5 | 19,937 | 1,111 | ✅ Auto |
 | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | WiFi (52-347 APs) | 3 | 1-4 | 13,280 | 680 | ✅ Auto |
-| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 Soon |
+| [Microsoft Indoor 2.0](https://www.microsoft.com/en-us/research/publication/indoor-location-competition-2-0-dataset/) | WiFi + BLE + IMU | 100+ | Various | Large-scale | Large-scale | 🔜 Soon |
 | [TUJI1](https://trepo.tuni.fi/handle/10024/211225) | WiFi | 1 | 4 | 687 | 3,951 | 🔜 Soon |
+| [WiFi-RSSI](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | WiFi (27 APs) | 1 | 1 | 250 | - | 🔜 Soon |
+| [OWP-IMU](https://arxiv.org/abs/2505.16823) | Optical + IMU | 3 | 1 | 160k+ points | - | 🔜 Soon |
 
 ### Auto-Download Usage
 
@@ -223,12 +225,14 @@ dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
 
 You can also download datasets manually from official sources:
 
-| Dataset | Official Source |
-|---------|-----------------|
-| UJIndoorLoc | [UCI ML Repository](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) |
-| SODIndoorLoc | [GitHub Repository](https://github.com/renwudao24/SODIndoorLoc) |
-| WiFi-RSSI | [GitHub Repository](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) |
-| TUJI1 | [Tampere University](https://trepo.tuni.fi/handle/10024/211225) |
+| Dataset | Official Source | Notes |
+|---------|-----------------|-------|
+| UJIndoorLoc | [UCI ML Repository](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | Direct ZIP download |
+| SODIndoorLoc | [GitHub Repository](https://github.com/renwudao24/SODIndoorLoc) | CSV files on GitHub |
+| Microsoft Indoor 2.0 | [Microsoft Research](https://aka.ms/location20dataset) + [GitHub](https://github.com/location-competition/indoor-location-competition-20) | Multi-sensor (WiFi, BLE, IMU, Magnetometer) |
+| TUJI1 | [Tampere University](https://trepo.tuni.fi/handle/10024/211225) + [Zenodo](https://zenodo.org/records/1226835) | Multi-device collection |
+| WiFi-RSSI | [GitHub Repository](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | Small-scale (250 points) |
+| OWP-IMU | [arXiv](https://arxiv.org/abs/2505.16823) | Optical wireless + IMU fusion |
 
 ## Evaluation Metrics
 
