@@ -28,7 +28,7 @@
 train, test = iloc.UJIndoorLoc(download=True)  # 就这么简单。自动下载、自动解析、开箱即用。
 ```
 
-IndoorLoc 解决了每个室内定位研究者都头疼的数据预处理问题。不用再手动解析 CSV、处理缺失值、从头写数据加载器。
+IndoorLoc 为 36+ 室内定位数据集提供统一接口，涵盖 WiFi、BLE、UWB、CSI 等多种信号。
 
 ### 给初学者
 
