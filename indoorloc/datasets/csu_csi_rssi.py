@@ -97,12 +97,24 @@ class CSUIndoorLocDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading CSUIndoorLoc-CSI-RSSI dataset...")
-        print(f"Note: This dataset requires manual download from:")
-        print(f"  https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav")
-        print(f"Please download and place data in: {self.data_root}")
+        print(f"Downloading CSUIndoorLoc-CSI-RSSI dataset from GitHub...")
 
-        self.data_root.mkdir(parents=True, exist_ok=True)
+        from ..utils.download import download_from_github
+
+        try:
+            # Download data files from GitHub
+            download_from_github(
+                repo='EPIC-CSU/csi-rssi-dataset-indoor-nav',
+                root=self.data_root,
+                files=['data/csi_data.csv', 'data/rssi_data.csv'],
+                branch='main',
+            )
+        except Exception as e:
+            print(f"Auto-download failed: {e}")
+            print(f"Please download manually from:")
+            print(f"  https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav")
+            print(f"Place data in: {self.data_root}")
+            self.data_root.mkdir(parents=True, exist_ok=True)
 
     def _load_data(self) -> None:
         """Load CSUIndoorLoc dataset."""

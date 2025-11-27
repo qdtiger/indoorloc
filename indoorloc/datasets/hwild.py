@@ -99,12 +99,25 @@ class HWILDDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading H-WILD dataset...")
-        print(f"Note: This dataset requires manual download from:")
-        print(f"  https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset")
-        print(f"Please download and place data in: {self.data_root}")
+        print(f"Downloading H-WILD dataset from GitHub...")
 
-        self.data_root.mkdir(parents=True, exist_ok=True)
+        from ..utils.download import download_from_github
+
+        try:
+            # Download data files from GitHub
+            download_from_github(
+                repo='H-WILD/human_held_device_wifi_indoor_localization_dataset',
+                root=self.data_root,
+                files=['data/conference.csv', 'data/laboratory.csv',
+                       'data/office.csv', 'data/lounge.csv'],
+                branch='main',
+            )
+        except Exception as e:
+            print(f"Auto-download failed: {e}")
+            print(f"Please download manually from:")
+            print(f"  https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset")
+            print(f"Place data in: {self.data_root}")
+            self.data_root.mkdir(parents=True, exist_ok=True)
 
     def _load_data(self) -> None:
         """Load H-WILD dataset."""
