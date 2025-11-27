@@ -221,17 +221,14 @@ indoorloc/
 **36 datasets** across multiple signal modalities with **auto-download** support. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
 
 <table>
-<thead>
 <tr>
-<th>RSSI</th>
-<th>CSI</th>
-<th>ToF/TWR</th>
-<th>Magnetic</th>
-<th>Multi-modal</th>
-<th>Other</th>
+<th bgcolor="#f6f8fa">RSSI</th>
+<th bgcolor="#f6f8fa">CSI</th>
+<th bgcolor="#f6f8fa">ToF/TWR</th>
+<th bgcolor="#f6f8fa">Magnetic</th>
+<th bgcolor="#f6f8fa">Multi-modal</th>
+<th bgcolor="#f6f8fa">Other</th>
 </tr>
-</thead>
-<tbody>
 <tr>
 <td valign="top">
 
@@ -304,7 +301,6 @@ indoorloc/
 
 </td>
 </tr>
-</tbody>
 </table>
 
 ### Auto-Download Usage
