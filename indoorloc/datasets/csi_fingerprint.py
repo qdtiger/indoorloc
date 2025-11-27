@@ -101,20 +101,24 @@ class CSIFingerprintDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading CSI fingerprint dataset...")
-        print(f"Note: This dataset requires manual download from:")
-        print(f"  https://github.com/qiang5love1314/CSI-dataset")
-        print(f"Please clone the repository and place data in: {self.data_root}")
+        print(f"Downloading CSI fingerprint dataset from GitHub...")
 
-        # Create placeholder for manual download
-        self.data_root.mkdir(parents=True, exist_ok=True)
-        readme_path = self.data_root / 'README.txt'
-        with open(readme_path, 'w') as f:
-            f.write("CSI Fingerprint Dataset\n")
-            f.write("======================\n\n")
-            f.write("Please download from:\n")
-            f.write("https://github.com/qiang5love1314/CSI-dataset\n\n")
-            f.write("Clone or download the repository and place the data here.\n")
+        from ..utils.download import download_from_github
+
+        try:
+            # Try to download data files from GitHub
+            download_from_github(
+                repo='qiang5love1314/CSI-dataset',
+                root=self.data_root,
+                files=['Area1/data.csv', 'Area2/data.csv'],
+                branch='master',
+            )
+        except Exception as e:
+            print(f"Auto-download failed: {e}")
+            print(f"Please download manually from:")
+            print(f"  https://github.com/qiang5love1314/CSI-dataset")
+            print(f"Place data in: {self.data_root}")
+            self.data_root.mkdir(parents=True, exist_ok=True)
 
     def _load_data(self) -> None:
         """Load CSI fingerprint dataset."""
