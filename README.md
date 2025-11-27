@@ -199,10 +199,10 @@ indoorloc/
 <table>
 <thead>
 <tr>
-<th>RSSI Fingerprinting</th>
-<th>CSI-based</th>
-<th>UWB Ranging</th>
-<th>Geomagnetic</th>
+<th>RSSI</th>
+<th>CSI</th>
+<th>ToF/TWR</th>
+<th>Magnetic</th>
 <th>Multi-modal</th>
 <th>Other</th>
 </tr>
@@ -233,8 +233,8 @@ indoorloc/
 </td>
 <td valign="top">
 
-- [UWBIndoor](indoorloc/datasets/uwb_indoor.py) (ToF)
-- [UWBRanging](indoorloc/datasets/uwb_ranging.py) (TWR)
+- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
+- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
 
 </td>
 <td valign="top">
