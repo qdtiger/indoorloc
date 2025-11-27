@@ -240,5 +240,50 @@ class UJIndoorLocDataset(WiFiDataset):
 
 
 
-# Alias for convenience
-UJIndoorLoc = UJIndoorLocDataset
+def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
+    """
+    Convenience function for loading UJIndoorLoc dataset.
+
+    Args:
+        data_root: Root directory for dataset storage
+        split: Dataset split ('train', 'test', or None for both)
+        download: Whether to download if not found
+        **kwargs: Additional arguments passed to UJIndoorLocDataset
+
+    Returns:
+        - If split is 'train' or 'test': Returns single dataset
+        - If split is None: Returns tuple (train_dataset, test_dataset)
+
+    Examples:
+        >>> # Load both train and test splits
+        >>> train, test = UJIndoorLoc(download=True)
+
+        >>> # Load only training set
+        >>> train = UJIndoorLoc(split='train', download=True)
+
+        >>> # Load only test set
+        >>> test = UJIndoorLoc(split='test', download=True)
+    """
+    if split is None:
+        # Return both train and test
+        train_dataset = UJIndoorLocDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = UJIndoorLocDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return train_dataset, test_dataset
+    else:
+        # Return single split
+        return UJIndoorLocDataset(
+            data_root=data_root,
+            split=split,
+            download=download,
+            **kwargs
+        )
