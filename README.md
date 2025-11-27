@@ -28,7 +28,7 @@
 train, test = iloc.UJIndoorLoc(download=True)  # That's it. Auto-download, auto-parse, ready to use.
 ```
 
-IndoorLoc eliminates the painful data preprocessing that every indoor localization researcher faces. No more parsing CSVs, handling missing values, or writing data loaders from scratch.
+IndoorLoc provides a unified interface for 36+ indoor localization datasets across WiFi, BLE, UWB, CSI, and more.
 
 ### For Beginners
 
