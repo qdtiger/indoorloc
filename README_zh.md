@@ -224,17 +224,17 @@ indoorloc/
 
 <table>
 <tr>
-<th bgcolor="#f6f8fa">RSSI</th>
-<th bgcolor="#f6f8fa">CSI</th>
-<th bgcolor="#f6f8fa">ToF/TWR</th>
-<th bgcolor="#f6f8fa">磁场</th>
-<th bgcolor="#f6f8fa">多模态</th>
-<th bgcolor="#f6f8fa">其他</th>
+<th align="center" bgcolor="#f6f8fa">RSSI</th>
+<th align="center" bgcolor="#f6f8fa">CSI</th>
+<th align="center" bgcolor="#f6f8fa">ToF</th>
+<th align="center" bgcolor="#f6f8fa">磁场</th>
+<th align="center" bgcolor="#f6f8fa">融合</th>
+<th align="center" bgcolor="#f6f8fa">其他</th>
 </tr>
 <tr>
 <td valign="top">
 
-**WiFi RSSI**
+**WiFi**
 - [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc)
 - [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc)
 - [LongTermWiFi](https://zenodo.org/record/889798)
@@ -243,7 +243,7 @@ indoorloc/
 - [TUJI1](https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset)
 - [RSSBased](https://zenodo.org/record/5678901)
 
-**BLE RSSI**
+**BLE**
 - [iBeaconRSSI](https://zenodo.org/record/1066044)
 - [BLEIndoor](https://github.com/BLE-Indoor-Positioning/Dataset)
 - [BLERSSIU_UCI](https://archive.ics.uci.edu/dataset/519/ble+rssi+dataset+for+indoor+localization)
@@ -251,7 +251,7 @@ indoorloc/
 </td>
 <td valign="top">
 
-**WiFi CSI**
+**WiFi**
 - [CSIIndoor](https://github.com/CSI-Positioning/IndoorDataset)
 - [CSIFingerprint](https://github.com/qiang5love1314/CSI-dataset)
 - [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset)
@@ -261,23 +261,24 @@ indoorloc/
 - [CSIBench](https://ai-iot-sensing.github.io/projects/project.html)
 - [WiFiCSID2D](https://figshare.com/articles/dataset/WiFi_CSI_D2D/20943706)
 
-**LTE CSI**
+**LTE**
 - [OpenCSI](https://figshare.com/articles/dataset/OpenCSI/19596379)
 
-**Massive MIMO CSI**
+**Massive MIMO**
 - [MaMIMOCSI](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset)
 - [DICHASUS](https://darus.uni-stuttgart.de/dataverse/dichasus)
 - [ESPARGOS](https://espargos.net/datasets/)
 - [MaMIMOUAV](https://doi.org/10.48804/0IMQDF)
 - [DeepMIMO](https://www.deepmimo.net)
 
-**RF CSI**
+**RF**
 - [CSI2Pos](https://service.tib.eu/ldmservice/dataset/csi2pos)
 - [CSI2TAoA](https://service.tib.eu/ldmservice/dataset/csi2taoa)
 
 </td>
 <td valign="top">
 
+**UWB**
 - [UWBIndoor](https://zenodo.org/record/5789876)
 - [UWBRanging](https://github.com/UWB-Positioning/RangingDataset)
 
@@ -297,8 +298,13 @@ indoorloc/
 </td>
 <td valign="top">
 
+**VLC**
 - [VLCIndoor](https://github.com/VLC-Positioning/IndoorDataset)
+
+**超声波**
 - [UltrasoundIndoor](https://archive.ics.uci.edu/dataset/632/ultrasound+indoor+localization)
+
+**RFID**
 - [RFIDIndoor](https://archive.ics.uci.edu/dataset/640/rfid+indoor+localization)
 
 </td>
