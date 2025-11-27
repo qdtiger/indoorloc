@@ -85,6 +85,10 @@ class CSIFingerprintDataset(WiFiDataset):
     def dataset_name(self) -> str:
         return 'CSIFingerprint'
 
+    @property
+    def num_aps(self) -> int:
+        return self.NUM_SUBCARRIERS * 3  # 3 antennas × 30 subcarriers
+
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
         return (self.data_root / 'data.csv').exists() or \
