@@ -194,7 +194,7 @@ indoorloc/
 
 ## Supported Datasets
 
-**21 datasets** across multiple signal modalities with **auto-download** support.
+**36 datasets** across multiple signal modalities with **auto-download** support.
 
 <table>
 <thead>
@@ -228,7 +228,29 @@ indoorloc/
 </td>
 <td valign="top">
 
+**WiFi CSI**
 - [CSIIndoor](indoorloc/datasets/csi_indoor.py)
+- [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py)
+- [HWILD](indoorloc/datasets/hwild.py)
+- [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py)
+- [WILDv2](indoorloc/datasets/wild_v2.py)
+- [HALOC](indoorloc/datasets/haloc.py)
+- [CSIBench](indoorloc/datasets/csi_bench.py)
+- [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py)
+
+**LTE CSI**
+- [OpenCSI](indoorloc/datasets/opencsi.py)
+
+**Massive MIMO CSI**
+- [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py)
+- [DICHASUS](indoorloc/datasets/dichasus.py)
+- [ESPARGOS](indoorloc/datasets/espargos.py)
+- [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py)
+- [DeepMIMO](indoorloc/datasets/deepmimo.py)
+
+**RF CSI**
+- [CSI2Pos](indoorloc/datasets/csi2pos.py)
+- [CSI2TAoA](indoorloc/datasets/csi2taoa.py)
 
 </td>
 <td valign="top">
