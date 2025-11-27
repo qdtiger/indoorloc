@@ -224,9 +224,6 @@ indoorloc/
 <tr>
 <th align="center" bgcolor="#f6f8fa">RSSI</th>
 <th align="center" bgcolor="#f6f8fa">CSI</th>
-<th align="center" bgcolor="#f6f8fa">ToF</th>
-<th align="center" bgcolor="#f6f8fa">Magnetic</th>
-<th align="center" bgcolor="#f6f8fa">Fusion</th>
 <th align="center" bgcolor="#f6f8fa">Other</th>
 </tr>
 <tr>
@@ -280,21 +277,14 @@ indoorloc/
 - [UWBIndoor](https://zenodo.org/record/5789876)
 - [UWBRanging](https://github.com/UWB-Positioning/RangingDataset)
 
-</td>
-<td valign="top">
-
+**Magnetic**
 - [MagneticIndoor](https://zenodo.org/record/4321098)
 
-</td>
-<td valign="top">
-
+**Fusion**
 - [WiFiIMUHybrid](https://zenodo.org/record/3932395)
 - [WiFiMagneticHybrid](https://archive.ics.uci.edu/dataset/626/wifi+magnetic+indoor+localization)
 - [MultiModalIndoor](https://github.com/IndoorPositioning/MultiModalDataset)
 - [SensorFusion](https://zenodo.org/record/4567890)
-
-</td>
-<td valign="top">
 
 **VLC**
 - [VLCIndoor](https://github.com/VLC-Positioning/IndoorDataset)
