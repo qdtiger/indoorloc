@@ -194,48 +194,64 @@ indoorloc/
 
 ## Supported Datasets
 
-**21 datasets** across multiple signal modalities with **auto-download** support:
+**21 datasets** across multiple signal modalities with **auto-download** support.
 
-### WiFi-based (7 datasets)
-| Dataset | Signal Type | Source | Download |
-|---------|-------------|--------|----------|
-| **UJIndoorLoc** | WiFi (520 APs) | UCI | ✅ Auto |
-| **SODIndoorLoc** | WiFi (52-347 APs) | GitHub | ✅ Auto |
-| **LongTermWiFi** | WiFi (Multi-building) | Zenodo | ✅ Auto |
-| **Tampere** | WiFi (Crowdsourced) | Zenodo | ✅ Auto |
-| **WLANRSSI** | WiFi (7 APs) | UCI | ✅ Auto |
-| **TUJI1** | WiFi (IPIN 2021) | GitHub | ✅ Auto |
-| **RSSBased** | WiFi (RSS-based) | Zenodo | ✅ Auto |
+<table>
+<thead>
+<tr>
+<th>WiFi-based</th>
+<th>BLE-based</th>
+<th>Hybrid Multi-modal</th>
+<th>UWB-based</th>
+<th>Other Signals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
 
-### BLE-based (3 datasets)
-| Dataset | Signal Type | Source | Download |
-|---------|-------------|--------|----------|
-| **iBeaconRSSI** | BLE (iBeacon) | Zenodo | ✅ Auto |
-| **BLEIndoor** | BLE (Multi-floor) | GitHub | ✅ Auto |
-| **BLERSSIU_UCI** | BLE (13 beacons) | UCI | ✅ Auto |
+• UJIndoorLoc
+• SODIndoorLoc
+• LongTermWiFi
+• Tampere
+• WLANRSSI
+• TUJI1
+• RSSBased
 
-### Hybrid Multi-modal (4 datasets)
-| Dataset | Signal Type | Source | Download |
-|---------|-------------|--------|----------|
-| **WiFiIMUHybrid** | WiFi + IMU | Zenodo | ✅ Auto |
-| **WiFiMagneticHybrid** | WiFi + Magnetic | UCI | ✅ Auto |
-| **MultiModalIndoor** | WiFi + BLE + IMU | GitHub | ✅ Auto |
-| **SensorFusion** | WiFi + BLE + Magnetic | Zenodo | ✅ Auto |
+</td>
+<td>
 
-### UWB-based (2 datasets)
-| Dataset | Signal Type | Source | Download |
-|---------|-------------|--------|----------|
-| **UWBIndoor** | UWB (ToF) | Zenodo | ✅ Auto |
-| **UWBRanging** | UWB (TWR) | GitHub | ✅ Auto |
+• iBeaconRSSI
+• BLEIndoor
+• BLERSSIU_UCI
 
-### Other Signals (5 datasets)
-| Dataset | Signal Type | Source | Download |
-|---------|-------------|--------|----------|
-| **MagneticIndoor** | Geomagnetic | Zenodo | ✅ Auto |
-| **VLCIndoor** | Visible Light | GitHub | ✅ Auto |
-| **UltrasoundIndoor** | Ultrasound | UCI | ✅ Auto |
-| **CSIIndoor** | WiFi CSI | GitHub | ✅ Auto |
-| **RFIDIndoor** | RFID | UCI | ✅ Auto |
+</td>
+<td>
+
+• WiFiIMUHybrid
+• WiFiMagneticHybrid
+• MultiModalIndoor
+• SensorFusion
+
+</td>
+<td>
+
+• UWBIndoor
+• UWBRanging
+
+</td>
+<td>
+
+• MagneticIndoor
+• VLCIndoor
+• UltrasoundIndoor
+• CSIIndoor
+• RFIDIndoor
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### Auto-Download Usage
 
