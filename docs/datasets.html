@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndoorLoc Dataset Browser</title>
+    <title>IndoorLoc Datasets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -11,197 +14,283 @@
             padding: 0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #24292f;
+            line-height: 1.5;
+            font-size: 14px;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 24px;
         }
+
+        /* Header */
         header {
-            text-align: center;
-            padding: 30px 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin-bottom: 30px;
-            border-radius: 10px;
+            border-bottom: 1px solid #d0d7de;
+            padding: 20px 0;
+            margin-bottom: 24px;
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #24292f;
         }
-        header p {
-            opacity: 0.9;
+        header h1 span {
+            color: #57606a;
+            font-weight: 400;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: white;
+        .github-link {
+            color: #57606a;
             text-decoration: none;
-            opacity: 0.8;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        .back-link:hover {
-            opacity: 1;
+        .github-link:hover {
+            color: #0969da;
+        }
+        .github-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d0d7de;
+            margin-bottom: 16px;
         }
         .tabs {
             display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 0;
         }
         .tab {
-            padding: 12px 24px;
-            background: white;
+            padding: 12px 16px;
+            background: none;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: #57606a;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.15s;
         }
         .tab:hover {
-            background: #e8e8e8;
+            color: #24292f;
         }
         .tab.active {
-            background: #667eea;
-            color: white;
+            color: #24292f;
+            border-bottom-color: #fd8c73;
         }
         .search-box {
-            margin-bottom: 20px;
+            position: relative;
         }
         .search-box input {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            width: 240px;
+            padding: 6px 12px 6px 32px;
+            font-size: 13px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
             outline: none;
-            transition: border-color 0.2s;
+            background: #f6f8fa;
         }
         .search-box input:focus {
-            border-color: #667eea;
+            background: #ffffff;
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
         }
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: #57606a;
+        }
+
+        /* Stats */
         .stats {
+            font-size: 13px;
+            color: #57606a;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #d0d7de;
+        }
+        .stats span {
+            margin-right: 4px;
+        }
+        .stats .sep {
+            color: #d0d7de;
+            margin: 0 8px;
+        }
+
+        /* Cards */
+        .cards {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
         }
-        .stat {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-        }
-        table {
-            width: 100%;
-            background: white;
-            border-radius: 10px;
+        .card {
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background: #f6f8fa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #d0d7de;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header .count {
+            color: #57606a;
+            font-weight: 400;
+            font-size: 12px;
+            background: #e8e8e8;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .card-body {
+            padding: 0;
+        }
+        .card table {
+            width: 100%;
             border-collapse: collapse;
         }
-        th {
-            background: #667eea;
-            color: white;
-            padding: 15px;
+        .card th {
             text-align: left;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        th:hover {
-            background: #5a6fd6;
-        }
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
-        tr:hover {
-            background: #f8f9ff;
-        }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 8px 16px;
             font-size: 12px;
             font-weight: 500;
+            color: #57606a;
+            border-bottom: 1px solid #d0d7de;
+            background: #fafafa;
         }
-        .badge-rssi { background: #e3f2fd; color: #1565c0; }
-        .badge-csi { background: #f3e5f5; color: #7b1fa2; }
-        .badge-tof { background: #fff3e0; color: #e65100; }
-        .badge-magnetic { background: #ffebee; color: #c62828; }
-        .badge-hybrid { background: #e8f5e9; color: #2e7d32; }
-        .badge-other { background: #eceff1; color: #546e7a; }
-        .badge-auto { background: #c8e6c9; color: #2e7d32; }
-        .badge-manual { background: #ffcdd2; color: #c62828; }
-        a {
-            color: #667eea;
+        .card td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #eaeef2;
+            font-size: 13px;
+        }
+        .card tr:last-child td {
+            border-bottom: none;
+        }
+        .card tr:hover td {
+            background: #f6f8fa;
+        }
+        .dataset-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .dataset-name a {
+            color: #0969da;
             text-decoration: none;
         }
-        a:hover {
+        .dataset-name a:hover {
             text-decoration: underline;
         }
-        .hidden {
-            display: none;
+        .download-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
         }
+        .download-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .download-status.auto .dot {
+            background: #1a7f37;
+        }
+        .download-status.manual .dot {
+            background: #9a6700;
+        }
+        .download-status.auto {
+            color: #1a7f37;
+        }
+        .download-status.manual {
+            color: #9a6700;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .nav-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
             .tabs {
-                justify-content: center;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
-            .tab {
-                padding: 10px 16px;
-                font-size: 13px;
+            .search-box {
+                width: 100%;
             }
-            table {
-                font-size: 14px;
+            .search-box input {
+                width: 100%;
             }
-            th, td {
-                padding: 10px;
+            .card th, .card td {
+                padding: 8px 12px;
             }
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #57606a;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>IndoorLoc Dataset Browser</h1>
-            <p>36 datasets for indoor localization research</p>
-            <a href="https://github.com/qdtiger/indoorloc" class="back-link">← Back to GitHub</a>
+            <div class="header-inner">
+                <h1>IndoorLoc <span>Datasets</span></h1>
+                <a href="https://github.com/qdtiger/indoorloc" class="github-link">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+            </div>
         </header>
 
-        <div class="tabs">
-            <button class="tab active" data-view="signal">Signal Type</button>
-            <button class="tab" data-view="source">Signal Source</button>
-            <button class="tab" data-view="data">Data Source</button>
-            <button class="tab" data-view="position">Position Type</button>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Search datasets...">
+        <div class="nav-bar">
+            <div class="tabs">
+                <button class="tab active" data-view="signal">Signal Type</button>
+                <button class="tab" data-view="source">Signal Source</button>
+                <button class="tab" data-view="data">Data Source</button>
+                <button class="tab" data-view="position">Position Type</button>
+            </div>
+            <div class="search-box">
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zM11.5 7a4.499 4.499 0 10-8.997 0A4.499 4.499 0 0011.5 7z"/>
+                </svg>
+                <input type="text" id="search" placeholder="Search datasets...">
+            </div>
         </div>
 
         <div class="stats" id="stats"></div>
 
-        <table>
-            <thead id="table-head"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
+        <div class="cards" id="cards"></div>
     </div>
 
     <script>
@@ -230,8 +319,8 @@
             { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, file: "espargos.py" },
             { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, file: "mamimo_uav.py" },
             { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: false, file: "deepmimo.py" },
-            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D", auto: false, file: "csi2pos.py" },
-            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D", auto: false, file: "csi2taoa.py" },
+            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, file: "csi2pos.py" },
+            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, file: "csi2taoa.py" },
             { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, file: "uwb_indoor.py" },
             { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, file: "uwb_ranging.py" },
             { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "magnetic_indoor.py" },
@@ -239,50 +328,39 @@
             { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, file: "wifi_magnetic_hybrid.py" },
             { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "multimodal_indoor.py" },
             { name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "sensor_fusion.py" },
-            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D", auto: true, file: "vlc_indoor.py" },
-            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D", auto: true, file: "ultrasound_indoor.py" },
-            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D", auto: true, file: "rfid_indoor.py" }
+            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "vlc_indoor.py" },
+            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "ultrasound_indoor.py" },
+            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D+Floor", auto: true, file: "rfid_indoor.py" }
         ];
 
         const views = {
-            signal: {
-                group: 'signal',
-                columns: ['Dataset', 'Sub-type', 'Data Source', 'Position', 'Download'],
-                getRow: d => [d.name, d.subtype, d.dataSource, d.position, d.auto]
-            },
-            source: {
-                group: 'source',
-                columns: ['Dataset', 'Signal Type', 'Data Source', 'Position', 'Download'],
-                getRow: d => [d.name, d.signal, d.dataSource, d.position, d.auto]
-            },
-            data: {
-                group: 'dataSource',
-                columns: ['Dataset', 'Signal Type', 'Source', 'Position', 'Download'],
-                getRow: d => [d.name, d.signal, d.source, d.position, d.auto]
-            },
-            position: {
-                group: 'position',
-                columns: ['Dataset', 'Signal Type', 'Source', 'Data Source', 'Download'],
-                getRow: d => [d.name, d.signal, d.source, d.dataSource, d.auto]
-            }
+            signal: { group: 'subtype', columns: ['Dataset', 'Data Source', 'Position', 'Download'] },
+            source: { group: 'source', columns: ['Dataset', 'Signal Type', 'Data Source', 'Position', 'Download'] },
+            data: { group: 'dataSource', columns: ['Dataset', 'Signal Type', 'Source', 'Position', 'Download'] },
+            position: { group: 'position', columns: ['Dataset', 'Signal Type', 'Source', 'Data Source', 'Download'] }
         };
 
         let currentView = 'signal';
         let searchTerm = '';
 
-        function getBadgeClass(signal) {
-            const map = {
-                'RSSI': 'badge-rssi',
-                'CSI': 'badge-csi',
-                'ToF': 'badge-tof',
-                'Magnetic': 'badge-magnetic',
-                'Hybrid': 'badge-hybrid',
-                'Other': 'badge-other'
-            };
-            return map[signal] || 'badge-other';
+        function renderStats(filtered) {
+            const counts = {};
+            filtered.forEach(d => {
+                counts[d.signal] = (counts[d.signal] || 0) + 1;
+            });
+
+            const parts = [`<span>${filtered.length} datasets</span>`];
+            const order = ['RSSI', 'CSI', 'ToF', 'Magnetic', 'Hybrid', 'Other'];
+            order.forEach(k => {
+                if (counts[k]) {
+                    parts.push(`<span class="sep">·</span><span>${counts[k]} ${k}</span>`);
+                }
+            });
+
+            document.getElementById('stats').innerHTML = parts.join('');
         }
 
-        function renderTable() {
+        function renderCards() {
             const view = views[currentView];
             const filtered = datasets.filter(d =>
                 d.name.toLowerCase().includes(searchTerm) ||
@@ -292,12 +370,9 @@
                 d.dataSource.toLowerCase().includes(searchTerm)
             );
 
-            // Render header
-            const thead = document.getElementById('table-head');
-            thead.innerHTML = `<tr>${view.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+            renderStats(filtered);
 
-            // Group and render body
-            const tbody = document.getElementById('table-body');
+            // Group datasets
             const groups = {};
             filtered.forEach(d => {
                 const key = d[view.group];
@@ -305,39 +380,75 @@
                 groups[key].push(d);
             });
 
+            const cardsContainer = document.getElementById('cards');
+
+            if (Object.keys(groups).length === 0) {
+                cardsContainer.innerHTML = '<div class="empty">No datasets found</div>';
+                return;
+            }
+
             let html = '';
-            Object.entries(groups).sort().forEach(([group, items]) => {
-                items.forEach((d, i) => {
-                    const row = view.getRow(d);
+
+            // Sort groups
+            const sortedGroups = Object.entries(groups).sort((a, b) => {
+                // Custom sort order for signal types
+                const signalOrder = ['WiFi RSSI', 'BLE RSSI', 'WiFi CSI', 'LTE CSI', 'Massive MIMO', 'RF CSI', 'UWB ToF', 'UWB TWR', 'Magnetic', 'Multi-modal', 'VLC', 'Ultrasound', 'RFID'];
+                const posOrder = ['2D', '2D+Floor', '3D'];
+
+                if (currentView === 'signal') {
+                    return signalOrder.indexOf(a[0]) - signalOrder.indexOf(b[0]);
+                } else if (currentView === 'position') {
+                    return posOrder.indexOf(a[0]) - posOrder.indexOf(b[0]);
+                }
+                return a[0].localeCompare(b[0]);
+            });
+
+            sortedGroups.forEach(([group, items]) => {
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <span>${group}</span>
+                            <span class="count">${items.length}</span>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <thead>
+                                    <tr>${view.columns.map(c => `<th>${c}</th>`).join('')}</tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                items.forEach(d => {
                     html += '<tr>';
-                    row.forEach((cell, idx) => {
-                        if (idx === 0) {
-                            html += `<td><a href="https://github.com/qdtiger/indoorloc/blob/main/indoorloc/datasets/${d.file}" target="_blank">${cell}</a></td>`;
-                        } else if (idx === row.length - 1) {
-                            html += `<td><span class="badge ${cell ? 'badge-auto' : 'badge-manual'}">${cell ? 'Auto' : 'Manual'}</span></td>`;
-                        } else if (cell === d.signal) {
-                            html += `<td><span class="badge ${getBadgeClass(cell)}">${cell}</span></td>`;
-                        } else {
-                            html += `<td>${cell}</td>`;
+                    view.columns.forEach(col => {
+                        if (col === 'Dataset') {
+                            html += `<td class="dataset-name"><a href="https://github.com/qdtiger/indoorloc/blob/main/indoorloc/datasets/${d.file}" target="_blank">${d.name}</a></td>`;
+                        } else if (col === 'Download') {
+                            const status = d.auto ? 'auto' : 'manual';
+                            const label = d.auto ? 'Auto' : 'Manual';
+                            html += `<td><span class="download-status ${status}"><span class="dot"></span>${label}</span></td>`;
+                        } else if (col === 'Signal Type') {
+                            html += `<td>${d.signal}</td>`;
+                        } else if (col === 'Data Source') {
+                            html += `<td>${d.dataSource}</td>`;
+                        } else if (col === 'Source') {
+                            html += `<td>${d.source}</td>`;
+                        } else if (col === 'Position') {
+                            html += `<td>${d.position}</td>`;
                         }
                     });
                     html += '</tr>';
                 });
-            });
-            tbody.innerHTML = html;
 
-            // Update stats
-            const stats = document.getElementById('stats');
-            const signalCounts = {};
-            filtered.forEach(d => {
-                signalCounts[d.signal] = (signalCounts[d.signal] || 0) + 1;
+                html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
             });
-            stats.innerHTML = `
-                <div class="stat"><div class="stat-value">${filtered.length}</div><div class="stat-label">Total</div></div>
-                ${Object.entries(signalCounts).map(([k, v]) =>
-                    `<div class="stat"><div class="stat-value">${v}</div><div class="stat-label">${k}</div></div>`
-                ).join('')}
-            `;
+
+            cardsContainer.innerHTML = html;
         }
 
         // Tab click handler
@@ -346,18 +457,18 @@
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentView = tab.dataset.view;
-                renderTable();
+                renderCards();
             });
         });
 
         // Search handler
         document.getElementById('search').addEventListener('input', (e) => {
             searchTerm = e.target.value.toLowerCase();
-            renderTable();
+            renderCards();
         });
 
         // Initial render
-        renderTable();
+        renderCards();
     </script>
 </body>
 </html>
