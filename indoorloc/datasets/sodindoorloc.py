@@ -247,5 +247,51 @@ class SODIndoorLocDataset(WiFiDataset):
         return stats
 
 
-# Alias for convenience
-SODIndoorLoc = SODIndoorLocDataset
+def SODIndoorLoc(building='CETC331', data_root=None, split=None, download=False, **kwargs):
+    """
+    Convenience function for loading SODIndoorLoc dataset.
+
+    Args:
+        building: Building name ('CETC331', 'HCXY', or 'SYL')
+        data_root: Root directory for dataset storage
+        split: Dataset split ('train', 'test', or None for both)
+        download: Whether to download if not found
+        **kwargs: Additional arguments passed to SODIndoorLocDataset
+
+    Returns:
+        - If split is 'train' or 'test': Returns single dataset
+        - If split is None: Returns tuple (train_dataset, test_dataset)
+
+    Examples:
+        >>> # Load both train and test splits for CETC331
+        >>> train, test = SODIndoorLoc(building='CETC331', download=True)
+
+        >>> # Load only training set
+        >>> train = SODIndoorLoc(building='HCXY', split='train', download=True)
+    """
+    if split is None:
+        # Return both train and test
+        train_dataset = SODIndoorLocDataset(
+            building=building,
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = SODIndoorLocDataset(
+            building=building,
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return train_dataset, test_dataset
+    else:
+        # Return single split
+        return SODIndoorLocDataset(
+            building=building,
+            data_root=data_root,
+            split=split,
+            download=download,
+            **kwargs
+        )
