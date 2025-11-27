@@ -33,6 +33,23 @@ from .rss_based import RSSBasedDataset, RSSBased
 from .csi_indoor import CSIIndoorDataset, CSIIndoor
 from .rfid_indoor import RFIDIndoorDataset, RFIDIndoor
 
+# New CSI datasets
+from .csi_fingerprint import CSIFingerprintDataset, CSIFingerprint
+from .hwild import HWILDDataset, HWILD
+from .csu_csi_rssi import CSUIndoorLocDataset, CSUIndoorLoc
+from .wild_v2 import WILDv2Dataset, WILDv2
+from .opencsi import OpenCSIDataset, OpenCSI
+from .haloc import HALOCDataset, HALOC
+from .csi_bench import CSIBenchDataset, CSIBench
+from .mamimo_csi import MaMIMOCSIDataset, MaMIMOCSI
+from .dichasus import DICHASUSDataset, DICHASUS
+from .espargos import ESPARGOSDataset, ESPARGOS
+from .csi2pos import CSI2PosDataset, CSI2Pos
+from .csi2taoa import CSI2TAoADataset, CSI2TAoA
+from .deepmimo import DeepMIMODataset, DeepMIMO
+from .mamimo_uav import MaMIMOUAVDataset, MaMIMOUAV
+from .wifi_csi_d2d import WiFiCSID2DDataset, WiFiCSID2D
+
 __all__ = [
     'BaseDataset',
     'WiFiDataset',
@@ -82,4 +99,35 @@ __all__ = [
     'CSIIndoor',
     'RFIDIndoorDataset',
     'RFIDIndoor',
+    # New CSI datasets
+    'CSIFingerprintDataset',
+    'CSIFingerprint',
+    'HWILDDataset',
+    'HWILD',
+    'CSUIndoorLocDataset',
+    'CSUIndoorLoc',
+    'WILDv2Dataset',
+    'WILDv2',
+    'OpenCSIDataset',
+    'OpenCSI',
+    'HALOCDataset',
+    'HALOC',
+    'CSIBenchDataset',
+    'CSIBench',
+    'MaMIMOCSIDataset',
+    'MaMIMOCSI',
+    'DICHASUSDataset',
+    'DICHASUS',
+    'ESPARGOSDataset',
+    'ESPARGOS',
+    'CSI2PosDataset',
+    'CSI2Pos',
+    'CSI2TAoADataset',
+    'CSI2TAoA',
+    'DeepMIMODataset',
+    'DeepMIMO',
+    'MaMIMOUAVDataset',
+    'MaMIMOUAV',
+    'WiFiCSID2DDataset',
+    'WiFiCSID2D',
 ]
