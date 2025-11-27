@@ -22,20 +22,44 @@
 
 ## Introduction
 
-IndoorLoc is a unified framework for indoor localization, inspired by [MMPretrain](https://github.com/open-mmlab/mmpretrain). It provides a **one-stop solution** from datasets to algorithms, enabling **automatic adaptation** across different localization methods.
+**One line of code** to load any indoor localization dataset. **One line of code** to train and evaluate.
 
-### Who is this for?
+```python
+train, test = iloc.UJIndoorLoc(download=True)  # That's it. Auto-download, auto-parse, ready to use.
+```
 
-- **Beginners**: Get started with indoor localization quickly without worrying about implementation details
-- **Researchers**: Reproduce and compare state-of-the-art algorithms with consistent interfaces
-- **Developers**: Build and deploy indoor positioning systems with production-ready code
+IndoorLoc eliminates the painful data preprocessing that every indoor localization researcher faces. No more parsing CSVs, handling missing values, or writing data loaders from scratch.
 
-### Why IndoorLoc?
+### For Beginners
 
-- **Zero Boilerplate**: Load datasets, train models, and evaluate results in just a few lines of code
-- **Fair Comparison**: All algorithms use the same data pipeline and evaluation metrics
-- **Easy Reproduction**: Built-in configs for reproducing published results
-- **Rapid Prototyping**: Focus on your novel ideas, not engineering details
+**One line = One dataset.** Focus on learning algorithms, not fighting with data formats.
+
+```python
+# Load 36+ datasets with identical API
+train, test = iloc.UJIndoorLoc(download=True)    # WiFi RSSI
+train, test = iloc.CSIIndoor(download=True)       # WiFi CSI
+train, test = iloc.UWBIndoor(download=True)       # UWB ranging
+```
+
+### For Experts
+
+**Full control when you need it.** Flexible data pipeline, customizable preprocessing, plug-in your own algorithms.
+
+```python
+# Custom preprocessing pipeline
+dataset = iloc.UJIndoorLoc(
+    download=True,
+    transform=iloc.Compose([
+        iloc.RSSINormalize(method='minmax'),
+        iloc.APFilter(threshold=-90),
+    ])
+)
+
+# Register your own algorithm
+@LOCALIZERS.register_module()
+class MyNovelLocalizer(BaseLocalizer):
+    ...
+```
 
 ## Features
 

@@ -22,20 +22,44 @@
 
 ## 简介
 
-IndoorLoc 是一个室内定位统一框架，灵感来源于 [MMPretrain](https://github.com/open-mmlab/mmpretrain)。它提供了**从数据集到算法的一站式解决方案**，实现不同定位方法之间的**自动适配**。
+**一行代码**加载任意室内定位数据集。**一行代码**完成训练和评估。
 
-### 适用人群
+```python
+train, test = iloc.UJIndoorLoc(download=True)  # 就这么简单。自动下载、自动解析、开箱即用。
+```
 
-- **初学者**：快速上手室内定位，无需关心底层实现细节
-- **科研人员**：使用统一接口复现和对比各类算法，专注于创新研究
-- **开发者**：基于生产级代码构建和部署室内定位系统
+IndoorLoc 解决了每个室内定位研究者都头疼的数据预处理问题。不用再手动解析 CSV、处理缺失值、从头写数据加载器。
 
-### 为什么选择 IndoorLoc？
+### 给初学者
 
-- **零样板代码**：几行代码即可完成数据加载、模型训练和结果评估
-- **公平对比**：所有算法使用相同的数据流水线和评估指标
-- **轻松复现**：内置配置文件，一键复现论文结果
-- **快速原型**：专注于你的创新想法，而非工程细节
+**一行代码 = 一个数据集。** 专注于学习算法，而不是和数据格式较劲。
+
+```python
+# 36+ 数据集，统一 API
+train, test = iloc.UJIndoorLoc(download=True)    # WiFi RSSI
+train, test = iloc.CSIIndoor(download=True)       # WiFi CSI
+train, test = iloc.UWBIndoor(download=True)       # UWB 测距
+```
+
+### 给专家
+
+**需要时完全可控。** 灵活的数据流水线、可定制的预处理、插件化的算法扩展。
+
+```python
+# 自定义预处理流水线
+dataset = iloc.UJIndoorLoc(
+    download=True,
+    transform=iloc.Compose([
+        iloc.RSSINormalize(method='minmax'),
+        iloc.APFilter(threshold=-90),
+    ])
+)
+
+# 注册你自己的算法
+@LOCALIZERS.register_module()
+class MyNovelLocalizer(BaseLocalizer):
+    ...
+```
 
 ## 特性
 
