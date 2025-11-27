@@ -218,7 +218,7 @@ indoorloc/
 
 ## Supported Datasets
 
-**36 datasets** across multiple signal modalities with **auto-download** support. [📊 Interactive Browser](https://qdtiger.github.io/indoorloc/datasets.html)
+**36 datasets** across multiple signal modalities with **auto-download** support. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
 
 <table>
 <thead>
