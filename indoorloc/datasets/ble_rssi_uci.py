@@ -201,5 +201,68 @@ class BLERSSIUCIDataset(BLEDataset):
         print(f"Loaded {len(self._signals)} samples from BLE RSSI UCI dataset ({self.split} split)")
 
 
-# Alias for convenience
-BLERSSIU_UCI = BLERSSIUCIDataset
+
+def BLERSSIU_UCI(data_root=None, split=None, download=False, **kwargs):
+    """
+    Convenience function for loading BLERSSIU_UCI dataset.
+
+    Args:
+        data_root: Root directory for dataset storage
+        split: Dataset split ('train', 'test', 'all', or None for tuple)
+        download: Whether to download if not found
+        **kwargs: Additional arguments passed to BLERSSIUCIDataset
+
+    Returns:
+        - If split is 'train' or 'test': Returns single dataset
+        - If split is 'all': Returns merged train+test dataset
+        - If split is None: Returns tuple (train_dataset, test_dataset)
+
+    Examples:
+        >>> # Load train and test separately (tuple unpacking)
+        >>> train, test = BLERSSIU_UCI(download=True)
+
+        >>> # Load entire dataset (train + test merged)
+        >>> dataset = BLERSSIU_UCI(split='all', download=True)
+
+        >>> # Load only training set
+        >>> train = BLERSSIU_UCI(split='train', download=True)
+    """
+    if split is None:
+        # Return both train and test as tuple
+        train_dataset = BLERSSIUCIDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = BLERSSIUCIDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return train_dataset, test_dataset
+    elif split == 'all':
+        # Return merged train + test dataset
+        from torch.utils.data import ConcatDataset
+        train_dataset = BLERSSIUCIDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = BLERSSIUCIDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return ConcatDataset([train_dataset, test_dataset])
+    else:
+        # Return single split
+        return BLERSSIUCIDataset(
+            data_root=data_root,
+            split=split,
+            download=download,
+            **kwargs
+        )

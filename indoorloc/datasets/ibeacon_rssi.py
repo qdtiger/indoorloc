@@ -214,5 +214,69 @@ class iBeaconRSSIDataset(BLEDataset):
         print(f"Total unique beacons: {self._num_beacons}")
 
 
-# Alias for convenience
-iBeaconRSSI = iBeaconRSSIDataset
+
+def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
+    """
+    Convenience function for loading iBeaconRSSI dataset.
+
+    Args:
+        data_root: Root directory for dataset storage
+        split: Dataset split ('train', 'test', 'all', or None for tuple)
+        download: Whether to download if not found
+        **kwargs: Additional arguments passed to iBeaconRSSIDataset
+
+    Returns:
+        - If split is 'train' or 'test': Returns single dataset
+        - If split is 'all': Returns merged train+test dataset  
+        - If split is None: Returns tuple (train_dataset, test_dataset)
+
+    Examples:
+        >>> # Load train and test separately (tuple unpacking)
+        >>> train, test = iBeaconRSSI(download=True)
+
+        >>> # Load entire dataset (train + test merged)
+        >>> dataset = iBeaconRSSI(split='all', download=True)
+
+        >>> # Load only training set
+        >>> train = iBeaconRSSI(split='train', download=True)
+    """
+    if split is None:
+        # Return both train and test as tuple
+        train_dataset = iBeaconRSSIDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = iBeaconRSSIDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return train_dataset, test_dataset
+    elif split == 'all':
+        # Return merged train + test dataset
+        from torch.utils.data import ConcatDataset
+        train_dataset = iBeaconRSSIDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = iBeaconRSSIDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return ConcatDataset([train_dataset, test_dataset])
+    else:
+        # Return single split
+        return iBeaconRSSIDataset(
+            data_root=data_root,
+            split=split,
+            download=download,
+            **kwargs
+        )
+
