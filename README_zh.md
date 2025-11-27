@@ -196,7 +196,7 @@ indoorloc/
 
 ## 支持的数据集
 
-**36 个数据集**，支持多种信号模态，并提供**自动下载**功能。[📊 交互式浏览器](https://qdtiger.github.io/indoorloc/datasets.html)
+**36 个数据集**，支持多种信号模态，并提供**自动下载**功能。[📊 交互式浏览器](https://qdtiger.github.io/indoorloc/datasets_zh.html)
 
 <table>
 <thead>
