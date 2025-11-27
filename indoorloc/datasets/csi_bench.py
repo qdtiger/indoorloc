@@ -84,6 +84,10 @@ class CSIBenchDataset(WiFiDataset):
     def dataset_name(self) -> str:
         return 'CSIBench'
 
+    @property
+    def num_aps(self) -> int:
+        return self.NUM_FEATURES
+
     def _check_exists(self) -> bool:
         return (self.data_root / 'data.csv').exists() or \
                (self.data_root / 'localization').exists()

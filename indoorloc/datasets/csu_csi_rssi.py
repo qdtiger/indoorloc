@@ -82,6 +82,10 @@ class CSUIndoorLocDataset(WiFiDataset):
     def dataset_name(self) -> str:
         return 'CSUIndoorLoc'
 
+    @property
+    def num_aps(self) -> int:
+        return self.NUM_FEATURES
+
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
         return (self.data_root / 'data.csv').exists() or \

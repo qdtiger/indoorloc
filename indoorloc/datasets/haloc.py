@@ -81,6 +81,10 @@ class HALOCDataset(WiFiDataset):
     def dataset_name(self) -> str:
         return 'HALOC'
 
+    @property
+    def num_aps(self) -> int:
+        return self.NUM_FEATURES
+
     def _check_exists(self) -> bool:
         return (self.data_root / 'data.csv').exists() or \
                any((self.data_root / f'trajectory_{i}.csv').exists() for i in range(1, 7))

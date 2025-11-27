@@ -80,6 +80,10 @@ class WILDv2Dataset(WiFiDataset):
     def dataset_name(self) -> str:
         return 'WILDv2'
 
+    @property
+    def num_aps(self) -> int:
+        return self.NUM_FEATURES
+
     def _check_exists(self) -> bool:
         return (self.data_root / 'train.csv').exists()
 
