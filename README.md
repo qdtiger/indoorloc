@@ -194,118 +194,94 @@ indoorloc/
 
 ## Supported Datasets
 
-**36 datasets** across multiple signal modalities with **auto-download** support.
+**36 datasets** across multiple signal modalities with **auto-download** support. [📊 Interactive Browser](docs/datasets.html)
 
-<!-- Quick Stats -->
 <table>
+<thead>
 <tr>
-<td align="center"><b>RSSI</b><br/>10</td>
-<td align="center"><b>CSI</b><br/>16</td>
-<td align="center"><b>ToF</b><br/>2</td>
-<td align="center"><b>Magnetic</b><br/>1</td>
-<td align="center"><b>Hybrid</b><br/>4</td>
-<td align="center"><b>Other</b><br/>3</td>
+<th>RSSI</th>
+<th>CSI</th>
+<th>ToF/TWR</th>
+<th>Magnetic</th>
+<th>Multi-modal</th>
+<th>Other</th>
 </tr>
+</thead>
+<tbody>
+<tr>
+<td valign="top">
+
+**WiFi RSSI**
+- [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py)
+- [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py)
+- [LongTermWiFi](indoorloc/datasets/longtermwifi.py)
+- [Tampere](indoorloc/datasets/tampere.py)
+- [WLANRSSI](indoorloc/datasets/wlanrssi.py)
+- [TUJI1](indoorloc/datasets/tuji1.py)
+- [RSSBased](indoorloc/datasets/rss_based.py)
+
+**BLE RSSI**
+- [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py)
+- [BLEIndoor](indoorloc/datasets/ble_indoor.py)
+- [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py)
+
+</td>
+<td valign="top">
+
+**WiFi CSI**
+- [CSIIndoor](indoorloc/datasets/csi_indoor.py)
+- [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py)
+- [HWILD](indoorloc/datasets/hwild.py)
+- [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py)
+- [WILDv2](indoorloc/datasets/wild_v2.py)
+- [HALOC](indoorloc/datasets/haloc.py)
+- [CSIBench](indoorloc/datasets/csi_bench.py)
+- [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py)
+
+**LTE CSI**
+- [OpenCSI](indoorloc/datasets/opencsi.py)
+
+**Massive MIMO CSI**
+- [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py)
+- [DICHASUS](indoorloc/datasets/dichasus.py)
+- [ESPARGOS](indoorloc/datasets/espargos.py)
+- [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py)
+- [DeepMIMO](indoorloc/datasets/deepmimo.py)
+
+**RF CSI**
+- [CSI2Pos](indoorloc/datasets/csi2pos.py)
+- [CSI2TAoA](indoorloc/datasets/csi2taoa.py)
+
+</td>
+<td valign="top">
+
+- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
+- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
+
+</td>
+<td valign="top">
+
+- [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py)
+
+</td>
+<td valign="top">
+
+- [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py)
+- [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py)
+- [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py)
+- [SensorFusion](indoorloc/datasets/sensor_fusion.py)
+
+</td>
+<td valign="top">
+
+- [VLCIndoor](indoorloc/datasets/vlc_indoor.py)
+- [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py)
+- [RFIDIndoor](indoorloc/datasets/rfid_indoor.py)
+
+</td>
+</tr>
+</tbody>
 </table>
-
-<details open>
-<summary><b>View by Signal Type</b></summary>
-
-| RSSI (10) | CSI (16) | ToF/TWR (2) | Magnetic (1) | Multi-modal (4) | Other (3) |
-|-----------|----------|-------------|--------------|-----------------|-----------|
-| **WiFi RSSI** | **WiFi CSI** | [UWBIndoor](indoorloc/datasets/uwb_indoor.py) | [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py) | [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py) | [VLCIndoor](indoorloc/datasets/vlc_indoor.py) |
-| [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py) | [CSIIndoor](indoorloc/datasets/csi_indoor.py) | [UWBRanging](indoorloc/datasets/uwb_ranging.py) | | [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py) | [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py) |
-| [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py) | [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py) | | | [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py) | [RFIDIndoor](indoorloc/datasets/rfid_indoor.py) |
-| [LongTermWiFi](indoorloc/datasets/longtermwifi.py) | [HWILD](indoorloc/datasets/hwild.py) | | | [SensorFusion](indoorloc/datasets/sensor_fusion.py) | |
-| [Tampere](indoorloc/datasets/tampere.py) | [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py) | | | | |
-| [WLANRSSI](indoorloc/datasets/wlanrssi.py) | [WILDv2](indoorloc/datasets/wild_v2.py) | | | | |
-| [TUJI1](indoorloc/datasets/tuji1.py) | [HALOC](indoorloc/datasets/haloc.py) | | | | |
-| [RSSBased](indoorloc/datasets/rss_based.py) | [CSIBench](indoorloc/datasets/csi_bench.py) | | | | |
-| **BLE RSSI** | [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py) | | | | |
-| [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py) | **LTE CSI** | | | | |
-| [BLEIndoor](indoorloc/datasets/ble_indoor.py) | [OpenCSI](indoorloc/datasets/opencsi.py) | | | | |
-| [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py) | **Massive MIMO** | | | | |
-| | [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py) | | | | |
-| | [DICHASUS](indoorloc/datasets/dichasus.py) | | | | |
-| | [ESPARGOS](indoorloc/datasets/espargos.py) | | | | |
-| | [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py) | | | | |
-| | [DeepMIMO](indoorloc/datasets/deepmimo.py) | | | | |
-| | **RF CSI** | | | | |
-| | [CSI2Pos](indoorloc/datasets/csi2pos.py) | | | | |
-| | [CSI2TAoA](indoorloc/datasets/csi2taoa.py) | | | | |
-
-</details>
-
-<details>
-<summary><b>View by Signal Source</b></summary>
-
-| WiFi (15) | BLE (3) | UWB (2) | Massive MIMO (5) | LTE (1) | Other (10) |
-|-----------|---------|---------|------------------|---------|------------|
-| [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py) | [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py) | [UWBIndoor](indoorloc/datasets/uwb_indoor.py) | [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py) | [OpenCSI](indoorloc/datasets/opencsi.py) | [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py) |
-| [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py) | [BLEIndoor](indoorloc/datasets/ble_indoor.py) | [UWBRanging](indoorloc/datasets/uwb_ranging.py) | [DICHASUS](indoorloc/datasets/dichasus.py) | | [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py) |
-| [LongTermWiFi](indoorloc/datasets/longtermwifi.py) | [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py) | | [ESPARGOS](indoorloc/datasets/espargos.py) | | [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py) |
-| [Tampere](indoorloc/datasets/tampere.py) | | | [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py) | | [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py) |
-| [WLANRSSI](indoorloc/datasets/wlanrssi.py) | | | [DeepMIMO](indoorloc/datasets/deepmimo.py) | | [SensorFusion](indoorloc/datasets/sensor_fusion.py) |
-| [TUJI1](indoorloc/datasets/tuji1.py) | | | | | [CSI2Pos](indoorloc/datasets/csi2pos.py) |
-| [RSSBased](indoorloc/datasets/rss_based.py) | | | | | [CSI2TAoA](indoorloc/datasets/csi2taoa.py) |
-| [CSIIndoor](indoorloc/datasets/csi_indoor.py) | | | | | [VLCIndoor](indoorloc/datasets/vlc_indoor.py) |
-| [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py) | | | | | [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py) |
-| [HWILD](indoorloc/datasets/hwild.py) | | | | | [RFIDIndoor](indoorloc/datasets/rfid_indoor.py) |
-| [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py) | | | | | |
-| [WILDv2](indoorloc/datasets/wild_v2.py) | | | | | |
-| [HALOC](indoorloc/datasets/haloc.py) | | | | | |
-| [CSIBench](indoorloc/datasets/csi_bench.py) | | | | | |
-| [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py) | | | | | |
-
-</details>
-
-<details>
-<summary><b>View by Data Source</b></summary>
-
-| UCI (5) | Zenodo (10) | GitHub (8) | Figshare (2) | Other (11) |
-|---------|-------------|------------|--------------|------------|
-| [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py) | [LongTermWiFi](indoorloc/datasets/longtermwifi.py) | [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py) | [OpenCSI](indoorloc/datasets/opencsi.py) | [WILDv2](indoorloc/datasets/wild_v2.py) *(Kaggle)* |
-| [WLANRSSI](indoorloc/datasets/wlanrssi.py) | [Tampere](indoorloc/datasets/tampere.py) | [TUJI1](indoorloc/datasets/tuji1.py) | [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py) | [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py) *(IEEE)* |
-| [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py) | [RSSBased](indoorloc/datasets/rss_based.py) | [CSIIndoor](indoorloc/datasets/csi_indoor.py) | | [DICHASUS](indoorloc/datasets/dichasus.py) *(DaRUS)* |
-| [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py) | [UWBIndoor](indoorloc/datasets/uwb_indoor.py) | [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py) | | [ESPARGOS](indoorloc/datasets/espargos.py) *(Web)* |
-| [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py) | [UWBRanging](indoorloc/datasets/uwb_ranging.py) | [HWILD](indoorloc/datasets/hwild.py) | | [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py) *(DOI)* |
-| | [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py) | [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py) | | [DeepMIMO](indoorloc/datasets/deepmimo.py) *(Web)* |
-| | [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py) | [BLEIndoor](indoorloc/datasets/ble_indoor.py) | | [CSI2Pos](indoorloc/datasets/csi2pos.py) *(TIB)* |
-| | [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py) | [HALOC](indoorloc/datasets/haloc.py) | | [CSI2TAoA](indoorloc/datasets/csi2taoa.py) *(TIB)* |
-| | [SensorFusion](indoorloc/datasets/sensor_fusion.py) | | | [CSIBench](indoorloc/datasets/csi_bench.py) *(Web)* |
-| | [VLCIndoor](indoorloc/datasets/vlc_indoor.py) | | | [RFIDIndoor](indoorloc/datasets/rfid_indoor.py) *(Web)* |
-| | [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py) | | | |
-
-</details>
-
-<details>
-<summary><b>View by Position Type</b></summary>
-
-| 2D (11) | 2D + Floor (21) | 3D (4) |
-|---------|-----------------|--------|
-| [WLANRSSI](indoorloc/datasets/wlanrssi.py) | [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py) | [UWBIndoor](indoorloc/datasets/uwb_indoor.py) |
-| [RSSBased](indoorloc/datasets/rss_based.py) | [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py) | [DICHASUS](indoorloc/datasets/dichasus.py) |
-| [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py) | [LongTermWiFi](indoorloc/datasets/longtermwifi.py) | [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py) |
-| [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py) | [Tampere](indoorloc/datasets/tampere.py) | [DeepMIMO](indoorloc/datasets/deepmimo.py) |
-| [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py) | [TUJI1](indoorloc/datasets/tuji1.py) | |
-| [CSIBench](indoorloc/datasets/csi_bench.py) | [BLEIndoor](indoorloc/datasets/ble_indoor.py) | |
-| [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py) | [CSIIndoor](indoorloc/datasets/csi_indoor.py) | |
-| [OpenCSI](indoorloc/datasets/opencsi.py) | [HWILD](indoorloc/datasets/hwild.py) | |
-| [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py) | [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py) | |
-| [ESPARGOS](indoorloc/datasets/espargos.py) | [WILDv2](indoorloc/datasets/wild_v2.py) | |
-| [UWBRanging](indoorloc/datasets/uwb_ranging.py) | [HALOC](indoorloc/datasets/haloc.py) | |
-| | [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py) | |
-| | [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py) | |
-| | [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py) | |
-| | [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py) | |
-| | [SensorFusion](indoorloc/datasets/sensor_fusion.py) | |
-| | [VLCIndoor](indoorloc/datasets/vlc_indoor.py) | |
-| | [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py) | |
-| | [RFIDIndoor](indoorloc/datasets/rfid_indoor.py) | |
-| | [CSI2Pos](indoorloc/datasets/csi2pos.py) | |
-| | [CSI2TAoA](indoorloc/datasets/csi2taoa.py) | |
-
-</details>
 
 ### Auto-Download Usage
 
