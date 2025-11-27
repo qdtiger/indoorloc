@@ -201,12 +201,12 @@ indoorloc/
 <table>
 <thead>
 <tr>
-<th>RSSI 指纹定位</th>
-<th>CSI 定位</th>
-<th>UWB 测距</th>
-<th>地磁定位</th>
-<th>多模态融合</th>
-<th>其他</th>
+<th>RSSI</th>
+<th>CSI</th>
+<th>ToF/TWR</th>
+<th>Magnetic</th>
+<th>Multi-modal</th>
+<th>Other</th>
 </tr>
 </thead>
 <tbody>
@@ -235,8 +235,8 @@ indoorloc/
 </td>
 <td valign="top">
 
-- [UWBIndoor](indoorloc/datasets/uwb_indoor.py) (ToF)
-- [UWBRanging](indoorloc/datasets/uwb_ranging.py) (TWR)
+- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
+- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
 
 </td>
 <td valign="top">
