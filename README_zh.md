@@ -223,17 +223,14 @@ indoorloc/
 **36 个数据集**，支持多种信号模态，并提供**自动下载**功能。[查看详情 →](https://qdtiger.github.io/indoorloc/datasets_zh.html)
 
 <table>
-<thead>
 <tr>
-<th>RSSI</th>
-<th>CSI</th>
-<th>ToF/TWR</th>
-<th>磁场</th>
-<th>多模态</th>
-<th>其他</th>
+<th bgcolor="#f6f8fa">RSSI</th>
+<th bgcolor="#f6f8fa">CSI</th>
+<th bgcolor="#f6f8fa">ToF/TWR</th>
+<th bgcolor="#f6f8fa">磁场</th>
+<th bgcolor="#f6f8fa">多模态</th>
+<th bgcolor="#f6f8fa">其他</th>
 </tr>
-</thead>
-<tbody>
 <tr>
 <td valign="top">
 
@@ -306,7 +303,6 @@ indoorloc/
 
 </td>
 </tr>
-</tbody>
 </table>
 
 ### 自动下载用法
