@@ -196,48 +196,64 @@ indoorloc/
 
 ## 支持的数据集
 
-**21 个数据集**，支持多种信号模态，并提供**自动下载**功能：
+**21 个数据集**，支持多种信号模态，并提供**自动下载**功能。
 
-### WiFi数据集 (7个)
-| 数据集 | 信号类型 | 来源 | 下载 |
-|---------|-------------|--------|----------|
-| **UJIndoorLoc** | WiFi (520 APs) | UCI | ✅ 自动 |
-| **SODIndoorLoc** | WiFi (52-347 APs) | GitHub | ✅ 自动 |
-| **LongTermWiFi** | WiFi (多建筑) | Zenodo | ✅ 自动 |
-| **Tampere** | WiFi (众包) | Zenodo | ✅ 自动 |
-| **WLANRSSI** | WiFi (7 APs) | UCI | ✅ 自动 |
-| **TUJI1** | WiFi (IPIN 2021) | GitHub | ✅ 自动 |
-| **RSSBased** | WiFi (RSS) | Zenodo | ✅ 自动 |
+<table>
+<thead>
+<tr>
+<th>WiFi 数据集</th>
+<th>BLE 数据集</th>
+<th>混合多模态</th>
+<th>UWB 数据集</th>
+<th>其他信号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
 
-### BLE数据集 (3个)
-| 数据集 | 信号类型 | 来源 | 下载 |
-|---------|-------------|--------|----------|
-| **iBeaconRSSI** | BLE (iBeacon) | Zenodo | ✅ 自动 |
-| **BLEIndoor** | BLE (多楼层) | GitHub | ✅ 自动 |
-| **BLERSSIU_UCI** | BLE (13信标) | UCI | ✅ 自动 |
+• UJIndoorLoc
+• SODIndoorLoc
+• LongTermWiFi
+• Tampere
+• WLANRSSI
+• TUJI1
+• RSSBased
 
-### 混合多模态 (4个)
-| 数据集 | 信号类型 | 来源 | 下载 |
-|---------|-------------|--------|----------|
-| **WiFiIMUHybrid** | WiFi + IMU | Zenodo | ✅ 自动 |
-| **WiFiMagneticHybrid** | WiFi + 磁场 | UCI | ✅ 自动 |
-| **MultiModalIndoor** | WiFi + BLE + IMU | GitHub | ✅ 自动 |
-| **SensorFusion** | WiFi + BLE + 磁场 | Zenodo | ✅ 自动 |
+</td>
+<td>
 
-### UWB数据集 (2个)
-| 数据集 | 信号类型 | 来源 | 下载 |
-|---------|-------------|--------|----------|
-| **UWBIndoor** | UWB (ToF) | Zenodo | ✅ 自动 |
-| **UWBRanging** | UWB (TWR) | GitHub | ✅ 自动 |
+• iBeaconRSSI
+• BLEIndoor
+• BLERSSIU_UCI
 
-### 其他信号 (5个)
-| 数据集 | 信号类型 | 来源 | 下载 |
-|---------|-------------|--------|----------|
-| **MagneticIndoor** | 地磁 | Zenodo | ✅ 自动 |
-| **VLCIndoor** | 可见光 | GitHub | ✅ 自动 |
-| **UltrasoundIndoor** | 超声波 | UCI | ✅ 自动 |
-| **CSIIndoor** | WiFi CSI | GitHub | ✅ 自动 |
-| **RFIDIndoor** | RFID | UCI | ✅ 自动 |
+</td>
+<td>
+
+• WiFiIMUHybrid
+• WiFiMagneticHybrid
+• MultiModalIndoor
+• SensorFusion
+
+</td>
+<td>
+
+• UWBIndoor
+• UWBRanging
+
+</td>
+<td>
+
+• MagneticIndoor
+• VLCIndoor
+• UltrasoundIndoor
+• CSIIndoor
+• RFIDIndoor
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ### 自动下载用法
 
