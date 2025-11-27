@@ -208,45 +208,45 @@ indoorloc/
 </thead>
 <tbody>
 <tr>
-<td>
+<td valign="top">
 
-• UJIndoorLoc
-• SODIndoorLoc
-• LongTermWiFi
-• Tampere
-• WLANRSSI
-• TUJI1
-• RSSBased
-
-</td>
-<td>
-
-• iBeaconRSSI
-• BLEIndoor
-• BLERSSIU_UCI
+- [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py)
+- [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py)
+- [LongTermWiFi](indoorloc/datasets/longtermwifi.py)
+- [Tampere](indoorloc/datasets/tampere.py)
+- [WLANRSSI](indoorloc/datasets/wlanrssi.py)
+- [TUJI1](indoorloc/datasets/tuji1.py)
+- [RSSBased](indoorloc/datasets/rss_based.py)
 
 </td>
-<td>
+<td valign="top">
 
-• WiFiIMUHybrid
-• WiFiMagneticHybrid
-• MultiModalIndoor
-• SensorFusion
-
-</td>
-<td>
-
-• UWBIndoor
-• UWBRanging
+- [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py)
+- [BLEIndoor](indoorloc/datasets/ble_indoor.py)
+- [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py)
 
 </td>
-<td>
+<td valign="top">
 
-• MagneticIndoor
-• VLCIndoor
-• UltrasoundIndoor
-• CSIIndoor
-• RFIDIndoor
+- [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py)
+- [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py)
+- [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py)
+- [SensorFusion](indoorloc/datasets/sensor_fusion.py)
+
+</td>
+<td valign="top">
+
+- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
+- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
+
+</td>
+<td valign="top">
+
+- [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py)
+- [VLCIndoor](indoorloc/datasets/vlc_indoor.py)
+- [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py)
+- [CSIIndoor](indoorloc/datasets/csi_indoor.py)
+- [RFIDIndoor](indoorloc/datasets/rfid_indoor.py)
 
 </td>
 </tr>
