@@ -246,17 +246,21 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
 
     Args:
         data_root: Root directory for dataset storage
-        split: Dataset split ('train', 'test', or None for both)
+        split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
         **kwargs: Additional arguments passed to UJIndoorLocDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load both train and test splits
+        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = UJIndoorLoc(download=True)
+
+        >>> # Load entire dataset (train + test merged)
+        >>> dataset = UJIndoorLoc(split='all', download=True)
 
         >>> # Load only training set
         >>> train = UJIndoorLoc(split='train', download=True)
@@ -265,7 +269,7 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
         >>> test = UJIndoorLoc(split='test', download=True)
     """
     if split is None:
-        # Return both train and test
+        # Return both train and test as tuple
         train_dataset = UJIndoorLocDataset(
             data_root=data_root,
             split='train',
@@ -279,6 +283,22 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
             **kwargs
         )
         return train_dataset, test_dataset
+    elif split == 'all':
+        # Return merged train + test dataset
+        from torch.utils.data import ConcatDataset
+        train_dataset = UJIndoorLocDataset(
+            data_root=data_root,
+            split='train',
+            download=download,
+            **kwargs
+        )
+        test_dataset = UJIndoorLocDataset(
+            data_root=data_root,
+            split='test',
+            download=download,
+            **kwargs
+        )
+        return ConcatDataset([train_dataset, test_dataset])
     else:
         # Return single split
         return UJIndoorLocDataset(
