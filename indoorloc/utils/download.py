@@ -399,6 +399,177 @@ def download_from_uci(
     return downloaded_paths
 
 
+def download_from_figshare(
+    article_id: str,
+    root: Path,
+    filenames: Optional[List[str]] = None,
+) -> List[Path]:
+    """Download files from a Figshare article.
+
+    Args:
+        article_id: Figshare article ID (e.g., '19596379').
+        root: Directory to save files.
+        filenames: List of specific filenames to download (None for all).
+
+    Returns:
+        List of paths to downloaded files.
+    """
+    if not HAS_REQUESTS:
+        raise ImportError(
+            "requests is required for downloading from Figshare.\n"
+            "Install with: pip install requests"
+        )
+
+    root = Path(root)
+    root.mkdir(parents=True, exist_ok=True)
+
+    # Query Figshare API for article metadata
+    api_url = f"https://api.figshare.com/v2/articles/{article_id}"
+    print(f"Fetching Figshare article {article_id}...")
+
+    response = requests.get(api_url)
+    response.raise_for_status()
+
+    article_data = response.json()
+
+    # Get file list from article
+    files = article_data.get('files', [])
+    if not files:
+        raise RuntimeError(f"No files found in Figshare article {article_id}")
+
+    # Filter files if specific filenames requested
+    if filenames is not None:
+        files = [f for f in files if f['name'] in filenames]
+
+    downloaded_paths = []
+
+    # Download each file
+    for file_info in files:
+        filename = file_info['name']
+        file_url = file_info['download_url']
+        file_size = file_info.get('size', 0)
+
+        filepath = root / filename
+
+        # Check if already downloaded
+        if filepath.exists():
+            print(f"File {filename} already exists, skipping...")
+            downloaded_paths.append(filepath)
+            continue
+
+        size_mb = file_size / 1024 / 1024 if file_size else 0
+        print(f"Downloading {filename} ({size_mb:.1f} MB)...")
+
+        response = requests.get(file_url, stream=True)
+        response.raise_for_status()
+
+        downloaded = 0
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if file_size > 0:
+                        percent = (downloaded / file_size) * 100
+                        print(f"\r  Progress: {percent:.1f}%", end='', flush=True)
+
+        print()
+        downloaded_paths.append(filepath)
+
+    print(f"Done! Downloaded {len(downloaded_paths)} file(s) to {root}")
+    return downloaded_paths
+
+
+def download_from_github(
+    repo: str,
+    root: Path,
+    files: Optional[List[str]] = None,
+    branch: str = 'main',
+    release_tag: Optional[str] = None,
+) -> List[Path]:
+    """Download files from a GitHub repository.
+
+    Args:
+        repo: Repository in format 'owner/repo'.
+        root: Directory to save files.
+        files: List of file paths to download (relative to repo root).
+        branch: Branch name (default 'main').
+        release_tag: If specified, download release assets instead.
+
+    Returns:
+        List of paths to downloaded files.
+    """
+    if not HAS_REQUESTS:
+        raise ImportError(
+            "requests is required for downloading from GitHub.\n"
+            "Install with: pip install requests"
+        )
+
+    root = Path(root)
+    root.mkdir(parents=True, exist_ok=True)
+
+    downloaded_paths = []
+
+    if release_tag:
+        # Download release assets
+        api_url = f"https://api.github.com/repos/{repo}/releases/tags/{release_tag}"
+        response = requests.get(api_url)
+        response.raise_for_status()
+        release_data = response.json()
+
+        assets = release_data.get('assets', [])
+        for asset in assets:
+            if files and asset['name'] not in files:
+                continue
+
+            filepath = root / asset['name']
+            if filepath.exists():
+                print(f"File {asset['name']} already exists, skipping...")
+                downloaded_paths.append(filepath)
+                continue
+
+            print(f"Downloading {asset['name']}...")
+            download_url_path = asset['browser_download_url']
+            response = requests.get(download_url_path, stream=True)
+            response.raise_for_status()
+
+            with open(filepath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+            downloaded_paths.append(filepath)
+    else:
+        # Download raw files from branch
+        if not files:
+            raise ValueError("Must specify files to download from branch")
+
+        for file_path in files:
+            raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{file_path}"
+            filename = Path(file_path).name
+            filepath = root / filename
+
+            if filepath.exists():
+                print(f"File {filename} already exists, skipping...")
+                downloaded_paths.append(filepath)
+                continue
+
+            print(f"Downloading {filename} from GitHub...")
+            try:
+                response = requests.get(raw_url, stream=True)
+                response.raise_for_status()
+
+                with open(filepath, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                downloaded_paths.append(filepath)
+            except requests.exceptions.RequestException as e:
+                print(f"Warning: Failed to download {filename}: {e}")
+
+    print(f"Done! Downloaded {len(downloaded_paths)} file(s) to {root}")
+    return downloaded_paths
+
+
 __all__ = [
     'get_data_home',
     'check_integrity',
@@ -406,4 +577,6 @@ __all__ = [
     'download_and_extract_zip',
     'download_from_zenodo',
     'download_from_uci',
+    'download_from_figshare',
+    'download_from_github',
 ]

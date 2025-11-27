@@ -94,12 +94,21 @@ class OpenCSIDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading OpenCSI dataset...")
-        print(f"Note: Please download from Figshare:")
-        print(f"  https://doi.org/10.6084/m9.figshare.19596379.v1")
-        print(f"Place data in: {self.data_root}")
+        print(f"Downloading OpenCSI dataset from Figshare...")
 
-        self.data_root.mkdir(parents=True, exist_ok=True)
+        from ..utils.download import download_from_figshare
+
+        try:
+            download_from_figshare(
+                article_id='19596379',
+                root=self.data_root,
+            )
+        except Exception as e:
+            print(f"Auto-download failed: {e}")
+            print(f"Please download manually from:")
+            print(f"  https://doi.org/10.6084/m9.figshare.19596379.v1")
+            print(f"Place data in: {self.data_root}")
+            self.data_root.mkdir(parents=True, exist_ok=True)
 
     def _load_data(self) -> None:
         mat_file = self.data_root / 'data.mat'

@@ -95,10 +95,20 @@ class HALOCDataset(WiFiDataset):
             return
 
         print(f"Downloading HALOC dataset from Zenodo...")
-        print(f"  https://zenodo.org/records/10715595")
-        print(f"Place data in: {self.data_root}")
 
-        self.data_root.mkdir(parents=True, exist_ok=True)
+        from ..utils.download import download_from_zenodo
+
+        try:
+            download_from_zenodo(
+                record_id='10715595',
+                root=self.data_root,
+            )
+        except Exception as e:
+            print(f"Auto-download failed: {e}")
+            print(f"Please download manually from:")
+            print(f"  https://zenodo.org/records/10715595")
+            print(f"Place data in: {self.data_root}")
+            self.data_root.mkdir(parents=True, exist_ok=True)
 
     def _load_data(self) -> None:
         data_file = self.data_root / 'data.csv'
