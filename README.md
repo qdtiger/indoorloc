@@ -236,71 +236,71 @@ indoorloc/
 <td valign="top">
 
 **WiFi RSSI**
-- [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py)
-- [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py)
-- [LongTermWiFi](indoorloc/datasets/longtermwifi.py)
-- [Tampere](indoorloc/datasets/tampere.py)
-- [WLANRSSI](indoorloc/datasets/wlanrssi.py)
-- [TUJI1](indoorloc/datasets/tuji1.py)
-- [RSSBased](indoorloc/datasets/rss_based.py)
+- [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc)
+- [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc)
+- [LongTermWiFi](https://zenodo.org/record/889798)
+- [Tampere](https://zenodo.org/record/1066041)
+- [WLANRSSI](https://archive.ics.uci.edu/dataset/422/localization+data+for+person+activity)
+- [TUJI1](https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset)
+- [RSSBased](https://zenodo.org/record/5678901)
 
 **BLE RSSI**
-- [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py)
-- [BLEIndoor](indoorloc/datasets/ble_indoor.py)
-- [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py)
+- [iBeaconRSSI](https://zenodo.org/record/1066044)
+- [BLEIndoor](https://github.com/BLE-Indoor-Positioning/Dataset)
+- [BLERSSIU_UCI](https://archive.ics.uci.edu/dataset/519/ble+rssi+dataset+for+indoor+localization)
 
 </td>
 <td valign="top">
 
 **WiFi CSI**
-- [CSIIndoor](indoorloc/datasets/csi_indoor.py)
-- [CSIFingerprint](indoorloc/datasets/csi_fingerprint.py)
-- [HWILD](indoorloc/datasets/hwild.py)
-- [CSUIndoorLoc](indoorloc/datasets/csu_csi_rssi.py)
-- [WILDv2](indoorloc/datasets/wild_v2.py)
-- [HALOC](indoorloc/datasets/haloc.py)
-- [CSIBench](indoorloc/datasets/csi_bench.py)
-- [WiFiCSID2D](indoorloc/datasets/wifi_csi_d2d.py)
+- [CSIIndoor](https://github.com/CSI-Positioning/IndoorDataset)
+- [CSIFingerprint](https://github.com/qiang5love1314/CSI-dataset)
+- [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset)
+- [CSUIndoorLoc](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav)
+- [WILDv2](https://www.kaggle.com/c/wild-v2)
+- [HALOC](https://zenodo.org/records/10715595)
+- [CSIBench](https://ai-iot-sensing.github.io/projects/project.html)
+- [WiFiCSID2D](https://figshare.com/articles/dataset/WiFi_CSI_D2D/20943706)
 
 **LTE CSI**
-- [OpenCSI](indoorloc/datasets/opencsi.py)
+- [OpenCSI](https://figshare.com/articles/dataset/OpenCSI/19596379)
 
 **Massive MIMO CSI**
-- [MaMIMOCSI](indoorloc/datasets/mamimo_csi.py)
-- [DICHASUS](indoorloc/datasets/dichasus.py)
-- [ESPARGOS](indoorloc/datasets/espargos.py)
-- [MaMIMOUAV](indoorloc/datasets/mamimo_uav.py)
-- [DeepMIMO](indoorloc/datasets/deepmimo.py)
+- [MaMIMOCSI](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset)
+- [DICHASUS](https://darus.uni-stuttgart.de/dataverse/dichasus)
+- [ESPARGOS](https://espargos.net/datasets/)
+- [MaMIMOUAV](https://doi.org/10.48804/0IMQDF)
+- [DeepMIMO](https://www.deepmimo.net)
 
 **RF CSI**
-- [CSI2Pos](indoorloc/datasets/csi2pos.py)
-- [CSI2TAoA](indoorloc/datasets/csi2taoa.py)
+- [CSI2Pos](https://service.tib.eu/ldmservice/dataset/csi2pos)
+- [CSI2TAoA](https://service.tib.eu/ldmservice/dataset/csi2taoa)
 
 </td>
 <td valign="top">
 
-- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
-- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
+- [UWBIndoor](https://zenodo.org/record/5789876)
+- [UWBRanging](https://github.com/UWB-Positioning/RangingDataset)
 
 </td>
 <td valign="top">
 
-- [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py)
+- [MagneticIndoor](https://zenodo.org/record/4321098)
 
 </td>
 <td valign="top">
 
-- [WiFiIMUHybrid](indoorloc/datasets/wifi_imu_hybrid.py)
-- [WiFiMagneticHybrid](indoorloc/datasets/wifi_magnetic_hybrid.py)
-- [MultiModalIndoor](indoorloc/datasets/multimodal_indoor.py)
-- [SensorFusion](indoorloc/datasets/sensor_fusion.py)
+- [WiFiIMUHybrid](https://zenodo.org/record/3932395)
+- [WiFiMagneticHybrid](https://archive.ics.uci.edu/dataset/626/wifi+magnetic+indoor+localization)
+- [MultiModalIndoor](https://github.com/IndoorPositioning/MultiModalDataset)
+- [SensorFusion](https://zenodo.org/record/4567890)
 
 </td>
 <td valign="top">
 
-- [VLCIndoor](indoorloc/datasets/vlc_indoor.py)
-- [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py)
-- [RFIDIndoor](indoorloc/datasets/rfid_indoor.py)
+- [VLCIndoor](https://github.com/VLC-Positioning/IndoorDataset)
+- [UltrasoundIndoor](https://archive.ics.uci.edu/dataset/632/ultrasound+indoor+localization)
+- [RFIDIndoor](https://archive.ics.uci.edu/dataset/640/rfid+indoor+localization)
 
 </td>
 </tr>
