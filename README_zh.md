@@ -201,17 +201,19 @@ indoorloc/
 <table>
 <thead>
 <tr>
-<th>WiFi 数据集</th>
-<th>BLE 数据集</th>
-<th>混合多模态</th>
-<th>UWB 数据集</th>
-<th>其他信号</th>
+<th>RSSI 指纹定位</th>
+<th>CSI 定位</th>
+<th>UWB 测距</th>
+<th>地磁定位</th>
+<th>多模态融合</th>
+<th>其他</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td valign="top">
 
+**WiFi RSSI**
 - [UJIndoorLoc](indoorloc/datasets/ujindoorloc.py)
 - [SODIndoorLoc](indoorloc/datasets/sodindoorloc.py)
 - [LongTermWiFi](indoorloc/datasets/longtermwifi.py)
@@ -220,12 +222,26 @@ indoorloc/
 - [TUJI1](indoorloc/datasets/tuji1.py)
 - [RSSBased](indoorloc/datasets/rss_based.py)
 
-</td>
-<td valign="top">
-
+**BLE RSSI**
 - [iBeaconRSSI](indoorloc/datasets/ibeacon_rssi.py)
 - [BLEIndoor](indoorloc/datasets/ble_indoor.py)
 - [BLERSSIU_UCI](indoorloc/datasets/ble_rssi_uci.py)
+
+</td>
+<td valign="top">
+
+- [CSIIndoor](indoorloc/datasets/csi_indoor.py)
+
+</td>
+<td valign="top">
+
+- [UWBIndoor](indoorloc/datasets/uwb_indoor.py) (ToF)
+- [UWBRanging](indoorloc/datasets/uwb_ranging.py) (TWR)
+
+</td>
+<td valign="top">
+
+- [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py)
 
 </td>
 <td valign="top">
@@ -238,16 +254,8 @@ indoorloc/
 </td>
 <td valign="top">
 
-- [UWBIndoor](indoorloc/datasets/uwb_indoor.py)
-- [UWBRanging](indoorloc/datasets/uwb_ranging.py)
-
-</td>
-<td valign="top">
-
-- [MagneticIndoor](indoorloc/datasets/magnetic_indoor.py)
 - [VLCIndoor](indoorloc/datasets/vlc_indoor.py)
 - [UltrasoundIndoor](indoorloc/datasets/ultrasound_indoor.py)
-- [CSIIndoor](indoorloc/datasets/csi_indoor.py)
 - [RFIDIndoor](indoorloc/datasets/rfid_indoor.py)
 
 </td>
