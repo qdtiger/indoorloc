@@ -321,6 +321,21 @@
 
         .results-count strong { color: var(--text-primary); }
 
+        .license-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-muted);
+            border-radius: 6px;
+            border: 1px solid var(--border-light);
+        }
+        .license-note svg { flex-shrink: 0; margin-top: 1px; opacity: 0.6; }
+        .license-note strong { color: var(--text-primary); }
+
         /* ========================================
            Dataset Groups
            ======================================== */
@@ -900,67 +915,14 @@
         <div class="results-count" id="results"></div>
         <div class="groups" id="groups"></div>
 
-        <!-- Licenses Section -->
-        <div class="group" id="licenses" style="margin-top: 24px;">
-            <div class="group-header">
-                <span class="group-title">Third-Party Dataset Licenses</span>
-            </div>
-            <div style="padding: 16px;">
-                <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.8125rem;">
-                    All datasets retain their original licenses. Users must comply with each dataset's terms of use.
-                </p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dataset</th>
-                            <th>License</th>
-                            <th>Source</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>UJIndoorLoc</td>
-                            <td>CC BY 4.0</td>
-                            <td><a href="https://archive.ics.uci.edu/dataset/310/ujiindoorloc" target="_blank" style="color: var(--primary);">UCI ML</a></td>
-                            <td class="samples-cell">Cite original paper</td>
-                        </tr>
-                        <tr>
-                            <td><strong>DeepMIMO</strong></td>
-                            <td><strong>CC BY-NC-SA 4.0</strong></td>
-                            <td><a href="https://www.deepmimo.net" target="_blank" style="color: var(--primary);">deepmimo.net</a></td>
-                            <td class="samples-cell"><strong>Non-commercial only</strong>, <a href="https://pypi.org/project/DeepMIMO/" target="_blank" style="color: var(--primary);">official API</a></td>
-                        </tr>
-                        <tr>
-                            <td>Tampere</td>
-                            <td>CC BY 4.0</td>
-                            <td><a href="https://zenodo.org/record/1066041" target="_blank" style="color: var(--primary);">Zenodo</a></td>
-                            <td class="samples-cell">Cite original paper</td>
-                        </tr>
-                        <tr>
-                            <td>DICHASUS</td>
-                            <td>CC BY 4.0</td>
-                            <td><a href="https://darus.uni-stuttgart.de/dataverse/dichasus" target="_blank" style="color: var(--primary);">DaRUS</a></td>
-                            <td class="samples-cell">Cite original paper</td>
-                        </tr>
-                        <tr>
-                            <td>iBeaconRSSI</td>
-                            <td>CC BY 4.0</td>
-                            <td><a href="https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation" target="_blank" style="color: var(--primary);">UCI ML</a></td>
-                            <td class="samples-cell">Cite original paper</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="samples-cell"><em>Other datasets: Most use CC BY 4.0 or similar open licenses. Check individual dataset pages.</em></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div style="margin-top: 16px; padding: 12px; background: var(--bg-muted); border-radius: 4px; border-left: 3px solid var(--primary);">
-                    <strong style="font-size: 0.75rem; color: var(--text-primary);">DeepMIMO Citation</strong>
-                    <p style="font-style: italic; color: var(--text-secondary); margin: 6px 0 0; font-size: 0.75rem;">
-                        A. Alkhateeb, "DeepMIMO: A Generic Deep Learning Dataset for Millimeter Wave and Massive MIMO Applications," Proc. Information Theory and Applications Workshop (ITA), Feb. 2019.
-                    </p>
-                </div>
-            </div>
+        <!-- Licenses Note -->
+        <div class="license-note" id="licenses">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>All datasets retain their original licenses (mostly CC BY 4.0). <strong>DeepMIMO</strong> uses CC BY-NC-SA 4.0 (non-commercial only). Click "Visit Source" in dataset details for license info.</span>
         </div>
     </div>
 
