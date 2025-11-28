@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/1066044
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import BLEDataset
@@ -71,12 +71,15 @@ class iBeaconRSSIDataset(BLEDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
         self._num_beacons = None  # Will be determined from data
+        self._floor_param = floor
+        self._available_floors: List[int] = []
 
         super().__init__(
             data_root=data_root,
@@ -97,6 +100,36 @@ class iBeaconRSSIDataset(BLEDataset):
         if self._num_beacons is None:
             return 0
         return self._num_beacons
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of floor numbers found in the dataset.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'ibeacon_rssi'
+        else:
+            root = Path(data_root)
+
+        train_file = root / 'train.csv'
+        if not train_file.exists():
+            return []
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file)
+            if 'floor' in df.columns:
+                return sorted(df['floor'].astype(int).unique().tolist())
+            return []
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -143,6 +176,21 @@ class iBeaconRSSIDataset(BLEDataset):
                 "pandas is required to load iBeacon RSSI dataset.\n"
                 "Install with: pip install pandas"
             )
+
+        # Store available floors
+        if 'floor' in df.columns:
+            self._available_floors = sorted(df['floor'].astype(int).unique().tolist())
+
+        # Filter by floor
+        if self._floor_param != 'all' and 'floor' in df.columns:
+            if isinstance(self._floor_param, int):
+                selected_floors = [self._floor_param]
+            else:
+                selected_floors = list(self._floor_param)
+            df = df[df['floor'].astype(int).isin(selected_floors)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data found for floor={self._floor_param}")
 
         # Expected columns: x, y, floor, beacon_uuid, beacon_major, beacon_minor, rssi
         # Multiple rows per location (one per beacon)
@@ -210,12 +258,13 @@ class iBeaconRSSIDataset(BLEDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from iBeacon RSSI dataset")
+        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from iBeacon RSSI dataset{floor_info}")
         print(f"Total unique beacons: {self._num_beacons}")
 
 
 
-def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
+def iBeaconRSSI(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading iBeaconRSSI dataset.
 
@@ -223,22 +272,26 @@ def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load. Can be:
+            - 'all': Load all floors (default)
+            - Single floor: 0, 1, 2, etc.
+            - List of floors: [0, 1, 2]
         **kwargs: Additional arguments passed to iBeaconRSSIDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
         >>> # Load train and test separately (tuple unpacking)
         >>> train, test = iBeaconRSSI(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = iBeaconRSSI(split='all', download=True)
+        >>> # Load specific floor(s)
+        >>> train = iBeaconRSSI(floor=[1, 2], split='train')
 
-        >>> # Load only training set
-        >>> train = iBeaconRSSI(split='train', download=True)
+        >>> # List available floors
+        >>> iBeaconRSSI.list_floors()
     """
     if split is None:
         # Return both train and test as tuple
@@ -246,12 +299,14 @@ def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = iBeaconRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -262,12 +317,14 @@ def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = iBeaconRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -277,6 +334,11 @@ def iBeaconRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            floor=floor,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+iBeaconRSSI.list_floors = iBeaconRSSIDataset.list_floors
 

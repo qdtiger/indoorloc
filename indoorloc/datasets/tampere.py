@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/889798
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -70,12 +70,15 @@ class TampereDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        building: Union[str, List[str]] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
         self._num_aps = None  # Will be determined from data
+        self._building_param = building
+        self._available_buildings: List[str] = []
 
         super().__init__(
             data_root=data_root,
@@ -96,6 +99,34 @@ class TampereDataset(WiFiDataset):
         if self._num_aps is None:
             return 0
         return self._num_aps
+
+    @classmethod
+    def list_buildings(cls, data_root: Optional[str] = None) -> List[str]:
+        """List all available buildings in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of building identifiers.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'tampere'
+        else:
+            root = Path(data_root)
+
+        train_file = root / 'train.csv'
+        if not train_file.exists():
+            return []
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['building'])
+            return sorted(df['building'].astype(str).unique().tolist())
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -159,6 +190,23 @@ class TampereDataset(WiFiDataset):
         if len(wap_cols) == 0:
             raise ValueError("No WAP columns found in dataset")
 
+        # Store available buildings
+        if 'building' in df.columns:
+            self._available_buildings = sorted(df['building'].astype(str).unique().tolist())
+        else:
+            self._available_buildings = ['0']
+
+        # Filter by building parameter
+        if self._building_param != 'all' and 'building' in df.columns:
+            if isinstance(self._building_param, list):
+                selected_buildings = [str(b) for b in self._building_param]
+            else:
+                selected_buildings = [str(self._building_param)]
+            df = df[df['building'].astype(str).isin(selected_buildings)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data found for building(s): {self._building_param}")
+
         # Store number of APs
         self._num_aps = len(wap_cols)
 
@@ -184,11 +232,12 @@ class TampereDataset(WiFiDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from Tampere dataset")
+        building_info = f" (building: {self._building_param})" if self._building_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from Tampere dataset{building_info}")
 
 
 
-def Tampere(data_root=None, split=None, download=False, **kwargs):
+def Tampere(data_root=None, split=None, download=False, building='all', **kwargs):
     """
     Convenience function for loading Tampere dataset.
 
@@ -196,11 +245,15 @@ def Tampere(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        building: Building(s) to load. Can be:
+            - 'all': Load all buildings (default)
+            - Single building: '1', '2', etc.
+            - List of buildings: ['1', '2', '3']
         **kwargs: Additional arguments passed to TampereDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
@@ -210,8 +263,11 @@ def Tampere(data_root=None, split=None, download=False, **kwargs):
         >>> # Load entire dataset (train + test merged)
         >>> dataset = Tampere(split='all', download=True)
 
-        >>> # Load only training set
-        >>> train = Tampere(split='train', download=True)
+        >>> # Load specific building(s)
+        >>> train = Tampere(building=['1', '2'], split='train')
+
+        >>> # List available buildings
+        >>> Tampere.list_buildings()
     """
     if split is None:
         # Return both train and test as tuple
@@ -219,12 +275,14 @@ def Tampere(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = TampereDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -235,12 +293,14 @@ def Tampere(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = TampereDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -250,6 +310,11 @@ def Tampere(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            building=building,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+Tampere.list_buildings = TampereDataset.list_buildings
 

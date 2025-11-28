@@ -12,7 +12,7 @@ Reference:
 Dataset URL: https://raw.githubusercontent.com/CSI-Positioning/IndoorDataset/main
 """
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -69,6 +69,7 @@ class CSIIndoorDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
@@ -76,6 +77,8 @@ class CSIIndoorDataset(WiFiDataset):
         **kwargs
     ):
         self.train_ratio = train_ratio
+        self._floor_param = floor
+        self._available_floors: List[int] = []
         super().__init__(
             data_root=data_root,
             split=split,
@@ -89,6 +92,24 @@ class CSIIndoorDataset(WiFiDataset):
     @property
     def dataset_name(self) -> str:
         return 'CSIIndoor'
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors."""
+        from ..utils.download import get_data_home
+        if data_root is None:
+            root = get_data_home() / 'csi_indoor'
+        else:
+            root = Path(data_root)
+        data_file = root / 'csi_measurements.csv'
+        if not data_file.exists():
+            return []
+        try:
+            import pandas as pd
+            df = pd.read_csv(data_file, usecols=['floor'])
+            return sorted(df['floor'].astype(int).unique().tolist())
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -136,6 +157,21 @@ class CSIIndoorDataset(WiFiDataset):
 
         df = pd.read_csv(filepath)
 
+        # Store available floors
+        if 'floor' in df.columns:
+            self._available_floors = sorted(df['floor'].astype(int).unique().tolist())
+
+        # Filter by floor
+        if self._floor_param != 'all' and 'floor' in df.columns:
+            if isinstance(self._floor_param, int):
+                selected = [self._floor_param]
+            else:
+                selected = list(self._floor_param)
+            df = df[df['floor'].astype(int).isin(selected)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data for floor={self._floor_param}")
+
         # Split data
         num_train = int(len(df) * self.train_ratio)
         if self.split == 'train':
@@ -172,12 +208,13 @@ class CSIIndoorDataset(WiFiDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from CSI indoor dataset ({self.split} split)")
+        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from CSI indoor dataset{floor_info}")
         print(f"CSI subcarriers used: {self._num_waps}")
 
 
 
-def CSIIndoor(data_root=None, split=None, download=False, **kwargs):
+def CSIIndoor(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading CSIIndoor dataset.
 
@@ -185,60 +222,47 @@ def CSIIndoor(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load ('all', single int, or list)
         **kwargs: Additional arguments passed to CSIIndoorDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = CSIIndoor(download=True)
-
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = CSIIndoor(split='all', download=True)
-
-        >>> # Load only training set
-        >>> train = CSIIndoor(split='train', download=True)
+        >>> train = CSIIndoor(floor=[0, 1], split='train')
+        >>> CSIIndoor.list_floors()
     """
     if split is None:
-        # Return both train and test as tuple
         train_dataset = CSIIndoorDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            floor=floor, **kwargs
         )
         test_dataset = CSIIndoorDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            floor=floor, **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
-        # Return merged train + test dataset
         from torch.utils.data import ConcatDataset
         train_dataset = CSIIndoorDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            floor=floor, **kwargs
         )
         test_dataset = CSIIndoorDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            floor=floor, **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
-        # Return single split
         return CSIIndoorDataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            **kwargs
+            data_root=data_root, split=split, download=download,
+            floor=floor, **kwargs
         )
+
+
+# Attach class method to convenience function
+CSIIndoor.list_floors = CSIIndoorDataset.list_floors
 

@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://github.com/qiang5love1314/CSI-dataset
 """
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -57,6 +57,9 @@ class CSIFingerprintDataset(WiFiDataset):
 
     REQUIRED_FILES = ['data.csv']
 
+    # Available areas
+    AREAS = ['area1', 'area2']
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -66,11 +69,20 @@ class CSIFingerprintDataset(WiFiDataset):
         normalize: bool = True,
         normalize_method: str = 'minmax',
         train_ratio: float = 0.7,
-        area: str = 'all',
+        area: Union[str, List[str]] = 'all',
         **kwargs
     ):
         self.train_ratio = train_ratio
-        self.area = area
+
+        # Handle area parameter (支持单个、列表或 'all')
+        if area == 'all':
+            self._areas = self.AREAS.copy()
+        elif isinstance(area, list):
+            self._areas = area
+        else:
+            self._areas = [area]
+
+        self.area = self._areas[0]  # 兼容性
         super().__init__(
             data_root=data_root,
             split=split,
@@ -88,6 +100,15 @@ class CSIFingerprintDataset(WiFiDataset):
     @property
     def num_aps(self) -> int:
         return self.NUM_SUBCARRIERS * 3  # 3 antennas × 30 subcarriers
+
+    @classmethod
+    def list_areas(cls) -> List[str]:
+        """List all available areas.
+
+        Returns:
+            List of area names: ['area1', 'area2']
+        """
+        return cls.AREAS.copy()
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -212,7 +233,7 @@ class CSIFingerprintDataset(WiFiDataset):
         print(f"Note: Download actual data from https://github.com/qiang5love1314/CSI-dataset")
 
 
-def CSIFingerprint(data_root=None, split=None, download=False, **kwargs):
+def CSIFingerprint(data_root=None, split=None, download=False, area='all', **kwargs):
     """
     Convenience function for loading CSIFingerprint dataset.
 
@@ -220,6 +241,10 @@ def CSIFingerprint(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        area: Area(s) to load. Can be:
+            - 'all': Load all areas (default)
+            - Single area: 'area1', 'area2'
+            - List of areas: ['area1', 'area2']
         **kwargs: Additional arguments passed to CSIFingerprintDataset
 
     Returns:
@@ -229,26 +254,31 @@ def CSIFingerprint(data_root=None, split=None, download=False, **kwargs):
 
     Examples:
         >>> train, test = CSIFingerprint(download=True)
-        >>> dataset = CSIFingerprint(split='all', download=True)
+        >>> train = CSIFingerprint(area='area1', split='train')
+        >>> CSIFingerprint.list_areas()
     """
     if split is None:
         train_dataset = CSIFingerprintDataset(
-            data_root=data_root, split='train', download=download, **kwargs
+            data_root=data_root, split='train', download=download, area=area, **kwargs
         )
         test_dataset = CSIFingerprintDataset(
-            data_root=data_root, split='test', download=download, **kwargs
+            data_root=data_root, split='test', download=download, area=area, **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
         from torch.utils.data import ConcatDataset
         train_dataset = CSIFingerprintDataset(
-            data_root=data_root, split='train', download=download, **kwargs
+            data_root=data_root, split='train', download=download, area=area, **kwargs
         )
         test_dataset = CSIFingerprintDataset(
-            data_root=data_root, split='test', download=download, **kwargs
+            data_root=data_root, split='test', download=download, area=area, **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
         return CSIFingerprintDataset(
-            data_root=data_root, split=split, download=download, **kwargs
+            data_root=data_root, split=split, download=download, area=area, **kwargs
         )
+
+
+# Attach class method to convenience function
+CSIFingerprint.list_areas = CSIFingerprintDataset.list_areas

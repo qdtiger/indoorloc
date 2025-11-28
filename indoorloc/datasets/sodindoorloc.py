@@ -13,7 +13,7 @@ Dataset URL: https://github.com/renwudao24/SODIndoorLoc
 """
 import csv
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 
 import numpy as np
 
@@ -95,7 +95,7 @@ class SODIndoorLocDataset(WiFiDataset):
     def __init__(
         self,
         data_root: Optional[str] = None,
-        building: str = 'CETC331',
+        building: Union[str, List[str]] = 'all',
         split: str = 'train',
         download: bool = False,
         transform: Optional[Any] = None,
@@ -103,14 +103,21 @@ class SODIndoorLocDataset(WiFiDataset):
         normalize_method: str = 'minmax',
         **kwargs
     ):
-        if building not in self.BUILDINGS:
-            raise ValueError(
-                f"Unknown building: {building}. "
-                f"Choose from {list(self.BUILDINGS.keys())}"
-            )
+        # Handle building parameter (支持单个、列表或 'all')
+        if building == 'all':
+            self._buildings = list(self.BUILDINGS.keys())
+        elif isinstance(building, list):
+            for b in building:
+                if b not in self.BUILDINGS:
+                    raise ValueError(f"Unknown building: {b}. Choose from {list(self.BUILDINGS.keys())}")
+            self._buildings = building
+        else:
+            if building not in self.BUILDINGS:
+                raise ValueError(f"Unknown building: {building}. Choose from {list(self.BUILDINGS.keys())}")
+            self._buildings = [building]
 
-        self.building = building
-        self.building_id = self.BUILDINGS[building]
+        self.building = self._buildings[0]  # 兼容性
+        self.building_id = self.BUILDINGS[self.building]
         self._num_aps = None  # Will be determined from data
 
         super().__init__(
@@ -131,10 +138,22 @@ class SODIndoorLocDataset(WiFiDataset):
     def num_aps(self) -> int:
         return self._num_aps if self._num_aps else 0
 
+    @classmethod
+    def list_buildings(cls) -> List[str]:
+        """List all available buildings.
+
+        Returns:
+            List of building names: ['CETC331', 'HCXY', 'SYL']
+        """
+        return list(cls.BUILDINGS.keys())
+
     def _check_exists(self) -> bool:
-        """Check if dataset files exist."""
-        filepath = self.data_root / self.FILES[self.building][self.split]
-        return filepath.exists()
+        """Check if dataset files exist for all selected buildings."""
+        for building in self._buildings:
+            filepath = self.data_root / self.FILES[building][self.split]
+            if not filepath.exists():
+                return False
+        return True
 
     def _download(self) -> None:
         """Download SODIndoorLoc dataset from GitHub."""
@@ -144,94 +163,109 @@ class SODIndoorLocDataset(WiFiDataset):
 
         self.data_root.mkdir(parents=True, exist_ok=True)
 
-        # Download the specific file
-        filename = self.FILES[self.building][self.split]
-        url = f"{self.BASE_URL}/{filename}"
+        # Download files for all selected buildings
+        for building in self._buildings:
+            filename = self.FILES[building][self.split]
+            target_path = self.data_root / filename
 
-        target_path = self.data_root / filename
-        target_path.parent.mkdir(parents=True, exist_ok=True)
+            if target_path.exists():
+                continue
 
-        print(f"Downloading {filename} from GitHub...")
-        try:
-            download_url(
-                url=url,
-                root=target_path.parent,
-                filename=target_path.name,
-            )
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to download dataset.\n"
-                f"Error: {e}\n"
-                f"Please download manually from:\n"
-                f"https://github.com/renwudao24/SODIndoorLoc"
-            )
+            url = f"{self.BASE_URL}/{filename}"
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+
+            print(f"Downloading {filename} from GitHub...")
+            try:
+                download_url(
+                    url=url,
+                    root=target_path.parent,
+                    filename=target_path.name,
+                )
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to download dataset.\n"
+                    f"Error: {e}\n"
+                    f"Please download manually from:\n"
+                    f"https://github.com/renwudao24/SODIndoorLoc"
+                )
 
     def _load_data(self) -> None:
-        """Load data from CSV files."""
-        filepath = self.data_root / self.FILES[self.building][self.split]
+        """Load data from CSV files for all selected buildings."""
+        total_aps = 0
 
-        # Load CSV data
-        with open(filepath, 'r', newline='', encoding='utf-8') as f:
-            reader = csv.reader(f)
-            header = next(reader)  # Read header to get MAC addresses
+        for building in self._buildings:
+            filepath = self.data_root / self.FILES[building][self.split]
 
-            # Identify column indices
-            # Find where coordinate columns start
-            coord_start_idx = None
-            for i, col in enumerate(header):
-                if col in ['ECoord', 'NCoord', 'FloorID', 'BuildingID']:
-                    coord_start_idx = i
-                    break
+            if not filepath.exists():
+                print(f"Warning: File not found for {building}: {filepath}")
+                continue
 
-            if coord_start_idx is None:
-                raise ValueError("Could not find coordinate columns in CSV")
+            # Load CSV data
+            with open(filepath, 'r', newline='', encoding='utf-8') as f:
+                reader = csv.reader(f)
+                header = next(reader)  # Read header to get MAC addresses
 
-            # Number of APs = columns before coordinates
-            self._num_aps = coord_start_idx
-            mac_addresses = header[:self._num_aps]
+                # Identify column indices
+                # Find where coordinate columns start
+                coord_start_idx = None
+                for i, col in enumerate(header):
+                    if col in ['ECoord', 'NCoord', 'FloorID', 'BuildingID']:
+                        coord_start_idx = i
+                        break
 
-            for row in reader:
-                if len(row) < coord_start_idx + 4:
-                    continue  # Skip incomplete rows
+                if coord_start_idx is None:
+                    raise ValueError(f"Could not find coordinate columns in CSV for {building}")
 
-                # Parse RSSI values
-                rssi_values = np.array(
-                    [float(row[i]) if row[i] else 100.0
-                     for i in range(self._num_aps)],
-                    dtype=np.float32
-                )
+                # Number of APs = columns before coordinates
+                num_aps = coord_start_idx
+                total_aps = max(total_aps, num_aps)
 
-                # Create WiFi signal
-                signal = WiFiSignal(rssi_values=rssi_values)
-                self._signals.append(signal)
+                for row in reader:
+                    if len(row) < coord_start_idx + 4:
+                        continue  # Skip incomplete rows
 
-                # Parse location
-                e_coord = float(row[coord_start_idx])
-                n_coord = float(row[coord_start_idx + 1])
-                floor = int(row[coord_start_idx + 2])
-                building_id = str(int(row[coord_start_idx + 3]))
+                    # Parse RSSI values
+                    rssi_values = np.array(
+                        [float(row[i]) if row[i] else 100.0
+                         for i in range(num_aps)],
+                        dtype=np.float32
+                    )
 
-                # SODIndoorLoc uses East/North coordinates in meters
-                coordinate = Coordinate(
-                    x=e_coord,
-                    y=n_coord,
-                    latitude=n_coord,  # Use north as latitude
-                    longitude=e_coord   # Use east as longitude
-                )
+                    # Create WiFi signal
+                    signal = WiFiSignal(rssi_values=rssi_values)
+                    self._signals.append(signal)
 
-                location = Location(
-                    coordinate=coordinate,
-                    floor=floor,
-                    building_id=building_id
-                )
-                self._locations.append(location)
+                    # Parse location
+                    e_coord = float(row[coord_start_idx])
+                    n_coord = float(row[coord_start_idx + 1])
+                    floor = int(row[coord_start_idx + 2])
+                    building_id = str(int(row[coord_start_idx + 3]))
 
-                # Store metadata
-                metadata = {
-                    'building': self.building,
-                    'num_detected_aps': np.sum(rssi_values != self.NOT_DETECTED_VALUE),
-                }
-                self._metadata.append(metadata)
+                    # SODIndoorLoc uses East/North coordinates in meters
+                    coordinate = Coordinate(
+                        x=e_coord,
+                        y=n_coord,
+                        latitude=n_coord,  # Use north as latitude
+                        longitude=e_coord   # Use east as longitude
+                    )
+
+                    location = Location(
+                        coordinate=coordinate,
+                        floor=floor,
+                        building_id=building_id
+                    )
+                    self._locations.append(location)
+
+                    # Store metadata
+                    metadata = {
+                        'building': building,
+                        'num_detected_aps': np.sum(rssi_values != self.NOT_DETECTED_VALUE),
+                    }
+                    self._metadata.append(metadata)
+
+        self._num_aps = total_aps
+        building_info = f" (building: {self._buildings})" if len(self._buildings) < 3 else ""
+        print(f"Loaded {len(self._signals)} samples from SODIndoorLoc{building_info}")
 
     def get_statistics(self) -> Dict[str, Any]:
         """Compute SODIndoorLoc-specific statistics."""
@@ -247,12 +281,15 @@ class SODIndoorLocDataset(WiFiDataset):
         return stats
 
 
-def SODIndoorLoc(building='CETC331', data_root=None, split=None, download=False, **kwargs):
+def SODIndoorLoc(building='all', data_root=None, split=None, download=False, **kwargs):
     """
     Convenience function for loading SODIndoorLoc dataset.
 
     Args:
-        building: Building name ('CETC331', 'HCXY', or 'SYL')
+        building: Building(s) to load. Can be:
+            - 'all': Load all buildings (default)
+            - Single building: 'CETC331', 'HCXY', 'SYL'
+            - List of buildings: ['CETC331', 'HCXY']
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
@@ -264,14 +301,14 @@ def SODIndoorLoc(building='CETC331', data_root=None, split=None, download=False,
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
-        >>> train, test = SODIndoorLoc(building='CETC331', download=True)
+        >>> # Load all buildings
+        >>> train, test = SODIndoorLoc(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = SODIndoorLoc(building='CETC331', split='all', download=True)
+        >>> # Load specific building(s)
+        >>> train = SODIndoorLoc(building=['CETC331', 'HCXY'], split='train')
 
-        >>> # Load only training set
-        >>> train = SODIndoorLoc(building='HCXY', split='train', download=True)
+        >>> # List available buildings
+        >>> SODIndoorLoc.list_buildings()
     """
     if split is None:
         # Return both train and test as tuple
@@ -317,3 +354,7 @@ def SODIndoorLoc(building='CETC331', data_root=None, split=None, download=False,
             download=download,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+SODIndoorLoc.list_buildings = SODIndoorLocDataset.list_buildings

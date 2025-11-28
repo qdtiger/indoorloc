@@ -708,6 +708,40 @@
         .compare-table .attr { color: var(--text-muted); background: var(--bg-muted); font-weight: 500; width: 120px; }
 
         /* ========================================
+           Multi-Environment Badge
+           ======================================== */
+        .multi-env-badge {
+            display: inline-block;
+            padding: 1px 5px;
+            font-size: 0.5625rem;
+            font-weight: 500;
+            background: var(--success);
+            color: white;
+            border-radius: 3px;
+            margin-left: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .env-params-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .env-param-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 0.6875rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-muted);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-secondary);
+        }
+
+        /* ========================================
            Empty
            ======================================== */
         .empty {
@@ -777,7 +811,7 @@
                 <div class="stat-item"><span class="stat-value">37+</span><span class="stat-label">Datasets</span></div>
                 <div class="stat-item"><span class="stat-value">15</span><span class="stat-label">CSI</span></div>
                 <div class="stat-item"><span class="stat-value">28</span><span class="stat-label">Auto-DL</span></div>
-                <div class="stat-item"><span class="stat-value">500k+</span><span class="stat-label">Samples</span></div>
+                <div class="stat-item"><span class="stat-value">17</span><span class="stat-label">Multi-Env</span></div>
             </div>
             <div class="chart-wrapper">
                 <div class="chart-container">
@@ -914,35 +948,35 @@
 
     <script>
         const datasets = [
-            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"] },
-            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"] },
-            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"] },
-            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"] },
-            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"] },
-            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"] },
-            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"] },
-            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"] },
-            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"] },
+            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", floor: "0-4", methods: ["list_buildings()", "list_floors()"] } },
+            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "1, 2", floor: "1-4", area: "per bldg", methods: ["list_buildings()", "list_floors()", "list_areas()"] } },
+            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
+            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] } },
+            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
+            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
             { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000", features: "~10 beacons", environment: "Controlled", citation: "UCI BLE dataset", bibtex: "@misc{blerssiu...}", tags: ["ble"] },
-            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"] },
-            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"] },
+            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"], envParams: { environment: "1-4", methods: ["list_environments()"] } },
             { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"] },
             { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000", features: "CSI+RSSI", environment: "CSU campus", citation: "CSU dataset", bibtex: "@misc{csuindoorloc...}", tags: ["csi", "multi-floor"] },
-            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"] },
-            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"] },
+            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"], envParams: { environment: "1-8" } },
+            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"], envParams: { trajectory: "1-6" } },
             { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"] },
             { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000", features: "D2D CSI", environment: "D2D scenario", citation: "WiFi CSI D2D", bibtex: "@dataset{wificsi_d2d...}", tags: ["csi"] },
             { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"] },
             { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"] },
-            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: false, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"] },
+            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: false, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"], envParams: { scenario: "indoor_los, indoor_nlos, outdoor, cell_edge", methods: ["list_scenarios()"] } },
             { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"] },
             { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"] },
-            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: false, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"] },
+            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: false, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"], envParams: { scenario: "O1_60, I1_2p4, etc.", methods: ["list_scenarios()"] } },
             { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"] },
             { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"] },
-            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"] },
+            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000", features: "TWR", environment: "Ranging", citation: "UWB ranging dataset", bibtex: "@dataset{uwbranging...}", tags: ["uwb"] },
-            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"] },
+            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
             { name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "WiFi+IMU", environment: "Pedestrian", citation: "WiFi-IMU fusion", bibtex: "@dataset{wifiimuhybrid...}", tags: ["fusion", "multi-floor"] },
             { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~6,000", features: "WiFi+Mag", environment: "Steel building", citation: "WiFi-Mag fusion", bibtex: "@misc{wifimagnetichybrid...}", tags: ["fusion", "multi-floor"] },
             { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~10,000", features: "WiFi+BLE+IMU", environment: "Mall", citation: "Multi-modal dataset", bibtex: "@dataset{multimodalindoor...}", tags: ["fusion", "multi-floor"] },
@@ -1075,7 +1109,49 @@
         }
 
         function generateCode(d) {
-            return `import indoorloc as iloc\ntrain, test = iloc.${d.name}(download=True)\nsignal, loc = train[0]`;
+            let code = `import indoorloc as iloc\ntrain, test = iloc.${d.name}(download=True)\nsignal, loc = train[0]`;
+
+            if (d.envParams) {
+                code += `\n\n# Multi-environment support:`;
+                if (d.envParams.building) {
+                    code += `\ntrain = iloc.${d.name}(building='0', split='train')`;
+                }
+                if (d.envParams.floor) {
+                    code += `\ntrain = iloc.${d.name}(floor=[1, 2], split='train')`;
+                }
+                if (d.envParams.scenario) {
+                    code += `\ntrain = iloc.${d.name}(scenario='indoor_los', split='train')`;
+                }
+                if (d.envParams.environment) {
+                    code += `\ntrain = iloc.${d.name}(environment=1, split='train')`;
+                }
+                if (d.envParams.trajectory) {
+                    code += `\ntrain = iloc.${d.name}(trajectory=1, split='train')`;
+                }
+                if (d.envParams.area) {
+                    code += `\ntrain = iloc.${d.name}(area='A', split='train')`;
+                }
+                if (d.envParams.methods && d.envParams.methods.length > 0) {
+                    code += `\n\n# Query available options:\n# iloc.${d.name}.${d.envParams.methods[0]}`;
+                }
+            }
+            return code;
+        }
+
+        function renderEnvParams(d) {
+            if (!d.envParams) return '';
+            const params = Object.keys(d.envParams).filter(k => k !== 'methods');
+            if (params.length === 0) return '';
+            return `
+                <li><span class="label">Select</span>
+                    <span class="value">
+                        <div class="env-params-list">
+                            ${params.map(p => `<span class="env-param-tag">${p}: ${d.envParams[p]}</span>`).join('')}
+                        </div>
+                    </span>
+                </li>
+                ${d.envParams.methods ? `<li><span class="label">Query</span><span class="value" style="font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem;">${d.envParams.methods.join(', ')}</span></li>` : ''}
+            `;
         }
 
         function renderDetail(d) {
@@ -1098,6 +1174,7 @@
                                     <li><span class="label">Features</span><span class="value">${d.features}</span></li>
                                     <li><span class="label">Env</span><span class="value">${d.environment}</span></li>
                                     <li><span class="label">Position</span><span class="value">${d.position}</span></li>
+                                    ${renderEnvParams(d)}
                                 </ul>
                             </div>
                             <div class="detail-section" style="grid-column:1/-1">
@@ -1231,7 +1308,7 @@
                     const cmp = compareList.includes(d.name);
                     html += `<tr class="${exp ? 'expanded' : ''}" data-name="${d.name}" onclick="toggleDetail('${d.name}')">`;
                     html += `<td onclick="event.stopPropagation()"><input type="checkbox" class="compare-cb" ${cmp ? 'checked' : ''} ${!cmp && compareList.length >= 4 ? 'disabled' : ''} onchange="toggleCompare(event,'${d.name}')"></td>`;
-                    html += `<td><div class="dataset-cell"><svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span class="dataset-name">${d.name}</span></div></td>`;
+                    html += `<td><div class="dataset-cell"><svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span class="dataset-name">${d.name}</span>${d.envParams ? '<span class="multi-env-badge">Multi-Env</span>' : ''}</div></td>`;
                     if (view.cols.includes('Signal')) html += `<td><span class="signal-badge ${getSignalClass(d.signal)}">${d.signal}</span></td>`;
                     if (view.cols.includes('Source')) html += `<td>${d.dataSource}</td>`;
                     html += `<td class="samples-cell">${d.samples.split('/')[0].trim()}</td>`;

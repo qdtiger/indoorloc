@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://raw.githubusercontent.com/BLE-Indoor-Positioning/Dataset/main
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import BLEDataset
@@ -71,13 +71,23 @@ class BLEIndoorDataset(BLEDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        floor: Optional[int] = None,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
-        self.floor = floor
+        # Handle floor parameter (支持单个、列表或 'all')
+        if floor == 'all':
+            self._floors = self.AVAILABLE_FLOORS.copy()
+        elif isinstance(floor, list):
+            self._floors = floor
+        elif isinstance(floor, int):
+            self._floors = [floor]
+        else:
+            self._floors = self.AVAILABLE_FLOORS.copy()
+
+        self.floor = self._floors[0] if len(self._floors) == 1 else None  # 兼容性
         self._num_beacons = None
 
         super().__init__(
@@ -100,13 +110,18 @@ class BLEIndoorDataset(BLEDataset):
             return 0
         return self._num_beacons
 
+    @classmethod
+    def list_floors(cls) -> List[int]:
+        """List all available floors.
+
+        Returns:
+            List of floor numbers: [1, 2, 3]
+        """
+        return cls.AVAILABLE_FLOORS.copy()
+
     def _get_filenames(self) -> List[str]:
         """Get list of filenames to download/load."""
-        if self.floor is not None:
-            return [f'floor{self.floor}_{self.split}.csv']
-        else:
-            # All floors
-            return [f'floor{f}_{self.split}.csv' for f in self.AVAILABLE_FLOORS]
+        return [f'floor{f}_{self.split}.csv' for f in self._floors]
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -234,7 +249,7 @@ class BLEIndoorDataset(BLEDataset):
 
 
 
-def BLEIndoor(data_root=None, split=None, download=False, **kwargs):
+def BLEIndoor(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading BLEIndoor dataset.
 
@@ -242,22 +257,26 @@ def BLEIndoor(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load. Can be:
+            - 'all': Load all floors (default)
+            - Single floor: 1, 2, 3
+            - List of floors: [1, 2]
         **kwargs: Additional arguments passed to BLEIndoorDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
+        >>> # Load all floors
         >>> train, test = BLEIndoor(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = BLEIndoor(split='all', download=True)
+        >>> # Load specific floor(s)
+        >>> train = BLEIndoor(floor=[1, 2], split='train')
 
-        >>> # Load only training set
-        >>> train = BLEIndoor(split='train', download=True)
+        >>> # List available floors
+        >>> BLEIndoor.list_floors()
     """
     if split is None:
         # Return both train and test as tuple
@@ -265,12 +284,14 @@ def BLEIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = BLEIndoorDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -281,12 +302,14 @@ def BLEIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = BLEIndoorDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -296,6 +319,11 @@ def BLEIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            floor=floor,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+BLEIndoor.list_floors = BLEIndoorDataset.list_floors
 

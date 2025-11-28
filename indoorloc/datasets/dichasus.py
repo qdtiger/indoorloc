@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://darus.uni-stuttgart.de/dataverse/dichasus
 """
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -60,7 +60,7 @@ class DICHASUSDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        scenario: str = 'all',
+        scenario: Union[str, List[str]] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
@@ -68,7 +68,17 @@ class DICHASUSDataset(WiFiDataset):
         **kwargs
     ):
         self.train_ratio = train_ratio
-        self.scenario = scenario
+
+        # Handle scenario parameter (支持单个、列表或 'all')
+        if scenario == 'all':
+            self._scenarios = self.SCENARIOS.copy()
+        elif isinstance(scenario, list):
+            self._scenarios = scenario
+        else:
+            self._scenarios = [scenario]
+
+        self.scenario = self._scenarios[0]  # 兼容性：保留单值属性
+
         super().__init__(
             data_root=data_root,
             split=split,
@@ -86,6 +96,15 @@ class DICHASUSDataset(WiFiDataset):
     @property
     def num_aps(self) -> int:
         return self.NUM_FEATURES
+
+    @classmethod
+    def list_scenarios(cls) -> List[str]:
+        """List all available scenarios.
+
+        Returns:
+            List of scenario names: ['indoor_los', 'indoor_nlos', 'outdoor', 'cell_edge']
+        """
+        return cls.SCENARIOS.copy()
 
     def _check_exists(self) -> bool:
         return (self.data_root / 'data.mat').exists() or \
@@ -117,8 +136,9 @@ class DICHASUSDataset(WiFiDataset):
 
         df = pd.read_csv(filepath)
 
-        if self.scenario != 'all' and 'scenario' in df.columns:
-            df = df[df['scenario'] == self.scenario]
+        # 多场景过滤
+        if 'scenario' in df.columns:
+            df = df[df['scenario'].isin(self._scenarios)]
 
         num_train = int(len(df) * self.train_ratio)
         df_split = df.iloc[:num_train] if self.split == 'train' else df.iloc[num_train:]
@@ -171,16 +191,44 @@ class DICHASUSDataset(WiFiDataset):
         print(f"Generated {len(self._signals)} demo samples ({self.split} split)")
 
 
-def DICHASUS(data_root=None, split=None, download=False, **kwargs):
-    """Convenience function for loading DICHASUS dataset."""
+def DICHASUS(data_root=None, split=None, download=False, scenario='all', **kwargs):
+    """Convenience function for loading DICHASUS dataset.
+
+    Args:
+        data_root: Root directory for dataset storage.
+        split: Dataset split ('train', 'test', 'all', or None for tuple).
+        download: Whether to download if not found.
+        scenario: Scenario(s) to load. Can be:
+            - 'all': Load all scenarios (default)
+            - Single scenario: 'indoor_los', 'indoor_nlos', 'outdoor', 'cell_edge'
+            - List of scenarios: ['indoor_los', 'outdoor']
+        **kwargs: Additional arguments passed to DICHASUSDataset.
+
+    Returns:
+        Dataset or tuple of (train, test) datasets.
+
+    Examples:
+        >>> # Load all scenarios
+        >>> train, test = iloc.DICHASUS(download=True)
+        >>>
+        >>> # Load specific scenarios
+        >>> train = iloc.DICHASUS(scenario=['indoor_los', 'outdoor'], split='train')
+        >>>
+        >>> # List available scenarios
+        >>> iloc.DICHASUS.list_scenarios()
+    """
     if split is None:
-        train = DICHASUSDataset(data_root=data_root, split='train', download=download, **kwargs)
-        test = DICHASUSDataset(data_root=data_root, split='test', download=download, **kwargs)
+        train = DICHASUSDataset(data_root=data_root, split='train', download=download, scenario=scenario, **kwargs)
+        test = DICHASUSDataset(data_root=data_root, split='test', download=download, scenario=scenario, **kwargs)
         return train, test
     elif split == 'all':
         from torch.utils.data import ConcatDataset
-        train = DICHASUSDataset(data_root=data_root, split='train', download=download, **kwargs)
-        test = DICHASUSDataset(data_root=data_root, split='test', download=download, **kwargs)
+        train = DICHASUSDataset(data_root=data_root, split='train', download=download, scenario=scenario, **kwargs)
+        test = DICHASUSDataset(data_root=data_root, split='test', download=download, scenario=scenario, **kwargs)
         return ConcatDataset([train, test])
     else:
-        return DICHASUSDataset(data_root=data_root, split=split, download=download, **kwargs)
+        return DICHASUSDataset(data_root=data_root, split=split, download=download, scenario=scenario, **kwargs)
+
+
+# Attach class method to convenience function
+DICHASUS.list_scenarios = DICHASUSDataset.list_scenarios

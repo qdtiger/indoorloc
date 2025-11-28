@@ -12,7 +12,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/4321098
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import MagneticDataset
@@ -76,11 +76,18 @@ class MagneticIndoorDataset(MagneticDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        building: Union[str, List[str]] = 'all',
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = False,
         normalize_method: str = 'minmax',
         **kwargs
     ):
+        self._building_param = building
+        self._floor_param = floor
+        self._available_buildings: List[str] = []
+        self._available_floors: List[int] = []
+
         super().__init__(
             data_root=data_root,
             split=split,
@@ -94,6 +101,62 @@ class MagneticIndoorDataset(MagneticDataset):
     @property
     def dataset_name(self) -> str:
         return 'MagneticIndoor'
+
+    @classmethod
+    def list_buildings(cls, data_root: Optional[str] = None) -> List[str]:
+        """List all available buildings in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of building IDs found in the dataset.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'magnetic_indoor'
+        else:
+            root = Path(data_root)
+
+        train_file = root / 'train_magnetic.csv'
+        if not train_file.exists():
+            return []
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['building'])
+            return sorted(df['building'].astype(str).unique().tolist())
+        except Exception:
+            return []
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of floor numbers found in the dataset.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'magnetic_indoor'
+        else:
+            root = Path(data_root)
+
+        train_file = root / 'train_magnetic.csv'
+        if not train_file.exists():
+            return []
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['floor'])
+            return sorted(df['floor'].astype(int).unique().tolist())
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -143,6 +206,31 @@ class MagneticIndoorDataset(MagneticDataset):
         # Load CSV
         df = pd.read_csv(filepath)
 
+        # Store available buildings and floors
+        if 'building' in df.columns:
+            self._available_buildings = sorted(df['building'].astype(str).unique().tolist())
+        if 'floor' in df.columns:
+            self._available_floors = sorted(df['floor'].astype(int).unique().tolist())
+
+        # Filter by building
+        if self._building_param != 'all' and 'building' in df.columns:
+            if isinstance(self._building_param, list):
+                selected_buildings = [str(b) for b in self._building_param]
+            else:
+                selected_buildings = [str(self._building_param)]
+            df = df[df['building'].astype(str).isin(selected_buildings)]
+
+        # Filter by floor
+        if self._floor_param != 'all' and 'floor' in df.columns:
+            if isinstance(self._floor_param, int):
+                selected_floors = [self._floor_param]
+            else:
+                selected_floors = list(self._floor_param)
+            df = df[df['floor'].astype(int).isin(selected_floors)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data found for building={self._building_param}, floor={self._floor_param}")
+
         # Expected columns: timestamp, x, y, floor, building, mag_x, mag_y, mag_z, mag_total
         # Process each sample
         for idx, row in df.iterrows():
@@ -173,11 +261,16 @@ class MagneticIndoorDataset(MagneticDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from magnetic field dataset ({self.split} split)")
+        filter_info = ""
+        if self._building_param != 'all':
+            filter_info += f" (building: {self._building_param})"
+        if self._floor_param != 'all':
+            filter_info += f" (floor: {self._floor_param})"
+        print(f"Loaded {len(self._signals)} samples from magnetic field dataset{filter_info}")
 
 
 
-def MagneticIndoor(data_root=None, split=None, download=False, **kwargs):
+def MagneticIndoor(data_root=None, split=None, download=False, building='all', floor='all', **kwargs):
     """
     Convenience function for loading MagneticIndoor dataset.
 
@@ -185,22 +278,31 @@ def MagneticIndoor(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        building: Building(s) to load. Can be:
+            - 'all': Load all buildings (default)
+            - Single building: '0', '1', etc.
+            - List of buildings: ['0', '1']
+        floor: Floor(s) to load. Can be:
+            - 'all': Load all floors (default)
+            - Single floor: 0, 1, 2, etc.
+            - List of floors: [0, 1, 2]
         **kwargs: Additional arguments passed to MagneticIndoorDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
         >>> # Load train and test separately (tuple unpacking)
         >>> train, test = MagneticIndoor(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = MagneticIndoor(split='all', download=True)
+        >>> # Load specific building/floor
+        >>> train = MagneticIndoor(building='0', floor=[1, 2], split='train')
 
-        >>> # Load only training set
-        >>> train = MagneticIndoor(split='train', download=True)
+        >>> # List available buildings/floors
+        >>> MagneticIndoor.list_buildings()
+        >>> MagneticIndoor.list_floors()
     """
     if split is None:
         # Return both train and test as tuple
@@ -208,12 +310,16 @@ def MagneticIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
+            floor=floor,
             **kwargs
         )
         test_dataset = MagneticIndoorDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -224,12 +330,16 @@ def MagneticIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
+            floor=floor,
             **kwargs
         )
         test_dataset = MagneticIndoorDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -239,6 +349,13 @@ def MagneticIndoor(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            building=building,
+            floor=floor,
             **kwargs
         )
+
+
+# Attach class methods to convenience function
+MagneticIndoor.list_buildings = MagneticIndoorDataset.list_buildings
+MagneticIndoor.list_floors = MagneticIndoorDataset.list_floors
 

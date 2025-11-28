@@ -13,7 +13,7 @@ Reference:
 Dataset URL: https://archive.ics.uci.edu/dataset/422/localization+data+for+person+activity
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -72,6 +72,7 @@ class WLANRSSIDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
@@ -79,6 +80,8 @@ class WLANRSSIDataset(WiFiDataset):
         **kwargs
     ):
         self.train_ratio = train_ratio
+        self._floor_param = floor
+        self._available_floors: List[int] = []
 
         super().__init__(
             data_root=data_root,
@@ -97,6 +100,42 @@ class WLANRSSIDataset(WiFiDataset):
     @property
     def num_aps(self) -> int:
         return self.NUM_WAPS
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of floor numbers found in the dataset.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'wlanrssi'
+        else:
+            root = Path(data_root)
+
+        data_file = root / 'dataset.txt'
+        if not data_file.exists():
+            return []
+
+        try:
+            floors = set()
+            with open(data_file, 'r') as f:
+                for line in f:
+                    parts = line.strip().split()
+                    if len(parts) >= 5:
+                        try:
+                            floor = int(float(parts[4]))
+                            floors.add(floor)
+                        except ValueError:
+                            continue
+            return sorted(list(floors))
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -176,6 +215,20 @@ class WLANRSSIDataset(WiFiDataset):
         if len(all_samples) == 0:
             raise RuntimeError("No valid samples could be parsed")
 
+        # Store available floors
+        self._available_floors = sorted(list(set(s['floor'] for s in all_samples)))
+
+        # Filter by floor
+        if self._floor_param != 'all':
+            if isinstance(self._floor_param, int):
+                selected_floors = [self._floor_param]
+            else:
+                selected_floors = list(self._floor_param)
+            all_samples = [s for s in all_samples if s['floor'] in selected_floors]
+
+        if len(all_samples) == 0:
+            raise ValueError(f"No data found for floor={self._floor_param}")
+
         # Split into train/test
         num_train = int(len(all_samples) * self.train_ratio)
 
@@ -199,11 +252,12 @@ class WLANRSSIDataset(WiFiDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from WLAN RSSI dataset ({self.split} split)")
+        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from WLAN RSSI dataset ({self.split} split){floor_info}")
 
 
 
-def WLANRSSI(data_root=None, split=None, download=False, **kwargs):
+def WLANRSSI(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading WLANRSSI dataset.
 
@@ -211,22 +265,26 @@ def WLANRSSI(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load. Can be:
+            - 'all': Load all floors (default)
+            - Single floor: 0, 1, 2, etc.
+            - List of floors: [0, 1, 2]
         **kwargs: Additional arguments passed to WLANRSSIDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
         >>> # Load train and test separately (tuple unpacking)
         >>> train, test = WLANRSSI(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = WLANRSSI(split='all', download=True)
+        >>> # Load specific floor(s)
+        >>> train = WLANRSSI(floor=[0, 1], split='train')
 
-        >>> # Load only training set
-        >>> train = WLANRSSI(split='train', download=True)
+        >>> # List available floors
+        >>> WLANRSSI.list_floors()
     """
     if split is None:
         # Return both train and test as tuple
@@ -234,12 +292,14 @@ def WLANRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -250,12 +310,14 @@ def WLANRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -265,6 +327,11 @@ def WLANRSSI(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            floor=floor,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+WLANRSSI.list_floors = WLANRSSIDataset.list_floors
 
