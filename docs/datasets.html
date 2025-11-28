@@ -721,6 +721,35 @@
             margin-left: 6px;
             text-transform: uppercase;
             letter-spacing: 0.02em;
+            position: relative;
+            cursor: help;
+        }
+
+        .multi-env-badge::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 10px;
+            background: var(--text-primary);
+            color: var(--bg-card);
+            font-size: 0.6875rem;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: normal;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .multi-env-badge:hover::after {
+            opacity: 1;
+            visibility: visible;
         }
 
         .env-params-list {
@@ -1108,6 +1137,12 @@
             return { RSSI: 'rssi', CSI: 'csi', ToF: 'tof', Hybrid: 'hybrid' }[s] || '';
         }
 
+        function getEnvTooltip(d) {
+            if (!d.envParams) return '';
+            const params = Object.keys(d.envParams).filter(k => k !== 'methods');
+            return params.map(p => `${p}: ${d.envParams[p]}`).join(' | ');
+        }
+
         function generateCode(d) {
             let code = `import indoorloc as iloc\ntrain, test = iloc.${d.name}(download=True)\nsignal, loc = train[0]`;
 
@@ -1308,7 +1343,7 @@
                     const cmp = compareList.includes(d.name);
                     html += `<tr class="${exp ? 'expanded' : ''}" data-name="${d.name}" onclick="toggleDetail('${d.name}')">`;
                     html += `<td onclick="event.stopPropagation()"><input type="checkbox" class="compare-cb" ${cmp ? 'checked' : ''} ${!cmp && compareList.length >= 4 ? 'disabled' : ''} onchange="toggleCompare(event,'${d.name}')"></td>`;
-                    html += `<td><div class="dataset-cell"><svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span class="dataset-name">${d.name}</span>${d.envParams ? '<span class="multi-env-badge">Multi-Env</span>' : ''}</div></td>`;
+                    html += `<td><div class="dataset-cell"><svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span class="dataset-name">${d.name}</span>${d.envParams ? `<span class="multi-env-badge" data-tooltip="${getEnvTooltip(d)}">Multi-Env</span>` : ''}</div></td>`;
                     if (view.cols.includes('Signal')) html += `<td><span class="signal-badge ${getSignalClass(d.signal)}">${d.signal}</span></td>`;
                     if (view.cols.includes('Source')) html += `<td>${d.dataSource}</td>`;
                     html += `<td class="samples-cell">${d.samples.split('/')[0].trim()}</td>`;
