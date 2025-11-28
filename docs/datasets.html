@@ -515,6 +515,23 @@
         .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
         .copy-btn.copied { background: var(--success); border-color: var(--success); color: white; }
 
+        .source-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .source-btn:hover { background: var(--primary-hover); }
+        .source-btn svg { flex-shrink: 0; }
+
         .code-content {
             padding: 10px;
             font-family: 'JetBrains Mono', monospace;
@@ -977,32 +994,32 @@
 
     <script>
         const datasets = [
-            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", floor: "0-4", methods: ["list_buildings()", "list_floors()"] } },
+            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", floor: "0-4", methods: ["list_buildings()", "list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/310/ujiindoorloc" },
             { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "1, 2", floor: "1-4", area: "per bldg", methods: ["list_buildings()", "list_floors()", "list_areas()"] } },
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
-            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] } },
+            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041" },
             { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
-            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation" },
             { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
             { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000", features: "~10 beacons", environment: "Controlled", citation: "UCI BLE dataset", bibtex: "@misc{blerssiu...}", tags: ["ble"] },
             { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"], envParams: { environment: "1-4", methods: ["list_environments()"] } },
             { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"] },
             { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000", features: "CSI+RSSI", environment: "CSU campus", citation: "CSU dataset", bibtex: "@misc{csuindoorloc...}", tags: ["csi", "multi-floor"] },
-            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"], envParams: { environment: "1-8" } },
+            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"], envParams: { environment: "1-8" }, url: "https://www.kaggle.com/competitions/wild-v2" },
             { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"], envParams: { trajectory: "1-6" } },
-            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"] },
+            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"], url: "https://ai-iot-sensing.github.io/projects/project.html" },
             { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000", features: "D2D CSI", environment: "D2D scenario", citation: "WiFi CSI D2D", bibtex: "@dataset{wificsi_d2d...}", tags: ["csi"] },
             { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"] },
-            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"] },
-            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: true, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"], envParams: { scenario: "indoor_los, indoor_nlos, outdoor, cell_edge", methods: ["list_scenarios()"] } },
-            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"] },
-            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"] },
-            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: true, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"], envParams: { scenario: "O1_60, I1_2p4, etc.", methods: ["list_scenarios()"] } },
-            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"] },
-            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"] },
+            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"], url: "https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset" },
+            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: true, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"], envParams: { scenario: "indoor_los, indoor_nlos, outdoor, cell_edge", methods: ["list_scenarios()"] }, url: "https://darus.uni-stuttgart.de/dataverse/dichasus" },
+            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"], url: "https://espargos.net/datasets/" },
+            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"], url: "https://doi.org/10.48804/0IMQDF" },
+            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: true, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"], envParams: { scenario: "O1_60, I1_2p4, etc.", methods: ["list_scenarios()"] }, url: "https://www.deepmimo.net" },
+            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2pos" },
+            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2taoa" },
             { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000", features: "TWR", environment: "Ranging", citation: "UWB ranging dataset", bibtex: "@dataset{uwbranging...}", tags: ["uwb"] },
             { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
@@ -1209,8 +1226,17 @@
                                     <li><span class="label">Features</span><span class="value">${d.features}</span></li>
                                     <li><span class="label">Env</span><span class="value">${d.environment}</span></li>
                                     <li><span class="label">Position</span><span class="value">${d.position}</span></li>
+                                    <li><span class="label">Download</span><span class="value">${d.auto ? '<span style="color:var(--success)">Auto</span>' : '<span style="color:var(--warning)">Manual</span>'}</span></li>
                                     ${renderEnvParams(d)}
                                 </ul>
+                                ${d.url ? `<a href="${d.url}" target="_blank" class="source-btn" onclick="event.stopPropagation()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                    Visit Source${!d.auto ? ' (Download)' : ''}
+                                </a>` : ''}
                             </div>
                             <div class="detail-section" style="grid-column:1/-1">
                                 <h4>Citation</h4>
