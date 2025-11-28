@@ -299,6 +299,8 @@ indoorloc/
 </tr>
 </table>
 
+<sub>📋 All datasets retain their original licenses. Downloads use official sources/APIs when available. [View license details →](https://qdtiger.github.io/indoorloc/datasets.html#licenses)</sub>
+
 ### Auto-Download Usage
 
 ```python

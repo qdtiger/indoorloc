@@ -59,6 +59,9 @@ vision = [
     "torchvision>=0.11.0",
     "opencv-python>=4.5.0",
 ]
+deepmimo = [
+    "DeepMIMO>=4.0.0b5",  # 注意: 需要 Python >= 3.10
+]
 full = [
     "torchvision>=0.11.0",
     "opencv-python>=4.5.0",

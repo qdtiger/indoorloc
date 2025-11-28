@@ -10,6 +10,7 @@ from .base import (
     UWBDataset,
     HybridDataset,
     MagneticDataset,
+    CSIDataset,
 )
 from .ujindoorloc import UJIndoorLocDataset, UJIndoorLoc
 from .sodindoorloc import SODIndoorLocDataset, SODIndoorLoc
@@ -57,6 +58,7 @@ __all__ = [
     'UWBDataset',
     'HybridDataset',
     'MagneticDataset',
+    'CSIDataset',
     'UJIndoorLocDataset',
     'UJIndoorLoc',
     'SODIndoorLocDataset',

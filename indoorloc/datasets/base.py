@@ -394,6 +394,50 @@ class HybridDataset(BaseDataset):
         return stats
 
 
+class CSIDataset(BaseDataset):
+    """Base class for CSI (Channel State Information) datasets.
+
+    Provides common functionality for CSI-based indoor localization
+    using massive MIMO and mmWave channel measurements.
+    """
+
+    @property
+    def signal_type(self) -> str:
+        return 'csi'
+
+    @property
+    @abstractmethod
+    def num_antennas(self) -> int:
+        """Return the number of antennas in the system."""
+        pass
+
+    @property
+    @abstractmethod
+    def num_subcarriers(self) -> int:
+        """Return the number of OFDM subcarriers."""
+        pass
+
+    def get_statistics(self) -> Dict[str, Any]:
+        """Compute CSI-specific statistics."""
+        stats = super().get_statistics()
+        stats['num_antennas'] = self.num_antennas
+        stats['num_subcarriers'] = self.num_subcarriers
+
+        import numpy as np
+
+        # Compute CSI statistics
+        magnitudes = []
+        for signal in self._signals:
+            mag = np.abs(signal.csi_complex)
+            magnitudes.append(np.mean(mag))
+
+        if magnitudes:
+            stats['avg_magnitude'] = float(np.mean(magnitudes))
+            stats['std_magnitude'] = float(np.std(magnitudes))
+
+        return stats
+
+
 class MagneticDataset(BaseDataset):
     """Base class for magnetic field (geomagnetic) datasets.
 
