@@ -6,1027 +6,753 @@
     <title>IndoorLoc Datasets</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         /* ========================================
-           Academic Theme - Sober & Professional
+           Clean Academic Theme - Navy Blue
            ======================================== */
         :root {
-            /* Core Colors - High Contrast, Neutral */
-            --bg-body: #ffffff;
-            --bg-card: #ffffff;
-            --bg-elevated: #f8f9fa;
-            --text-main: #111111;
-            --text-muted: #555555;
-            --text-subtle: #767676;
-
-            /* Academic Primary - Navy Blue */
+            /* Primary - Navy Blue */
             --primary: #003366;
             --primary-hover: #002244;
             --primary-light: #f0f4f8;
+            --primary-border: #d0dce8;
 
-            /* Semantic Colors */
-            --success: #059669;
-            --success-bg: transparent;
-            --success-text: #059669;
-            --warning: #d97706;
-            --warning-bg: transparent;
-            --warning-text: #d97706;
-
-            /* Borders & Shadows - Minimal */
+            --bg-body: #ffffff;
+            --bg-card: #ffffff;
+            --bg-muted: #f8f9fa;
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --text-muted: #767676;
             --border: #e0e0e0;
             --border-light: #f5f5f5;
-            --shadow-sm: none;
-            --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
 
-            /* Code Block */
-            --code-bg: #f5f7f9;
-            --code-header: #eef1f4;
-            --code-text: #2c3e50;
-            --code-border: #e1e4e8;
+            --success: #059669;
+            --warning: #d97706;
+
+            /* Signal type colors */
+            --color-rssi: #3b82f6;
+            --color-csi: #8b5cf6;
+            --color-tof: #ec4899;
+            --color-hybrid: #003366;
+            --color-other: #64748b;
         }
 
         [data-theme="dark"] {
-            --bg-body: #121212;
-            --bg-card: #1e1e1e;
-            --bg-elevated: #252525;
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --text-subtle: #666666;
-
             --primary: #64b5f6;
             --primary-hover: #90caf9;
             --primary-light: rgba(100, 181, 246, 0.1);
+            --primary-border: #2a4a6a;
 
-            --success-bg: transparent;
-            --success-text: #6ee7b7;
-            --warning-bg: transparent;
-            --warning-text: #fcd34d;
-
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --bg-muted: #252525;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #888888;
             --border: #333333;
             --border-light: #2a2a2a;
-
-            --code-bg: #1a1a1a;
-            --code-header: #252525;
-            --code-text: #d4d4d4;
-            --code-border: #333333;
         }
 
-        /* ========================================
-           Base Styles
-           ======================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
             line-height: 1.6;
-            font-size: 15px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Serif for Headings - Academic Look */
-        h1, h2, h3, h4, .card-header-title, .stat-card-title, .detail-section-title {
-            font-family: Georgia, 'Times New Roman', Times, serif;
-            font-weight: 600;
+            font-size: 14px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 32px 24px;
         }
 
         /* ========================================
-           Header - Document Style
+           Header - Minimal
            ======================================== */
         header {
-            text-align: left;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 42px;
-            color: var(--text-main);
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
-        }
-
-        header h1 span {
-            color: var(--primary);
-            font-weight: 400;
-            font-style: italic;
-        }
-
-        .subtitle {
-            font-size: 18px;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 0 24px 0;
-            font-family: Georgia, serif;
-        }
-
-        .header-actions {
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .github-link {
-            display: inline-flex;
-            align-items: center;
+        .header-left h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .header-left h1 span {
+            color: var(--primary);
+        }
+
+        .header-left p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        .header-right {
+            display: flex;
             gap: 8px;
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.15s ease;
         }
 
-        .github-link:hover {
-            background: var(--bg-elevated);
-            border-color: var(--text-muted);
-        }
-
-        .github-link svg { width: 18px; height: 18px; }
-
-        .theme-toggle {
-            display: inline-flex;
+        .icon-btn {
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: transparent;
+            width: 36px;
+            height: 36px;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 6px;
+            background: var(--bg-card);
             color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.15s ease;
+            text-decoration: none;
+            transition: all 0.15s;
         }
 
-        .theme-toggle:hover {
-            background: var(--bg-elevated);
-            color: var(--text-main);
+        .icon-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
-        .theme-toggle svg { width: 20px; height: 20px; }
+        .icon-btn svg { width: 18px; height: 18px; }
         .theme-toggle .sun-icon { display: none; }
-        .theme-toggle .moon-icon { display: block; }
         [data-theme="dark"] .theme-toggle .sun-icon { display: block; }
         [data-theme="dark"] .theme-toggle .moon-icon { display: none; }
 
         /* ========================================
-           Statistics Charts - Clean & Boxed
+           Stats Section with Donut Chart
            ======================================== */
         .stats-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 20px;
-        }
-
-        .stat-card-title {
-            font-size: 14px;
-            color: var(--text-main);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-            margin-bottom: 16px;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 160px;
-        }
-
-        /* ========================================
-           Scenario Tags - Filter Links Style
-           ======================================== */
-        .scenarios {
-            text-align: left;
-            margin-bottom: 30px;
-            padding: 16px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-
-        .scenarios-title {
-            display: inline-block;
-            margin-right: 12px;
-            font-weight: 600;
-            color: var(--text-main);
-            font-family: Georgia, serif;
-            font-size: 14px;
-        }
-
-        .scenario-tags {
-            display: inline-flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .scenario-tag {
-            padding: 4px 12px;
-            background: transparent;
-            border: 1px solid transparent;
-            border-radius: 2px;
-            font-size: 14px;
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-            text-decoration-color: transparent;
-            transition: all 0.15s ease;
-        }
-
-        .scenario-tag:hover {
-            text-decoration-color: var(--primary);
-            color: var(--primary-hover);
-        }
-
-        .scenario-tag.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            text-decoration: none;
-        }
-
-        /* ========================================
-           Navigation Bar - Simple Tabs
-           ======================================== */
-        .nav-bar {
-            background: var(--bg-card);
-            padding: 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: static;
-            border-radius: 0;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: var(--primary-light);
+            border: 1px solid var(--primary-border);
+            border-radius: 8px;
+        }
+
+        .stats-left {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .chart-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chart-container {
+            width: 72px;
+            height: 72px;
+            position: relative;
+        }
+
+        .chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .chart-center small {
+            font-size: 0.625rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background 0.15s;
+        }
+
+        .legend-row:hover {
+            background: var(--bg-card);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           Filters
+           ======================================== */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+        /* ========================================
+           Controls Bar
+           ======================================== */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .tabs {
             display: flex;
-            gap: 0;
-            background: transparent;
-            padding: 0;
+            gap: 4px;
         }
 
         .tab {
-            padding: 12px 16px;
+            padding: 6px 12px;
+            font-size: 0.8125rem;
+            background: none;
             border: none;
-            border-bottom: 2px solid transparent;
-            background: transparent;
-            font-size: 14px;
-            font-weight: 500;
+            border-radius: 4px;
             color: var(--text-muted);
             cursor: pointer;
-            border-radius: 0;
-            transition: all 0.15s ease;
+            transition: all 0.15s;
         }
 
-        .tab:hover { color: var(--text-main); }
-
-        .tab.active {
-            background: transparent;
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
+        .tab:hover { color: var(--text-primary); background: var(--bg-muted); }
+        .tab.active { color: var(--primary); background: var(--primary-light); font-weight: 500; }
 
         .search-box {
             position: relative;
-            flex-shrink: 0;
         }
 
         .search-box input {
-            width: 220px;
-            padding: 8px 12px 8px 36px;
-            font-size: 14px;
+            width: 200px;
+            padding: 6px 10px 6px 32px;
+            font-size: 0.8125rem;
             border: 1px solid var(--border);
             border-radius: 4px;
-            outline: none;
             background: var(--bg-card);
-            color: var(--text-main);
-            transition: all 0.15s ease;
+            color: var(--text-primary);
+            outline: none;
         }
 
-        .search-box input::placeholder {
-            color: var(--text-subtle);
-        }
-
-        .search-box input:focus {
-            border-color: var(--primary);
-        }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box input::placeholder { color: var(--text-muted); }
 
         .search-box svg {
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            color: var(--text-subtle);
+            width: 14px;
+            height: 14px;
+            color: var(--text-muted);
         }
 
         /* ========================================
-           Stats Bar
+           Results Count
            ======================================== */
-        .stats-bar {
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 20px;
+        .results-count {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
         }
 
-        .stats {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--text-subtle);
-            background: transparent;
-            padding: 0;
-            border: none;
-        }
-
-        .stats .count {
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .stats .sep {
-            color: var(--border);
-            margin: 0 4px;
-        }
+        .results-count strong { color: var(--text-primary); }
 
         /* ========================================
-           Cards & Tables - Document Style
+           Dataset Groups
            ======================================== */
-        .cards {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            padding-bottom: 100px;
-        }
+        .groups { display: flex; flex-direction: column; gap: 20px; }
 
-        .card {
+        .group {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 8px;
             overflow: hidden;
         }
 
-        .card-header {
-            background: var(--bg-elevated);
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
+        .group-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px 16px;
+            background: var(--bg-muted);
+            border-bottom: 1px solid var(--border);
         }
 
-        .card-header-title {
-            font-size: 16px;
-            color: var(--text-main);
+        .group-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        .card-header .count {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+        .group-count {
+            font-size: 0.6875rem;
             color: var(--text-muted);
-            font-weight: normal;
-            font-size: 12px;
-            padding: 2px 10px;
-            border-radius: 3px;
+            background: var(--bg-card);
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
         }
 
-        .card table {
+        /* Table */
+        .group table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .card th {
+        .group th {
             text-align: left;
-            padding: 12px 20px;
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            padding: 8px 16px;
+            font-size: 0.6875rem;
             font-weight: 600;
-            color: var(--text-main);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.03em;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border);
-        }
-
-        .card td {
-            padding: 12px 20px;
             border-bottom: 1px solid var(--border);
-            font-size: 14px;
-            color: var(--text-main);
-            vertical-align: middle;
         }
 
-        .card tr:last-child td { border-bottom: none; }
-
-        .card tbody tr {
-            transition: background-color 0.1s ease;
+        .group td {
+            padding: 10px 16px;
+            font-size: 0.8125rem;
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .card tbody tr:hover td {
-            background: var(--bg-elevated);
-        }
+        .group tr:last-child td { border-bottom: none; }
 
-        .card tbody tr.expanded td {
-            background: var(--primary-light);
-        }
-
-        .dataset-row {
+        .group tbody tr {
             cursor: pointer;
+            transition: background 0.1s;
         }
 
-        .dataset-name-cell {
+        .group tbody tr:hover { background: var(--bg-muted); }
+        .group tbody tr.expanded { background: var(--primary-light); }
+
+        .dataset-cell {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .expand-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+            transition: transform 0.15s;
+        }
+
+        .expanded .expand-icon { transform: rotate(90deg); color: var(--primary); }
+
         .dataset-name {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
             font-weight: 500;
             color: var(--primary);
         }
 
-        .expand-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            color: var(--text-subtle);
-            transition: transform 0.15s ease;
-            flex-shrink: 0;
-        }
-
-        .expanded .expand-icon {
-            transform: rotate(90deg);
-        }
-
-        .compare-checkbox {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        .samples-col {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* Signal Badge - Outlined Style */
         .signal-badge {
             display: inline-block;
-            padding: 2px 8px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            font-size: 12px;
+            padding: 2px 6px;
+            font-size: 0.6875rem;
             font-weight: 500;
-            color: var(--text-muted);
+            border-radius: 3px;
+            background: var(--bg-muted);
+            color: var(--text-secondary);
         }
 
-        .signal-badge.rssi { border-color: #3b82f6; color: #1d4ed8; }
-        .signal-badge.csi { border-color: #6366f1; color: #4338ca; }
-        .signal-badge.tof { border-color: #a855f7; color: #7e22ce; }
-        .signal-badge.hybrid { border-color: #ec4899; color: #be185d; }
-        .signal-badge.other { border-color: var(--border); color: var(--text-muted); }
+        .signal-badge.rssi { color: #2563eb; background: #dbeafe; }
+        .signal-badge.csi { color: #7c3aed; background: #ede9fe; }
+        .signal-badge.tof { color: #db2777; background: #fce7f3; }
+        .signal-badge.hybrid { color: var(--primary); background: var(--primary-light); }
 
-        [data-theme="dark"] .signal-badge.rssi { color: #60a5fa; }
-        [data-theme="dark"] .signal-badge.csi { color: #818cf8; }
-        [data-theme="dark"] .signal-badge.tof { color: #c084fc; }
-        [data-theme="dark"] .signal-badge.hybrid { color: #f472b6; }
+        [data-theme="dark"] .signal-badge.rssi { color: #60a5fa; background: #1e3a5f; }
+        [data-theme="dark"] .signal-badge.csi { color: #a78bfa; background: #3b2063; }
+        [data-theme="dark"] .signal-badge.tof { color: #f472b6; background: #5b2147; }
 
-        /* Download Status - Outlined */
-        .download-status {
+        .samples-cell { color: var(--text-muted); }
+
+        .status-dot {
             display: inline-flex;
             align-items: center;
-            font-size: 12px;
-            font-weight: normal;
-            padding: 2px 8px;
-            border-radius: 3px;
+            gap: 4px;
+            font-size: 0.6875rem;
         }
 
-        .download-status.auto {
-            background: transparent;
-            color: var(--success-text);
-            border: 1px solid #a7f3d0;
+        .status-dot::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
         }
 
-        .download-status.manual {
-            background: transparent;
-            color: var(--warning-text);
-            border: 1px solid #fde68a;
-        }
+        .status-dot.auto::before { background: var(--success); }
+        .status-dot.auto { color: var(--success); }
+        .status-dot.manual::before { background: var(--warning); }
+        .status-dot.manual { color: var(--warning); }
 
-        [data-theme="dark"] .download-status.auto { border-color: #065f46; }
-        [data-theme="dark"] .download-status.manual { border-color: #92400e; }
+        .compare-cb {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--primary);
+        }
 
         /* ========================================
            Detail Panel
            ======================================== */
         .detail-panel {
             display: none;
-            background: var(--bg-elevated);
+            padding: 16px;
+            background: var(--bg-muted);
             border-top: 1px solid var(--border);
         }
 
         .detail-panel.show { display: block; }
 
-        .detail-content {
-            padding: 24px;
-        }
-
         .detail-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
+            gap: 16px;
         }
 
-        .detail-section {
-            margin-bottom: 20px;
-        }
-
-        .detail-section:last-child { margin-bottom: 0; }
-
-        .detail-section-title {
-            font-size: 12px;
+        .detail-section h4 {
+            font-size: 0.6875rem;
             font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 12px;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.03em;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 4px;
+            margin-bottom: 8px;
         }
 
-        /* Code Block */
         .code-block {
-            background: var(--code-bg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 4px;
             overflow: hidden;
-            border: 1px solid var(--code-border);
         }
 
         .code-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            background: var(--code-header);
-            border-bottom: 1px solid var(--code-border);
-        }
-
-        .code-header span {
-            font-size: 12px;
-            color: var(--text-subtle);
-            font-weight: 500;
+            padding: 6px 10px;
+            background: var(--bg-muted);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.6875rem;
+            color: var(--text-muted);
         }
 
         .copy-btn {
-            padding: 4px 10px;
+            padding: 2px 8px;
+            font-size: 0.625rem;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 3px;
             color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s ease;
         }
 
-        .copy-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .copy-btn.copied {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
+        .copy-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .copy-btn.copied { background: var(--success); border-color: var(--success); color: white; }
 
         .code-content {
-            padding: 16px;
+            padding: 10px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--code-text);
-            line-height: 1.7;
+            font-size: 0.75rem;
+            line-height: 1.6;
             overflow-x: auto;
         }
 
-        /* Info List */
         .info-list {
             list-style: none;
             background: var(--bg-card);
-            border-radius: 4px;
-            overflow: hidden;
             border: 1px solid var(--border);
+            border-radius: 4px;
         }
 
         .info-list li {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
             display: flex;
-            font-size: 13px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.75rem;
         }
 
         .info-list li:last-child { border-bottom: none; }
+        .info-list .label { width: 80px; color: var(--text-muted); flex-shrink: 0; }
+        .info-list .value { color: var(--text-primary); }
 
-        .info-label {
-            color: var(--text-muted);
-            width: 100px;
-            flex-shrink: 0;
-            font-weight: 500;
-        }
-
-        .info-value {
-            color: var(--text-main);
-        }
-
-        /* Citation */
-        .citation-block {
+        .citation-box {
+            padding: 10px;
             background: var(--bg-card);
-            border-radius: 4px;
-            overflow: hidden;
             border: 1px solid var(--border);
-        }
-
-        .citation {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-style: italic;
-            padding: 14px;
             border-left: 3px solid var(--primary);
-            font-family: Georgia, 'Times New Roman', serif;
-            line-height: 1.6;
-            background: var(--bg-card);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
-        .citation-actions {
-            display: flex;
-            gap: 8px;
-            padding: 10px 14px;
-            background: var(--bg-elevated);
-            border-top: 1px solid var(--border);
-        }
-
-        .citation-btn {
-            padding: 4px 10px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .citation-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .citation-btn.copied {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
+        .cite-btns { display: flex; gap: 6px; }
 
         /* ========================================
-           Compare Panel - Simpler
+           Compare Panel
            ======================================== */
         .compare-panel {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--bg-card);
-            border-top: 2px solid var(--primary);
-            padding: 20px 24px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
             transform: translateY(100%);
-            transition: transform 0.2s ease;
-            z-index: 200;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            z-index: 100;
         }
 
-        .compare-panel.active {
-            transform: translateY(0);
-        }
+        .compare-panel.active { transform: translateY(0); }
 
-        .compare-header {
+        .compare-inner {
+            max-width: 960px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
         }
 
-        .compare-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-            font-family: Georgia, serif;
+        .compare-info {
+            font-size: 0.875rem;
         }
 
-        .compare-count {
-            color: var(--primary);
-        }
-
-        .compare-actions {
+        .compare-chips {
             display: flex;
-            gap: 12px;
-        }
-
-        .compare-btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .compare-btn-primary {
-            background: var(--primary);
-            border: none;
-            color: white;
-        }
-
-        .compare-btn-primary:hover {
-            background: var(--primary-hover);
-        }
-
-        .compare-btn-secondary {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-
-        .compare-btn-secondary:hover {
-            border-color: var(--text-muted);
-            color: var(--text-main);
-        }
-
-        .compare-selected {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 6px;
         }
 
         .compare-chip {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-main);
+            gap: 4px;
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 4px;
+            font-size: 0.75rem;
         }
 
         .compare-chip button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             background: none;
             border: none;
-            color: var(--text-muted);
+            color: rgba(255,255,255,0.7);
             cursor: pointer;
             padding: 0;
-            width: 14px;
-            height: 14px;
+            line-height: 1;
         }
 
-        .compare-chip button:hover {
-            color: var(--text-main);
+        .compare-chip button:hover { color: white; }
+
+        .compare-actions { display: flex; gap: 8px; }
+
+        .compare-btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
         }
 
-        /* Compare Table Modal */
+        .compare-btn-primary {
+            background: white;
+            border: none;
+            color: var(--primary);
+        }
+
+        .compare-btn-primary:hover { background: var(--primary-light); }
+
+        .compare-btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .compare-btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        /* Compare Modal */
         .compare-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0,0,0,0.5);
-            z-index: 300;
+            z-index: 200;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 20px;
         }
 
-        .compare-modal.active {
-            display: flex;
-        }
+        .compare-modal.active { display: flex; }
 
         .compare-modal-content {
             background: var(--bg-card);
-            border-radius: 4px;
-            max-width: 900px;
+            border-radius: 8px;
+            max-width: 800px;
             width: 100%;
             max-height: 80vh;
             overflow: auto;
-            box-shadow: var(--shadow-lg);
         }
 
         .compare-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            background: var(--bg-card);
         }
 
-        .compare-modal-title {
-            font-size: 18px;
+        .compare-modal-header h3 {
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--text-main);
-            font-family: Georgia, serif;
         }
 
-        .compare-modal-close {
+        .modal-close {
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            transition: all 0.15s ease;
+            padding: 4px;
         }
 
-        .compare-modal-close:hover {
-            background: var(--bg-elevated);
-            color: var(--text-main);
-        }
+        .modal-close:hover { color: var(--text-primary); }
 
         .compare-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.8125rem;
         }
 
         .compare-table th {
-            padding: 12px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+            padding: 10px 14px;
             text-align: left;
-            background: var(--bg-elevated);
-            border-bottom: 2px solid var(--border);
-            position: sticky;
-            top: 57px;
+            background: var(--bg-muted);
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
         }
 
         .compare-table td {
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--text-main);
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border-light);
-            vertical-align: top;
         }
 
-        .compare-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .compare-table .attr-name {
-            font-weight: 600;
-            color: var(--text-muted);
-            background: var(--bg-elevated);
-            width: 120px;
-        }
+        .compare-table .attr { color: var(--text-muted); background: var(--bg-muted); font-weight: 500; width: 120px; }
 
         /* ========================================
-           Empty State
+           Empty
            ======================================== */
         .empty {
             text-align: center;
-            padding: 60px 20px;
+            padding: 48px 20px;
             color: var(--text-muted);
         }
 
-        .empty-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 16px;
-            color: var(--text-subtle);
+        .empty svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
         }
 
         /* ========================================
            Responsive
            ======================================== */
-        @media (max-width: 768px) {
-            .container { padding: 24px 16px; }
-
-            header { text-align: center; }
-            header h1 { font-size: 32px; }
-            .header-actions { justify-content: center; }
-
-            .subtitle { font-size: 16px; }
-
-            .stats-section {
-                grid-template-columns: 1fr;
-            }
-
-            .scenarios {
-                text-align: center;
-            }
-
-            .scenarios-title {
-                display: block;
-                margin-bottom: 12px;
-            }
-
-            .scenario-tags {
-                justify-content: center;
-            }
-
-            .nav-bar {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-                padding: 12px;
-                border: 1px solid var(--border);
-                border-radius: 4px;
-                margin-bottom: 20px;
-            }
-
-            .tabs {
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .search-box { width: 100%; }
+        @media (max-width: 640px) {
+            .container { padding: 20px 16px; }
+            header { flex-direction: column; gap: 16px; }
+            .stats-section { flex-direction: column; align-items: stretch; }
+            .stats-left { gap: 16px; }
+            .chart-wrapper { justify-content: center; }
+            .controls { flex-direction: column; gap: 12px; align-items: stretch; }
             .search-box input { width: 100%; }
-
-            .card th, .card td { padding: 10px 14px; }
-
             .detail-grid { grid-template-columns: 1fr; }
-
-            .compare-panel {
-                padding: 16px;
-            }
-
-            .compare-modal-content {
-                max-height: 90vh;
-            }
+            .group th, .group td { padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header>
-            <h1>IndoorLoc <span>Datasets</span></h1>
-            <p class="subtitle">
-                A curated collection of 37+ indoor localization datasets.
-                Standardized for research benchmarks and cross-scenario analysis.
-            </p>
-            <div class="header-actions">
-                <a href="https://github.com/qdtiger/indoorloc" class="github-link" target="_blank">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="header-left">
+                <h1>IndoorLoc <span>Datasets</span></h1>
+                <p>37+ curated datasets for indoor positioning research</p>
+            </div>
+            <div class="header-right">
+                <a href="https://github.com/qdtiger/indoorloc" class="icon-btn" target="_blank" title="GitHub">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                     </svg>
-                    View on GitHub
                 </a>
-                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <button class="icon-btn theme-toggle" onclick="toggleTheme()" title="Toggle theme">
                     <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
@@ -1045,152 +771,75 @@
             </div>
         </header>
 
-        <!-- Statistics Charts -->
+        <!-- Stats Section with Donut Chart -->
         <div class="stats-section">
-            <div class="stat-card">
-                <div class="stat-card-title">Signal Type Distribution</div>
+            <div class="stats-left">
+                <div class="stat-item"><span class="stat-value">37+</span><span class="stat-label">Datasets</span></div>
+                <div class="stat-item"><span class="stat-value">15</span><span class="stat-label">CSI</span></div>
+                <div class="stat-item"><span class="stat-value">28</span><span class="stat-label">Auto-DL</span></div>
+                <div class="stat-item"><span class="stat-value">500k+</span><span class="stat-label">Samples</span></div>
+            </div>
+            <div class="chart-wrapper">
                 <div class="chart-container">
                     <canvas id="signalChart"></canvas>
+                    <div class="chart-center">
+                        <span id="chartTotal">37</span>
+                        <small>total</small>
+                    </div>
                 </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-card-title">Data Source Distribution</div>
-                <div class="chart-container">
-                    <canvas id="sourceChart"></canvas>
-                </div>
+                <div class="chart-legend" id="chartLegend"></div>
             </div>
         </div>
 
-        <!-- Scenario Tags -->
-        <div class="scenarios">
-            <div class="scenarios-title">I want to work on...</div>
-            <div class="scenario-tags">
-                <button class="scenario-tag" data-filter="wifi-rssi">WiFi Fingerprinting</button>
-                <button class="scenario-tag" data-filter="csi">CSI Localization</button>
-                <button class="scenario-tag" data-filter="ble">BLE Beacon</button>
-                <button class="scenario-tag" data-filter="uwb">UWB Ranging</button>
-                <button class="scenario-tag" data-filter="multi-floor">Multi-floor</button>
-                <button class="scenario-tag" data-filter="fusion">Sensor Fusion</button>
-                <button class="scenario-tag active" data-filter="all">Show All</button>
-            </div>
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="wifi-rssi">WiFi RSSI</button>
+            <button class="filter-btn" data-filter="csi">CSI</button>
+            <button class="filter-btn" data-filter="ble">BLE</button>
+            <button class="filter-btn" data-filter="uwb">UWB</button>
+            <button class="filter-btn" data-filter="multi-floor">Multi-floor</button>
+            <button class="filter-btn" data-filter="fusion">Fusion</button>
         </div>
 
-        <!-- Navigation -->
-        <div class="nav-bar">
+        <div class="controls">
             <div class="tabs">
                 <button class="tab active" data-view="signal">Signal Type</button>
-                <button class="tab" data-view="source">Signal Source</button>
+                <button class="tab" data-view="source">Source</button>
                 <button class="tab" data-view="data">Data Source</button>
-                <button class="tab" data-view="position">Position Type</button>
+                <button class="tab" data-view="position">Position</button>
             </div>
             <div class="search-box">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" id="search" placeholder="Search datasets...">
+                <input type="text" id="search" placeholder="Search...">
             </div>
         </div>
 
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <div class="stats" id="stats"></div>
-        </div>
-
-        <!-- Cards -->
-        <div class="cards" id="cards"></div>
-
-        <!-- Licenses Section -->
-        <section id="licenses" class="card" style="margin-top: 32px;">
-            <div class="card-header">
-                <span class="card-header-title">Third-Party Dataset Licenses</span>
-            </div>
-            <div style="padding: 20px;">
-                <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">
-                    IndoorLoc provides convenient access to third-party research datasets.
-                    <strong>All datasets retain their original licenses.</strong>
-                    Users must comply with each dataset's terms of use.
-                </p>
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid var(--border);">
-                            <th style="text-align: left; padding: 10px 12px; color: var(--text-muted);">Dataset</th>
-                            <th style="text-align: left; padding: 10px 12px; color: var(--text-muted);">License</th>
-                            <th style="text-align: left; padding: 10px 12px; color: var(--text-muted);">Source</th>
-                            <th style="text-align: left; padding: 10px 12px; color: var(--text-muted);">Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 10px 12px;">UJIndoorLoc</td>
-                            <td style="padding: 10px 12px;">CC BY 4.0</td>
-                            <td style="padding: 10px 12px;"><a href="https://archive.ics.uci.edu/dataset/310/ujiindoorloc" target="_blank" style="color: var(--primary);">UCI ML</a></td>
-                            <td style="padding: 10px 12px; color: var(--text-muted);">Cite original paper</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 10px 12px;"><strong>DeepMIMO</strong></td>
-                            <td style="padding: 10px 12px;"><strong>CC BY-NC-SA 4.0</strong></td>
-                            <td style="padding: 10px 12px;"><a href="https://www.deepmimo.net" target="_blank" style="color: var(--primary);">deepmimo.net</a></td>
-                            <td style="padding: 10px 12px; color: var(--text-muted);"><strong>Non-commercial only</strong>, <a href="https://pypi.org/project/DeepMIMO/" target="_blank" style="color: var(--primary);">official API</a></td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 10px 12px;">Tampere</td>
-                            <td style="padding: 10px 12px;">CC BY 4.0</td>
-                            <td style="padding: 10px 12px;"><a href="https://zenodo.org/record/1066041" target="_blank" style="color: var(--primary);">Zenodo</a></td>
-                            <td style="padding: 10px 12px; color: var(--text-muted);">Cite original paper</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 10px 12px;">DICHASUS</td>
-                            <td style="padding: 10px 12px;">CC BY 4.0</td>
-                            <td style="padding: 10px 12px;"><a href="https://darus.uni-stuttgart.de/dataverse/dichasus" target="_blank" style="color: var(--primary);">DaRUS</a></td>
-                            <td style="padding: 10px 12px; color: var(--text-muted);">Cite original paper</td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 10px 12px;">iBeaconRSSI</td>
-                            <td style="padding: 10px 12px;">CC BY 4.0</td>
-                            <td style="padding: 10px 12px;"><a href="https://zenodo.org/record/1066044" target="_blank" style="color: var(--primary);">Zenodo</a></td>
-                            <td style="padding: 10px 12px; color: var(--text-muted);">Cite original paper</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px 12px;" colspan="4" class="text-muted">
-                                <em>Other datasets: Most use CC BY 4.0 or similar open licenses. Check individual dataset pages for specific terms.</em>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div style="margin-top: 20px; padding: 16px; background: var(--bg-elevated); border-radius: 4px; border-left: 3px solid var(--primary);">
-                    <strong style="display: block; margin-bottom: 8px;">DeepMIMO Citation</strong>
-                    <p style="font-style: italic; color: var(--text-muted); margin: 0; font-family: Georgia, serif;">
-                        A. Alkhateeb, "DeepMIMO: A Generic Deep Learning Dataset for Millimeter Wave and Massive MIMO Applications,"
-                        Proc. Information Theory and Applications Workshop (ITA), Feb. 2019.
-                    </p>
-                </div>
-            </div>
-        </section>
+        <div class="results-count" id="results"></div>
+        <div class="groups" id="groups"></div>
     </div>
 
-    <!-- Compare Panel -->
     <div class="compare-panel" id="comparePanel">
-        <div class="compare-header">
-            <div>
-                <span class="compare-title">Compare Datasets</span>
-                <span class="compare-count" id="compareCount">(0 selected)</span>
+        <div class="compare-inner">
+            <div class="compare-info">
+                <span>Compare: <strong id="compareCount">0</strong> selected</span>
+                <div class="compare-chips" id="compareChips"></div>
             </div>
             <div class="compare-actions">
-                <button class="compare-btn compare-btn-secondary" onclick="clearCompare()">Clear All</button>
-                <button class="compare-btn compare-btn-primary" onclick="showCompareModal()">Compare Now</button>
+                <button class="compare-btn compare-btn-secondary" onclick="clearCompare()">Clear</button>
+                <button class="compare-btn compare-btn-primary" onclick="showCompareModal()">Compare</button>
             </div>
         </div>
-        <div class="compare-selected" id="compareSelected"></div>
     </div>
 
-    <!-- Compare Modal -->
     <div class="compare-modal" id="compareModal">
         <div class="compare-modal-content">
             <div class="compare-modal-header">
-                <span class="compare-modal-title">Dataset Comparison</span>
-                <button class="compare-modal-close" onclick="closeCompareModal()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <h3>Dataset Comparison</h3>
+                <button class="modal-close" onclick="closeCompareModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
@@ -1201,453 +850,53 @@
     </div>
 
     <script>
-        // Dataset definitions with BibTeX
         const datasets = [
-            {
-                name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "UCI", position: "2D+Floor", auto: true, file: "ujindoorloc.py",
-                samples: "19,937 train / 1,111 test", features: "520 WAPs",
-                environment: "3 buildings, 5 floors, Universitat Jaume I campus",
-                citation: "Torres-Sospedra et al., UJIndoorLoc: A new multi-building and multi-floor database, IPIN 2014",
-                bibtex: `@inproceedings{torres2014ujindoorloc,
-  title={UJIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems},
-  author={Torres-Sospedra, Joaqu{\\'i}n and others},
-  booktitle={International Conference on Indoor Positioning and Indoor Navigation (IPIN)},
-  year={2014}
-}`,
-                tags: ["wifi-rssi", "multi-floor"]
-            },
-            {
-                name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "sodindoorloc.py",
-                samples: "~2,000 per building", features: "~100 WAPs",
-                environment: "2 buildings (CETC331, HCXY), multi-floor office",
-                citation: "SODIndoorLoc: WiFi fingerprint dataset for indoor localization",
-                bibtex: `@misc{sodindoorloc,
-  title={SODIndoorLoc: WiFi fingerprint dataset for indoor localization},
-  howpublished={GitHub Repository}
-}`,
-                tags: ["wifi-rssi", "multi-floor"]
-            },
-            {
-                name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "longtermwifi.py",
-                samples: "~50,000 over 15 months", features: "~200 WAPs",
-                environment: "University building, temporal variations study",
-                citation: "Long-term WiFi fingerprinting dataset for indoor positioning",
-                bibtex: `@dataset{longtermwifi,
-  title={Long-term WiFi fingerprinting dataset for indoor positioning},
-  publisher={Zenodo}
-}`,
-                tags: ["wifi-rssi", "multi-floor"]
-            },
-            {
-                name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "tampere.py",
-                samples: "~1,000 reference points", features: "~300 WAPs",
-                environment: "Tampere University, multi-floor academic building",
-                citation: "Tampere University WiFi fingerprinting dataset",
-                bibtex: `@dataset{tampere,
-  title={Tampere University WiFi fingerprinting dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["wifi-rssi", "multi-floor"]
-            },
-            {
-                name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "UCI", position: "2D", auto: true, file: "wlanrssi.py",
-                samples: "250 reference points", features: "7 WAPs",
-                environment: "Small indoor area, controlled environment",
-                citation: "UCI Machine Learning Repository - WLAN RSSI dataset",
-                bibtex: `@misc{wlanrssi,
-  title={Wireless Indoor Localization Data Set},
-  publisher={UCI Machine Learning Repository}
-}`,
-                tags: ["wifi-rssi"]
-            },
-            {
-                name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "tuji1.py",
-                samples: "~5,000 samples", features: "~150 WAPs",
-                environment: "Multi-device collection, university building",
-                citation: "TUJI1 WiFi fingerprinting dataset, Tampere University",
-                bibtex: `@misc{tuji1,
-  title={TUJI1 WiFi fingerprinting dataset},
-  author={Tampere University}
-}`,
-                tags: ["wifi-rssi", "multi-floor"]
-            },
-            {
-                name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi",
-                dataSource: "Zenodo", position: "2D", auto: true, file: "rss_based.py",
-                samples: "~800 samples", features: "~50 WAPs",
-                environment: "Office environment, single floor",
-                citation: "RSS-based indoor positioning dataset",
-                bibtex: `@dataset{rssbased,
-  title={RSS-based indoor positioning dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["wifi-rssi"]
-            },
-            {
-                name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE",
-                dataSource: "UCI", position: "2D", auto: true, file: "ibeacon_rssi.py",
-                samples: "1,420 samples", features: "13 iBeacons",
-                environment: "Indoor space with deployed iBeacons",
-                citation: "UCI ML Repository - iBeacon RSSI dataset",
-                bibtex: `@misc{ibeaconrssi,
-  title={iBeacon RSSI Data Set},
-  publisher={UCI Machine Learning Repository}
-}`,
-                tags: ["ble"]
-            },
-            {
-                name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "ble_indoor.py",
-                samples: "~3,000 samples", features: "~20 beacons",
-                environment: "Multi-floor building with BLE beacons",
-                citation: "BLE indoor positioning dataset",
-                bibtex: `@misc{bleindoor,
-  title={BLE indoor positioning dataset},
-  howpublished={GitHub Repository}
-}`,
-                tags: ["ble", "multi-floor"]
-            },
-            {
-                name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE",
-                dataSource: "UCI", position: "2D", auto: true, file: "ble_rssi_uci.py",
-                samples: "~2,000 samples", features: "~10 beacons",
-                environment: "Controlled indoor environment",
-                citation: "UCI Machine Learning Repository - BLE RSSI dataset",
-                bibtex: `@misc{blerssiu,
-  title={BLE RSSI Data Set},
-  publisher={UCI Machine Learning Repository}
-}`,
-                tags: ["ble"]
-            },
-            {
-                name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "csi_indoor.py",
-                samples: "~10,000 samples", features: "CSI amplitude/phase",
-                environment: "Indoor office with commodity WiFi",
-                citation: "CSI-based indoor localization dataset",
-                bibtex: `@misc{csiindoor,
-  title={CSI-based indoor localization dataset},
-  howpublished={GitHub Repository}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D", auto: true, file: "csi_fingerprint.py",
-                samples: "~5,000 samples", features: "30 subcarriers x 3 antennas",
-                environment: "Lab environment, Intel 5300 NIC",
-                citation: "WiFi CSI fingerprinting for indoor positioning",
-                bibtex: `@misc{csifingerprint,
-  title={WiFi CSI fingerprinting for indoor positioning},
-  howpublished={GitHub Repository}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "hwild.py",
-                samples: "~8,000 samples", features: "CSI from commodity hardware",
-                environment: "Multi-room indoor environment",
-                citation: "HWILD: WiFi-based indoor localization dataset",
-                bibtex: `@misc{hwild,
-  title={HWILD: WiFi-based indoor localization dataset},
-  howpublished={GitHub Repository}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "GitHub", position: "2D+Floor", auto: true, file: "csu_csi_rssi.py",
-                samples: "~6,000 samples", features: "CSI + RSSI combined",
-                environment: "Colorado State University campus buildings",
-                citation: "CSU Indoor Navigation CSI-RSSI Dataset",
-                bibtex: `@misc{csuindoorloc,
-  title={CSU Indoor Navigation CSI-RSSI Dataset},
-  author={Colorado State University}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "Kaggle", position: "2D+Floor", auto: false, file: "wild_v2.py",
-                samples: "~15,000 samples", features: "CSI measurements",
-                environment: "Large-scale indoor environment",
-                citation: "WILD v2: WiFi-based Indoor Localization Dataset",
-                bibtex: `@misc{wildv2,
-  title={WILD v2: WiFi-based Indoor Localization Dataset},
-  publisher={Kaggle}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "haloc.py",
-                samples: "~12,000 samples", features: "CSI amplitude",
-                environment: "Office building, multiple APs",
-                citation: "HALOC: Hardware-agnostic Localization CSI dataset",
-                bibtex: `@dataset{haloc,
-  title={HALOC: Hardware-agnostic Localization CSI dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "Web", position: "2D", auto: false, file: "csi_bench.py",
-                samples: "Benchmark collection", features: "Various CSI formats",
-                environment: "Multiple indoor scenarios",
-                citation: "CSIBench: A benchmark for CSI-based localization",
-                bibtex: `@misc{csibench,
-  title={CSIBench: A benchmark for CSI-based localization}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi",
-                dataSource: "Figshare", position: "2D", auto: true, file: "wifi_csi_d2d.py",
-                samples: "~4,000 samples", features: "Device-to-device CSI",
-                environment: "Indoor D2D communication scenario",
-                citation: "WiFi CSI for device-to-device localization",
-                bibtex: `@dataset{wificsi_d2d,
-  title={WiFi CSI for device-to-device localization},
-  publisher={Figshare}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE",
-                dataSource: "Figshare", position: "2D", auto: true, file: "opencsi.py",
-                samples: "~20,000 samples", features: "LTE CSI measurements",
-                environment: "Cellular network indoor coverage",
-                citation: "OpenCSI: Open LTE CSI dataset for positioning",
-                bibtex: `@dataset{opencsi,
-  title={OpenCSI: Open LTE CSI dataset for positioning},
-  publisher={Figshare}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO",
-                dataSource: "IEEE", position: "2D", auto: false, file: "mamimo_csi.py",
-                samples: "~30,000 samples", features: "64-antenna array CSI",
-                environment: "Massive MIMO testbed",
-                citation: "Massive MIMO CSI dataset for positioning",
-                bibtex: `@misc{mamimocsi,
-  title={Massive MIMO CSI dataset for positioning},
-  publisher={IEEE DataPort}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO",
-                dataSource: "DaRUS", position: "3D", auto: false, file: "dichasus.py",
-                samples: "~50,000 samples", features: "Distributed antenna CSI",
-                environment: "Industrial hall, 3D positioning",
-                citation: "DICHASUS: Distributed CSI dataset",
-                bibtex: `@dataset{dichasus,
-  title={DICHASUS: Distributed Channel Measurements for AI-Aided Positioning},
-  publisher={DaRUS}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO",
-                dataSource: "Web", position: "2D", auto: false, file: "espargos.py",
-                samples: "~10,000 samples", features: "Sparse antenna array",
-                environment: "Research testbed",
-                citation: "ESPARGOS: Sparse array positioning dataset",
-                bibtex: `@misc{espargos,
-  title={ESPARGOS: Sparse array positioning dataset}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO",
-                dataSource: "DOI", position: "3D", auto: false, file: "mamimo_uav.py",
-                samples: "~8,000 samples", features: "UAV-collected CSI",
-                environment: "Outdoor-indoor transition, drone platform",
-                citation: "Massive MIMO UAV localization dataset",
-                bibtex: `@misc{mamimouav,
-  title={Massive MIMO UAV localization dataset}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO",
-                dataSource: "Web", position: "3D", auto: false, file: "deepmimo.py",
-                samples: "Synthetic (configurable)", features: "Ray-tracing based CSI",
-                environment: "Simulated urban/indoor scenarios",
-                citation: "DeepMIMO: Generic deep learning dataset for mmWave/mMIMO",
-                bibtex: `@article{deepmimo,
-  title={DeepMIMO: A Generic Deep Learning Dataset for Millimeter Wave and Massive MIMO Applications},
-  author={Alkhateeb, Ahmed},
-  journal={arXiv preprint arXiv:1902.06435},
-  year={2019}
-}`,
-                tags: ["csi"]
-            },
-            {
-                name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF",
-                dataSource: "TIB", position: "2D+Floor", auto: false, file: "csi2pos.py",
-                samples: "~25,000 samples", features: "Sub-6GHz CSI",
-                environment: "Office building, multiple floors",
-                citation: "CSI2Pos: Channel state to position mapping",
-                bibtex: `@dataset{csi2pos,
-  title={CSI2Pos: Channel state to position mapping},
-  publisher={TIB}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF",
-                dataSource: "TIB", position: "2D+Floor", auto: false, file: "csi2taoa.py",
-                samples: "~20,000 samples", features: "Time/Angle of Arrival",
-                environment: "Indoor with geometric constraints",
-                citation: "CSI-based Time and Angle of Arrival dataset",
-                bibtex: `@dataset{csi2taoa,
-  title={CSI-based Time and Angle of Arrival dataset},
-  publisher={TIB}
-}`,
-                tags: ["csi", "multi-floor"]
-            },
-            {
-                name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB",
-                dataSource: "Zenodo", position: "3D", auto: true, file: "uwb_indoor.py",
-                samples: "~15,000 samples", features: "UWB ranging + IMU",
-                environment: "3D indoor tracking scenario",
-                citation: "UWB indoor positioning and tracking dataset",
-                bibtex: `@dataset{uwbindoor,
-  title={UWB indoor positioning and tracking dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["uwb"]
-            },
-            {
-                name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB",
-                dataSource: "Zenodo", position: "2D", auto: true, file: "uwb_ranging.py",
-                samples: "~5,000 ranging measurements", features: "Two-way ranging",
-                environment: "Controlled ranging experiments",
-                citation: "UWB two-way ranging dataset",
-                bibtex: `@dataset{uwbranging,
-  title={UWB two-way ranging dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["uwb"]
-            },
-            {
-                name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "magnetic_indoor.py",
-                samples: "~8,000 samples", features: "3-axis magnetic field",
-                environment: "Building with magnetic anomalies",
-                citation: "Magnetic field indoor positioning dataset",
-                bibtex: `@dataset{magneticindoor,
-  title={Magnetic field indoor positioning dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["multi-floor"]
-            },
-            {
-                name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "wifi_imu_hybrid.py",
-                samples: "~12,000 samples", features: "WiFi RSSI + IMU 6-axis",
-                environment: "Pedestrian navigation scenario",
-                citation: "WiFi-IMU fusion dataset for indoor navigation",
-                bibtex: `@dataset{wifiimuhybrid,
-  title={WiFi-IMU fusion dataset for indoor navigation},
-  publisher={Zenodo}
-}`,
-                tags: ["fusion", "multi-floor"]
-            },
-            {
-                name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor",
-                dataSource: "UCI", position: "2D+Floor", auto: true, file: "wifi_magnetic_hybrid.py",
-                samples: "~6,000 samples", features: "WiFi + Magnetometer",
-                environment: "Office building with steel structures",
-                citation: "WiFi and magnetic field fusion dataset",
-                bibtex: `@misc{wifimagnetichybrid,
-  title={WiFi and magnetic field fusion dataset},
-  publisher={UCI Machine Learning Repository}
-}`,
-                tags: ["fusion", "multi-floor"]
-            },
-            {
-                name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "multimodal_indoor.py",
-                samples: "~10,000 samples", features: "WiFi + BLE + IMU + Mag",
-                environment: "Shopping mall, complex environment",
-                citation: "Multi-modal indoor positioning dataset",
-                bibtex: `@dataset{multimodalindoor,
-  title={Multi-modal indoor positioning dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["fusion", "multi-floor"]
-            },
-            {
-                name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "sensor_fusion.py",
-                samples: "~8,000 samples", features: "Multiple sensor streams",
-                environment: "Research building, sensor fusion study",
-                citation: "Sensor fusion for indoor positioning",
-                bibtex: `@dataset{sensorfusion,
-  title={Sensor fusion for indoor positioning},
-  publisher={Zenodo}
-}`,
-                tags: ["fusion", "multi-floor"]
-            },
-            {
-                name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "vlc_indoor.py",
-                samples: "~3,000 samples", features: "Visible light measurements",
-                environment: "Office with LED lighting",
-                citation: "Visible Light Communication positioning dataset",
-                bibtex: `@dataset{vlcindoor,
-  title={Visible Light Communication positioning dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["multi-floor"]
-            },
-            {
-                name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound",
-                dataSource: "Zenodo", position: "2D+Floor", auto: true, file: "ultrasound_indoor.py",
-                samples: "~2,000 samples", features: "Ultrasonic ToF",
-                environment: "Room-level positioning",
-                citation: "Ultrasound-based indoor positioning dataset",
-                bibtex: `@dataset{ultrasoundindoor,
-  title={Ultrasound-based indoor positioning dataset},
-  publisher={Zenodo}
-}`,
-                tags: ["multi-floor"]
-            },
-            {
-                name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID",
-                dataSource: "UCI", position: "2D+Floor", auto: true, file: "rfid_indoor.py",
-                samples: "~4,000 samples", features: "RFID signal strength",
-                environment: "Warehouse with RFID readers",
-                citation: "RFID-based indoor localization dataset",
-                bibtex: `@misc{rfidindoor,
-  title={RFID-based indoor localization dataset},
-  publisher={UCI Machine Learning Repository}
-}`,
-                tags: ["multi-floor"]
-            }
+            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"] },
+            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"] },
+            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"] },
+            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"] },
+            { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000", features: "~10 beacons", environment: "Controlled", citation: "UCI BLE dataset", bibtex: "@misc{blerssiu...}", tags: ["ble"] },
+            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"] },
+            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"] },
+            { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"] },
+            { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000", features: "CSI+RSSI", environment: "CSU campus", citation: "CSU dataset", bibtex: "@misc{csuindoorloc...}", tags: ["csi", "multi-floor"] },
+            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"] },
+            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"] },
+            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"] },
+            { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000", features: "D2D CSI", environment: "D2D scenario", citation: "WiFi CSI D2D", bibtex: "@dataset{wificsi_d2d...}", tags: ["csi"] },
+            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"] },
+            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"] },
+            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: false, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"] },
+            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"] },
+            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"] },
+            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: false, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"] },
+            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"] },
+            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"] },
+            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"] },
+            { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000", features: "TWR", environment: "Ranging", citation: "UWB ranging dataset", bibtex: "@dataset{uwbranging...}", tags: ["uwb"] },
+            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"] },
+            { name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "WiFi+IMU", environment: "Pedestrian", citation: "WiFi-IMU fusion", bibtex: "@dataset{wifiimuhybrid...}", tags: ["fusion", "multi-floor"] },
+            { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~6,000", features: "WiFi+Mag", environment: "Steel building", citation: "WiFi-Mag fusion", bibtex: "@misc{wifimagnetichybrid...}", tags: ["fusion", "multi-floor"] },
+            { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~10,000", features: "WiFi+BLE+IMU", environment: "Mall", citation: "Multi-modal dataset", bibtex: "@dataset{multimodalindoor...}", tags: ["fusion", "multi-floor"] },
+            { name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "Multi-sensor", environment: "Research bldg", citation: "Sensor fusion dataset", bibtex: "@dataset{sensorfusion...}", tags: ["fusion", "multi-floor"] },
+            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~3,000", features: "Visible light", environment: "LED office", citation: "VLC positioning", bibtex: "@dataset{vlcindoor...}", tags: ["multi-floor"] },
+            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~2,000", features: "Ultrasonic ToF", environment: "Room-level", citation: "Ultrasound dataset", bibtex: "@dataset{ultrasoundindoor...}", tags: ["multi-floor"] },
+            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~4,000", features: "RFID RSS", environment: "Warehouse", citation: "RFID indoor dataset", bibtex: "@misc{rfidindoor...}", tags: ["multi-floor"] }
         ];
 
-        // View configurations
         const views = {
-            signal: { group: 'subtype', columns: ['Compare', 'Dataset', 'Data Source', 'Samples', 'Download'] },
-            source: { group: 'source', columns: ['Compare', 'Dataset', 'Signal', 'Data Source', 'Samples', 'Download'] },
-            data: { group: 'dataSource', columns: ['Compare', 'Dataset', 'Signal', 'Source', 'Samples', 'Download'] },
-            position: { group: 'position', columns: ['Compare', 'Dataset', 'Signal', 'Samples', 'Download'] }
+            signal: { group: 'subtype', cols: ['', 'Dataset', 'Source', 'Samples', 'DL'] },
+            source: { group: 'source', cols: ['', 'Dataset', 'Signal', 'Samples', 'DL'] },
+            data: { group: 'dataSource', cols: ['', 'Dataset', 'Signal', 'Samples', 'DL'] },
+            position: { group: 'position', cols: ['', 'Dataset', 'Signal', 'Samples', 'DL'] }
         };
 
-        // Scenario filters
-        const scenarioFilters = {
+        const filters = {
             'all': () => true,
             'wifi-rssi': d => d.signal === 'RSSI' && d.source === 'WiFi',
             'csi': d => d.signal === 'CSI',
@@ -1657,496 +906,312 @@
             'fusion': d => d.signal === 'Hybrid'
         };
 
-        // State
-        let currentView = 'signal';
-        let currentFilter = 'all';
-        let searchTerm = '';
-        let expandedDataset = null;
-        let compareList = [];
+        // Signal type chart configuration - Navy Blue for Hybrid
+        const signalTypes = [
+            { key: 'RSSI', label: 'RSSI', color: '#3b82f6', filter: d => d.signal === 'RSSI' },
+            { key: 'CSI', label: 'CSI', color: '#8b5cf6', filter: d => d.signal === 'CSI' },
+            { key: 'ToF', label: 'ToF', color: '#ec4899', filter: d => d.signal === 'ToF' },
+            { key: 'Hybrid', label: 'Hybrid', color: '#003366', filter: d => d.signal === 'Hybrid' },
+            { key: 'Other', label: 'Other', color: '#64748b', filter: d => ['Magnetic', 'Other'].includes(d.signal) }
+        ];
 
-        // Theme handling
+        let currentView = 'signal', currentFilter = 'all', searchTerm = '', expandedDataset = null, compareList = [];
+        let signalChart = null;
+
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-theme', theme);
+            const saved = localStorage.getItem('theme');
+            const prefer = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefer ? 'dark' : 'light'));
         }
 
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            initCharts();
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
         }
 
-        // Charts
-        let signalChart, sourceChart;
+        function initChart() {
+            const ctx = document.getElementById('signalChart').getContext('2d');
+            const counts = signalTypes.map(t => datasets.filter(t.filter).length);
+            const total = counts.reduce((a, b) => a + b, 0);
 
-        function initCharts() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const textColor = isDark ? '#a0a0a0' : '#555555';
-            const gridColor = isDark ? '#333' : '#e0e0e0';
+            document.getElementById('chartTotal').textContent = total;
 
-            // Signal type counts
-            const signalCounts = {};
-            datasets.forEach(d => {
-                signalCounts[d.signal] = (signalCounts[d.signal] || 0) + 1;
-            });
+            // Build legend
+            const legendHtml = signalTypes.map((t, i) =>
+                `<div class="legend-row" onclick="filterBySignal('${t.key}')">
+                    <span class="legend-dot" style="background:${t.color}"></span>
+                    <span>${t.label} (${counts[i]})</span>
+                </div>`
+            ).join('');
+            document.getElementById('chartLegend').innerHTML = legendHtml;
 
-            // Source counts
-            const sourceCounts = {};
-            datasets.forEach(d => {
-                sourceCounts[d.dataSource] = (sourceCounts[d.dataSource] || 0) + 1;
-            });
-
-            // Academic Monochromatic Palette (Blues/Greys)
-            const chartColors = {
-                RSSI: '#003366',
-                CSI: '#2a5d8f',
-                ToF: '#5486b8',
-                Magnetic: '#7eb0e1',
-                Hybrid: '#a8daff',
-                Other: '#cbd5e1'
-            };
-
-            // Destroy existing charts
-            if (signalChart) signalChart.destroy();
-            if (sourceChart) sourceChart.destroy();
-
-            // Signal Chart - Simpler Doughnut
-            const signalCtx = document.getElementById('signalChart').getContext('2d');
-            signalChart = new Chart(signalCtx, {
+            signalChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(signalCounts),
+                    labels: signalTypes.map(t => t.label),
                     datasets: [{
-                        data: Object.values(signalCounts),
-                        backgroundColor: Object.keys(signalCounts).map(k => chartColors[k] || '#cccccc'),
-                        borderWidth: 1,
-                        borderColor: isDark ? '#1e1e1e' : '#ffffff'
+                        data: counts,
+                        backgroundColor: signalTypes.map(t => t.color),
+                        borderWidth: 0,
+                        hoverOffset: 4
                     }]
                 },
                 options: {
+                    cutout: '65%',
                     responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
+                    maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: textColor,
-                                padding: 10,
-                                usePointStyle: true,
-                                pointStyle: 'rectRounded',
-                                font: { family: 'Inter', size: 11 }
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.label}: ${ctx.raw} datasets`
                             }
                         }
-                    }
-                }
-            });
-
-            // Source Chart - Minimalist Bar
-            const sourceCtx = document.getElementById('sourceChart').getContext('2d');
-            const sourceLabels = Object.keys(sourceCounts);
-            const sourceData = Object.values(sourceCounts);
-
-            sourceChart = new Chart(sourceCtx, {
-                type: 'bar',
-                data: {
-                    labels: sourceLabels,
-                    datasets: [{
-                        data: sourceData,
-                        backgroundColor: '#003366',
-                        borderRadius: 2,
-                        barThickness: 20
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false }
                     },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: textColor, font: { family: 'Inter', size: 11 } }
-                        },
-                        y: {
-                            grid: { display: false },
-                            ticks: { color: textColor, font: { family: 'Inter', size: 11 } }
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const idx = elements[0].index;
+                            filterBySignal(signalTypes[idx].key);
                         }
                     }
                 }
             });
         }
 
-        // Code generation
-        function generateCode(d) {
-            return `import indoorloc as iloc
+        function filterBySignal(signalKey) {
+            const filterMap = {
+                'RSSI': 'wifi-rssi',
+                'CSI': 'csi',
+                'ToF': 'uwb',
+                'Hybrid': 'fusion',
+                'Other': 'all'
+            };
+            const filterName = filterMap[signalKey] || 'all';
 
-# Load ${d.name} dataset
-train, test = iloc.${d.name}(download=True)
-
-# Access data
-signal, location = train[0]
-print(f"Features: {signal.rssi_values.shape}")
-print(f"Position: ({location.x:.2f}, {location.y:.2f})")`;
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
-        // Get signal badge class
-        function getSignalBadgeClass(signal) {
-            switch(signal) {
-                case 'RSSI': return 'rssi';
-                case 'CSI': return 'csi';
-                case 'ToF': return 'tof';
-                case 'Hybrid': return 'hybrid';
-                default: return 'other';
+            // Toggle: if already active, go back to 'all'
+            if (currentFilter === filterName && filterName !== 'all') {
+                currentFilter = 'all';
+            } else {
+                currentFilter = filterName;
             }
+
+            updateFilterUI();
+            render();
         }
 
-        // Stats rendering
-        function renderStats(filtered) {
-            const counts = {};
-            filtered.forEach(d => { counts[d.signal] = (counts[d.signal] || 0) + 1; });
-            let html = `<span class="count">${filtered.length}</span> datasets`;
-            ['RSSI', 'CSI', 'ToF', 'Magnetic', 'Hybrid', 'Other'].forEach(k => {
-                if (counts[k]) html += `<span class="sep">·</span>${counts[k]} ${k}`;
+        function updateFilterUI() {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === currentFilter);
             });
-            document.getElementById('stats').innerHTML = html;
         }
 
-        // Detail panel rendering
-        function renderDetailPanel(d) {
+        function getSignalClass(s) {
+            return { RSSI: 'rssi', CSI: 'csi', ToF: 'tof', Hybrid: 'hybrid' }[s] || '';
+        }
+
+        function generateCode(d) {
+            return `import indoorloc as iloc\ntrain, test = iloc.${d.name}(download=True)\nsignal, loc = train[0]`;
+        }
+
+        function renderDetail(d) {
             const code = generateCode(d);
             return `
-                <tr class="detail-row" data-name="${d.name}">
-                    <td colspan="10">
-                        <div class="detail-panel show">
-                            <div class="detail-content">
-                                <div class="detail-grid">
-                                    <div>
-                                        <div class="detail-section">
-                                            <div class="detail-section-title">Quick Start</div>
-                                            <div class="code-block">
-                                                <div class="code-header">
-                                                    <span>Python</span>
-                                                    <button class="copy-btn" onclick="copyCode(event, '${d.name}')">Copy</button>
-                                                </div>
-                                                <pre class="code-content" id="code-${d.name}">${escapeHtml(code)}</pre>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="detail-section">
-                                            <div class="detail-section-title">Dataset Info</div>
-                                            <ul class="info-list">
-                                                <li><span class="info-label">Samples</span><span class="info-value">${d.samples}</span></li>
-                                                <li><span class="info-label">Features</span><span class="info-value">${d.features}</span></li>
-                                                <li><span class="info-label">Environment</span><span class="info-value">${d.environment}</span></li>
-                                                <li><span class="info-label">Position</span><span class="info-value">${d.position}</span></li>
-                                            </ul>
-                                        </div>
-                                        <div class="detail-section">
-                                            <div class="detail-section-title">Citation</div>
-                                            <div class="citation-block">
-                                                <div class="citation">${d.citation}</div>
-                                                <div class="citation-actions">
-                                                    <button class="citation-btn" onclick="copyCitation(event, '${d.name}')">Copy Citation</button>
-                                                    <button class="citation-btn" onclick="copyBibtex(event, '${d.name}')">Copy BibTeX</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <tr class="detail-row"><td colspan="10">
+                    <div class="detail-panel show">
+                        <div class="detail-grid">
+                            <div class="detail-section">
+                                <h4>Quick Start</h4>
+                                <div class="code-block">
+                                    <div class="code-header"><span>Python</span><button class="copy-btn" onclick="copyCode(event,'${d.name}')">Copy</button></div>
+                                    <pre class="code-content">${code}</pre>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Info</h4>
+                                <ul class="info-list">
+                                    <li><span class="label">Samples</span><span class="value">${d.samples}</span></li>
+                                    <li><span class="label">Features</span><span class="value">${d.features}</span></li>
+                                    <li><span class="label">Env</span><span class="value">${d.environment}</span></li>
+                                    <li><span class="label">Position</span><span class="value">${d.position}</span></li>
+                                </ul>
+                            </div>
+                            <div class="detail-section" style="grid-column:1/-1">
+                                <h4>Citation</h4>
+                                <div class="citation-box">${d.citation}</div>
+                                <div class="cite-btns">
+                                    <button class="copy-btn" onclick="copyCite(event,'${d.name}')">Copy</button>
+                                    <button class="copy-btn" onclick="copyBib(event,'${d.name}')">BibTeX</button>
                                 </div>
                             </div>
                         </div>
-                    </td>
-                </tr>
-            `;
+                    </div>
+                </td></tr>`;
         }
 
-        // Copy functions
         function copyCode(e, name) {
             e.stopPropagation();
             const d = datasets.find(x => x.name === name);
-            const code = generateCode(d);
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = e.target;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
+            navigator.clipboard.writeText(generateCode(d));
+            const btn = e.target; btn.textContent = 'Copied!'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
         }
 
-        function copyCitation(e, name) {
+        function copyCite(e, name) {
             e.stopPropagation();
             const d = datasets.find(x => x.name === name);
-            navigator.clipboard.writeText(d.citation).then(() => {
-                const btn = e.target;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy Citation';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
+            navigator.clipboard.writeText(d.citation);
+            const btn = e.target; btn.textContent = 'Copied!'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
         }
 
-        function copyBibtex(e, name) {
+        function copyBib(e, name) {
             e.stopPropagation();
             const d = datasets.find(x => x.name === name);
-            navigator.clipboard.writeText(d.bibtex).then(() => {
-                const btn = e.target;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy BibTeX';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
+            navigator.clipboard.writeText(d.bibtex);
+            const btn = e.target; btn.textContent = 'Copied!'; btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = 'BibTeX'; btn.classList.remove('copied'); }, 1500);
         }
 
-        // Toggle detail
         function toggleDetail(name) {
-            if (expandedDataset === name) {
-                expandedDataset = null;
-            } else {
-                expandedDataset = name;
-            }
-            renderCards();
+            expandedDataset = expandedDataset === name ? null : name;
+            render();
         }
 
-        // Compare functions
         function toggleCompare(e, name) {
             e.stopPropagation();
-            const index = compareList.indexOf(name);
-            if (index > -1) {
-                compareList.splice(index, 1);
-            } else if (compareList.length < 4) {
-                compareList.push(name);
-            }
-            updateComparePanel();
-            renderCards();
+            const i = compareList.indexOf(name);
+            if (i > -1) compareList.splice(i, 1);
+            else if (compareList.length < 4) compareList.push(name);
+            updateCompare();
+            render();
         }
 
-        function updateComparePanel() {
+        function updateCompare() {
             const panel = document.getElementById('comparePanel');
-            const selected = document.getElementById('compareSelected');
+            const chips = document.getElementById('compareChips');
             const count = document.getElementById('compareCount');
-
             if (compareList.length > 0) {
                 panel.classList.add('active');
-                count.textContent = `(${compareList.length} selected)`;
-                selected.innerHTML = compareList.map(name => `
-                    <span class="compare-chip">
-                        ${name}
-                        <button onclick="removeFromCompare('${name}')">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </span>
-                `).join('');
+                count.textContent = compareList.length;
+                chips.innerHTML = compareList.map(n => `<span class="compare-chip">${n}<button onclick="removeCompare('${n}')">&times;</button></span>`).join('');
             } else {
                 panel.classList.remove('active');
             }
         }
 
-        function removeFromCompare(name) {
-            const index = compareList.indexOf(name);
-            if (index > -1) {
-                compareList.splice(index, 1);
-                updateComparePanel();
-                renderCards();
-            }
+        function removeCompare(name) {
+            compareList.splice(compareList.indexOf(name), 1);
+            updateCompare();
+            render();
         }
 
-        function clearCompare() {
-            compareList = [];
-            updateComparePanel();
-            renderCards();
-        }
+        function clearCompare() { compareList = []; updateCompare(); render(); }
 
         function showCompareModal() {
-            if (compareList.length < 2) {
-                alert('Please select at least 2 datasets to compare');
-                return;
-            }
-
+            if (compareList.length < 2) return alert('Select at least 2 datasets');
             const modal = document.getElementById('compareModal');
             const table = document.getElementById('compareTable');
-            const selectedDatasets = compareList.map(name => datasets.find(d => d.name === name));
-
-            const attrs = ['Signal Type', 'Samples', 'Features', 'Environment', 'Position', 'Data Source', 'Auto Download'];
-            const attrKeys = ['signal', 'samples', 'features', 'environment', 'position', 'dataSource', 'auto'];
-
-            let html = '<thead><tr><th>Attribute</th>';
-            selectedDatasets.forEach(d => {
-                html += `<th>${d.name}</th>`;
-            });
-            html += '</tr></thead><tbody>';
-
-            attrs.forEach((attr, i) => {
-                html += `<tr><td class="attr-name">${attr}</td>`;
-                selectedDatasets.forEach(d => {
-                    let value = d[attrKeys[i]];
-                    if (attrKeys[i] === 'auto') {
-                        value = d.auto ? 'Yes' : 'Manual';
-                    }
-                    html += `<td>${value}</td>`;
+            const selected = compareList.map(n => datasets.find(d => d.name === n));
+            const attrs = [['Signal', 'signal'], ['Samples', 'samples'], ['Features', 'features'], ['Environment', 'environment'], ['Position', 'position'], ['Source', 'dataSource'], ['Auto DL', 'auto']];
+            let html = `<thead><tr><th>Attribute</th>${selected.map(d => `<th>${d.name}</th>`).join('')}</tr></thead><tbody>`;
+            attrs.forEach(([label, key]) => {
+                html += `<tr><td class="attr">${label}</td>`;
+                selected.forEach(d => {
+                    let v = d[key];
+                    if (key === 'auto') v = d.auto ? 'Yes' : 'Manual';
+                    html += `<td>${v}</td>`;
                 });
                 html += '</tr>';
             });
             html += '</tbody>';
-
             table.innerHTML = html;
             modal.classList.add('active');
         }
 
-        function closeCompareModal() {
-            document.getElementById('compareModal').classList.remove('active');
-        }
+        function closeCompareModal() { document.getElementById('compareModal').classList.remove('active'); }
 
-        // Main render function
-        function renderCards() {
+        function render() {
             const view = views[currentView];
-            const filterFn = scenarioFilters[currentFilter];
+            const filterFn = filters[currentFilter];
+            const filtered = datasets.filter(d => filterFn(d) && (d.name.toLowerCase().includes(searchTerm) || d.signal.toLowerCase().includes(searchTerm) || d.subtype.toLowerCase().includes(searchTerm)));
 
-            const filtered = datasets.filter(d =>
-                filterFn(d) && (
-                    d.name.toLowerCase().includes(searchTerm) ||
-                    d.signal.toLowerCase().includes(searchTerm) ||
-                    d.subtype.toLowerCase().includes(searchTerm) ||
-                    d.source.toLowerCase().includes(searchTerm) ||
-                    d.dataSource.toLowerCase().includes(searchTerm)
-                )
-            );
-
-            renderStats(filtered);
+            document.getElementById('results').innerHTML = `<strong>${filtered.length}</strong> datasets`;
 
             const groups = {};
             filtered.forEach(d => {
-                const key = d[view.group];
-                if (!groups[key]) groups[key] = [];
-                groups[key].push(d);
+                const k = d[view.group];
+                if (!groups[k]) groups[k] = [];
+                groups[k].push(d);
             });
 
-            const cardsContainer = document.getElementById('cards');
-            if (Object.keys(groups).length === 0) {
-                cardsContainer.innerHTML = `
-                    <div class="empty">
-                        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <p>No datasets found</p>
-                    </div>
-                `;
+            const container = document.getElementById('groups');
+            if (!Object.keys(groups).length) {
+                container.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>No datasets found</p></div>';
                 return;
             }
 
-            const signalOrder = ['WiFi RSSI', 'BLE RSSI', 'WiFi CSI', 'LTE CSI', 'Massive MIMO', 'RF CSI', 'UWB ToF', 'UWB TWR', 'Magnetic', 'Multi-modal', 'VLC', 'Ultrasound', 'RFID'];
-            const posOrder = ['2D', '2D+Floor', '3D'];
-
-            const sortedGroups = Object.entries(groups).sort((a, b) => {
-                if (currentView === 'signal') return signalOrder.indexOf(a[0]) - signalOrder.indexOf(b[0]);
-                if (currentView === 'position') return posOrder.indexOf(a[0]) - posOrder.indexOf(b[0]);
+            const order = ['WiFi RSSI', 'BLE RSSI', 'WiFi CSI', 'LTE CSI', 'Massive MIMO', 'RF CSI', 'UWB ToF', 'UWB TWR', 'Magnetic', 'Multi-modal', 'VLC', 'Ultrasound', 'RFID', '2D', '2D+Floor', '3D'];
+            const sorted = Object.entries(groups).sort((a, b) => {
+                const ia = order.indexOf(a[0]), ib = order.indexOf(b[0]);
+                if (ia !== -1 && ib !== -1) return ia - ib;
                 return a[0].localeCompare(b[0]);
             });
 
             let html = '';
-            sortedGroups.forEach(([group, items]) => {
-                html += `
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-header-title">${group}</span>
-                            <span class="count">${items.length}</span>
-                        </div>
-                        <table>
-                            <thead><tr>${view.columns.map(c => `<th>${c}</th>`).join('')}</tr></thead>
-                            <tbody>
-                `;
-
+            sorted.forEach(([group, items]) => {
+                html += `<div class="group"><div class="group-header"><span class="group-title">${group}</span><span class="group-count">${items.length}</span></div>`;
+                html += `<table><thead><tr>${view.cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>`;
                 items.forEach(d => {
-                    const isExpanded = expandedDataset === d.name;
-                    const isCompared = compareList.includes(d.name);
-                    html += `<tr class="dataset-row ${isExpanded ? 'expanded' : ''}" onclick="toggleDetail('${d.name}')">`;
-                    view.columns.forEach(col => {
-                        if (col === 'Compare') {
-                            html += `<td onclick="event.stopPropagation()"><input type="checkbox" class="compare-checkbox" ${isCompared ? 'checked' : ''} onchange="toggleCompare(event, '${d.name}')" ${!isCompared && compareList.length >= 4 ? 'disabled' : ''}></td>`;
-                        } else if (col === 'Dataset') {
-                            html += `<td><div class="dataset-name-cell"><span class="expand-icon">${isExpanded ? '▼' : '▶'}</span><span class="dataset-name">${d.name}</span></div></td>`;
-                        } else if (col === 'Download') {
-                            const cls = d.auto ? 'auto' : 'manual';
-                            html += `<td><span class="download-status ${cls}">${d.auto ? 'Auto' : 'Manual'}</span></td>`;
-                        } else if (col === 'Signal' || col === 'Signal Type') {
-                            html += `<td><span class="signal-badge ${getSignalBadgeClass(d.signal)}">${d.signal}</span></td>`;
-                        } else if (col === 'Data Source') {
-                            html += `<td>${d.dataSource}</td>`;
-                        } else if (col === 'Source') {
-                            html += `<td>${d.source}</td>`;
-                        } else if (col === 'Samples') {
-                            html += `<td class="samples-col">${d.samples.split('/')[0].trim()}</td>`;
-                        }
-                    });
+                    const exp = expandedDataset === d.name;
+                    const cmp = compareList.includes(d.name);
+                    html += `<tr class="${exp ? 'expanded' : ''}" data-name="${d.name}" onclick="toggleDetail('${d.name}')">`;
+                    html += `<td onclick="event.stopPropagation()"><input type="checkbox" class="compare-cb" ${cmp ? 'checked' : ''} ${!cmp && compareList.length >= 4 ? 'disabled' : ''} onchange="toggleCompare(event,'${d.name}')"></td>`;
+                    html += `<td><div class="dataset-cell"><svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span class="dataset-name">${d.name}</span></div></td>`;
+                    if (view.cols.includes('Signal')) html += `<td><span class="signal-badge ${getSignalClass(d.signal)}">${d.signal}</span></td>`;
+                    if (view.cols.includes('Source')) html += `<td>${d.dataSource}</td>`;
+                    html += `<td class="samples-cell">${d.samples.split('/')[0].trim()}</td>`;
+                    html += `<td><span class="status-dot ${d.auto ? 'auto' : 'manual'}">${d.auto ? 'Auto' : 'Manual'}</span></td>`;
                     html += '</tr>';
-                    if (isExpanded) html += renderDetailPanel(d);
+                    if (exp) html += renderDetail(d);
                 });
-
                 html += '</tbody></table></div>';
             });
-
-            cardsContainer.innerHTML = html;
+            container.innerHTML = html;
         }
 
-        // Event handlers
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentView = tab.dataset.view;
                 expandedDataset = null;
-                renderCards();
+                render();
             });
         });
 
-        document.querySelectorAll('.scenario-tag').forEach(tag => {
-            tag.addEventListener('click', () => {
-                document.querySelectorAll('.scenario-tag').forEach(t => t.classList.remove('active'));
-                tag.classList.add('active');
-                currentFilter = tag.dataset.filter;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFilter = btn.dataset.filter;
+                updateFilterUI();
                 expandedDataset = null;
-                renderCards();
+                render();
             });
         });
 
-        document.getElementById('search').addEventListener('input', (e) => {
+        document.getElementById('search').addEventListener('input', e => {
             searchTerm = e.target.value.toLowerCase();
-            renderCards();
+            render();
         });
 
-        // Close modal on outside click
-        document.getElementById('compareModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeCompareModal();
-            }
+        document.getElementById('compareModal').addEventListener('click', e => {
+            if (e.target === e.currentTarget) closeCompareModal();
         });
 
-        // Initialize
         initTheme();
-        initCharts();
-        renderCards();
+        initChart();
+        render();
     </script>
 </body>
 </html>
