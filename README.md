@@ -196,26 +196,6 @@ indoorloc/
 └── docs/                 # Documentation
 ```
 
-## Supported Algorithms
-
-### Fingerprint-based
-- [x] k-NN (k-Nearest Neighbors)
-- [x] Weighted k-NN
-- [ ] SVM (Support Vector Machine)
-- [ ] Random Forest
-- [ ] Gaussian Process
-
-### Deep Learning
-- [ ] MLP (Multi-Layer Perceptron)
-- [ ] CNN (Convolutional Neural Network)
-- [ ] LSTM (Long Short-Term Memory)
-- [ ] Transformer
-
-### Fusion
-- [ ] Kalman Filter
-- [ ] Extended Kalman Filter
-- [ ] Particle Filter
-
 ## Supported Datasets
 
 **36 datasets** across multiple signal modalities with **auto-download** support. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
@@ -332,6 +312,96 @@ You can also download datasets manually from official sources:
 | WiFi-RSSI | [GitHub Repository](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | Small-scale (250 points) |
 | OWP-IMU | [arXiv](https://arxiv.org/abs/2505.16823) | Optical wireless + IMU fusion |
 
+## Supported Algorithms
+
+**Traditional + Deep Learning** localization methods with unified interface. Deep learning models powered by [timm](https://github.com/huggingface/pytorch-image-models) (700+ pretrained architectures).
+
+<table>
+<tr>
+<th align="center" bgcolor="#f6f8fa">Traditional</th>
+<th align="center" bgcolor="#f6f8fa">Deep Learning Backbones</th>
+<th align="center" bgcolor="#f6f8fa">Prediction Heads</th>
+</tr>
+<tr>
+<td valign="top">
+
+**Fingerprint-based**
+- [x] k-NN
+- [x] Weighted k-NN
+- [ ] SVM
+- [ ] Random Forest
+- [ ] Gaussian Process
+
+**Fusion**
+- [ ] Kalman Filter
+- [ ] Extended Kalman Filter
+- [ ] Particle Filter
+
+</td>
+<td valign="top">
+
+**CNN** *(via timm)*
+- ResNet (18/34/50/101/152)
+- EfficientNet (B0-B7)
+- ConvNeXt (T/S/B/L)
+- MobileNetV3 (S/L)
+- RegNet, DenseNet, VGG...
+
+**Vision Transformer**
+- ViT (Ti/S/B/L)
+- Swin (T/S/B)
+- DeiT, BEiT, EVA...
+
+**Hybrid**
+- CoAtNet, MaxViT
+- EfficientFormer...
+
+<sub>📦 `pip install timm torchvision`</sub>
+
+</td>
+<td valign="top">
+
+**Regression**
+- [x] RegressionHead
+- [x] MultiScaleRegressionHead
+
+**Classification**
+- [x] ClassificationHead
+- [x] FloorHead
+- [x] BuildingHead
+
+**Hybrid**
+- [x] HybridHead
+- [x] HierarchicalHead
+
+</td>
+</tr>
+</table>
+
+### Deep Learning Usage
+
+```python
+import indoorloc as iloc
+
+# End-to-end deep localizer with ResNet backbone
+model = iloc.DeepLocalizer(
+    backbone=dict(
+        type='TimmBackbone',
+        model_name='resnet18',    # or 'efficientnet_b0', 'vit_tiny', 'swin_tiny'...
+        pretrained=True,
+        input_type='1d',          # '1d' for RSSI, '2d' for CSI
+    ),
+    head=dict(
+        type='HybridHead',        # Joint coordinate + floor prediction
+        num_coords=2,
+        num_floors=4,
+    ),
+)
+
+# Forward pass
+coords, floor_logits = model(wifi_rssi_tensor)
+```
+
 ## Evaluation Metrics
 
 | Metric | Description |
@@ -360,6 +430,7 @@ Apache License 2.0
 ## Acknowledgements
 
 - [OpenMMLab](https://github.com/open-mmlab) - Registry and config system design reference
+- [timm](https://github.com/huggingface/pytorch-image-models) - PyTorch Image Models (700+ pretrained architectures)
 - [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) - Dataset provider
 
 ## Contributing

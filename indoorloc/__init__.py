@@ -51,6 +51,24 @@ from .localizers import (
     WKNNLocalizer,
 )
 
+from .models import (
+    # Backbones
+    BaseBackbone,
+    InputAdapter,
+    TimmBackbone,
+    # Heads
+    BaseHead,
+    RegressionHead,
+    MultiScaleRegressionHead,
+    ClassificationHead,
+    FloorHead,
+    BuildingHead,
+    HybridHead,
+    HierarchicalHead,
+    # Localizers
+    DeepLocalizer,
+)
+
 from .utils import (
     Config,
     load_config,
@@ -247,6 +265,24 @@ __all__ = [
     'TraditionalLocalizer',
     'KNNLocalizer',
     'WKNNLocalizer',
+
+    # Models - Backbones
+    'BaseBackbone',
+    'InputAdapter',
+    'TimmBackbone',
+
+    # Models - Heads
+    'BaseHead',
+    'RegressionHead',
+    'MultiScaleRegressionHead',
+    'ClassificationHead',
+    'FloorHead',
+    'BuildingHead',
+    'HybridHead',
+    'HierarchicalHead',
+
+    # Models - Deep Localizers
+    'DeepLocalizer',
 
     # Utils
     'Config',
