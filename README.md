@@ -326,35 +326,35 @@ You can also download datasets manually from official sources:
 <td valign="top">
 
 **Fingerprint-based**
-- [x] k-NN
-- [x] Weighted k-NN
-- [ ] SVM
-- [ ] Random Forest
-- [ ] Gaussian Process
+- [x] [k-NN](https://ieeexplore.ieee.org/document/1053964)
+- [x] [Weighted k-NN](https://ieeexplore.ieee.org/document/4309523)
+- [ ] [SVM](https://link.springer.com/article/10.1007/BF00994018)
+- [ ] [Random Forest](https://link.springer.com/article/10.1023/A:1010933404324)
+- [ ] [Gaussian Process](http://www.gaussianprocess.org/gpml/)
 
 **Fusion**
-- [ ] Kalman Filter
-- [ ] Extended Kalman Filter
-- [ ] Particle Filter
+- [ ] [Kalman Filter](https://asmedigitalcollection.asme.org/fluidsengineering/article/82/1/35/397706)
+- [ ] [Extended Kalman Filter](https://ieeexplore.ieee.org/document/1098671)
+- [ ] [Particle Filter](https://ieeexplore.ieee.org/document/210672)
 
 </td>
 <td valign="top">
 
 **CNN** *(via timm)*
-- ResNet (18/34/50/101/152)
-- EfficientNet (B0-B7)
-- ConvNeXt (T/S/B/L)
-- MobileNetV3 (S/L)
-- RegNet, DenseNet, VGG...
+- [ResNet](https://arxiv.org/abs/1512.03385) (18/34/50/101/152)
+- [EfficientNet](https://arxiv.org/abs/1905.11946) (B0-B7)
+- [ConvNeXt](https://arxiv.org/abs/2201.03545) (T/S/B/L)
+- [MobileNetV3](https://arxiv.org/abs/1905.02244) (S/L)
+- [RegNet](https://arxiv.org/abs/2003.13678), [DenseNet](https://arxiv.org/abs/1608.06993), [VGG](https://arxiv.org/abs/1409.1556)...
 
 **Vision Transformer**
-- ViT (Ti/S/B/L)
-- Swin (T/S/B)
-- DeiT, BEiT, EVA...
+- [ViT](https://arxiv.org/abs/2010.11929) (Ti/S/B/L)
+- [Swin](https://arxiv.org/abs/2103.14030) (T/S/B)
+- [DeiT](https://arxiv.org/abs/2012.12877), [BEiT](https://arxiv.org/abs/2106.08254), [EVA](https://arxiv.org/abs/2211.07636)...
 
 **Hybrid**
-- CoAtNet, MaxViT
-- EfficientFormer...
+- [CoAtNet](https://arxiv.org/abs/2106.04803), [MaxViT](https://arxiv.org/abs/2204.01697)
+- [EfficientFormer](https://arxiv.org/abs/2206.01191)...
 
 <sub>📦 `pip install timm torchvision`</sub>
 
