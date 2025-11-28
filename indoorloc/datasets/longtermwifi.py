@@ -12,7 +12,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/889798
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 import pandas as pd
 
@@ -64,6 +64,9 @@ class LongTermWiFiDataset(WiFiDataset):
     # Dataset constants
     NOT_DETECTED_VALUE = 100
 
+    # Available buildings
+    BUILDINGS = [0, 1, 2]
+
     # File naming pattern
     FILE_PATTERNS = {
         'train': 'TRNDB{building}.txt',
@@ -75,13 +78,23 @@ class LongTermWiFiDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        building: Optional[int] = None,
+        building: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
-        self.building = building
+        # Handle building parameter
+        if building == 'all':
+            self._buildings = self.BUILDINGS.copy()
+        elif isinstance(building, int):
+            self._buildings = [building]
+        elif isinstance(building, list):
+            self._buildings = building
+        else:
+            self._buildings = self.BUILDINGS.copy()
+
+        self.building = self._buildings[0] if len(self._buildings) == 1 else None  # 兼容性
         self._num_aps = None  # Will be determined from data
 
         super().__init__(
@@ -104,20 +117,22 @@ class LongTermWiFiDataset(WiFiDataset):
             return 0
         return self._num_aps
 
+    @classmethod
+    def list_buildings(cls) -> List[int]:
+        """List all available buildings.
+
+        Returns:
+            List of building IDs: [0, 1, 2]
+        """
+        return cls.BUILDINGS.copy()
+
     def _get_required_files(self) -> List[str]:
         """Get list of required files based on building selection."""
-        if self.building is not None:
-            # Single building
+        files = []
+        for building_id in self._buildings:
             pattern = self.FILE_PATTERNS[self.split]
-            return [pattern.format(building=self.building)]
-        else:
-            # All buildings
-            files = []
-            for building_id in [0, 1, 2]:
-                for split in ['train', 'test']:
-                    pattern = self.FILE_PATTERNS[split]
-                    files.append(pattern.format(building=building_id))
-            return files
+            files.append(pattern.format(building=building_id))
+        return files
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -150,17 +165,10 @@ class LongTermWiFiDataset(WiFiDataset):
 
     def _load_data(self) -> None:
         """Load Long-Term WiFi dataset from files."""
-        if self.building is not None:
-            # Load single building
-            buildings_to_load = [self.building]
-        else:
-            # Load all buildings
-            buildings_to_load = [0, 1, 2]
-
         all_signals = []
         all_locations = []
 
-        for building_id in buildings_to_load:
+        for building_id in self._buildings:
             pattern = self.FILE_PATTERNS[self.split]
             filename = pattern.format(building=building_id)
             filepath = self.data_root / filename
@@ -213,14 +221,15 @@ class LongTermWiFiDataset(WiFiDataset):
 
         if len(self._signals) == 0:
             raise RuntimeError(
-                f"No data loaded for split='{self.split}', building={self.building}"
+                f"No data loaded for split='{self.split}', building={self._buildings}"
             )
 
-        print(f"Loaded {len(self._signals)} samples from Long-Term WiFi dataset")
+        building_info = f" (building: {self._buildings})" if len(self._buildings) < 3 else ""
+        print(f"Loaded {len(self._signals)} samples from Long-Term WiFi dataset{building_info}")
 
 
 
-def LongTermWiFi(data_root=None, split=None, download=False, **kwargs):
+def LongTermWiFi(data_root=None, split=None, download=False, building='all', **kwargs):
     """
     Convenience function for loading LongTermWiFi dataset.
 
@@ -228,22 +237,26 @@ def LongTermWiFi(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        building: Building(s) to load. Can be:
+            - 'all': Load all buildings (default)
+            - Single building: 0, 1, 2
+            - List of buildings: [0, 1]
         **kwargs: Additional arguments passed to LongTermWiFiDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
         >>> # Load train and test separately (tuple unpacking)
         >>> train, test = LongTermWiFi(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = LongTermWiFi(split='all', download=True)
+        >>> # Load specific building(s)
+        >>> train = LongTermWiFi(building=[0, 1], split='train')
 
-        >>> # Load only training set
-        >>> train = LongTermWiFi(split='train', download=True)
+        >>> # List available buildings
+        >>> LongTermWiFi.list_buildings()
     """
     if split is None:
         # Return both train and test as tuple
@@ -251,12 +264,14 @@ def LongTermWiFi(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -267,12 +282,14 @@ def LongTermWiFi(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -282,6 +299,11 @@ def LongTermWiFi(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            building=building,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+LongTermWiFi.list_buildings = LongTermWiFiDataset.list_buildings
 

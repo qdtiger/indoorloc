@@ -12,7 +12,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/5789876
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import UWBDataset
@@ -84,6 +84,7 @@ class UWBIndoorDataset(UWBDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = False,
         normalize_method: str = 'minmax',
@@ -91,6 +92,8 @@ class UWBIndoorDataset(UWBDataset):
     ):
         self._num_anchors = None
         self._anchor_positions = {}
+        self._floor_param = floor
+        self._available_floors: List[int] = []
 
         super().__init__(
             data_root=data_root,
@@ -116,6 +119,24 @@ class UWBIndoorDataset(UWBDataset):
     def anchor_positions(self) -> Dict[str, np.ndarray]:
         """Get anchor positions as {anchor_id: [x, y, z]} dict."""
         return self._anchor_positions
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors."""
+        from ..utils.download import get_data_home
+        if data_root is None:
+            root = get_data_home() / 'uwb_indoor'
+        else:
+            root = Path(data_root)
+        train_file = root / 'train_data.csv'
+        if not train_file.exists():
+            return []
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['floor'])
+            return sorted(df['floor'].astype(int).unique().tolist())
+        except Exception:
+            return []
 
     def get_anchor_positions(self) -> Dict[str, tuple]:
         """Get 3D positions of all UWB anchors.
@@ -194,6 +215,21 @@ class UWBIndoorDataset(UWBDataset):
 
         df = pd.read_csv(filepath)
 
+        # Store available floors
+        if 'floor' in df.columns:
+            self._available_floors = sorted(df['floor'].astype(int).unique().tolist())
+
+        # Filter by floor
+        if self._floor_param != 'all' and 'floor' in df.columns:
+            if isinstance(self._floor_param, int):
+                selected = [self._floor_param]
+            else:
+                selected = list(self._floor_param)
+            df = df[df['floor'].astype(int).isin(selected)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data for floor={self._floor_param}")
+
         # Identify anchor distance columns (anchor{N}_id, anchor{N}_distance pairs)
         anchor_id_cols = [col for col in df.columns if 'anchor' in col.lower() and '_id' in col.lower()]
 
@@ -245,12 +281,13 @@ class UWBIndoorDataset(UWBDataset):
                 self._signals.append(signal)
                 self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from UWB indoor dataset ({self.split} split)")
+        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from UWB indoor dataset{floor_info}")
         print(f"Total UWB anchors: {self._num_anchors}")
 
 
 
-def UWBIndoor(data_root=None, split=None, download=False, **kwargs):
+def UWBIndoor(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading UWBIndoor dataset.
 
@@ -258,60 +295,47 @@ def UWBIndoor(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load ('all', single int, or list)
         **kwargs: Additional arguments passed to UWBIndoorDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = UWBIndoor(download=True)
-
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = UWBIndoor(split='all', download=True)
-
-        >>> # Load only training set
-        >>> train = UWBIndoor(split='train', download=True)
+        >>> train = UWBIndoor(floor=[0, 1], split='train')
+        >>> UWBIndoor.list_floors()
     """
     if split is None:
-        # Return both train and test as tuple
         train_dataset = UWBIndoorDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            floor=floor, **kwargs
         )
         test_dataset = UWBIndoorDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            floor=floor, **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
-        # Return merged train + test dataset
         from torch.utils.data import ConcatDataset
         train_dataset = UWBIndoorDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            floor=floor, **kwargs
         )
         test_dataset = UWBIndoorDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            floor=floor, **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
-        # Return single split
         return UWBIndoorDataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            **kwargs
+            data_root=data_root, split=split, download=download,
+            floor=floor, **kwargs
         )
+
+
+# Attach class method to convenience function
+UWBIndoor.list_floors = UWBIndoorDataset.list_floors
 

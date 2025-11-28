@@ -11,7 +11,7 @@ Reference:
 Dataset URL: https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset
 """
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -71,6 +71,7 @@ class TUJI1Dataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
@@ -78,6 +79,8 @@ class TUJI1Dataset(WiFiDataset):
     ):
         self._num_aps = None  # Will be determined from data
         self._ap_list = None  # List of all seen BSSIDs
+        self._floor_param = floor
+        self._available_floors: List[int] = []
 
         super().__init__(
             data_root=data_root,
@@ -98,6 +101,34 @@ class TUJI1Dataset(WiFiDataset):
         if self._num_aps is None:
             return 0
         return self._num_aps
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors in the dataset.
+
+        Args:
+            data_root: Root directory containing the dataset files.
+
+        Returns:
+            List of floor numbers.
+        """
+        from ..utils.download import get_data_home
+
+        if data_root is None:
+            root = get_data_home() / 'tuji1'
+        else:
+            root = Path(data_root)
+
+        train_file = root / 'training_data.csv'
+        if not train_file.exists():
+            return []
+
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['floor'])
+            return sorted(df['floor'].astype(int).unique().tolist())
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -192,6 +223,20 @@ class TUJI1Dataset(WiFiDataset):
                 'measurements': ap_measurements
             })
 
+        # Store available floors
+        self._available_floors = sorted(list(set(s['floor'] for s in samples_data)))
+
+        # Filter by floor parameter
+        if self._floor_param != 'all':
+            if isinstance(self._floor_param, int):
+                floors_to_load = [self._floor_param]
+            else:
+                floors_to_load = list(self._floor_param)
+            samples_data = [s for s in samples_data if s['floor'] in floors_to_load]
+
+        if len(samples_data) == 0:
+            raise ValueError(f"No data found for floor(s): {self._floor_param}")
+
         # Create ordered AP list
         self._ap_list = sorted(list(all_bssids))
         self._num_aps = len(self._ap_list)
@@ -220,12 +265,13 @@ class TUJI1Dataset(WiFiDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from TUJI1 dataset")
+        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from TUJI1 dataset{floor_info}")
         print(f"Total unique APs: {self._num_aps}")
 
 
 
-def TUJI1(data_root=None, split=None, download=False, **kwargs):
+def TUJI1(data_root=None, split=None, download=False, floor='all', **kwargs):
     """
     Convenience function for loading TUJI1 dataset.
 
@@ -233,11 +279,15 @@ def TUJI1(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        floor: Floor(s) to load. Can be:
+            - 'all': Load all floors (default)
+            - Single floor: 0, 1, 2, etc.
+            - List of floors: [0, 1, 2]
         **kwargs: Additional arguments passed to TUJI1Dataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
@@ -247,8 +297,11 @@ def TUJI1(data_root=None, split=None, download=False, **kwargs):
         >>> # Load entire dataset (train + test merged)
         >>> dataset = TUJI1(split='all', download=True)
 
-        >>> # Load only training set
-        >>> train = TUJI1(split='train', download=True)
+        >>> # Load specific floor(s)
+        >>> train = TUJI1(floor=[0, 1], split='train')
+
+        >>> # List available floors
+        >>> TUJI1.list_floors()
     """
     if split is None:
         # Return both train and test as tuple
@@ -256,12 +309,14 @@ def TUJI1(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = TUJI1Dataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -272,12 +327,14 @@ def TUJI1(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            floor=floor,
             **kwargs
         )
         test_dataset = TUJI1Dataset(
             data_root=data_root,
             split='test',
             download=download,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -287,6 +344,11 @@ def TUJI1(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            floor=floor,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+TUJI1.list_floors = TUJI1Dataset.list_floors
 

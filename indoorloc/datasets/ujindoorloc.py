@@ -13,7 +13,7 @@ Dataset URL: https://archive.ics.uci.edu/dataset/310/ujiindoorloc
 """
 import csv
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, Dict, List, Union
 
 import numpy as np
 
@@ -89,16 +89,28 @@ class UJIndoorLocDataset(WiFiDataset):
     COL_PHONEID = 527
     COL_TIMESTAMP = 528
 
+    # Available buildings in UJIndoorLoc
+    BUILDINGS = ['0', '1', '2']
+
     def __init__(
         self,
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        building: Union[str, List[str]] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
+        # Handle building parameter
+        if building == 'all':
+            self._buildings = self.BUILDINGS.copy()
+        elif isinstance(building, list):
+            self._buildings = [str(b) for b in building]
+        else:
+            self._buildings = [str(building)]
+
         # Store kwargs before calling super().__init__
         self._kwargs = kwargs
         super().__init__(
@@ -154,6 +166,15 @@ class UJIndoorLocDataset(WiFiDataset):
             f"https://archive.ics.uci.edu/dataset/310/ujiindoorloc"
         )
 
+    @classmethod
+    def list_buildings(cls) -> List[str]:
+        """List all available buildings.
+
+        Returns:
+            List of building IDs: ['0', '1', '2']
+        """
+        return cls.BUILDINGS.copy()
+
     def _load_data(self) -> None:
         """Load data from CSV files."""
         # Determine file to load
@@ -175,6 +196,11 @@ class UJIndoorLocDataset(WiFiDataset):
                 if len(row) < 529:
                     continue  # Skip incomplete rows
 
+                # Filter by building
+                building_id = str(int(row[self.COL_BUILDING]))
+                if building_id not in self._buildings:
+                    continue
+
                 # Parse RSSI values (columns 0-519)
                 rssi_values = np.array(
                     [float(row[i]) for i in range(self.NUM_WAPS)],
@@ -189,7 +215,6 @@ class UJIndoorLocDataset(WiFiDataset):
                 longitude = float(row[self.COL_LONGITUDE])
                 latitude = float(row[self.COL_LATITUDE])
                 floor = int(row[self.COL_FLOOR])
-                building_id = str(int(row[self.COL_BUILDING]))
 
                 # UJIndoorLoc uses UTM coordinates (longitude/latitude are actually x/y in meters)
                 # The coordinates are already in a local reference frame
@@ -217,6 +242,9 @@ class UJIndoorLocDataset(WiFiDataset):
                 }
                 self._metadata.append(metadata)
 
+        building_info = f" (building: {self._buildings})" if len(self._buildings) < 3 else ""
+        print(f"Loaded {len(self._signals)} samples from UJIndoorLoc{building_info}")
+
     def get_statistics(self) -> Dict[str, Any]:
         """Compute UJIndoorLoc-specific statistics."""
         stats = super().get_statistics()
@@ -240,7 +268,7 @@ class UJIndoorLocDataset(WiFiDataset):
 
 
 
-def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
+def UJIndoorLoc(data_root=None, split=None, download=False, building='all', **kwargs):
     """
     Convenience function for loading UJIndoorLoc dataset.
 
@@ -248,6 +276,10 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        building: Building(s) to load. Can be:
+            - 'all': Load all buildings (default)
+            - Single building: '0', '1', '2'
+            - List of buildings: ['0', '1']
         **kwargs: Additional arguments passed to UJIndoorLocDataset
 
     Returns:
@@ -259,14 +291,11 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
         >>> # Load train and test separately (tuple unpacking)
         >>> train, test = UJIndoorLoc(download=True)
 
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = UJIndoorLoc(split='all', download=True)
+        >>> # Load specific building(s)
+        >>> train = UJIndoorLoc(building=['0', '1'], split='train')
 
-        >>> # Load only training set
-        >>> train = UJIndoorLoc(split='train', download=True)
-
-        >>> # Load only test set
-        >>> test = UJIndoorLoc(split='test', download=True)
+        >>> # List available buildings
+        >>> UJIndoorLoc.list_buildings()
     """
     if split is None:
         # Return both train and test as tuple
@@ -274,12 +303,14 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = UJIndoorLocDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return train_dataset, test_dataset
@@ -290,12 +321,14 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split='train',
             download=download,
+            building=building,
             **kwargs
         )
         test_dataset = UJIndoorLocDataset(
             data_root=data_root,
             split='test',
             download=download,
+            building=building,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
@@ -305,5 +338,10 @@ def UJIndoorLoc(data_root=None, split=None, download=False, **kwargs):
             data_root=data_root,
             split=split,
             download=download,
+            building=building,
             **kwargs
         )
+
+
+# Attach class method to convenience function
+UJIndoorLoc.list_buildings = UJIndoorLocDataset.list_buildings

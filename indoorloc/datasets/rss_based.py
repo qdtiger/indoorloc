@@ -12,7 +12,7 @@ Reference:
 Dataset URL: https://zenodo.org/record/5678901
 """
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -71,11 +71,18 @@ class RSSBasedDataset(WiFiDataset):
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
+        building: Union[str, List[str]] = 'all',
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
+        self._building_param = building
+        self._floor_param = floor
+        self._available_buildings: List[str] = []
+        self._available_floors: List[int] = []
+
         super().__init__(
             data_root=data_root,
             split=split,
@@ -89,6 +96,42 @@ class RSSBasedDataset(WiFiDataset):
     @property
     def dataset_name(self) -> str:
         return 'RSSBased'
+
+    @classmethod
+    def list_buildings(cls, data_root: Optional[str] = None) -> List[str]:
+        """List all available buildings."""
+        from ..utils.download import get_data_home
+        if data_root is None:
+            root = get_data_home() / 'rss_based'
+        else:
+            root = Path(data_root)
+        train_file = root / 'train_rss.csv'
+        if not train_file.exists():
+            return []
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['building'])
+            return sorted(df['building'].astype(str).unique().tolist())
+        except Exception:
+            return []
+
+    @classmethod
+    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
+        """List all available floors."""
+        from ..utils.download import get_data_home
+        if data_root is None:
+            root = get_data_home() / 'rss_based'
+        else:
+            root = Path(data_root)
+        train_file = root / 'train_rss.csv'
+        if not train_file.exists():
+            return []
+        try:
+            import pandas as pd
+            df = pd.read_csv(train_file, usecols=['floor'])
+            return sorted(df['floor'].astype(int).unique().tolist())
+        except Exception:
+            return []
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -136,6 +179,31 @@ class RSSBasedDataset(WiFiDataset):
 
         df = pd.read_csv(filepath)
 
+        # Store available buildings and floors
+        if 'building' in df.columns:
+            self._available_buildings = sorted(df['building'].astype(str).unique().tolist())
+        if 'floor' in df.columns:
+            self._available_floors = sorted(df['floor'].astype(int).unique().tolist())
+
+        # Filter by building
+        if self._building_param != 'all' and 'building' in df.columns:
+            if isinstance(self._building_param, list):
+                selected = [str(b) for b in self._building_param]
+            else:
+                selected = [str(self._building_param)]
+            df = df[df['building'].astype(str).isin(selected)]
+
+        # Filter by floor
+        if self._floor_param != 'all' and 'floor' in df.columns:
+            if isinstance(self._floor_param, int):
+                selected = [self._floor_param]
+            else:
+                selected = list(self._floor_param)
+            df = df[df['floor'].astype(int).isin(selected)]
+
+        if len(df) == 0:
+            raise ValueError(f"No data for building={self._building_param}, floor={self._floor_param}")
+
         # Identify WAP columns
         coord_cols = ['x', 'y', 'floor', 'building']
         wap_cols = [col for col in df.columns if col not in coord_cols]
@@ -166,11 +234,16 @@ class RSSBasedDataset(WiFiDataset):
             self._signals.append(signal)
             self._locations.append(location)
 
-        print(f"Loaded {len(self._signals)} samples from RSS-based dataset ({self.split} split)")
+        filter_info = ""
+        if self._building_param != 'all':
+            filter_info += f" (building: {self._building_param})"
+        if self._floor_param != 'all':
+            filter_info += f" (floor: {self._floor_param})"
+        print(f"Loaded {len(self._signals)} samples from RSS-based dataset{filter_info}")
 
 
 
-def RSSBased(data_root=None, split=None, download=False, **kwargs):
+def RSSBased(data_root=None, split=None, download=False, building='all', floor='all', **kwargs):
     """
     Convenience function for loading RSSBased dataset.
 
@@ -178,60 +251,49 @@ def RSSBased(data_root=None, split=None, download=False, **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
+        building: Building(s) to load ('all', single, or list)
+        floor: Floor(s) to load ('all', single int, or list)
         **kwargs: Additional arguments passed to RSSBasedDataset
 
     Returns:
         - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset  
+        - If split is 'all': Returns merged train+test dataset
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = RSSBased(download=True)
-
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = RSSBased(split='all', download=True)
-
-        >>> # Load only training set
-        >>> train = RSSBased(split='train', download=True)
+        >>> train = RSSBased(building='0', floor=[1, 2], split='train')
+        >>> RSSBased.list_buildings()
     """
     if split is None:
-        # Return both train and test as tuple
         train_dataset = RSSBasedDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            building=building, floor=floor, **kwargs
         )
         test_dataset = RSSBasedDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            building=building, floor=floor, **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
-        # Return merged train + test dataset
         from torch.utils.data import ConcatDataset
         train_dataset = RSSBasedDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
+            data_root=data_root, split='train', download=download,
+            building=building, floor=floor, **kwargs
         )
         test_dataset = RSSBasedDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
+            data_root=data_root, split='test', download=download,
+            building=building, floor=floor, **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
-        # Return single split
         return RSSBasedDataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            **kwargs
+            data_root=data_root, split=split, download=download,
+            building=building, floor=floor, **kwargs
         )
+
+
+# Attach class methods to convenience function
+RSSBased.list_buildings = RSSBasedDataset.list_buildings
+RSSBased.list_floors = RSSBasedDataset.list_floors
 
