@@ -301,6 +301,8 @@ indoorloc/
 </tr>
 </table>
 
+<sub>📋 所有数据集保留其原始许可证，下载使用官方源/API。[查看许可证详情 →](https://qdtiger.github.io/indoorloc/datasets_zh.html#licenses)</sub>
+
 ### 自动下载用法
 
 ```python

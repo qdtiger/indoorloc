@@ -12,6 +12,7 @@ from .magnetometer import MagnetometerSignal
 from .vlc import VLCSignal, LEDTransmitter
 from .ultrasound import UltrasoundSignal, UltrasoundTransmitter
 from .hybrid import HybridSignal
+from .csi import CSISignal, CSIMetadata
 
 __all__ = [
     'BaseSignal',
@@ -30,4 +31,6 @@ __all__ = [
     'UltrasoundSignal',
     'UltrasoundTransmitter',
     'HybridSignal',
+    'CSISignal',
+    'CSIMetadata',
 ]
