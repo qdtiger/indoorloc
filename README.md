@@ -319,7 +319,7 @@ You can also download datasets manually from official sources:
 <table>
 <tr>
 <th align="center" bgcolor="#f6f8fa">Traditional</th>
-<th align="center" bgcolor="#f6f8fa">Deep Learning Backbones</th>
+<th align="center" bgcolor="#f6f8fa">Deep Learning Backbones <sub><i>(via timm)</i></sub></th>
 <th align="center" bgcolor="#f6f8fa">Prediction Heads</th>
 </tr>
 <tr>
@@ -340,7 +340,7 @@ You can also download datasets manually from official sources:
 </td>
 <td valign="top">
 
-**CNN** *(via timm)*
+**CNN**
 - [ResNet](https://arxiv.org/abs/1512.03385)
 - [EfficientNet](https://arxiv.org/abs/1905.11946)
 - [ConvNeXt](https://arxiv.org/abs/2201.03545)
