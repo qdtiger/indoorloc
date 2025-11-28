@@ -341,15 +341,15 @@ You can also download datasets manually from official sources:
 <td valign="top">
 
 **CNN** *(via timm)*
-- [ResNet](https://arxiv.org/abs/1512.03385) (18/34/50/101/152)
-- [EfficientNet](https://arxiv.org/abs/1905.11946) (B0-B7)
-- [ConvNeXt](https://arxiv.org/abs/2201.03545) (T/S/B/L)
-- [MobileNetV3](https://arxiv.org/abs/1905.02244) (S/L)
+- [ResNet](https://arxiv.org/abs/1512.03385)
+- [EfficientNet](https://arxiv.org/abs/1905.11946)
+- [ConvNeXt](https://arxiv.org/abs/2201.03545)
+- [MobileNetV3](https://arxiv.org/abs/1905.02244)
 - [RegNet](https://arxiv.org/abs/2003.13678), [DenseNet](https://arxiv.org/abs/1608.06993), [VGG](https://arxiv.org/abs/1409.1556)...
 
 **Vision Transformer**
-- [ViT](https://arxiv.org/abs/2010.11929) (Ti/S/B/L)
-- [Swin](https://arxiv.org/abs/2103.14030) (T/S/B)
+- [ViT](https://arxiv.org/abs/2010.11929)
+- [Swin](https://arxiv.org/abs/2103.14030)
 - [DeiT](https://arxiv.org/abs/2012.12877), [BEiT](https://arxiv.org/abs/2106.08254), [EVA](https://arxiv.org/abs/2211.07636)...
 
 **Hybrid**
