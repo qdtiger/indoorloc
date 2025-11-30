@@ -9,8 +9,11 @@ model:
   type: KNNLocalizer
   k: 5
   weights: distance    # 'uniform' or 'distance'
-  metric: euclidean    # 'euclidean', 'manhattan', 'cosine'
+  metric: euclidean    # 'euclidean', 'manhattan', 'cosine', 'minkowski'
   algorithm: auto      # 'auto', 'ball_tree', 'kd_tree', 'brute'
+  leaf_size: 30        # Leaf size for BallTree/KDTree
+  p: 2                 # Minkowski power (1=manhattan, 2=euclidean)
+  n_jobs: null         # Parallel jobs (-1=all CPUs)
   predict_floor: true
   predict_building: true
 

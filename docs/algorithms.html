@@ -530,8 +530,14 @@
                 implemented: true,
                 params: [
                     { name: "k", default: "5", desc: "近邻数量 (1-20)" },
-                    { name: "weights", default: "'uniform'", desc: "权重: uniform | distance" },
-                    { name: "metric", default: "'euclidean'", desc: "距离: euclidean | manhattan" }
+                    { name: "weights", default: "'distance'", desc: "权重: uniform | distance" },
+                    { name: "metric", default: "'euclidean'", desc: "距离: euclidean | manhattan | cosine | minkowski" },
+                    { name: "algorithm", default: "'auto'", desc: "算法: auto | ball_tree | kd_tree | brute" },
+                    { name: "leaf_size", default: "30", desc: "BallTree/KDTree 叶子大小" },
+                    { name: "p", default: "2", desc: "Minkowski 距离参数 (1=曼哈顿, 2=欧氏)" },
+                    { name: "n_jobs", default: "None", desc: "并行数 (-1=全部CPU)" },
+                    { name: "predict_floor", default: "true", desc: "是否预测楼层" },
+                    { name: "predict_building", default: "true", desc: "是否预测建筑" }
                 ],
                 quickStart: `import indoorloc as iloc
 
