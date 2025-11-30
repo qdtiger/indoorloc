@@ -803,6 +803,249 @@
         }
 
         /* ========================================
+           Benchmark Card
+           ======================================== */
+        .benchmark-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .benchmark-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .benchmark-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--bg-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .benchmark-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .sota-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 4px;
+        }
+
+        [data-theme="dark"] .sota-badge {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .benchmark-content {
+            padding: 14px;
+        }
+
+        /* Error Range Bar */
+        .benchmark-range {
+            margin-bottom: 14px;
+        }
+
+        .range-labels-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.625rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .range-bar {
+            position: relative;
+            height: 8px;
+            background: linear-gradient(to right, #22c55e, #eab308, #ef4444);
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+
+        .range-marker {
+            position: absolute;
+            top: -2px;
+            width: 2px;
+            height: 12px;
+            background: var(--text-primary);
+            border-radius: 1px;
+        }
+
+        .range-marker::after {
+            content: attr(data-label);
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5625rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .range-labels-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.5625rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            position: relative;
+        }
+
+        /* Benchmark Table */
+        .benchmark-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .benchmark-table th {
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .benchmark-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .benchmark-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .benchmark-table .sota-row {
+            background: rgba(34, 197, 94, 0.08);
+        }
+
+        .benchmark-table .sota-row td:first-child {
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .benchmark-table .sota-row td:first-child::before {
+            content: '★';
+            position: absolute;
+            left: 4px;
+            color: #22c55e;
+            font-size: 0.625rem;
+        }
+
+        .benchmark-table .method-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+        }
+
+        .benchmark-table .error-val {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .benchmark-table .floor-val {
+            color: var(--success);
+        }
+
+        /* Expand Button */
+        .benchmark-expand-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: var(--primary);
+            background: var(--primary-light);
+            border: 1px solid var(--primary-border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .benchmark-expand-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Expanded Content */
+        .benchmark-expanded {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .benchmark-expanded.show {
+            display: block;
+        }
+
+        .benchmark-refs {
+            margin-top: 12px;
+        }
+
+        .benchmark-refs h5 {
+            font-size: 0.625rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .benchmark-refs ol {
+            margin: 0;
+            padding-left: 16px;
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+        }
+
+        .benchmark-refs li {
+            margin-bottom: 3px;
+            scroll-margin-top: 100px;
+            transition: background-color 0.3s ease;
+        }
+
+        .benchmark-refs li:target {
+            background-color: rgba(99, 102, 241, 0.15);
+            border-radius: 3px;
+            padding: 2px 4px;
+            margin-left: -4px;
+        }
+
+        .ref-link {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .ref-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        .no-benchmark {
+            padding: 12px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ========================================
            Empty
            ======================================== */
         .empty {
@@ -956,7 +1199,40 @@
 
     <script>
         const datasets = [
-            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", floor: "0-4", methods: ["list_buildings()", "list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/310/ujiindoorloc" },
+            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 / 1,111", features: "520 WAPs", environment: "3 buildings, 5 floors", citation: "Torres-Sospedra et al., IPIN 2014", bibtex: "@inproceedings{torres2014ujindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", floor: "0-4", methods: ["list_buildings()", "list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/310/ujiindoorloc",
+                benchmark: {
+                    sota: { method: "GBDT + Sample Diff", error: 2.45, floorAcc: 0.9914, year: 2021 },
+                    baseline: { method: "KNN (k=1)", error: 7.9, floorAcc: 0.902, year: 2014 },
+                    maxError: 12.4,
+                    entries: [
+                        { method: "GBDT + Sample Diff", error: 2.45, floorAcc: 0.9914, year: 2021, ref: 1, isSota: true },
+                        { method: "XGBoost + Sample Diff", error: 3.42, floorAcc: 0.994, year: 2021, ref: 1 },
+                        { method: "FasterKAN", error: 3.56, floorAcc: 0.99, year: 2024, ref: 2 },
+                        { method: "Optimized kNN", error: 6.86, floorAcc: 0.9478, year: 2015, ref: 3, note: "*" },
+                        { method: "WKNN (k=3)", error: 7.3, floorAcc: 0.925, year: 2014, ref: 4 },
+                        { method: "KNN (k=1)", error: 7.9, floorAcc: 0.902, year: 2014, ref: 4 },
+                        { method: "Probabilistic", error: 9.20, floorAcc: 0.901, year: 2016, ref: 5, note: "*" },
+                        { method: "Hierarchical DNN", error: 9.29, floorAcc: 0.9127, year: 2018, ref: 6 },
+                        { method: "CNN (Lightweight)", error: 9.5, floorAcc: 0.90, year: 2019, ref: 7 },
+                        { method: "Random Forest", error: 10.8, floorAcc: 0.89, year: 2017, ref: 8 },
+                        { method: "CNNLoc", error: 11.78, floorAcc: 0.9603, year: 2019, ref: 9 },
+                        { method: "CCPos (CDAE-CNN)", error: 12.4, floorAcc: 0.953, year: 2020, ref: 10 }
+                    ],
+                    references: [
+                        "G. Li et al., \"A universal Wi-Fi fingerprint localization method based on GBDT,\" Satellite Navigation, vol. 2, no. 1, pp. 1-14, 2021.",
+                        "A. Jafari et al., \"Kolmogorov-Arnold Networks for Indoor Localization,\" arXiv preprint arXiv:2406.02590, 2024.",
+                        "J. Torres-Sospedra et al., \"Comprehensive analysis of distance and similarity measures for Wi-Fi fingerprinting,\" Expert Systems with Applications, vol. 42, no. 23, pp. 9263-9278, 2015.",
+                        "J. Torres-Sospedra et al., \"UJIndoorLoc: A new multi-building and multi-floor database,\" in Proc. IPIN, pp. 210-217, 2014.",
+                        "R. Berkvens et al., \"Design and evaluation of a practical probabilistic indoor positioning system,\" Sensors, vol. 16, no. 12, p. 2042, 2016.",
+                        "K. S. Kim et al., \"A scalable deep neural network architecture for multi-building and multi-floor indoor localization,\" Big Data Analytics, vol. 3, no. 1, pp. 1-17, 2018.",
+                        "M. Abbas et al., \"Comparison of CNN Applications for RSSI-Based Fingerprint Indoor Localization,\" Electronics, vol. 8, no. 9, p. 989, 2019.",
+                        "S. Xia et al., \"Indoor fingerprint positioning based on Wi-Fi: An overview,\" ISPRS Int. J. Geo-Inf., vol. 6, no. 5, p. 135, 2017.",
+                        "X. Song et al., \"CNNLoc: Deep-Learning Based Indoor Localization with WiFi Fingerprinting,\" in Proc. IEEE CCNC, pp. 1-6, 2019.",
+                        "W. Zhang et al., \"CCPos: WiFi Fingerprint Indoor Positioning System Based on CDAE-CNN,\" Sensors, vol. 19, no. 8, p. 1784, 2020."
+                    ],
+                    footnote: "* = building+floor success rate"
+                }
+            },
             { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "1, 2", floor: "1-4", area: "per bldg", methods: ["list_buildings()", "list_floors()", "list_areas()"] } },
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041" },
@@ -1168,6 +1444,140 @@
             `;
         }
 
+        // Track expanded benchmark states
+        let expandedBenchmarks = {};
+
+        function toggleBenchmarkExpand(name, e) {
+            e.stopPropagation();
+            expandedBenchmarks[name] = !expandedBenchmarks[name];
+            render();
+        }
+
+        function handleRefClick(e, datasetName, refNum) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Expand the benchmark section if not already expanded
+            if (!expandedBenchmarks[datasetName]) {
+                expandedBenchmarks[datasetName] = true;
+                render();
+            }
+
+            // Wait for render, then scroll to reference
+            setTimeout(() => {
+                const targetId = `ref-${datasetName}-${refNum}`;
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Add highlight animation
+                    target.style.backgroundColor = 'rgba(99, 102, 241, 0.25)';
+                    setTimeout(() => {
+                        target.style.backgroundColor = '';
+                    }, 2000);
+                }
+            }, 50);
+        }
+
+        function renderBenchmark(d) {
+            if (!d.benchmark) {
+                return `<div class="no-benchmark">No benchmark data available yet</div>`;
+            }
+
+            const b = d.benchmark;
+            const isExpanded = expandedBenchmarks[d.name];
+            const topEntries = b.entries.slice(0, 4);
+            const allEntries = b.entries;
+            const totalMethods = b.entries.length;
+
+            // Calculate marker positions for range bar
+            const minError = b.sota.error;
+            const maxError = b.maxError || Math.max(...b.entries.map(e => e.error));
+            const baselinePos = ((b.baseline.error - minError) / (maxError - minError)) * 100;
+
+            // Use references array
+            const refs = b.references || [];
+
+            return `
+                <div class="benchmark-card">
+                    <div class="benchmark-header">
+                        <span class="benchmark-title">Benchmark Results</span>
+                        <span class="sota-badge">SOTA: ${b.sota.error}m</span>
+                    </div>
+                    <div class="benchmark-content">
+                        <!-- Error Range Bar -->
+                        <div class="benchmark-range">
+                            <div class="range-labels-top">
+                                <span>${b.sota.error}m (${b.sota.method})</span>
+                                <span>${maxError.toFixed(1)}m</span>
+                            </div>
+                            <div class="range-bar">
+                                <div class="range-marker" style="left: 0%"></div>
+                                <div class="range-marker" style="left: ${baselinePos}%"></div>
+                            </div>
+                            <div class="range-labels-bottom">
+                                <span>SOTA</span>
+                                <span style="position:absolute;left:${baselinePos}%;transform:translateX(-50%)">Baseline</span>
+                                <span>Max</span>
+                            </div>
+                        </div>
+
+                        <!-- Top Methods Table -->
+                        <table class="benchmark-table">
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Error</th>
+                                    <th>Floor Acc</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${topEntries.map(e => `
+                                    <tr class="${e.isSota ? 'sota-row' : ''}">
+                                        <td class="method-name">${e.method}<sup><a href="#ref-${d.name}-${e.ref}" class="ref-link" onclick="handleRefClick(event, '${d.name}', ${e.ref})">[${e.ref}]</a></sup></td>
+                                        <td class="error-val">${e.error}m</td>
+                                        <td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>
+                                        <td>${e.year}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <!-- Expand Button -->
+                        ${totalMethods > 4 ? `
+                            <button class="benchmark-expand-btn" onclick="toggleBenchmarkExpand('${d.name}', event)">
+                                ${isExpanded ? '▲ Show Less' : `▼ Show All ${totalMethods} Methods`}
+                            </button>
+                        ` : ''}
+
+                        <!-- Expanded Content -->
+                        <div class="benchmark-expanded ${isExpanded ? 'show' : ''}">
+                            <table class="benchmark-table">
+                                <tbody>
+                                    ${allEntries.slice(4).map(e => `
+                                        <tr>
+                                            <td class="method-name">${e.method}<sup><a href="#ref-${d.name}-${e.ref}" class="ref-link" onclick="handleRefClick(event, '${d.name}', ${e.ref})">[${e.ref}]</a></sup></td>
+                                            <td class="error-val">${e.error}m</td>
+                                            <td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>
+                                            <td>${e.year}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+
+                            <!-- References -->
+                            <div class="benchmark-refs">
+                                <h5>References</h5>
+                                <ol>
+                                    ${refs.map((r, i) => `<li id="ref-${d.name}-${i+1}">${r}</li>`).join('')}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderDetail(d) {
             const code = generateCode(d);
             return `
@@ -1207,6 +1617,10 @@
                                     <button class="copy-btn" onclick="copyCite(event,'${d.name}')">Copy</button>
                                     <button class="copy-btn" onclick="copyBib(event,'${d.name}')">BibTeX</button>
                                 </div>
+                            </div>
+                            <div class="detail-section benchmark-section" style="grid-column:1/-1">
+                                <h4>Published Benchmarks</h4>
+                                ${renderBenchmark(d)}
                             </div>
                         </div>
                     </div>
