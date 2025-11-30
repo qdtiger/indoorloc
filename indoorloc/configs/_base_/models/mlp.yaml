@@ -1,0 +1,29 @@
+# MLP Deep Localizer Configuration
+# Multi-Layer Perceptron for WiFi fingerprinting
+
+model:
+  type: DeepLocalizer
+
+  backbone:
+    type: MLPBackbone
+    # Hidden layer dimensions (auto-configured input_dim from dataset)
+    hidden_dims: [512, 256, 128]
+    # Activation function
+    activation: relu
+    # Dropout rate for regularization
+    dropout: 0.3
+    # Batch normalization
+    batch_norm: true
+
+  head:
+    type: RegressionHead
+    # Number of coordinate outputs (x, y)
+    num_coords: 2
+    # Hidden dimensions in head
+    hidden_dims: [64]
+    dropout: 0.2
+
+  # Weight initialization
+  init_cfg:
+    type: kaiming
+    layers: [Linear]

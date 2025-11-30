@@ -4,13 +4,17 @@ Base Localizer Classes
 Provides abstract base classes for all localization algorithms.
 """
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, List, Union
+from typing import Dict, Any, Optional, List, Union, TYPE_CHECKING
 import time
 import joblib
 
 from ..signals.base import BaseSignal
 from ..locations.location import Location, LocalizationResult
 from ..registry import LOCALIZERS
+
+if TYPE_CHECKING:
+    from ..datasets.base import BaseDataset
+    from ..evaluation.metrics import EvaluationResults
 
 
 class BaseLocalizer(ABC):
@@ -68,15 +72,53 @@ class BaseLocalizer(ABC):
         """Check if the model has been trained."""
         return self._is_trained
 
-    @abstractmethod
     def fit(
+        self,
+        data: Union[List[BaseSignal], 'BaseDataset'],
+        locations: Optional[List[Location]] = None,
+        **kwargs
+    ) -> 'BaseLocalizer':
+        """
+        Train/fit the localizer.
+
+        Supports two calling conventions:
+            1. fit(dataset) - Pass a BaseDataset directly
+            2. fit(signals, locations) - Pass signals and locations separately
+
+        Args:
+            data: Either a BaseDataset or list of training signals
+            locations: List of corresponding ground truth locations (required if data is signals)
+            **kwargs: Additional training arguments
+
+        Returns:
+            Self for method chaining
+
+        Example:
+            >>> # One-line training with dataset
+            >>> model.fit(train)
+            >>>
+            >>> # Traditional call
+            >>> model.fit(signals, locations)
+        """
+        # Check if data is a dataset
+        from ..datasets.base import BaseDataset
+
+        if isinstance(data, BaseDataset):
+            return self._fit_impl(data.signals, data.locations, **kwargs)
+        else:
+            if locations is None:
+                raise ValueError("locations must be provided when passing signals directly")
+            return self._fit_impl(data, locations, **kwargs)
+
+    @abstractmethod
+    def _fit_impl(
         self,
         signals: List[BaseSignal],
         locations: List[Location],
         **kwargs
     ) -> 'BaseLocalizer':
         """
-        Train/fit the localizer.
+        Internal fit implementation. Subclasses must implement this.
 
         Args:
             signals: List of training signals
@@ -134,6 +176,45 @@ class BaseLocalizer(ABC):
         elapsed = (time.perf_counter() - start) * 1000  # ms
         result.latency_ms = elapsed
         return result
+
+    def evaluate(self, dataset: 'BaseDataset') -> 'EvaluationResults':
+        """
+        Evaluate the localizer on a dataset.
+
+        This is the "one line evaluation" interface.
+
+        Args:
+            dataset: Test dataset
+
+        Returns:
+            EvaluationResults with all metrics
+
+        Example:
+            >>> results = model.evaluate(test)
+            >>> print(results.summary())
+            >>> print(f"Mean Error: {results.mean_error:.2f}m")
+            >>> results.compare_benchmarks()  # Compare against papers
+        """
+        from ..evaluation.metrics import EvaluationResults
+
+        if not self._is_trained:
+            raise RuntimeError("Model must be trained before evaluation. Call fit() first.")
+
+        predictions = self.predict_batch(dataset.signals)
+
+        # Get dataset name for benchmark comparison
+        dataset_name = getattr(dataset, 'dataset_name', None)
+        if dataset_name is None:
+            # Try to infer from class name (e.g., UJIndoorLocDataset -> ujindoorloc)
+            class_name = dataset.__class__.__name__
+            if class_name.endswith('Dataset'):
+                dataset_name = class_name[:-7].lower()
+
+        return EvaluationResults(
+            predictions=predictions,
+            ground_truths=dataset.locations,
+            dataset_name=dataset_name,
+        )
 
     def save(self, path: str) -> None:
         """

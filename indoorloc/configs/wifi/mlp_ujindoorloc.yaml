@@ -1,0 +1,40 @@
+# MLP Deep Localizer on UJIndoorLoc
+# Simple but effective deep learning baseline
+
+_base_:
+  - ../_base_/default.yaml
+  - ../_base_/datasets/ujindoorloc.yaml
+  - ../_base_/models/mlp.yaml
+  - ../_base_/schedules/schedule_1x.yaml
+
+# Override model for UJIndoorLoc
+model:
+  backbone:
+    # Input dimension auto-configured from dataset (520 APs)
+    hidden_dims: [512, 256, 128]
+    dropout: 0.3
+    batch_norm: true
+
+  head:
+    type: HybridHead
+    num_coords: 2
+    num_floors: 5
+    num_buildings: 3
+    hidden_dims: [64]
+    dropout: 0.2
+
+# Training
+train:
+  epochs: 100
+  batch_size: 64
+  lr: 1e-3
+  early_stopping: 15
+
+evaluation:
+  metrics:
+    - type: MeanPositionError
+    - type: MedianPositionError
+    - type: FloorAccuracy
+    - type: BuildingAccuracy
+
+work_dir: work_dirs/mlp_ujindoorloc

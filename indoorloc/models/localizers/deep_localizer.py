@@ -4,12 +4,20 @@ Deep Localizer Module
 End-to-end deep learning model for indoor localization, combining
 a backbone network with prediction head(s).
 """
-from typing import Optional, Dict, Any, Union, List, Tuple
+from typing import Optional, Dict, Any, Union, List, Tuple, TYPE_CHECKING
 
+import numpy as np
 import torch
 import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
 
 from ...registry import BACKBONES, HEADS
+
+if TYPE_CHECKING:
+    from ...datasets.base import BaseDataset
+    from ...signals.base import BaseSignal
+    from ...locations.location import Location, LocalizationResult
+    from ...evaluation.metrics import EvaluationResults
 
 
 class DeepLocalizer(nn.Module):
@@ -355,3 +363,372 @@ class DeepLocalizer(nn.Module):
 
     def __repr__(self) -> str:
         return self.summary()
+
+    # =========================================================================
+    # Training Interface (matching BaseLocalizer API)
+    # =========================================================================
+
+    def fit(
+        self,
+        data: Union[List['BaseSignal'], 'BaseDataset'],
+        locations: Optional[List['Location']] = None,
+        epochs: int = 100,
+        batch_size: int = 32,
+        lr: float = 1e-3,
+        weight_decay: float = 1e-4,
+        val_data: Optional['BaseDataset'] = None,
+        early_stopping: int = 10,
+        verbose: bool = True,
+        # Device & precision settings (HuggingFace-style)
+        device: Optional[str] = None,
+        use_cpu: bool = False,
+        fp16: bool = False,
+        # DataLoader settings
+        num_workers: int = 0,
+        pin_memory: bool = True,
+        # Training control
+        gradient_accumulation_steps: int = 1,
+        max_grad_norm: Optional[float] = 1.0,
+        logging_steps: int = 10,
+        **kwargs
+    ) -> 'DeepLocalizer':
+        """
+        Train the deep localizer.
+
+        Supports two calling conventions:
+            1. fit(dataset) - Pass a BaseDataset directly
+            2. fit(signals, locations) - Pass signals and locations separately
+
+        Args:
+            data: Either a BaseDataset or list of training signals
+            locations: List of corresponding ground truth locations (required if data is signals)
+            epochs: Number of training epochs
+            batch_size: Batch size for training
+            lr: Learning rate
+            weight_decay: Weight decay for optimizer
+            val_data: Optional validation dataset for early stopping
+            early_stopping: Patience for early stopping (0 to disable)
+            verbose: Whether to print training progress
+            device: Device to train on ('cuda', 'cuda:0', 'cpu', etc.). Auto-detects if None.
+            use_cpu: Force CPU training even if GPU is available (HuggingFace-style)
+            fp16: Use mixed precision training (faster on modern GPUs)
+            num_workers: Number of DataLoader workers
+            pin_memory: Pin memory for faster GPU transfer
+            gradient_accumulation_steps: Accumulate gradients over N steps (effective batch = batch_size * N)
+            max_grad_norm: Gradient clipping (None to disable)
+            logging_steps: Print progress every N epochs
+            **kwargs: Additional training arguments
+
+        Returns:
+            Self for method chaining
+
+        Example:
+            >>> model = iloc.create_model('resnet18', dataset=train)
+            >>> model.fit(train, epochs=50, device='cuda', fp16=True)
+        """
+        from ...datasets.base import BaseDataset
+        from ...locations.location import Location
+        from ...locations.coordinate import Coordinate
+
+        # Extract data from dataset or signals/locations
+        if isinstance(data, BaseDataset):
+            X, y = data.to_tensors()
+        else:
+            if locations is None:
+                raise ValueError("locations must be provided when passing signals directly")
+            X = np.stack([s.to_numpy() for s in data], axis=0)
+            y = np.array([
+                [loc.coordinate.x, loc.coordinate.y,
+                 loc.floor if loc.floor is not None else 0,
+                 int(loc.building_id) if loc.building_id is not None else 0]
+                for loc in locations
+            ], dtype=np.float32)
+
+        # Convert to tensors
+        X_tensor = torch.tensor(X, dtype=torch.float32)
+        y_tensor = torch.tensor(y, dtype=torch.float32)
+
+        # Device setup (HuggingFace-style: use_cpu takes priority)
+        if use_cpu:
+            target_device = torch.device('cpu')
+        elif device is not None:
+            target_device = torch.device(device)
+        else:
+            target_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        # Disable pin_memory for CPU training
+        if target_device.type == 'cpu':
+            pin_memory = False
+
+        # Create data loader with optimized settings
+        train_dataset = TensorDataset(X_tensor, y_tensor)
+        train_loader = DataLoader(
+            train_dataset,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=num_workers,
+            pin_memory=pin_memory
+        )
+
+        # Validation data
+        val_loader = None
+        if val_data is not None:
+            X_val, y_val = val_data.to_tensors()
+            val_dataset = TensorDataset(
+                torch.tensor(X_val, dtype=torch.float32),
+                torch.tensor(y_val, dtype=torch.float32)
+            )
+            val_loader = DataLoader(
+                val_dataset,
+                batch_size=batch_size,
+                shuffle=False,
+                num_workers=num_workers,
+                pin_memory=pin_memory
+            )
+
+        # Setup optimizer
+        optimizer = torch.optim.AdamW(self.parameters(), lr=lr, weight_decay=weight_decay)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode='min', factor=0.5, patience=5
+        )
+
+        # Loss function
+        coord_loss_fn = nn.MSELoss()
+        floor_loss_fn = nn.CrossEntropyLoss() if hasattr(self.head, 'num_floors') else None
+
+        # Move model to device
+        self.to(target_device)
+        if verbose:
+            print(f"Training on {target_device}")
+            if fp16 and target_device.type == 'cuda':
+                print("Using mixed precision (fp16)")
+
+        # Setup mixed precision training (HuggingFace/PyTorch style)
+        use_amp = fp16 and target_device.type == 'cuda'
+        scaler = torch.cuda.amp.GradScaler() if use_amp else None
+
+        # Training loop
+        best_val_loss = float('inf')
+        patience_counter = 0
+        self._is_trained = False
+
+        for epoch in range(epochs):
+            self.train()
+            epoch_loss = 0.0
+
+            for step, (batch_x, batch_y) in enumerate(train_loader):
+                batch_x = batch_x.to(target_device)
+                batch_y = batch_y.to(target_device)
+
+                # Mixed precision forward pass
+                if use_amp:
+                    with torch.cuda.amp.autocast():
+                        outputs = self(batch_x)
+                        # Calculate loss
+                        if isinstance(outputs, dict):
+                            loss = coord_loss_fn(outputs['coords'], batch_y[:, :2])
+                            if 'floor_logits' in outputs and floor_loss_fn is not None:
+                                loss = loss + floor_loss_fn(outputs['floor_logits'], batch_y[:, 2].long())
+                        else:
+                            loss = coord_loss_fn(outputs, batch_y[:, :2])
+
+                        # Scale loss for gradient accumulation
+                        if gradient_accumulation_steps > 1:
+                            loss = loss / gradient_accumulation_steps
+
+                    # Scaled backward pass
+                    scaler.scale(loss).backward()
+
+                    # Step optimizer after accumulation
+                    if (step + 1) % gradient_accumulation_steps == 0:
+                        if max_grad_norm is not None:
+                            scaler.unscale_(optimizer)
+                            torch.nn.utils.clip_grad_norm_(self.parameters(), max_grad_norm)
+                        scaler.step(optimizer)
+                        scaler.update()
+                        optimizer.zero_grad()
+                else:
+                    outputs = self(batch_x)
+                    # Calculate loss
+                    if isinstance(outputs, dict):
+                        loss = coord_loss_fn(outputs['coords'], batch_y[:, :2])
+                        if 'floor_logits' in outputs and floor_loss_fn is not None:
+                            loss = loss + floor_loss_fn(outputs['floor_logits'], batch_y[:, 2].long())
+                    else:
+                        loss = coord_loss_fn(outputs, batch_y[:, :2])
+
+                    # Scale loss for gradient accumulation
+                    if gradient_accumulation_steps > 1:
+                        loss = loss / gradient_accumulation_steps
+
+                    loss.backward()
+
+                    # Step optimizer after accumulation
+                    if (step + 1) % gradient_accumulation_steps == 0:
+                        if max_grad_norm is not None:
+                            torch.nn.utils.clip_grad_norm_(self.parameters(), max_grad_norm)
+                        optimizer.step()
+                        optimizer.zero_grad()
+
+                epoch_loss += loss.item() * (gradient_accumulation_steps if gradient_accumulation_steps > 1 else 1)
+
+            epoch_loss /= len(train_loader)
+
+            # Validation
+            val_loss = epoch_loss
+            if val_loader is not None:
+                self.eval()
+                val_loss = 0.0
+                with torch.no_grad():
+                    for batch_x, batch_y in val_loader:
+                        batch_x = batch_x.to(target_device)
+                        batch_y = batch_y.to(target_device)
+                        outputs = self(batch_x)
+                        if isinstance(outputs, dict):
+                            val_loss += coord_loss_fn(outputs['coords'], batch_y[:, :2]).item()
+                        else:
+                            val_loss += coord_loss_fn(outputs, batch_y[:, :2]).item()
+                val_loss /= len(val_loader)
+
+            scheduler.step(val_loss)
+
+            if verbose and (epoch + 1) % logging_steps == 0:
+                print(f"Epoch {epoch + 1}/{epochs} - Loss: {epoch_loss:.4f}, Val Loss: {val_loss:.4f}")
+
+            # Early stopping
+            if early_stopping > 0:
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    patience_counter = 0
+                else:
+                    patience_counter += 1
+                    if patience_counter >= early_stopping:
+                        if verbose:
+                            print(f"Early stopping at epoch {epoch + 1}")
+                        break
+
+        self._is_trained = True
+        return self
+
+    def evaluate(self, dataset: 'BaseDataset') -> 'EvaluationResults':
+        """
+        Evaluate the deep localizer on a dataset.
+
+        Args:
+            dataset: Test dataset
+
+        Returns:
+            EvaluationResults with all metrics
+
+        Example:
+            >>> results = model.evaluate(test)
+            >>> print(results.summary())
+            >>> print(f"Mean Error: {results.mean_error:.2f}m")
+        """
+        from ...evaluation.metrics import EvaluationResults
+        from ...locations.location import Location, LocalizationResult
+        from ...locations.coordinate import Coordinate
+
+        if not getattr(self, '_is_trained', False):
+            raise RuntimeError("Model must be trained before evaluation. Call fit() first.")
+
+        predictions = self.predict_batch(dataset.signals)
+        return EvaluationResults.from_predictions(predictions, dataset.locations)
+
+    def predict_single(self, signal: 'BaseSignal') -> 'LocalizationResult':
+        """
+        Predict location for a single signal.
+
+        Args:
+            signal: Input signal
+
+        Returns:
+            Localization result with predicted location
+        """
+        from ...locations.location import Location, LocalizationResult
+        from ...locations.coordinate import Coordinate
+
+        self.eval()
+        device = self.device
+
+        x = torch.tensor(signal.to_numpy(), dtype=torch.float32).unsqueeze(0).to(device)
+
+        with torch.no_grad():
+            outputs = self(x)
+
+        if isinstance(outputs, dict):
+            coords = outputs['coords'][0].cpu().numpy()
+            floor = None
+            floor_confidence = 0.0
+            if 'floor_logits' in outputs:
+                floor_proba = torch.softmax(outputs['floor_logits'][0], dim=0)
+                floor = int(torch.argmax(floor_proba).item())
+                floor_confidence = float(floor_proba[floor].item())
+        else:
+            coords = outputs[0].cpu().numpy()
+            floor = None
+            floor_confidence = 0.0
+
+        location = Location(
+            coordinate=Coordinate(x=float(coords[0]), y=float(coords[1])),
+            floor=floor,
+            confidence=1.0,
+            floor_confidence=floor_confidence
+        )
+
+        return LocalizationResult(location=location)
+
+    def predict_batch(
+        self,
+        signals: List['BaseSignal']
+    ) -> List['LocalizationResult']:
+        """
+        Predict locations for multiple signals efficiently.
+
+        Args:
+            signals: List of input signals
+
+        Returns:
+            List of localization results
+        """
+        from ...locations.location import Location, LocalizationResult
+        from ...locations.coordinate import Coordinate
+
+        self.eval()
+        device = self.device
+
+        X = np.stack([s.to_numpy() for s in signals], axis=0)
+        X_tensor = torch.tensor(X, dtype=torch.float32).to(device)
+
+        with torch.no_grad():
+            outputs = self(X_tensor)
+
+        results = []
+        for i in range(len(signals)):
+            if isinstance(outputs, dict):
+                coords = outputs['coords'][i].cpu().numpy()
+                floor = None
+                floor_confidence = 0.0
+                if 'floor_logits' in outputs:
+                    floor_proba = torch.softmax(outputs['floor_logits'][i], dim=0)
+                    floor = int(torch.argmax(floor_proba).item())
+                    floor_confidence = float(floor_proba[floor].item())
+            else:
+                coords = outputs[i].cpu().numpy()
+                floor = None
+                floor_confidence = 0.0
+
+            location = Location(
+                coordinate=Coordinate(x=float(coords[0]), y=float(coords[1])),
+                floor=floor,
+                confidence=1.0,
+                floor_confidence=floor_confidence
+            )
+            results.append(LocalizationResult(location=location))
+
+        return results
+
+    @property
+    def is_trained(self) -> bool:
+        """Check if the model has been trained."""
+        return getattr(self, '_is_trained', False)

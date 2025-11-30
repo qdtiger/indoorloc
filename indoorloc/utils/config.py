@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Union
 import yaml
 import copy
+import inspect
 
 
 class Config:
@@ -172,6 +173,54 @@ class Config:
     def __str__(self) -> str:
         return yaml.dump(self.to_dict(), default_flow_style=False)
 
+    def validate(self) -> List[str]:
+        """
+        Validate configuration completeness.
+
+        Returns:
+            List of warning messages (empty if valid)
+
+        Example:
+            >>> cfg = Config.fromfile('config.yaml')
+            >>> warnings = cfg.validate()
+            >>> if warnings:
+            ...     print("Warnings:", warnings)
+        """
+        warnings = []
+
+        # Check for required sections
+        if 'model' not in self:
+            warnings.append("Missing 'model' section")
+        elif isinstance(self.model, Config):
+            if 'type' not in self.model._cfg_dict:
+                warnings.append("Missing 'model.type' field")
+
+        if 'dataset' not in self:
+            warnings.append("Missing 'dataset' section (optional for inference)")
+
+        # Check deep learning specific requirements
+        if 'model' in self and isinstance(self.model, Config):
+            model_dict = self.model._cfg_dict
+            if model_dict.get('type') == 'DeepLocalizer':
+                if 'backbone' not in model_dict:
+                    warnings.append("DeepLocalizer requires 'model.backbone'")
+                if 'head' not in model_dict:
+                    warnings.append("DeepLocalizer requires 'model.head'")
+
+        return warnings
+
+    def keys(self):
+        """Return config keys."""
+        return self._cfg_dict.keys()
+
+    def items(self):
+        """Return config items."""
+        return self._cfg_dict.items()
+
+    def values(self):
+        """Return config values."""
+        return self._cfg_dict.values()
+
 
 def load_config(filepath: Union[str, Path]) -> Config:
     """
@@ -209,4 +258,135 @@ def merge_configs(*configs: Config) -> Config:
     return Config(merged)
 
 
-__all__ = ['Config', 'load_config', 'merge_configs']
+def print_config_help(module_type: str, show_docstring: bool = True):
+    """
+    Print available parameters for a model/module type.
+
+    Args:
+        module_type: Type name (e.g., 'KNNLocalizer', 'TimmBackbone', 'RegressionHead')
+        show_docstring: Whether to show class docstring
+
+    Example:
+        >>> print_config_help('KNNLocalizer')
+        >>> print_config_help('TimmBackbone')
+        >>> print_config_help('RegressionHead')
+    """
+    # Import registries
+    try:
+        from ..registry import LOCALIZERS, BACKBONES, HEADS
+    except ImportError:
+        print("Error: Registry not available. Make sure indoorloc is properly installed.")
+        return
+
+    # Find the class in registries
+    cls = None
+    registry_name = None
+
+    for name, registry in [('LOCALIZERS', LOCALIZERS), ('BACKBONES', BACKBONES), ('HEADS', HEADS)]:
+        try:
+            cls = registry.get(module_type)
+            if cls is not None:
+                registry_name = name
+                break
+        except KeyError:
+            continue
+
+    if cls is None:
+        print(f"Unknown module type: {module_type}")
+        print("\nAvailable types:")
+        print("  LOCALIZERS:", ', '.join(LOCALIZERS.list_modules()))
+        print("  BACKBONES:", ', '.join(BACKBONES.list_modules()))
+        print("  HEADS:", ', '.join(HEADS.list_modules()))
+        return
+
+    print(f"\n{module_type} ({registry_name})")
+    print("=" * 60)
+
+    # Show docstring
+    if show_docstring and cls.__doc__:
+        doc_lines = cls.__doc__.strip().split('\n')
+        print(doc_lines[0])
+        print()
+
+    # Show parameters
+    print("Parameters:")
+    print("-" * 60)
+
+    try:
+        sig = inspect.signature(cls.__init__)
+        for name, param in sig.parameters.items():
+            if name in ('self', 'args', 'kwargs'):
+                continue
+
+            # Get default value
+            if param.default is inspect.Parameter.empty:
+                default = 'required'
+                default_str = f"  {name}: {default}"
+            else:
+                default = param.default
+                default_str = f"  {name}: {repr(default)}"
+
+            # Get type annotation
+            if param.annotation is not inspect.Parameter.empty:
+                try:
+                    type_name = param.annotation.__name__
+                except AttributeError:
+                    type_name = str(param.annotation)
+                default_str += f"  ({type_name})"
+
+            print(default_str)
+    except (ValueError, TypeError) as e:
+        print(f"  Unable to inspect parameters: {e}")
+
+    print()
+
+
+def get_default_config(module_type: str) -> Dict[str, Any]:
+    """
+    Get default configuration for a module type.
+
+    Args:
+        module_type: Type name (e.g., 'KNNLocalizer', 'TimmBackbone')
+
+    Returns:
+        Dictionary of default parameter values
+
+    Example:
+        >>> defaults = get_default_config('KNNLocalizer')
+        >>> print(defaults)
+        {'k': 5, 'weights': 'distance', ...}
+    """
+    try:
+        from ..registry import LOCALIZERS, BACKBONES, HEADS
+    except ImportError:
+        return {}
+
+    # Find the class
+    cls = None
+    for registry in [LOCALIZERS, BACKBONES, HEADS]:
+        try:
+            cls = registry.get(module_type)
+            if cls is not None:
+                break
+        except KeyError:
+            continue
+
+    if cls is None:
+        return {}
+
+    # Extract defaults from signature
+    defaults = {'type': module_type}
+    try:
+        sig = inspect.signature(cls.__init__)
+        for name, param in sig.parameters.items():
+            if name in ('self', 'args', 'kwargs'):
+                continue
+            if param.default is not inspect.Parameter.empty:
+                defaults[name] = param.default
+    except (ValueError, TypeError):
+        pass
+
+    return defaults
+
+
+__all__ = ['Config', 'load_config', 'merge_configs', 'print_config_help', 'get_default_config']

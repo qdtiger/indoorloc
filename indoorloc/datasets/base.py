@@ -4,8 +4,10 @@ Base Dataset Classes for IndoorLoc
 Provides abstract base classes for all dataset implementations.
 """
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Optional, Dict, Any, Iterator
+from typing import List, Tuple, Optional, Dict, Any, Iterator, Union
 from pathlib import Path
+
+import numpy as np
 
 from ..signals.base import BaseSignal
 from ..locations.location import Location
@@ -181,6 +183,75 @@ class BaseDataset(ABC):
             'signal_type': self.signal_type,
         }
 
+    @property
+    def input_dim(self) -> Tuple[int, ...]:
+        """Return input dimension for this dataset.
+
+        Returns:
+            Tuple representing input shape, e.g., (520,) for WiFi with 520 APs.
+            Subclasses should override this for specific dimensions.
+        """
+        if len(self._signals) > 0:
+            arr = self._signals[0].to_numpy()
+            return arr.shape
+        return (0,)
+
+    @property
+    def output_dim(self) -> Dict[str, int]:
+        """Return output dimension configuration.
+
+        Returns:
+            Dictionary with output configuration:
+                - num_coords: Number of coordinate dimensions (typically 2 or 3)
+                - num_floors: Number of unique floors
+                - num_buildings: Number of unique buildings
+        """
+        floors = set(loc.floor for loc in self._locations if loc.floor is not None)
+        buildings = set(loc.building_id for loc in self._locations if loc.building_id is not None)
+
+        return {
+            'num_coords': 2,  # x, y by default
+            'num_floors': len(floors) if floors else 1,
+            'num_buildings': len(buildings) if buildings else 1,
+        }
+
+    def to_tensors(self) -> Tuple[np.ndarray, np.ndarray]:
+        """Convert dataset to numpy tensors for training.
+
+        Returns:
+            Tuple of (X, y) where:
+                - X: Signal features with shape (N, *input_dim)
+                - y: Labels with shape (N, 4) containing [x, y, floor, building]
+        """
+        # Build X: signal features
+        X = np.stack([signal.to_numpy() for signal in self._signals], axis=0)
+
+        # Build y: [x, y, floor, building_id]
+        y = np.array([
+            [
+                loc.coordinate.x,
+                loc.coordinate.y,
+                loc.floor if loc.floor is not None else 0,
+                loc.building_id if loc.building_id is not None else 0,
+            ]
+            for loc in self._locations
+        ], dtype=np.float32)
+
+        return X, y
+
+    def to_torch_tensors(self):
+        """Convert dataset to PyTorch tensors.
+
+        Returns:
+            Tuple of (X, y) as torch.Tensor
+        """
+        try:
+            import torch
+            X, y = self.to_tensors()
+            return torch.tensor(X, dtype=torch.float32), torch.tensor(y, dtype=torch.float32)
+        except ImportError:
+            raise ImportError("PyTorch is required for to_torch_tensors(). Install with: pip install torch")
+
     def split_by_building(self) -> Dict[str, 'BaseDataset']:
         """Split dataset by building.
 
@@ -222,6 +293,11 @@ class WiFiDataset(BaseDataset):
         """Return the number of access points in this dataset."""
         pass
 
+    @property
+    def input_dim(self) -> Tuple[int, ...]:
+        """Return input dimension (num_aps,)."""
+        return (self.num_aps,)
+
     def get_statistics(self) -> Dict[str, Any]:
         """Compute WiFi-specific statistics."""
         stats = super().get_statistics()
@@ -258,6 +334,11 @@ class BLEDataset(BaseDataset):
     def num_beacons(self) -> int:
         """Return the number of BLE beacons in this dataset."""
         pass
+
+    @property
+    def input_dim(self) -> Tuple[int, ...]:
+        """Return input dimension (num_beacons,)."""
+        return (self.num_beacons,)
 
     def get_statistics(self) -> Dict[str, Any]:
         """Compute BLE-specific statistics."""
@@ -416,6 +497,11 @@ class CSIDataset(BaseDataset):
     def num_subcarriers(self) -> int:
         """Return the number of OFDM subcarriers."""
         pass
+
+    @property
+    def input_dim(self) -> Tuple[int, ...]:
+        """Return input dimension (num_subcarriers, num_antennas)."""
+        return (self.num_subcarriers, self.num_antennas)
 
     def get_statistics(self) -> Dict[str, Any]:
         """Compute CSI-specific statistics."""

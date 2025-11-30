@@ -22,44 +22,66 @@
 
 ## Introduction
 
-**One line of code** to load any indoor localization dataset. **One line of code** to train and evaluate.
-
-```python
-train, test = iloc.UJIndoorLoc(download=True)  # That's it. Auto-download, auto-parse, ready to use.
-```
+**3 lines of code** to train and evaluate. **Full control** when you need it.
 
 IndoorLoc provides a unified interface for 36+ indoor localization datasets across WiFi, BLE, UWB, CSI, and more.
 
-### For Beginners
+### For Beginners: 3 Lines = Complete Workflow
 
-**One line = One dataset.** Focus on learning algorithms, not fighting with data formats.
-
-```python
-# Load 36+ datasets with identical API
-train, test = iloc.UJIndoorLoc(download=True)    # WiFi RSSI
-train, test = iloc.CSIIndoor(download=True)       # WiFi CSI
-train, test = iloc.UWBIndoor(download=True)       # UWB ranging
-```
-
-### For Experts
-
-**Full control when you need it.** Flexible data pipeline, customizable preprocessing, plug-in your own algorithms.
+Skip the boilerplate. Focus on algorithms, not data formats.
 
 ```python
-# Custom preprocessing pipeline
-dataset = iloc.UJIndoorLoc(
-    download=True,
-    transform=iloc.Compose([
-        iloc.RSSINormalize(method='minmax'),
-        iloc.APFilter(threshold=-90),
-    ])
-)
+import indoorloc as iloc
 
-# Register your own algorithm
-@LOCALIZERS.register_module()
-class MyNovelLocalizer(BaseLocalizer):
-    ...
+train, test = iloc.load_dataset('ujindoorloc')           # Load any of 36+ datasets
+model = iloc.create_model('resnet18', dataset=train)     # Auto-configure model
+results = model.fit(train).evaluate(test)                # Train & evaluate
 ```
+
+✓ Auto-download datasets | ✓ Auto-adapt dimensions | ✓ Auto-configure model
+
+### For Experts: YAML Config + CLI
+
+Full control via OpenMMLab-style configuration system.
+
+```bash
+# Train with config file
+python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml
+
+# Override any parameter from command line
+python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml \
+    --model.backbone.model_name efficientnet_b0 \
+    --train.lr 5e-4 --train.epochs 200
+```
+
+```yaml
+# configs/wifi/resnet18_ujindoorloc.yaml
+_base_:
+  - ../_base_/models/resnet.yaml
+  - ../_base_/schedules/schedule_1x.yaml
+
+model:
+  backbone:
+    model_name: resnet18
+    pretrained: true
+  head:
+    num_floors: 5
+    num_buildings: 3
+
+train:
+  epochs: 100
+  lr: 0.001
+  fp16: true
+```
+
+### Key Contributions
+
+| Feature | Description |
+|---------|-------------|
+| **Unified Dataset API** | 36+ datasets with identical `load_dataset()` interface |
+| **Auto-Configuration** | Model dimensions auto-adapt to any dataset |
+| **Dual Interface** | Code API for beginners, YAML configs for experts |
+| **Registry System** | OpenMMLab-style extensible architecture |
 
 ## Features
 

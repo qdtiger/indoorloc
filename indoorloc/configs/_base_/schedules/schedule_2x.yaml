@@ -1,0 +1,41 @@
+# Extended Training Schedule (2x)
+# For larger datasets or more complex models
+
+train:
+  # Double epochs for thorough training
+  epochs: 200
+
+  # Larger batch for stability
+  batch_size: 128
+
+  # Slightly lower learning rate
+  lr: 5e-4
+
+  weight_decay: 1e-4
+
+  # More patience for early stopping
+  early_stopping: 20
+
+  optimizer:
+    type: AdamW
+    betas: [0.9, 0.999]
+
+  scheduler:
+    type: CosineAnnealingLR
+    T_max: 200
+    eta_min: 1e-6
+
+  # GPU optimized settings
+  device: cuda
+  use_cpu: false
+  fp16: true  # Enable mixed precision
+
+  num_workers: 4
+  pin_memory: true
+
+  # Gradient accumulation for effective larger batch
+  gradient_accumulation_steps: 2
+  max_grad_norm: 1.0
+
+  logging_steps: 20
+  verbose: true

@@ -1,0 +1,24 @@
+# KNN Localizer Configuration
+# Traditional k-Nearest Neighbors for indoor localization
+
+model:
+  type: KNNLocalizer
+
+  # Number of neighbors to consider
+  # Larger k = smoother predictions, smaller k = more local
+  k: 5
+
+  # Weight function: 'uniform' or 'distance'
+  # 'distance': closer neighbors have more influence
+  weights: distance
+
+  # Distance metric: 'euclidean', 'manhattan', 'minkowski'
+  metric: euclidean
+
+  # Algorithm: 'auto', 'ball_tree', 'kd_tree', 'brute'
+  # 'auto' selects best based on data
+  algorithm: auto
+
+  # Whether to predict floor and building
+  predict_floor: true
+  predict_building: true

@@ -1,0 +1,26 @@
+# SODIndoorLoc Dataset Configuration
+# Small Office Dataset for indoor localization
+
+dataset:
+  type: SODIndoorLocDataset
+
+  # Dataset statistics
+  num_waps: 168          # Number of WiFi access points
+  num_buildings: 1       # Single building
+  num_floors: 1          # Single floor
+
+  # Download settings
+  download: true
+  data_root: null
+
+  # Data preprocessing
+  preprocessing:
+    normalize: minmax
+    missing_value: -100
+    fill_missing: -100
+
+  dataloader:
+    batch_size: 32
+    shuffle: true
+    num_workers: 0
+    pin_memory: true
