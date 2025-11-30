@@ -2,6 +2,10 @@
 IndoorLoc Datasets Module
 
 Provides dataset implementations for indoor localization.
+
+Example:
+    >>> import indoorloc as iloc
+    >>> train, test = iloc.load_dataset("ujindoorloc")
 """
 from .base import (
     BaseDataset,
@@ -12,6 +16,10 @@ from .base import (
     MagneticDataset,
     CSIDataset,
 )
+
+# HuggingFace-style loading API
+from .loading import load_dataset, list_datasets, dataset_info
+from .catalog import DATASET_ALIASES, DATASETS_BY_SIGNAL
 from .ujindoorloc import UJIndoorLocDataset, UJIndoorLoc
 from .sodindoorloc import SODIndoorLocDataset, SODIndoorLoc
 from .longtermwifi import LongTermWiFiDataset, LongTermWiFi
@@ -52,6 +60,13 @@ from .mamimo_uav import MaMIMOUAVDataset, MaMIMOUAV
 from .wifi_csi_d2d import WiFiCSID2DDataset, WiFiCSID2D
 
 __all__ = [
+    # HuggingFace-style API
+    'load_dataset',
+    'list_datasets',
+    'dataset_info',
+    'DATASET_ALIASES',
+    'DATASETS_BY_SIGNAL',
+    # Base classes
     'BaseDataset',
     'WiFiDataset',
     'BLEDataset',

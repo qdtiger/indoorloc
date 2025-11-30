@@ -1,0 +1,25 @@
+# Weighted KNN on UJIndoorLoc
+# Traditional baseline for WiFi fingerprinting
+
+_base_:
+  - ../_base_/default.yaml
+  - ../_base_/datasets/ujindoorloc.yaml
+  - ../_base_/models/wknn.yaml
+
+# Override model parameters
+model:
+  k: 5
+  weights: distance
+
+# Evaluation metrics
+evaluation:
+  metrics:
+    - type: MeanPositionError
+    - type: MedianPositionError
+    - type: FloorAccuracy
+    - type: BuildingAccuracy
+    - type: CDF
+      percentiles: [50, 75, 90, 95]
+
+# Output directory
+work_dir: work_dirs/wknn_ujindoorloc

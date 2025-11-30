@@ -1,0 +1,47 @@
+# Standard Training Schedule (1x)
+# Suitable for most indoor localization tasks
+
+train:
+  # Total training epochs
+  epochs: 100
+
+  # Batch size (adjust based on GPU memory)
+  batch_size: 64
+
+  # Learning rate
+  lr: 1e-3
+
+  # Weight decay for regularization
+  weight_decay: 1e-4
+
+  # Early stopping patience (0 to disable)
+  early_stopping: 10
+
+  # Optimizer settings
+  optimizer:
+    type: AdamW
+    betas: [0.9, 0.999]
+
+  # Learning rate scheduler
+  scheduler:
+    type: ReduceLROnPlateau
+    mode: min
+    factor: 0.5
+    patience: 5
+
+  # Device settings
+  device: null  # null for auto-detect, 'cuda', 'cpu'
+  use_cpu: false
+  fp16: false  # Mixed precision training
+
+  # DataLoader settings
+  num_workers: 0
+  pin_memory: true
+
+  # Gradient settings
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  # Logging
+  logging_steps: 10
+  verbose: true

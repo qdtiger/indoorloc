@@ -1,0 +1,22 @@
+# ============================================================
+# 最简配置 - ResNet18 + UJIndoorLoc
+# ============================================================
+# 只包含最常修改的参数，其他参数使用默认值
+# 完整版请查看: resnet18_ujindoorloc_annotated.yaml
+#
+# 使用方法:
+#   python tools/train.py configs/wifi/resnet18_ujindoorloc_minimal.yaml
+# ============================================================
+
+_base_:
+  - ./resnet18_ujindoorloc.yaml  # 继承完整配置
+
+# 只需修改这几个参数:
+model:
+  backbone:
+    model_name: resnet18   # 换模型? 试试: efficientnet_b0, mobilenetv3_small
+
+train:
+  epochs: 100              # 训练轮数 (快速实验: 20-50)
+  lr: 0.001                # 学习率 (精调: 5e-4)
+  batch_size: 64           # 批次大小 (显存不足时减小)

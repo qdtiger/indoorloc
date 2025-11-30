@@ -1,0 +1,19 @@
+# Weighted KNN Localizer Configuration
+# Enhanced k-NN with distance-based weighting
+
+model:
+  type: WKNNLocalizer
+
+  # Number of neighbors
+  k: 5
+
+  # Weight function for neighbors
+  # Options: 'distance', 'inverse', 'gaussian'
+  weights: distance
+
+  # Distance metric
+  metric: euclidean
+
+  # Floor and building prediction
+  predict_floor: true
+  predict_building: true

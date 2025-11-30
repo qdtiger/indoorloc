@@ -1,0 +1,29 @@
+# Tampere Dataset Configuration
+# Multi-building WiFi fingerprinting dataset
+
+dataset:
+  type: TampereDataset
+
+  # Dataset statistics
+  num_waps: 489          # Number of WiFi access points
+  num_buildings: 1       # Single building
+  num_floors: 5          # 5 floors
+
+  # Download settings
+  download: true
+  data_root: null  # Uses default cache directory
+
+  # Data preprocessing
+  preprocessing:
+    # RSSI normalization method
+    normalize: minmax
+    # Handle missing values (typically -100 or 100)
+    missing_value: -100
+    fill_missing: -100
+
+  # DataLoader settings
+  dataloader:
+    batch_size: 64
+    shuffle: true
+    num_workers: 0
+    pin_memory: true

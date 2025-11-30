@@ -1,0 +1,32 @@
+# ResNet Deep Localizer Configuration
+# Using timm's pretrained ResNet for feature extraction
+
+model:
+  type: DeepLocalizer
+
+  backbone:
+    type: TimmBackbone
+    # Model name from timm library
+    # Options: resnet18, resnet34, resnet50, efficientnet_b0, etc.
+    model_name: resnet18
+    # Use ImageNet pretrained weights
+    pretrained: true
+    # Input type: '1d' for RSSI vectors, '2d' for CSI matrices
+    input_type: '1d'
+    # Number of input channels (1 for single signal)
+    in_channels: 1
+
+  head:
+    type: RegressionHead
+    # Number of coordinate outputs
+    num_coords: 2
+    # Head hidden layers
+    hidden_dims: [256, 128]
+    dropout: 0.5
+
+  # Optionally freeze backbone for transfer learning
+  freeze_backbone: false
+
+  init_cfg:
+    type: kaiming
+    layers: [Linear]

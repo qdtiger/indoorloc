@@ -91,7 +91,7 @@ class KNNLocalizer(TraditionalLocalizer):
     def localizer_type(self) -> str:
         return 'knn'
 
-    def fit(
+    def _fit_impl(
         self,
         signals: List[BaseSignal],
         locations: List[Location],

@@ -1,0 +1,41 @@
+# EfficientNet-B0 Deep Localizer on UJIndoorLoc
+# Efficient architecture with good accuracy
+
+_base_:
+  - ../_base_/default.yaml
+  - ../_base_/datasets/ujindoorloc.yaml
+  - ../_base_/models/resnet.yaml
+  - ../_base_/schedules/schedule_2x.yaml
+
+# Use EfficientNet instead of ResNet
+model:
+  backbone:
+    model_name: efficientnet_b0
+    pretrained: true
+    input_type: '1d'
+
+  head:
+    type: HybridHead
+    num_coords: 2
+    num_floors: 5
+    num_buildings: 3
+    hidden_dims: [256, 128]
+    dropout: 0.5
+
+# Extended training with GPU optimization
+train:
+  epochs: 200
+  batch_size: 128
+  lr: 5e-4
+  device: cuda
+  fp16: true
+  num_workers: 4
+
+evaluation:
+  metrics:
+    - type: MeanPositionError
+    - type: MedianPositionError
+    - type: FloorAccuracy
+    - type: BuildingAccuracy
+
+work_dir: work_dirs/efficientnet_ujindoorloc
