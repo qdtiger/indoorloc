@@ -336,7 +336,7 @@ You can also download datasets manually from official sources:
 
 ## Supported Algorithms
 
-**Traditional + Deep Learning** localization methods with unified interface. Deep learning models powered by [timm](https://github.com/huggingface/pytorch-image-models) (700+ pretrained architectures).
+**Traditional + Deep Learning** localization methods with unified interface. [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
 <table>
 <tr>
