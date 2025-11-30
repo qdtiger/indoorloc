@@ -12,12 +12,24 @@ model:
   # 'distance': closer neighbors have more influence
   weights: distance
 
-  # Distance metric: 'euclidean', 'manhattan', 'minkowski'
+  # Distance metric: 'euclidean', 'manhattan', 'cosine', 'minkowski'
   metric: euclidean
 
   # Algorithm: 'auto', 'ball_tree', 'kd_tree', 'brute'
   # 'auto' selects best based on data
   algorithm: auto
+
+  # Leaf size for BallTree or KDTree
+  # Affects speed of construction and query
+  leaf_size: 30
+
+  # Power parameter for Minkowski metric
+  # p=1: manhattan, p=2: euclidean
+  p: 2
+
+  # Number of parallel jobs for neighbor search
+  # -1 means using all processors, null means 1
+  n_jobs: null
 
   # Whether to predict floor and building
   predict_floor: true

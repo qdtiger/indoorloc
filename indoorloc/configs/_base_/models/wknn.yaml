@@ -7,12 +7,23 @@ model:
   # Number of neighbors
   k: 5
 
-  # Weight function for neighbors
-  # Options: 'distance', 'inverse', 'gaussian'
+  # Weight function (always 'distance' for WKNN)
   weights: distance
 
-  # Distance metric
+  # Distance metric: 'euclidean', 'manhattan', 'cosine', 'minkowski'
   metric: euclidean
+
+  # Algorithm: 'auto', 'ball_tree', 'kd_tree', 'brute'
+  algorithm: auto
+
+  # Leaf size for BallTree or KDTree
+  leaf_size: 30
+
+  # Power parameter for Minkowski metric (1=manhattan, 2=euclidean)
+  p: 2
+
+  # Number of parallel jobs (-1=all CPUs)
+  n_jobs: null
 
   # Floor and building prediction
   predict_floor: true

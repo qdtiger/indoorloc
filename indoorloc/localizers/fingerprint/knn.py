@@ -27,8 +27,11 @@ class KNNLocalizer(TraditionalLocalizer):
     Attributes:
         k: Number of neighbors
         weights: Weight function ('uniform' or 'distance')
-        metric: Distance metric ('euclidean', 'manhattan', 'cosine')
-        algorithm: Algorithm for finding neighbors
+        metric: Distance metric ('euclidean', 'manhattan', 'cosine', 'minkowski')
+        algorithm: Algorithm for finding neighbors ('auto', 'ball_tree', 'kd_tree', 'brute')
+        leaf_size: Leaf size for BallTree or KDTree
+        p: Power parameter for Minkowski metric (1=manhattan, 2=euclidean)
+        n_jobs: Number of parallel jobs (-1 means using all processors)
     """
 
     def __init__(
@@ -37,6 +40,9 @@ class KNNLocalizer(TraditionalLocalizer):
         weights: str = 'distance',
         metric: str = 'euclidean',
         algorithm: str = 'auto',
+        leaf_size: int = 30,
+        p: int = 2,
+        n_jobs: Optional[int] = None,
         predict_floor: bool = True,
         predict_building: bool = True,
         **kwargs
@@ -47,8 +53,11 @@ class KNNLocalizer(TraditionalLocalizer):
         Args:
             k: Number of neighbors
             weights: Weight function ('uniform' or 'distance')
-            metric: Distance metric ('euclidean', 'manhattan', 'cosine')
+            metric: Distance metric ('euclidean', 'manhattan', 'cosine', 'minkowski')
             algorithm: Algorithm ('auto', 'ball_tree', 'kd_tree', 'brute')
+            leaf_size: Leaf size for BallTree or KDTree
+            p: Power parameter for Minkowski metric (1=manhattan, 2=euclidean)
+            n_jobs: Number of parallel jobs (-1 means using all processors)
             predict_floor: Whether to predict floor
             predict_building: Whether to predict building
         """
@@ -62,13 +71,19 @@ class KNNLocalizer(TraditionalLocalizer):
         self.weights = weights
         self.metric = metric
         self.algorithm = algorithm
+        self.leaf_size = leaf_size
+        self.p = p
+        self.n_jobs = n_jobs
 
         # Initialize models
         self._coord_model = KNeighborsRegressor(
             n_neighbors=k,
             weights=weights,
             metric=metric,
-            algorithm=algorithm
+            algorithm=algorithm,
+            leaf_size=leaf_size,
+            p=p,
+            n_jobs=n_jobs
         )
 
         if predict_floor:
@@ -76,7 +91,10 @@ class KNNLocalizer(TraditionalLocalizer):
                 n_neighbors=k,
                 weights=weights,
                 metric=metric,
-                algorithm=algorithm
+                algorithm=algorithm,
+                leaf_size=leaf_size,
+                p=p,
+                n_jobs=n_jobs
             )
 
         if predict_building:
@@ -84,7 +102,10 @@ class KNNLocalizer(TraditionalLocalizer):
                 n_neighbors=k,
                 weights=weights,
                 metric=metric,
-                algorithm=algorithm
+                algorithm=algorithm,
+                leaf_size=leaf_size,
+                p=p,
+                n_jobs=n_jobs
             )
 
     @property
@@ -256,6 +277,9 @@ class KNNLocalizer(TraditionalLocalizer):
             'weights': self.weights,
             'metric': self.metric,
             'algorithm': self.algorithm,
+            'leaf_size': self.leaf_size,
+            'p': self.p,
+            'n_jobs': self.n_jobs,
         }
 
     def _set_state(self, state: Dict[str, Any]) -> None:
@@ -267,6 +291,9 @@ class KNNLocalizer(TraditionalLocalizer):
         self.weights = state['weights']
         self.metric = state['metric']
         self.algorithm = state['algorithm']
+        self.leaf_size = state.get('leaf_size', 30)
+        self.p = state.get('p', 2)
+        self.n_jobs = state.get('n_jobs', None)
 
 
 @LOCALIZERS.register_module()
