@@ -15,7 +15,7 @@
 
 ---
 
-## ✨ Highlights
+## Highlights
 
 <table>
 <tr>
@@ -27,7 +27,7 @@
 
 ---
 
-## 📊 Supported Datasets
+## Supported Datasets
 
 **WiFi, BLE, CSI, UWB, Magnetic, and more** — all with `iloc.load_dataset()`. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
 
@@ -90,7 +90,7 @@
 
 ---
 
-## 🧠 Supported Algorithms
+## Supported Algorithms
 
 **Traditional ML + 700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
@@ -134,7 +134,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 import indoorloc as iloc
@@ -144,7 +144,7 @@ model = iloc.create_model('resnet18', dataset=train)
 results = model.fit(train).evaluate(test)
 ```
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install indoorloc
@@ -164,7 +164,7 @@ pip install -e ".[dev]"         # Development
 ---
 
 <details>
-<summary><b>📖 Advanced Usage</b></summary>
+<summary><b>Advanced Usage</b></summary>
 
 ### YAML Configuration
 
