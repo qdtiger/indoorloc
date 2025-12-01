@@ -15,15 +15,20 @@
 
 ---
 
-## Highlights
+### For Beginners: 3 Lines of Code
 
-<table>
-<tr>
-<td align="center"><h2>36+</h2><sub>Datasets</sub></td>
-<td align="center"><h2>700+</h2><sub>Models</sub></td>
-<td align="center"><h2>1</h2><sub>Unified API</sub></td>
-</tr>
-</table>
+```python
+train, test = iloc.load_dataset('ujindoorloc')
+model = iloc.create_model('resnet18', dataset=train)
+results = model.fit(train).evaluate(test)
+```
+
+### For Experts: Full Control
+
+```bash
+python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml \
+    --model.backbone efficientnet_b0 --train.lr 5e-4
+```
 
 ---
 
@@ -133,16 +138,6 @@
 </table>
 
 ---
-
-## Quick Start
-
-```python
-import indoorloc as iloc
-
-train, test = iloc.load_dataset('ujindoorloc')
-model = iloc.create_model('resnet18', dataset=train)
-results = model.fit(train).evaluate(test)
-```
 
 ## Installation
 
