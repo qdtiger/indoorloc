@@ -15,19 +15,49 @@
 
 ---
 
-### For Beginners: 3 Lines of Code
+### For Beginners: 3 Lines = Complete Workflow
+
+Skip the boilerplate. Focus on algorithms, not data formats.
 
 ```python
-train, test = iloc.load_dataset('ujindoorloc')
-model = iloc.create_model('resnet18', dataset=train)
-results = model.fit(train).evaluate(test)
+import indoorloc as iloc
+
+train, test = iloc.load_dataset('ujindoorloc')           # Load any of 36+ datasets
+model = iloc.create_model('resnet18', dataset=train)     # Auto-configure model
+results = model.fit(train).evaluate(test)                # Train & evaluate
 ```
 
-### For Experts: Full Control
+Auto-download datasets · Auto-adapt dimensions · Auto-configure model
+
+### For Experts: YAML Config + CLI
+
+Full control via OpenMMLab-style configuration system.
 
 ```bash
+python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml
+
+# Override any parameter
 python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml \
-    --model.backbone efficientnet_b0 --train.lr 5e-4
+    --model.backbone.model_name efficientnet_b0 \
+    --train.lr 5e-4 --train.epochs 200
+```
+
+```yaml
+# configs/wifi/resnet18_ujindoorloc.yaml
+_base_:
+  - ../_base_/models/resnet.yaml
+
+model:
+  backbone:
+    model_name: resnet18
+    pretrained: true
+  head:
+    num_floors: 5
+    num_buildings: 3
+
+train:
+  epochs: 100
+  lr: 0.001
 ```
 
 ---
