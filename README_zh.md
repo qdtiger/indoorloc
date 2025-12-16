@@ -46,12 +46,13 @@ train, test = iloc.UWBIndoor(download=True)       # UWB 测距
 **需要时完全可控。** 灵活的数据流水线、可定制的预处理、插件化的算法扩展。
 
 ```python
-# 自定义预处理流水线
+# 自定义预处理流水线（先过滤弱AP，再归一化）
 dataset = iloc.UJIndoorLoc(
     download=True,
+    normalize=False,  # 禁用默认归一化以使用自定义流水线
     transform=iloc.Compose([
-        iloc.RSSINormalize(method='minmax'),
-        iloc.APFilter(threshold=-90),
+        iloc.APFilter(threshold=-90),       # 1. 过滤弱信号 (原始 dBm)
+        iloc.RSSINormalize(method='minmax') # 2. 归一化到 [0,1]
     ])
 )
 

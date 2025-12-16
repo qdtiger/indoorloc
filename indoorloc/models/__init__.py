@@ -37,6 +37,8 @@ from .backbones import (
     BaseBackbone,
     InputAdapter,
     TimmBackbone,
+    MLPBackbone,
+    CNN1DBackbone,
 )
 
 # Heads
@@ -61,6 +63,8 @@ __all__ = [
     'BaseBackbone',
     'InputAdapter',
     'TimmBackbone',
+    'MLPBackbone',
+    'CNN1DBackbone',
     # Heads
     'BaseHead',
     'RegressionHead',
