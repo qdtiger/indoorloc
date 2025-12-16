@@ -56,6 +56,8 @@ from .models import (
     BaseBackbone,
     InputAdapter,
     TimmBackbone,
+    MLPBackbone,
+    CNN1DBackbone,
     # Heads
     BaseHead,
     RegressionHead,
@@ -67,6 +69,16 @@ from .models import (
     HierarchicalHead,
     # Localizers
     DeepLocalizer,
+)
+
+from .datasets.transforms import (
+    BaseTransform,
+    Compose,
+    Identity,
+    RSSINormalize,
+    APFilter,
+    APSelect,
+    GaussianNoise,
 )
 
 from .utils import (

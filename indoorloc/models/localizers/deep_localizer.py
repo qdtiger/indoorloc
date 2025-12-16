@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from ...registry import BACKBONES, HEADS
+from ...registry import BACKBONES, HEADS, LOCALIZERS
 
 if TYPE_CHECKING:
     from ...datasets.base import BaseDataset
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from ...evaluation.metrics import EvaluationResults
 
 
+@LOCALIZERS.register_module()
 class DeepLocalizer(nn.Module):
     """End-to-end deep learning model for indoor localization.
 
@@ -492,9 +493,10 @@ class DeepLocalizer(nn.Module):
             optimizer, mode='min', factor=0.5, patience=5
         )
 
-        # Loss function
+        # Loss functions
         coord_loss_fn = nn.MSELoss()
-        floor_loss_fn = nn.CrossEntropyLoss() if hasattr(self.head, 'num_floors') else None
+        floor_loss_fn = nn.CrossEntropyLoss() if hasattr(self.head, 'num_floors') and self.head.num_floors else None
+        building_loss_fn = nn.CrossEntropyLoss() if hasattr(self.head, 'num_buildings') and self.head.num_buildings else None
 
         # Move model to device
         self.to(target_device)
@@ -529,6 +531,8 @@ class DeepLocalizer(nn.Module):
                             loss = coord_loss_fn(outputs['coords'], batch_y[:, :2])
                             if 'floor_logits' in outputs and floor_loss_fn is not None:
                                 loss = loss + floor_loss_fn(outputs['floor_logits'], batch_y[:, 2].long())
+                            if 'building_logits' in outputs and building_loss_fn is not None:
+                                loss = loss + building_loss_fn(outputs['building_logits'], batch_y[:, 3].long())
                         else:
                             loss = coord_loss_fn(outputs, batch_y[:, :2])
 
@@ -554,6 +558,8 @@ class DeepLocalizer(nn.Module):
                         loss = coord_loss_fn(outputs['coords'], batch_y[:, :2])
                         if 'floor_logits' in outputs and floor_loss_fn is not None:
                             loss = loss + floor_loss_fn(outputs['floor_logits'], batch_y[:, 2].long())
+                        if 'building_logits' in outputs and building_loss_fn is not None:
+                            loss = loss + building_loss_fn(outputs['building_logits'], batch_y[:, 3].long())
                     else:
                         loss = coord_loss_fn(outputs, batch_y[:, :2])
 

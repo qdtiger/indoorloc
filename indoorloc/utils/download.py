@@ -5,16 +5,55 @@ Provides functions for downloading and managing dataset files.
 """
 import os
 import hashlib
+import shutil
+import tempfile
 import zipfile
-import io
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
     HAS_REQUESTS = True
 except ImportError:
     HAS_REQUESTS = False
+
+# Default timeout: (connect_timeout, read_timeout) in seconds
+DEFAULT_TIMEOUT: Tuple[int, int] = (10, 60)
+
+
+def _get_session(retries: int = 3, backoff: float = 0.5) -> 'requests.Session':
+    """Create a requests session with automatic retry on transient errors.
+
+    Args:
+        retries: Number of retry attempts.
+        backoff: Backoff factor between retries.
+
+    Returns:
+        Configured requests.Session object.
+    """
+    if not HAS_REQUESTS:
+        raise ImportError(
+            "requests is required for downloading datasets.\n"
+            "Install with: pip install indoorloc[datasets]"
+        )
+
+    retry = Retry(
+        total=retries,
+        connect=retries,
+        read=retries,
+        status=retries,
+        backoff_factor=backoff,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset(["GET", "HEAD"]),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 
 def get_data_home() -> Path:
@@ -63,6 +102,8 @@ def download_url(
     root: Path,
     filename: Optional[str] = None,
     md5: Optional[str] = None,
+    timeout: Tuple[int, int] = DEFAULT_TIMEOUT,
+    retries: int = 3,
 ) -> Path:
     """Download a file from URL.
 
@@ -71,6 +112,8 @@ def download_url(
         root: Directory to save the file.
         filename: Filename to save as (defaults to URL basename).
         md5: Expected MD5 hash for verification.
+        timeout: (connect_timeout, read_timeout) in seconds.
+        retries: Number of retry attempts for transient failures.
 
     Returns:
         Path to the downloaded file.
@@ -82,7 +125,7 @@ def download_url(
     if not HAS_REQUESTS:
         raise ImportError(
             "requests is required for downloading datasets.\n"
-            "Install with: pip install requests"
+            "Install with: pip install indoorloc[datasets]"
         )
 
     root = Path(root)
@@ -99,24 +142,31 @@ def download_url(
 
     print(f"Downloading {url}...")
 
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
+    session = _get_session(retries=retries)
+    try:
+        response = session.get(url, stream=True, timeout=timeout)
+        response.raise_for_status()
 
-    # Get total size for progress
-    total_size = int(response.headers.get('content-length', 0))
+        # Get total size for progress
+        total_size = int(response.headers.get('content-length', 0))
 
-    # Download with progress
-    downloaded = 0
-    with open(filepath, 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                f.write(chunk)
-                downloaded += len(chunk)
-                if total_size > 0:
-                    percent = (downloaded / total_size) * 100
-                    print(f"\rProgress: {percent:.1f}%", end='', flush=True)
+        # Download with progress
+        downloaded = 0
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if total_size > 0:
+                        percent = (downloaded / total_size) * 100
+                        print(f"\rProgress: {percent:.1f}%", end='', flush=True)
 
-    print()  # New line after progress
+        print()  # New line after progress
+    except Exception:
+        # Clean up partial download
+        if filepath.exists():
+            filepath.unlink()
+        raise
 
     # Verify download
     if md5 is not None and not check_integrity(filepath, md5):
@@ -131,14 +181,21 @@ def download_and_extract_zip(
     root: Path,
     extract_files: Optional[List[str]] = None,
     md5: Optional[str] = None,
+    timeout: Tuple[int, int] = DEFAULT_TIMEOUT,
+    retries: int = 3,
 ) -> None:
     """Download and extract a ZIP file.
+
+    Downloads to a temporary file first to avoid loading entire ZIP into memory,
+    then extracts to the target directory.
 
     Args:
         url: URL to the ZIP file.
         root: Directory to extract to.
         extract_files: List of specific files to extract (None for all).
         md5: Expected MD5 hash of the ZIP file.
+        timeout: (connect_timeout, read_timeout) in seconds.
+        retries: Number of retry attempts for transient failures.
 
     Raises:
         ImportError: If requests is not installed.
@@ -147,68 +204,74 @@ def download_and_extract_zip(
     if not HAS_REQUESTS:
         raise ImportError(
             "requests is required for downloading datasets.\n"
-            "Install with: pip install requests"
+            "Install with: pip install indoorloc[datasets]"
         )
 
     root = Path(root)
     root.mkdir(parents=True, exist_ok=True)
 
-    print(f"Downloading from {url}...")
+    # Create temp file for download (avoids loading entire ZIP into memory)
+    tmp_fd, tmp_path = tempfile.mkstemp(suffix='.zip')
+    tmp_filepath = Path(tmp_path)
 
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
+    try:
+        print(f"Downloading from {url}...")
 
-    # Get total size for progress
-    total_size = int(response.headers.get('content-length', 0))
+        session = _get_session(retries=retries)
+        response = session.get(url, stream=True, timeout=timeout)
+        response.raise_for_status()
 
-    # Download to memory with progress
-    downloaded = 0
-    content = io.BytesIO()
-    for chunk in response.iter_content(chunk_size=8192):
-        if chunk:
-            content.write(chunk)
-            downloaded += len(chunk)
-            if total_size > 0:
-                percent = (downloaded / total_size) * 100
-                print(f"\rDownloading: {percent:.1f}%", end='', flush=True)
+        # Get total size for progress
+        total_size = int(response.headers.get('content-length', 0))
 
-    print()  # New line after progress
+        # Download to temp file with progress
+        downloaded = 0
+        with os.fdopen(tmp_fd, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if total_size > 0:
+                        percent = (downloaded / total_size) * 100
+                        print(f"\rDownloading: {percent:.1f}%", end='', flush=True)
 
-    # Verify MD5 if provided
-    if md5 is not None:
-        content.seek(0)
-        hash_md5 = hashlib.md5()
-        for chunk in iter(lambda: content.read(8192), b''):
-            hash_md5.update(chunk)
-        if hash_md5.hexdigest() != md5:
-            raise RuntimeError("MD5 verification failed")
-        content.seek(0)
+        print()  # New line after progress
 
-    # Extract ZIP
-    print("Extracting files...")
-    content.seek(0)
+        # Verify MD5 if provided
+        if md5 is not None:
+            if not check_integrity(tmp_filepath, md5):
+                raise RuntimeError("MD5 verification failed")
 
-    with zipfile.ZipFile(content) as zf:
-        for member in zf.namelist():
-            # Get just the filename (ignore directory structure in ZIP)
-            filename = Path(member).name
+        # Extract ZIP (streaming from file on disk)
+        print("Extracting files...")
 
-            # Skip directories
-            if not filename:
-                continue
+        with zipfile.ZipFile(tmp_filepath) as zf:
+            for member in zf.namelist():
+                # Get just the filename (ignore directory structure in ZIP)
+                filename = Path(member).name
 
-            # Filter specific files if requested
-            if extract_files is not None:
-                if filename not in extract_files:
+                # Skip directories
+                if not filename:
                     continue
 
-            target_path = root / filename
+                # Filter specific files if requested
+                if extract_files is not None:
+                    if filename not in extract_files:
+                        continue
 
-            with zf.open(member) as source, open(target_path, 'wb') as target:
-                target.write(source.read())
-            print(f"  Extracted: {filename}")
+                target_path = root / filename
 
-    print(f"Done! Files saved to {root}")
+                # Stream extraction (avoids loading entire file into memory)
+                with zf.open(member) as source, open(target_path, 'wb') as target:
+                    shutil.copyfileobj(source, target)
+                print(f"  Extracted: {filename}")
+
+        print(f"Done! Files saved to {root}")
+
+    finally:
+        # Clean up temp file
+        if tmp_filepath.exists():
+            tmp_filepath.unlink()
 
 
 def download_from_zenodo(

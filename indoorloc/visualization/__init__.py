@@ -4,4 +4,6 @@ Visualization Module
 Plotting and visualization tools for indoor localization.
 """
 
-__all__ = []
+from .distribution import plot_dataset
+
+__all__ = ['plot_dataset']

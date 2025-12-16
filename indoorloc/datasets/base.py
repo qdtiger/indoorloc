@@ -55,12 +55,18 @@ class BaseDataset(ABC):
         if download:
             self._download()
 
+        # Support _skip_load for download-only mode
+        skip_load = kwargs.pop('_skip_load', False)
+
         # Check if data exists
         if not self._check_exists():
-            raise RuntimeError(
+            raise FileNotFoundError(
                 f"Dataset not found at {self.data_root}.\n"
                 f"Use download=True to download it automatically."
             )
+
+        if skip_load:
+            return
 
         # Data storage
         self._signals: List[BaseSignal] = []
@@ -109,6 +115,51 @@ class BaseDataset(ABC):
             f"{self.__class__.__name__} does not support automatic download.\n"
             f"Please download the dataset manually."
         )
+
+    @classmethod
+    def download(
+        cls,
+        data_root: Optional[str] = None,
+        *,
+        force: bool = False,
+        **kwargs
+    ) -> Path:
+        """Download dataset files without loading data.
+
+        This is a convenience classmethod for downloading datasets.
+
+        Args:
+            data_root: Target directory. Uses default cache if None.
+            force: If True, re-download even if files exist.
+            **kwargs: Additional arguments passed to dataset constructor.
+
+        Returns:
+            Path to the downloaded dataset directory.
+
+        Example:
+            >>> from indoorloc.datasets import UJIndoorLocDataset
+            >>> UJIndoorLocDataset.download('data/ujindoorloc')
+        """
+        import shutil
+
+        if force and data_root is not None:
+            root = Path(data_root)
+            if root.exists():
+                shutil.rmtree(root)
+
+        # Remove conflicting args
+        kwargs.pop('download', None)
+        kwargs.pop('split', None)
+
+        # Create instance with download=True, skip data loading
+        ds = cls(
+            data_root=data_root,
+            split='train',
+            download=True,
+            _skip_load=True,
+            **kwargs
+        )
+        return ds.data_root
 
     def _normalize_signals(self) -> None:
         """Normalize all signals using the specified method."""
@@ -267,6 +318,29 @@ class BaseDataset(ABC):
             Dictionary mapping floor number to subset of data.
         """
         raise NotImplementedError("split_by_floor not implemented for this dataset")
+
+    def plot(
+        self,
+        mode: str = "combined",
+        output_dir: Optional[str] = None,
+        **kwargs
+    ) -> str:
+        """Visualize the spatial distribution of this dataset.
+
+        Args:
+            mode: '2d', '3d', or 'combined' (default).
+            output_dir: Output directory for HTML files.
+            **kwargs: Additional options passed to plot_dataset.
+
+        Returns:
+            Path to the generated HTML file.
+
+        Example:
+            >>> train = iloc.UJIndoorLoc(split='train')
+            >>> train.plot()  # Opens interactive visualization
+        """
+        from ..visualization import plot_dataset
+        return plot_dataset(self, mode=mode, output_dir=output_dir, **kwargs)
 
     def __repr__(self) -> str:
         return (
