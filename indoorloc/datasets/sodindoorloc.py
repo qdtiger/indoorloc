@@ -84,11 +84,11 @@ class SODIndoorLocDataset(WiFiDataset):
         },
         'HCXY': {
             'train': 'HCXY/Training_HCXY_All_30.csv',
-            'test': 'HCXY/Testing_HCXY.csv',
+            'test': 'HCXY/Testing_HCXY_All.csv',
         },
         'SYL': {
             'train': 'SYL/Training_SYL_All_30.csv',
-            'test': 'SYL/Testing_SYL.csv',
+            'test': 'SYL/Testing_SYL_All.csv',
         },
     }
 
@@ -191,47 +191,48 @@ class SODIndoorLocDataset(WiFiDataset):
 
     def _load_data(self) -> None:
         """Load data from CSV files for all selected buildings."""
+        # Pass 1: Determine max AP count across all buildings for uniform signal length
+        building_specs = []
         total_aps = 0
 
         for building in self._buildings:
             filepath = self.data_root / self.FILES[building][self.split]
-
             if not filepath.exists():
                 print(f"Warning: File not found for {building}: {filepath}")
                 continue
 
-            # Load CSV data
+            with open(filepath, 'r', newline='', encoding='utf-8') as f:
+                header = next(csv.reader(f))
+
+            coord_start_idx = next(
+                (i for i, col in enumerate(header)
+                 if col in ['ECoord', 'NCoord', 'FloorID', 'BuildingID']),
+                None
+            )
+            if coord_start_idx is None:
+                raise ValueError(f"Could not find coordinate columns in CSV for {building}")
+
+            num_aps = coord_start_idx
+            total_aps = max(total_aps, num_aps)
+            building_specs.append((building, filepath, coord_start_idx, num_aps))
+
+        # Pass 2: Load data with uniform signal length (pad with NOT_DETECTED_VALUE)
+        for building, filepath, coord_start_idx, num_aps in building_specs:
             with open(filepath, 'r', newline='', encoding='utf-8') as f:
                 reader = csv.reader(f)
-                header = next(reader)  # Read header to get MAC addresses
-
-                # Identify column indices
-                # Find where coordinate columns start
-                coord_start_idx = None
-                for i, col in enumerate(header):
-                    if col in ['ECoord', 'NCoord', 'FloorID', 'BuildingID']:
-                        coord_start_idx = i
-                        break
-
-                if coord_start_idx is None:
-                    raise ValueError(f"Could not find coordinate columns in CSV for {building}")
-
-                # Number of APs = columns before coordinates
-                num_aps = coord_start_idx
-                total_aps = max(total_aps, num_aps)
+                next(reader)  # Skip header
 
                 for row in reader:
                     if len(row) < coord_start_idx + 4:
-                        continue  # Skip incomplete rows
+                        continue
 
-                    # Parse RSSI values
-                    rssi_values = np.array(
-                        [float(row[i]) if row[i] else 100.0
-                         for i in range(num_aps)],
-                        dtype=np.float32
-                    )
+                    # Parse RSSI values, pad to total_aps length
+                    rssi_values = np.full(total_aps, self.NOT_DETECTED_VALUE, dtype=np.float32)
+                    rssi_values[:num_aps] = [
+                        float(row[i]) if row[i] else self.NOT_DETECTED_VALUE
+                        for i in range(num_aps)
+                    ]
 
-                    # Create WiFi signal
                     signal = WiFiSignal(rssi_values=rssi_values)
                     self._signals.append(signal)
 
@@ -241,14 +242,12 @@ class SODIndoorLocDataset(WiFiDataset):
                     floor = int(row[coord_start_idx + 2])
                     building_id = str(int(row[coord_start_idx + 3]))
 
-                    # SODIndoorLoc uses East/North coordinates in meters
                     coordinate = Coordinate(
                         x=e_coord,
                         y=n_coord,
-                        latitude=n_coord,  # Use north as latitude
-                        longitude=e_coord   # Use east as longitude
+                        latitude=n_coord,
+                        longitude=e_coord
                     )
-
                     location = Location(
                         coordinate=coordinate,
                         floor=floor,
@@ -256,10 +255,9 @@ class SODIndoorLocDataset(WiFiDataset):
                     )
                     self._locations.append(location)
 
-                    # Store metadata
                     metadata = {
                         'building': building,
-                        'num_detected_aps': np.sum(rssi_values != self.NOT_DETECTED_VALUE),
+                        'num_detected_aps': int(np.sum(rssi_values != self.NOT_DETECTED_VALUE)),
                     }
                     self._metadata.append(metadata)
 

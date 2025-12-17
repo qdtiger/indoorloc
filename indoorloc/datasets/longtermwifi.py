@@ -1,101 +1,101 @@
 """
 Long-Term WiFi Fingerprinting Dataset Implementation
 
-A multi-building WiFi fingerprinting dataset collected over a long period
+WiFi fingerprinting dataset collected over 25 months at UJI Library
 to study temporal variations in WiFi fingerprints.
 
 Reference:
-    Mendoza-Silva, G. M., et al. (2016). Long-term WiFi fingerprinting dataset
-    for research on robust indoor positioning.
-    Data, 1(1), 3.
+    Mendoza-Silva, G.M., Richter, P., Torres-Sospedra, J., Lohan, E.S., Huerta, J. (2018).
+    Long-Term WiFi Fingerprinting Dataset for Research on Robust Indoor Positioning.
+    Data, 3(1), 3. DOI: 10.3390/data3010003
 
-Dataset URL: https://zenodo.org/record/889798
+Dataset URL: https://zenodo.org/record/1309317
 """
+import zipfile
 from pathlib import Path
-from typing import Optional, Any, Dict, List, Union
+from typing import Optional, Any, List, Union
 import numpy as np
-import pandas as pd
 
 from .base import WiFiDataset
 from ..signals.wifi import WiFiSignal
 from ..locations.location import Location
 from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
-from ..utils.download import download_from_zenodo
+from ..utils.download import download_url
 
 
 @DATASETS.register_module()
 class LongTermWiFiDataset(WiFiDataset):
-    """Long-Term WiFi Fingerprinting Dataset.
+    """Long-Term WiFi Fingerprinting Dataset (UJI Library).
 
-    Multi-building WiFi fingerprinting dataset with temporal variations,
-    collected over multiple months to study long-term stability.
+    WiFi fingerprinting dataset collected over 25 months at two floors
+    of Universitat Jaume I library. Contains 103,584 WiFi fingerprints
+    for studying long-term signal variations.
 
     Args:
-        data_root: Root directory containing the dataset files. If None,
-            uses the default cache directory (~/.cache/indoorloc/datasets/longtermwifi).
+        data_root: Root directory containing the dataset files.
         split: Dataset split ('train' or 'test').
         download: Whether to download the dataset if not found.
-        building: Building identifier (0, 1, or 2). None for all buildings.
+        month: Month(s) to load (1-25, 'all', or list like [1, 5, 10]).
+        floor: Floor(s) to load (3 or 4, 'all', or list).
         transform: Optional transform to apply to signals.
         normalize: Whether to normalize RSSI values.
-        normalize_method: Normalization method ('minmax', 'positive', 'standard').
+        normalize_method: Normalization method.
 
     Example:
         >>> import indoorloc as iloc
-        >>> # Download from Zenodo
-        >>> dataset = iloc.LongTermWiFi(download=True)
-        >>> # Specific building
-        >>> dataset = iloc.LongTermWiFi(building=0, download=True)
+        >>> train, test = iloc.LongTermWiFi(download=True)
+        >>> # Specific month
+        >>> train = iloc.LongTermWiFi(month=1, split='train')
 
-    Dataset structure:
+    Dataset structure (after extraction):
         data_root/
-        ├── TRNDB0.txt   # Training Building 0
-        ├── TSTDB0.txt   # Testing Building 0
-        ├── TRNDB1.txt   # Training Building 1
-        ├── TSTDB1.txt   # Testing Building 1
-        ├── TRNDB2.txt   # Training Building 2
-        └── TSTDB2.txt   # Testing Building 2
+        └── db/
+            ├── 01/  # Month 01
+            │   ├── trn01rss.csv  # Training RSS
+            │   ├── trn01crd.csv  # Training coordinates
+            │   ├── tst01rss.csv  # Test set 1
+            │   └── ...
+            ├── 02/  # Month 02
+            └── ...
     """
 
-    # Zenodo record ID
-    ZENODO_RECORD_ID = '889798'
+    ZENODO_URL = "https://zenodo.org/api/records/1309317/files/UJI_LIB_DB_v2.zip/content"
+    ZIP_FILENAME = "UJI_LIB_DB_v2.zip"
 
-    # Dataset constants
     NOT_DETECTED_VALUE = 100
-
-    # Available buildings
-    BUILDINGS = [0, 1, 2]
-
-    # File naming pattern
-    FILE_PATTERNS = {
-        'train': 'TRNDB{building}.txt',
-        'test': 'TSTDB{building}.txt',
-    }
+    AVAILABLE_MONTHS = list(range(1, 26))  # 1-25
+    AVAILABLE_FLOORS = [3, 5]  # Two library floors (3rd and 5th)
 
     def __init__(
         self,
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        building: Union[int, List[int], str] = 'all',
+        month: Union[int, List[int], str] = 'all',
+        floor: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
         **kwargs
     ):
-        # Handle building parameter
-        if building == 'all':
-            self._buildings = self.BUILDINGS.copy()
-        elif isinstance(building, int):
-            self._buildings = [building]
-        elif isinstance(building, list):
-            self._buildings = building
+        # Handle month parameter
+        if month == 'all':
+            self._months = self.AVAILABLE_MONTHS.copy()
+        elif isinstance(month, int):
+            self._months = [month]
         else:
-            self._buildings = self.BUILDINGS.copy()
+            self._months = list(month)
 
-        self.building = self._buildings[0] if len(self._buildings) == 1 else None  # 兼容性
-        self._num_aps = None  # Will be determined from data
+        # Handle floor parameter
+        if floor == 'all':
+            self._floors = self.AVAILABLE_FLOORS.copy()
+        elif isinstance(floor, int):
+            self._floors = [floor]
+        else:
+            self._floors = list(floor)
+
+        self._num_aps = None
 
         super().__init__(
             data_root=data_root,
@@ -113,34 +113,22 @@ class LongTermWiFiDataset(WiFiDataset):
 
     @property
     def num_aps(self) -> int:
-        if self._num_aps is None:
-            return 0
-        return self._num_aps
+        return self._num_aps or 0
 
     @classmethod
-    def list_buildings(cls) -> List[int]:
-        """List all available buildings.
+    def list_months(cls) -> List[int]:
+        """List all available months (1-25)."""
+        return cls.AVAILABLE_MONTHS.copy()
 
-        Returns:
-            List of building IDs: [0, 1, 2]
-        """
-        return cls.BUILDINGS.copy()
-
-    def _get_required_files(self) -> List[str]:
-        """Get list of required files based on building selection."""
-        files = []
-        for building_id in self._buildings:
-            pattern = self.FILE_PATTERNS[self.split]
-            files.append(pattern.format(building=building_id))
-        return files
+    @classmethod
+    def list_floors(cls) -> List[int]:
+        """List all available floors (3, 4)."""
+        return cls.AVAILABLE_FLOORS.copy()
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
-        required_files = self._get_required_files()
-        return all(
-            (self.data_root / f).exists()
-            for f in required_files
-        )
+        db_dir = self.data_root / 'db' / '01'
+        return db_dir.exists() and (db_dir / 'trn01rss.csv').exists()
 
     def _download(self) -> None:
         """Download Long-Term WiFi dataset from Zenodo."""
@@ -148,88 +136,117 @@ class LongTermWiFiDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading Long-Term WiFi dataset from Zenodo...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        zip_path = self.data_root / self.ZIP_FILENAME
 
-        try:
-            # Download all files from Zenodo record
-            download_from_zenodo(
-                record_id=self.ZENODO_RECORD_ID,
-                root=self.data_root,
-                filenames=None,  # Download all files
-            )
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to download Long-Term WiFi dataset: {e}\n"
-                f"Please download manually from: https://zenodo.org/record/{self.ZENODO_RECORD_ID}"
-            )
-
-    def _load_data(self) -> None:
-        """Load Long-Term WiFi dataset from files."""
-        all_signals = []
-        all_locations = []
-
-        for building_id in self._buildings:
-            pattern = self.FILE_PATTERNS[self.split]
-            filename = pattern.format(building=building_id)
-            filepath = self.data_root / filename
-
-            if not filepath.exists():
-                continue
-
-            # Load data file
-            # Format: each line is space-separated values
-            # Last 3 columns: X Y FLOOR
-            # Other columns: RSSI values for APs
+        # Download zip file
+        if not zip_path.exists():
+            print("Downloading Long-Term WiFi dataset from Zenodo...")
             try:
-                data = np.loadtxt(filepath, dtype=float)
+                download_url(
+                    url=self.ZENODO_URL,
+                    root=self.data_root,
+                    filename=self.ZIP_FILENAME,
+                )
             except Exception as e:
-                print(f"Warning: Failed to load {filename}: {e}")
-                continue
-
-            if len(data) == 0:
-                continue
-
-            # Extract coordinates and RSSI values
-            # Last 3 columns are X, Y, FLOOR
-            rssi_data = data[:, :-3]
-            coordinates = data[:, -3:]
-
-            # Store number of APs
-            if self._num_aps is None:
-                self._num_aps = rssi_data.shape[1]
-
-            # Process each sample
-            for i in range(len(data)):
-                # Create WiFi signal
-                rssi_values = rssi_data[i].astype(np.float32)
-                signal = WiFiSignal(rssi_values=rssi_values)
-
-                # Create location
-                x, y, floor = coordinates[i]
-                location = Location(
-                    coordinate=Coordinate(x=x, y=y),
-                    floor=int(floor),
-                    building_id=str(building_id)
+                raise RuntimeError(
+                    f"Failed to download Long-Term WiFi dataset: {e}\n"
+                    f"Please download manually from: https://zenodo.org/record/1309317"
                 )
 
-                all_signals.append(signal)
-                all_locations.append(location)
+        # Extract zip file
+        print("Extracting dataset files...")
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                # Extract only db/ folder contents
+                for member in zf.namelist():
+                    if member.startswith('db/') and member.endswith('.csv'):
+                        zf.extract(member, self.data_root)
+            print(f"Extracted to {self.data_root / 'db'}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to extract dataset: {e}")
 
-        # Store data
-        self._signals = all_signals
-        self._locations = all_locations
+    def _load_data(self) -> None:
+        """Load Long-Term WiFi dataset from CSV files."""
+        db_dir = self.data_root / 'db'
 
-        if len(self._signals) == 0:
-            raise RuntimeError(
-                f"No data loaded for split='{self.split}', building={self._buildings}"
+        # Pass 1: Determine max AP count across all files
+        max_aps = 0
+        file_specs = []  # (month, rss_path, crd_path)
+
+        for month in self._months:
+            month_dir = db_dir / f'{month:02d}'
+            if not month_dir.exists():
+                continue
+
+            if self.split == 'train':
+                # Training: load ALL trn*rss.csv files from this month
+                for rss_file in sorted(month_dir.glob('trn*rss.csv')):
+                    crd_file = month_dir / rss_file.name.replace('rss.csv', 'crd.csv')
+                    if crd_file.exists():
+                        sample_line = rss_file.read_text().split('\n')[0]
+                        num_aps = len(sample_line.split(','))
+                        max_aps = max(max_aps, num_aps)
+                        file_specs.append((month, rss_file, crd_file))
+            else:
+                # Test: load ALL tst*rss.csv files from this month
+                for rss_file in sorted(month_dir.glob('tst*rss.csv')):
+                    crd_file = month_dir / rss_file.name.replace('rss.csv', 'crd.csv')
+                    if crd_file.exists():
+                        sample_line = rss_file.read_text().split('\n')[0]
+                        num_aps = len(sample_line.split(','))
+                        max_aps = max(max_aps, num_aps)
+                        file_specs.append((month, rss_file, crd_file))
+
+        if not file_specs:
+            raise FileNotFoundError(
+                f"No data files found for split='{self.split}', month={self._months}"
             )
 
-        building_info = f" (building: {self._buildings})" if len(self._buildings) < 3 else ""
-        print(f"Loaded {len(self._signals)} samples from Long-Term WiFi dataset{building_info}")
+        self._num_aps = max_aps
+
+        # Pass 2: Load data with uniform signal length
+        for month, rss_path, crd_path in file_specs:
+            rss_data = np.loadtxt(rss_path, delimiter=',', dtype=np.float32)
+            crd_data = np.loadtxt(crd_path, delimiter=',', dtype=np.float32)
+
+            if len(rss_data.shape) == 1:
+                rss_data = rss_data.reshape(1, -1)
+            if len(crd_data.shape) == 1:
+                crd_data = crd_data.reshape(1, -1)
+
+            for i in range(len(rss_data)):
+                # Pad RSSI to uniform length
+                rssi_values = np.full(max_aps, self.NOT_DETECTED_VALUE, dtype=np.float32)
+                rssi_values[:rss_data.shape[1]] = rss_data[i]
+
+                # Parse coordinates (x, y, floor)
+                x, y = crd_data[i, 0], crd_data[i, 1]
+                floor_val = int(crd_data[i, 2]) if crd_data.shape[1] > 2 else 3
+
+                # Filter by floor
+                if floor_val not in self._floors:
+                    continue
+
+                signal = WiFiSignal(rssi_values=rssi_values)
+                location = Location(
+                    coordinate=Coordinate(x=float(x), y=float(y)),
+                    floor=floor_val,
+                    building_id='0'
+                )
+
+                self._signals.append(signal)
+                self._locations.append(location)
+
+        if not self._signals:
+            raise RuntimeError(f"No samples found for floor={self._floors}")
+
+        month_info = f" (month: {self._months})" if len(self._months) < 25 else ""
+        print(f"Loaded {len(self._signals)} samples from Long-Term WiFi dataset{month_info}")
 
 
 
-def LongTermWiFi(data_root=None, split=None, download=False, building='all', **kwargs):
+def LongTermWiFi(data_root=None, split=None, download=False, month='all', floor='all', **kwargs):
     """
     Convenience function for loading LongTermWiFi dataset.
 
@@ -237,10 +254,11 @@ def LongTermWiFi(data_root=None, split=None, download=False, building='all', **k
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
-        building: Building(s) to load. Can be:
-            - 'all': Load all buildings (default)
-            - Single building: 0, 1, 2
-            - List of buildings: [0, 1]
+        month: Month(s) to load. Can be:
+            - 'all': Load all 25 months (default)
+            - Single month: 1, 5, 10, etc.
+            - List of months: [1, 5, 10]
+        floor: Floor(s) to load (3 or 4, 'all')
         **kwargs: Additional arguments passed to LongTermWiFiDataset
 
     Returns:
@@ -249,61 +267,58 @@ def LongTermWiFi(data_root=None, split=None, download=False, building='all', **k
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = LongTermWiFi(download=True)
-
-        >>> # Load specific building(s)
-        >>> train = LongTermWiFi(building=[0, 1], split='train')
-
-        >>> # List available buildings
-        >>> LongTermWiFi.list_buildings()
+        >>> train = LongTermWiFi(month=[1, 5], split='train')
+        >>> LongTermWiFi.list_months()
     """
     if split is None:
-        # Return both train and test as tuple
         train_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='train',
             download=download,
-            building=building,
+            month=month,
+            floor=floor,
             **kwargs
         )
         test_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='test',
             download=download,
-            building=building,
+            month=month,
+            floor=floor,
             **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
-        # Return merged train + test dataset
         from torch.utils.data import ConcatDataset
         train_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='train',
             download=download,
-            building=building,
+            month=month,
+            floor=floor,
             **kwargs
         )
         test_dataset = LongTermWiFiDataset(
             data_root=data_root,
             split='test',
             download=download,
-            building=building,
+            month=month,
+            floor=floor,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
-        # Return single split
         return LongTermWiFiDataset(
             data_root=data_root,
             split=split,
             download=download,
-            building=building,
+            month=month,
+            floor=floor,
             **kwargs
         )
 
 
-# Attach class method to convenience function
-LongTermWiFi.list_buildings = LongTermWiFiDataset.list_buildings
+LongTermWiFi.list_months = LongTermWiFiDataset.list_months
+LongTermWiFi.list_floors = LongTermWiFiDataset.list_floors
 

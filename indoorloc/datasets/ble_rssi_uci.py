@@ -2,16 +2,18 @@
 BLE RSSI Indoor Localization Dataset (UCI) Implementation
 
 BLE-based indoor localization dataset from UCI Machine Learning Repository
-with systematic RSSI measurements from multiple BLE beacons.
+with RSSI measurements from 13 iBeacon transmitters.
 
 Reference:
-    UCI Machine Learning Repository: BLE RSSI Dataset for Indoor Localization.
-    https://archive.ics.uci.edu/
+    Mohammadi, M. & Al-Fuqaha, A. (2017). BLE RSSI Dataset for Indoor
+    localization and Navigation. UCI Machine Learning Repository.
+    DOI: 10.24432/C57G7S
 
-Dataset URL: https://archive.ics.uci.edu/dataset/519/ble+rssi+dataset+for+indoor+localization
+Dataset URL: https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation
 """
+import zipfile
 from pathlib import Path
-from typing import Optional, Any, Dict, List
+from typing import Optional, Any, List
 import numpy as np
 
 from .base import BLEDataset
@@ -19,7 +21,7 @@ from ..signals.ble import BLESignal, BLEBeacon
 from ..locations.location import Location
 from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
-from ..utils.download import download_from_uci
+from ..utils.download import download_url
 
 
 @DATASETS.register_module()
@@ -42,7 +44,7 @@ class BLERSSIUCIDataset(BLEDataset):
     Example:
         >>> import indoorloc as iloc
         >>> # Download from UCI repository
-        >>> dataset = iloc.BLERSSIU CI(download=True)
+        >>> train, test = iloc.BLERSSIU_UCI(download=True)
 
     Dataset structure:
         data_root/
@@ -55,12 +57,13 @@ class BLERSSIUCIDataset(BLEDataset):
         - Location labels as room identifiers
     """
 
-    # UCI dataset name
-    UCI_DATASET_NAME = 'ble-rssi-dataset-for-indoor-localization'
+    # UCI download URL (new format)
+    UCI_URL = "https://archive.ics.uci.edu/static/public/435/ble+rssi+dataset+for+indoor+localization+and+navigation.zip"
+    ZIP_FILENAME = "ble_rssi_uci.zip"
 
     # Dataset constants
     NOT_DETECTED_VALUE = -100.0
-    NUM_BEACONS = 13  # This dataset has 13 iBeacons
+    NUM_BEACONS = 13  # 13 iBeacons (b3001-b3013)
 
     # Required files
     REQUIRED_FILES = ['iBeacon_RSSI_Labeled.csv']
@@ -90,7 +93,7 @@ class BLERSSIUCIDataset(BLEDataset):
 
     @property
     def dataset_name(self) -> str:
-        return 'BLERSSIU CI'
+        return 'ble_rssi_uci'
 
     @property
     def num_beacons(self) -> int:
@@ -109,20 +112,40 @@ class BLERSSIUCIDataset(BLEDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading BLE RSSI UCI dataset...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        zip_path = self.data_root / self.ZIP_FILENAME
 
+        # Download zip file
+        if not zip_path.exists():
+            print("Downloading BLE RSSI UCI dataset...")
+            try:
+                download_url(
+                    url=self.UCI_URL,
+                    root=self.data_root,
+                    filename=self.ZIP_FILENAME,
+                )
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to download BLE RSSI UCI dataset: {e}\n"
+                    f"Please download manually from: "
+                    f"https://archive.ics.uci.edu/dataset/435/"
+                )
+
+        # Extract CSV files from zip
+        print("Extracting dataset files...")
         try:
-            download_from_uci(
-                dataset_name=self.UCI_DATASET_NAME,
-                root=self.data_root,
-                filenames=self.REQUIRED_FILES,
-            )
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                for member in zf.namelist():
+                    if member.endswith('.csv'):
+                        # Extract to data_root (flatten structure)
+                        filename = Path(member).name
+                        with zf.open(member) as src:
+                            target_path = self.data_root / filename
+                            with open(target_path, 'wb') as dst:
+                                dst.write(src.read())
+                        print(f"  Extracted: {filename}")
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to download BLE RSSI UCI dataset: {e}\n"
-                f"Please download manually from: "
-                f"https://archive.ics.uci.edu/dataset/519/"
-            )
+            raise RuntimeError(f"Failed to extract dataset: {e}")
 
     def _load_data(self) -> None:
         """Load BLE RSSI UCI dataset from CSV file."""
@@ -150,12 +173,19 @@ class BLERSSIUCIDataset(BLEDataset):
         if len(rssi_cols) == 0:
             raise ValueError("No beacon RSSI columns found in dataset")
 
-        # Create location mapping (room labels to coordinates)
-        unique_locations = df['location'].unique() if 'location' in df.columns else []
-        location_to_coord = {
-            loc: (i * 5.0, 0.0)  # Simple grid layout
-            for i, loc in enumerate(unique_locations)
-        }
+        # Parse location labels to grid coordinates
+        # Format: "K04" -> letter=column (A-Z), number=row (01-15)
+        # Assume ~1m grid spacing (typical for BLE)
+        def parse_location(loc_label):
+            if not loc_label or len(loc_label) < 2:
+                return (0.0, 0.0)
+            letter = loc_label[0].upper()
+            try:
+                row = int(loc_label[1:])
+                col = ord(letter) - ord('A')  # A=0, B=1, ...
+                return (float(col), float(row))
+            except ValueError:
+                return (0.0, 0.0)
 
         # Split data
         num_train = int(len(df) * self.train_ratio)
@@ -168,7 +198,7 @@ class BLERSSIUCIDataset(BLEDataset):
         for idx, row in df_split.iterrows():
             # Get location
             location_label = row['location'] if 'location' in row else 'unknown'
-            x, y = location_to_coord.get(location_label, (0.0, 0.0))
+            x, y = parse_location(location_label)
 
             # Create beacons
             beacons = []

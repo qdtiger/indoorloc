@@ -1,19 +1,18 @@
 """
-WLAN RSSI Indoor Localization Dataset Implementation
+Wireless Indoor Localization Dataset (UCI) Implementation
 
-WiFi-based indoor localization dataset collected in a controlled environment
-with systematic coverage and multiple devices.
+WiFi-based indoor localization dataset with RSSI measurements from 7 access
+points for room classification.
 
 Reference:
-    Rohra, J. G., et al. (2017). User Localization in an Indoor Environment
-    Using Fuzzy Hybrid of Particle Swarm Optimization & Gravitational Search
-    Algorithm with Neural Networks. Sixth International Conference on Soft
-    Computing for Problem Solving.
+    Rajen Bhatt (2017). Wireless Indoor Localization. UCI Machine Learning
+    Repository. DOI: 10.24432/C5PC8M
 
-Dataset URL: https://archive.ics.uci.edu/dataset/422/localization+data+for+person+activity
+Dataset URL: https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization
 """
+import zipfile
 from pathlib import Path
-from typing import Optional, Any, Dict, List, Union
+from typing import Optional, Any, List, Union
 import numpy as np
 
 from .base import WiFiDataset
@@ -21,67 +20,67 @@ from ..signals.wifi import WiFiSignal
 from ..locations.location import Location
 from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
-from ..utils.download import download_from_uci
+from ..utils.download import download_url
 
 
 @DATASETS.register_module()
 class WLANRSSIDataset(WiFiDataset):
-    """WLAN RSSI Indoor Localization Dataset.
+    """Wireless Indoor Localization Dataset (UCI).
 
-    WiFi fingerprinting dataset with RSSI measurements from multiple
-    access points in a controlled indoor environment.
+    WiFi fingerprinting dataset with RSSI measurements from 7 access
+    points for room-level classification (4 rooms).
 
     Args:
         data_root: Root directory containing the dataset files. If None,
             uses the default cache directory (~/.cache/indoorloc/datasets/wlanrssi).
-        split: Dataset split ('train' or 'test'). Note: this dataset
-            may need manual splitting.
+        split: Dataset split ('train' or 'test').
         download: Whether to download the dataset if not found.
         transform: Optional transform to apply to signals.
         normalize: Whether to normalize RSSI values.
         normalize_method: Normalization method ('minmax', 'positive', 'standard').
+        train_ratio: Ratio for train/test split (default: 0.7).
 
     Example:
         >>> import indoorloc as iloc
-        >>> # Download from UCI repository
-        >>> dataset = iloc.WLANRSSI(download=True)
+        >>> train, test = iloc.WLANRSSI(download=True)
 
     Dataset structure:
         data_root/
-        └── dataset.txt
+        └── wifi_localization.txt
 
     File format:
-        Each line: date time x y floor user_id phone_id rssi1 rssi2 rssi3 rssi4 rssi5 rssi6 rssi7
-        - 7 WiFi access points
-        - Coordinates in meters
-        - RSSI in dBm
+        Tab-separated: rssi1 rssi2 rssi3 rssi4 rssi5 rssi6 rssi7 room
+        - 7 WiFi signal strengths in dBm
+        - room: 1-4 (room classification label)
+        - 2000 total instances (500 per room)
     """
 
-    # UCI dataset name
-    UCI_DATASET_NAME = 'localization-data-for-person-activity'
+    # UCI download URL
+    UCI_URL = "https://archive.ics.uci.edu/static/public/422/wireless+indoor+localization.zip"
+    ZIP_FILENAME = "wireless_indoor_localization.zip"
 
     # Dataset constants
     NOT_DETECTED_VALUE = -110  # Typical WiFi noise floor
     NUM_WAPS = 7  # This dataset has 7 access points
+    NUM_ROOMS = 4  # 4 room classes
 
     # Required files
-    REQUIRED_FILES = ['dataset.txt']
+    REQUIRED_FILES = ['wifi_localization.txt']
 
     def __init__(
         self,
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        floor: Union[int, List[int], str] = 'all',
+        room: Union[int, List[int], str] = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
-        train_ratio: float = 0.7,  # Split ratio for train/test
+        train_ratio: float = 0.7,
         **kwargs
     ):
         self.train_ratio = train_ratio
-        self._floor_param = floor
-        self._available_floors: List[int] = []
+        self._room_param = room
 
         super().__init__(
             data_root=data_root,
@@ -95,47 +94,16 @@ class WLANRSSIDataset(WiFiDataset):
 
     @property
     def dataset_name(self) -> str:
-        return 'WLANRSSI'
+        return 'wlanrssi'
 
     @property
     def num_aps(self) -> int:
         return self.NUM_WAPS
 
     @classmethod
-    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
-        """List all available floors in the dataset.
-
-        Args:
-            data_root: Root directory containing the dataset files.
-
-        Returns:
-            List of floor numbers found in the dataset.
-        """
-        from ..utils.download import get_data_home
-
-        if data_root is None:
-            root = get_data_home() / 'wlanrssi'
-        else:
-            root = Path(data_root)
-
-        data_file = root / 'dataset.txt'
-        if not data_file.exists():
-            return []
-
-        try:
-            floors = set()
-            with open(data_file, 'r') as f:
-                for line in f:
-                    parts = line.strip().split()
-                    if len(parts) >= 5:
-                        try:
-                            floor = int(float(parts[4]))
-                            floors.add(floor)
-                        except ValueError:
-                            continue
-            return sorted(list(floors))
-        except Exception:
-            return []
+    def list_rooms(cls) -> List[int]:
+        """List all available rooms (1-4)."""
+        return [1, 2, 3, 4]
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
@@ -150,84 +118,90 @@ class WLANRSSIDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading WLAN RSSI dataset from UCI...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        zip_path = self.data_root / self.ZIP_FILENAME
 
-        # Note: UCI repository structure may vary
-        # Try direct download first
+        # Download zip file
+        if not zip_path.exists():
+            print("Downloading Wireless Indoor Localization dataset from UCI...")
+            try:
+                download_url(
+                    url=self.UCI_URL,
+                    root=self.data_root,
+                    filename=self.ZIP_FILENAME,
+                )
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to download WLAN RSSI dataset: {e}\n"
+                    f"Please download manually from: "
+                    f"https://archive.ics.uci.edu/dataset/422/"
+                )
+
+        # Extract zip file
+        print("Extracting dataset files...")
         try:
-            download_from_uci(
-                dataset_name=self.UCI_DATASET_NAME,
-                root=self.data_root,
-                filenames=self.REQUIRED_FILES,
-            )
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                for member in zf.namelist():
+                    if member.endswith('.txt'):
+                        zf.extract(member, self.data_root)
+                        print(f"  Extracted: {member}")
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to download WLAN RSSI dataset: {e}\n"
-                f"Please download manually from: "
-                f"https://archive.ics.uci.edu/dataset/422/"
-            )
+            raise RuntimeError(f"Failed to extract dataset: {e}")
 
     def _load_data(self) -> None:
         """Load WLAN RSSI dataset from file."""
-        filepath = self.data_root / 'dataset.txt'
+        filepath = self.data_root / 'wifi_localization.txt'
 
         if not filepath.exists():
             raise FileNotFoundError(f"Data file not found: {filepath}")
 
-        # Load data file
-        # Format: date time x y floor user_id phone_id rssi1 rssi2 ... rssi7
-        try:
-            data = []
-            with open(filepath, 'r') as f:
-                for line in f:
-                    parts = line.strip().split()
-                    if len(parts) < 7 + 7:  # 7 metadata + 7 RSSI values
-                        continue
-                    data.append(parts)
+        # Room to coordinate mapping (2x2 grid layout)
+        # Room 1: (0,0), Room 2: (1,0), Room 3: (0,1), Room 4: (1,1)
+        room_to_coord = {
+            1: (0.0, 0.0),
+            2: (1.0, 0.0),
+            3: (0.0, 1.0),
+            4: (1.0, 1.0),
+        }
 
-            if len(data) == 0:
-                raise ValueError("No valid data found in file")
-
-        except Exception as e:
-            raise RuntimeError(f"Failed to parse dataset file: {e}")
-
-        # Convert to arrays
+        # Load data: tab-separated rssi1-7 and room label
         all_samples = []
-        for parts in data:
-            try:
-                # Parse metadata (skip date/time for now)
-                x = float(parts[2])
-                y = float(parts[3])
-                floor = int(float(parts[4]))
+        with open(filepath, 'r') as f:
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) != 8:
+                    continue
+                try:
+                    rssi_values = np.array([float(parts[i]) for i in range(7)], dtype=np.float32)
+                    room = int(parts[7])
+                    x, y = room_to_coord.get(room, (0.0, 0.0))
 
-                # Parse RSSI values (last 7 columns)
-                rssi_values = np.array([float(parts[i]) for i in range(7, 14)], dtype=np.float32)
-
-                all_samples.append({
-                    'x': x,
-                    'y': y,
-                    'floor': floor,
-                    'rssi': rssi_values
-                })
-            except (ValueError, IndexError) as e:
-                continue
+                    all_samples.append({
+                        'rssi': rssi_values,
+                        'room': room,
+                        'x': x,
+                        'y': y,
+                    })
+                except (ValueError, IndexError):
+                    continue
 
         if len(all_samples) == 0:
             raise RuntimeError("No valid samples could be parsed")
 
-        # Store available floors
-        self._available_floors = sorted(list(set(s['floor'] for s in all_samples)))
-
-        # Filter by floor
-        if self._floor_param != 'all':
-            if isinstance(self._floor_param, int):
-                selected_floors = [self._floor_param]
+        # Filter by room
+        if self._room_param != 'all':
+            if isinstance(self._room_param, int):
+                selected_rooms = [self._room_param]
             else:
-                selected_floors = list(self._floor_param)
-            all_samples = [s for s in all_samples if s['floor'] in selected_floors]
+                selected_rooms = list(self._room_param)
+            all_samples = [s for s in all_samples if s['room'] in selected_rooms]
 
         if len(all_samples) == 0:
-            raise ValueError(f"No data found for floor={self._floor_param}")
+            raise ValueError(f"No data found for room={self._room_param}")
+
+        # Shuffle before splitting (use fixed seed for reproducibility)
+        np.random.seed(42)
+        np.random.shuffle(all_samples)
 
         # Split into train/test
         num_train = int(len(all_samples) * self.train_ratio)
@@ -239,25 +213,22 @@ class WLANRSSIDataset(WiFiDataset):
 
         # Process samples
         for sample in samples:
-            # Create WiFi signal
             signal = WiFiSignal(rssi_values=sample['rssi'])
-
-            # Create location
             location = Location(
                 coordinate=Coordinate(x=sample['x'], y=sample['y']),
-                floor=sample['floor'],
+                floor=sample['room'],  # Use room as floor for compatibility
                 building_id='0'
             )
 
             self._signals.append(signal)
             self._locations.append(location)
 
-        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
-        print(f"Loaded {len(self._signals)} samples from WLAN RSSI dataset ({self.split} split){floor_info}")
+        room_info = f" (room: {self._room_param})" if self._room_param != 'all' else ""
+        print(f"Loaded {len(self._signals)} samples from WLAN RSSI dataset ({self.split} split){room_info}")
 
 
 
-def WLANRSSI(data_root=None, split=None, download=False, floor='all', **kwargs):
+def WLANRSSI(data_root=None, split=None, download=False, room='all', **kwargs):
     """
     Convenience function for loading WLANRSSI dataset.
 
@@ -265,10 +236,10 @@ def WLANRSSI(data_root=None, split=None, download=False, floor='all', **kwargs):
         data_root: Root directory for dataset storage
         split: Dataset split ('train', 'test', 'all', or None for tuple)
         download: Whether to download if not found
-        floor: Floor(s) to load. Can be:
-            - 'all': Load all floors (default)
-            - Single floor: 0, 1, 2, etc.
-            - List of floors: [0, 1, 2]
+        room: Room(s) to load. Can be:
+            - 'all': Load all rooms (default)
+            - Single room: 1, 2, 3, 4
+            - List of rooms: [1, 2]
         **kwargs: Additional arguments passed to WLANRSSIDataset
 
     Returns:
@@ -277,61 +248,51 @@ def WLANRSSI(data_root=None, split=None, download=False, floor='all', **kwargs):
         - If split is None: Returns tuple (train_dataset, test_dataset)
 
     Examples:
-        >>> # Load train and test separately (tuple unpacking)
         >>> train, test = WLANRSSI(download=True)
-
-        >>> # Load specific floor(s)
-        >>> train = WLANRSSI(floor=[0, 1], split='train')
-
-        >>> # List available floors
-        >>> WLANRSSI.list_floors()
+        >>> WLANRSSI.list_rooms()
     """
     if split is None:
-        # Return both train and test as tuple
         train_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='train',
             download=download,
-            floor=floor,
+            room=room,
             **kwargs
         )
         test_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
-            floor=floor,
+            room=room,
             **kwargs
         )
         return train_dataset, test_dataset
     elif split == 'all':
-        # Return merged train + test dataset
         from torch.utils.data import ConcatDataset
         train_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='train',
             download=download,
-            floor=floor,
+            room=room,
             **kwargs
         )
         test_dataset = WLANRSSIDataset(
             data_root=data_root,
             split='test',
             download=download,
-            floor=floor,
+            room=room,
             **kwargs
         )
         return ConcatDataset([train_dataset, test_dataset])
     else:
-        # Return single split
         return WLANRSSIDataset(
             data_root=data_root,
             split=split,
             download=download,
-            floor=floor,
+            room=room,
             **kwargs
         )
 
 
-# Attach class method to convenience function
-WLANRSSI.list_floors = WLANRSSIDataset.list_floors
+WLANRSSI.list_rooms = WLANRSSIDataset.list_rooms
 

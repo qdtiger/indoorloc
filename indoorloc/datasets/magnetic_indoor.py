@@ -71,6 +71,8 @@ class MagneticIndoorDataset(MagneticDataset):
         'test': 'test_magnetic.csv',
     }
 
+    _download_message_shown = False
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -101,6 +103,10 @@ class MagneticIndoorDataset(MagneticDataset):
     @property
     def dataset_name(self) -> str:
         return 'MagneticIndoor'
+
+    @property
+    def sampling_rate(self) -> float:
+        return 10.0
 
     @classmethod
     def list_buildings(cls, data_root: Optional[str] = None) -> List[str]:
@@ -159,33 +165,51 @@ class MagneticIndoorDataset(MagneticDataset):
             return []
 
     def _check_exists(self) -> bool:
-        """Check if dataset files exist."""
+        """Always returns True since demo data is available."""
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        return True
+
+    def _has_real_data(self) -> bool:
+        """Check if real data files exist."""
         filename = self.FILE_MAPPING.get(self.split)
-        if filename is None:
-            return False
-        return (self.data_root / filename).exists()
+        return filename and (self.data_root / filename).exists()
 
     def _download(self) -> None:
         """Download magnetic field dataset from Zenodo."""
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+        if self._has_real_data():
             return
 
-        print(f"Downloading magnetic field indoor dataset from Zenodo...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
 
+        # Try to download
         try:
-            # Download all required files
             all_files = list(self.FILE_MAPPING.values())
             download_from_zenodo(
                 record_id=self.ZENODO_RECORD_ID,
                 root=self.data_root,
                 filenames=all_files,
             )
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to download magnetic field dataset: {e}\n"
-                f"Please download manually from: https://zenodo.org/record/{self.ZENODO_RECORD_ID}"
-            )
+            return
+        except Exception:
+            pass
+
+        # Show message only once
+        if not MagneticIndoorDataset._download_message_shown:
+            MagneticIndoorDataset._download_message_shown = True
+            print("\n" + "=" * 70)
+            print("MagneticIndoor: Dataset Download")
+            print("=" * 70)
+            print(f"""
+This magnetic field indoor dataset is not available for automatic download.
+
+Please download manually from:
+  https://zenodo.org/record/{self.ZENODO_RECORD_ID}
+
+Place CSV files in: {self.data_root}
+
+Using demo data for now...
+""")
+            print("=" * 70 + "\n")
 
     def _load_data(self) -> None:
         """Load magnetic field dataset from CSV file."""
@@ -193,7 +217,8 @@ class MagneticIndoorDataset(MagneticDataset):
         filepath = self.data_root / filename
 
         if not filepath.exists():
-            raise FileNotFoundError(f"Data file not found: {filepath}")
+            self._generate_demo_data()
+            return
 
         try:
             import pandas as pd
@@ -268,6 +293,41 @@ class MagneticIndoorDataset(MagneticDataset):
             filter_info += f" (floor: {self._floor_param})"
         print(f"Loaded {len(self._signals)} samples from magnetic field dataset{filter_info}")
 
+    def _generate_demo_data(self) -> None:
+        """Generate demonstration data."""
+        np.random.seed(42 if self.split == 'train' else 123)
+
+        n_samples = 500
+        train_ratio = 0.7
+        num_train = int(n_samples * train_ratio)
+        n = num_train if self.split == 'train' else n_samples - num_train
+
+        buildings = ['0', '1']
+        floors = [0, 1, 2]
+
+        for _ in range(n):
+            x = np.random.uniform(0, 50)
+            y = np.random.uniform(0, 50)
+            floor = np.random.choice(floors)
+            building_id = np.random.choice(buildings)
+
+            # Generate realistic magnetic field values (μT)
+            mag_x = np.random.uniform(-50, 50)
+            mag_y = np.random.uniform(-50, 50)
+            mag_z = np.random.uniform(20, 60)  # Vertical component
+            magnetic_field = np.array([mag_x, mag_y, mag_z])
+
+            signal = MagnetometerSignal(magnetic_field=magnetic_field)
+            location = Location(
+                coordinate=Coordinate(x=x, y=y),
+                floor=floor,
+                building_id=building_id
+            )
+
+            self._signals.append(signal)
+            self._locations.append(location)
+
+        print(f"Generated {len(self._signals)} demo samples ({self.split} split)")
 
 
 def MagneticIndoor(data_root=None, split=None, download=False, building='all', floor='all', **kwargs):

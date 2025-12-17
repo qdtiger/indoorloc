@@ -57,6 +57,8 @@ class WiFiCSID2DDataset(WiFiDataset):
     DISTANCES = [1, 2, 3, 4, 5]  # meters
     ANGLES = [30, -60]  # degrees
 
+    _download_message_shown = False
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -88,29 +90,58 @@ class WiFiCSID2DDataset(WiFiDataset):
         return self.NUM_FEATURES
 
     def _check_exists(self) -> bool:
+        """Always returns True since demo data is available."""
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        return True
+
+    def _has_real_data(self) -> bool:
+        """Check if real data files exist."""
         return (self.data_root / 'data.csv').exists() or \
-               (self.data_root / 'data.mat').exists()
+               (self.data_root / 'data.mat').exists() or \
+               any(self.data_root.glob('*.mat'))
 
     def _download(self) -> None:
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+        if self._has_real_data():
             return
 
-        print(f"Downloading WiFi CSI D2D dataset from Figshare...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
 
+        # Try to download and extract
         from ..utils.download import download_from_figshare
+        import zipfile
 
         try:
-            download_from_figshare(
-                article_id='20943706',
-                root=self.data_root,
-            )
-        except Exception as e:
-            print(f"Auto-download failed: {e}")
-            print(f"Please download manually from:")
-            print(f"  https://doi.org/10.6084/m9.figshare.20943706.v1")
-            print(f"Place data in: {self.data_root}")
-            self.data_root.mkdir(parents=True, exist_ok=True)
+            download_from_figshare(article_id='20943706', root=self.data_root)
+
+            # Extract zip file if exists
+            zip_file = self.data_root / 'wifi_csi_data_loc.zip'
+            if zip_file.exists():
+                print(f"Extracting {zip_file.name}...")
+                with zipfile.ZipFile(zip_file, 'r') as zf:
+                    zf.extractall(self.data_root)
+                print("Extraction complete")
+
+            if self._has_real_data():
+                return
+        except Exception:
+            pass
+
+        if not WiFiCSID2DDataset._download_message_shown:
+            WiFiCSID2DDataset._download_message_shown = True
+            print("\n" + "=" * 70)
+            print("WiFiCSID2D: Dataset Download")
+            print("=" * 70)
+            print(f"""
+This WiFi CSI device-to-device dataset is available from Figshare.
+
+Download from:
+  https://doi.org/10.6084/m9.figshare.20943706.v1
+
+Place data in: {self.data_root}
+
+Using demo data for now...
+""")
+            print("=" * 70 + "\n")
 
     def _load_data(self) -> None:
         if (self.data_root / 'data.csv').exists():

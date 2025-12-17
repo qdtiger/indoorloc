@@ -5,11 +5,13 @@ Large-scale WiFi fingerprinting dataset collected at Tampere University
 covering multiple buildings and floors with high spatial resolution.
 
 Reference:
-    Lohan, E. S., et al. (2017). Wi-Fi Crowdsourced Fingerprinting Dataset
-    for Indoor Positioning. Data, 2(4), 32.
+    Lohan, E. S., Torres-Sospedra, J., et al. (2017). Wi-Fi Crowdsourced
+    Fingerprinting Dataset for Indoor Positioning. Data, 2(4), 32.
+    DOI: 10.3390/data2040032
 
 Dataset URL: https://zenodo.org/record/889798
 """
+import zipfile
 from pathlib import Path
 from typing import Optional, Any, Dict, List, Union
 import numpy as np
@@ -19,7 +21,7 @@ from ..signals.wifi import WiFiSignal
 from ..locations.location import Location
 from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
-from ..utils.download import download_from_zenodo
+from ..utils.download import download_url
 
 
 @DATASETS.register_module()
@@ -27,7 +29,8 @@ class TampereDataset(WiFiDataset):
     """Tampere University WiFi Fingerprinting Dataset.
 
     Large-scale WiFi dataset with crowdsourced fingerprints collected
-    across multiple buildings at Tampere University.
+    at Tampere University. Contains 687 training and 3951 test fingerprints
+    collected with 21 devices in a 4-floor building.
 
     Args:
         data_root: Root directory containing the dataset files. If None,
@@ -43,26 +46,31 @@ class TampereDataset(WiFiDataset):
         >>> # Download from Zenodo
         >>> dataset = iloc.Tampere(download=True, split='train')
 
-    Dataset structure:
+    Dataset structure (after extraction):
         data_root/
-        ├── train.csv
-        └── test.csv
-
-    CSV format:
-        - Columns: timestamp, x, y, floor, building, WAP1_RSSI, WAP2_RSSI, ...
-        - RSSI values in dBm, missing values represented as 100
+        ├── Training_rss_21Aug17.csv      # RSSI values (no header)
+        ├── Training_coordinates_21Aug17.csv  # x, y, floor (no header)
+        ├── Test_rss_21Aug17.csv
+        └── Test_coordinates_21Aug17.csv
     """
 
-    # Zenodo record ID for Tampere dataset
-    ZENODO_RECORD_ID = '1066041'
+    # Zenodo download URL
+    ZENODO_URL = "https://zenodo.org/api/records/889798/files/DISTRIBUTED_OPENSOURCE.zip/content"
+    ZIP_FILENAME = "DISTRIBUTED_OPENSOURCE.zip"
 
     # Dataset constants
     NOT_DETECTED_VALUE = 100
 
-    # Required files
+    # File mapping for RSS and coordinates (inside FINGERPRINTING_DB folder)
     FILE_MAPPING = {
-        'train': 'train.csv',
-        'test': 'test.csv',
+        'train': {
+            'rss': 'Training_rss_21Aug17.csv',
+            'coords': 'Training_coordinates_21Aug17.csv',
+        },
+        'test': {
+            'rss': 'Test_rss_21Aug17.csv',
+            'coords': 'Test_coordinates_21Aug17.csv',
+        },
     }
 
     def __init__(
@@ -104,36 +112,18 @@ class TampereDataset(WiFiDataset):
     def list_buildings(cls, data_root: Optional[str] = None) -> List[str]:
         """List all available buildings in the dataset.
 
-        Args:
-            data_root: Root directory containing the dataset files.
-
-        Returns:
-            List of building identifiers.
+        Note: Tampere dataset is from a single building with 4 floors.
         """
-        from ..utils.download import get_data_home
-
-        if data_root is None:
-            root = get_data_home() / 'tampere'
-        else:
-            root = Path(data_root)
-
-        train_file = root / 'train.csv'
-        if not train_file.exists():
-            return []
-
-        try:
-            import pandas as pd
-            df = pd.read_csv(train_file, usecols=['building'])
-            return sorted(df['building'].astype(str).unique().tolist())
-        except Exception:
-            return []
+        return ['1']  # Single building dataset
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
-        filename = self.FILE_MAPPING.get(self.split)
-        if filename is None:
+        files = self.FILE_MAPPING.get(self.split)
+        if files is None:
             return False
-        return (self.data_root / filename).exists()
+        rss_file = self.data_root / files['rss']
+        coords_file = self.data_root / files['coords']
+        return rss_file.exists() and coords_file.exists()
 
     def _download(self) -> None:
         """Download Tampere dataset from Zenodo."""
@@ -141,99 +131,89 @@ class TampereDataset(WiFiDataset):
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading Tampere dataset from Zenodo...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        zip_path = self.data_root / self.ZIP_FILENAME
 
+        # Download zip file
+        if not zip_path.exists():
+            print(f"Downloading Tampere dataset from Zenodo...")
+            try:
+                download_url(
+                    url=self.ZENODO_URL,
+                    root=self.data_root,
+                    filename=self.ZIP_FILENAME,
+                )
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to download Tampere dataset: {e}\n"
+                    f"Please download manually from: https://zenodo.org/record/889798"
+                )
+
+        # Extract required CSV files from zip
+        print(f"Extracting dataset files...")
         try:
-            # Download specific files from Zenodo
-            filenames = list(self.FILE_MAPPING.values())
-            download_from_zenodo(
-                record_id=self.ZENODO_RECORD_ID,
-                root=self.data_root,
-                filenames=filenames,
-            )
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                for split_files in self.FILE_MAPPING.values():
+                    for filename in split_files.values():
+                        zip_member = f"FINGERPRINTING_DB/{filename}"
+                        if zip_member in zf.namelist():
+                            # Extract to data_root directly (flatten structure)
+                            with zf.open(zip_member) as src:
+                                target_path = self.data_root / filename
+                                with open(target_path, 'wb') as dst:
+                                    dst.write(src.read())
+                            print(f"  Extracted: {filename}")
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to download Tampere dataset: {e}\n"
-                f"Please download manually from: https://zenodo.org/record/{self.ZENODO_RECORD_ID}"
-            )
+            raise RuntimeError(f"Failed to extract dataset: {e}")
 
     def _load_data(self) -> None:
-        """Load Tampere dataset from CSV file."""
-        filename = self.FILE_MAPPING[self.split]
-        filepath = self.data_root / filename
+        """Load Tampere dataset from separate RSS and coordinate CSV files."""
+        files = self.FILE_MAPPING[self.split]
+        rss_file = self.data_root / files['rss']
+        coords_file = self.data_root / files['coords']
 
-        if not filepath.exists():
-            raise FileNotFoundError(f"Data file not found: {filepath}")
+        if not rss_file.exists():
+            raise FileNotFoundError(f"RSS file not found: {rss_file}")
+        if not coords_file.exists():
+            raise FileNotFoundError(f"Coordinates file not found: {coords_file}")
 
-        # Load CSV file
-        # Expected format: timestamp,x,y,floor,building,WAP1,WAP2,...
-        try:
-            import pandas as pd
-            df = pd.read_csv(filepath)
-        except ImportError:
-            raise ImportError(
-                "pandas is required to load Tampere dataset.\n"
-                "Install with: pip install pandas"
+        # Load RSS data (no header, comma-separated RSSI values)
+        rssi_data = np.loadtxt(rss_file, delimiter=',', dtype=np.float32)
+
+        # Load coordinates (no header: x, y, floor)
+        coords_data = np.loadtxt(coords_file, delimiter=',', dtype=np.float32)
+
+        if len(rssi_data) != len(coords_data):
+            raise ValueError(
+                f"RSS and coordinate files have different lengths: "
+                f"{len(rssi_data)} vs {len(coords_data)}"
             )
 
-        # Identify coordinate columns
-        coord_cols = ['x', 'y', 'floor', 'building']
-        if 'timestamp' in df.columns:
-            coord_cols.insert(0, 'timestamp')
-
-        # Check which columns exist
-        existing_coord_cols = [col for col in coord_cols if col in df.columns]
-
-        # Remaining columns are WAP RSSI values
-        wap_cols = [col for col in df.columns if col not in existing_coord_cols]
-
-        if len(wap_cols) == 0:
-            raise ValueError("No WAP columns found in dataset")
-
-        # Store available buildings
-        if 'building' in df.columns:
-            self._available_buildings = sorted(df['building'].astype(str).unique().tolist())
-        else:
-            self._available_buildings = ['0']
-
-        # Filter by building parameter
-        if self._building_param != 'all' and 'building' in df.columns:
-            if isinstance(self._building_param, list):
-                selected_buildings = [str(b) for b in self._building_param]
-            else:
-                selected_buildings = [str(self._building_param)]
-            df = df[df['building'].astype(str).isin(selected_buildings)]
-
-        if len(df) == 0:
-            raise ValueError(f"No data found for building(s): {self._building_param}")
-
         # Store number of APs
-        self._num_aps = len(wap_cols)
-
-        # Extract data
-        rssi_data = df[wap_cols].values.astype(np.float32)
-        x_vals = df['x'].values if 'x' in df.columns else np.zeros(len(df))
-        y_vals = df['y'].values if 'y' in df.columns else np.zeros(len(df))
-        floors = df['floor'].values.astype(int) if 'floor' in df.columns else np.zeros(len(df), dtype=int)
-        buildings = df['building'].values.astype(str) if 'building' in df.columns else ['0'] * len(df)
+        self._num_aps = rssi_data.shape[1]
+        self._available_buildings = ['1']  # Single building
 
         # Process each sample
-        for i in range(len(df)):
+        for i in range(len(rssi_data)):
             # Create WiFi signal
             signal = WiFiSignal(rssi_values=rssi_data[i])
 
+            # Parse coordinates (x, y, floor)
+            x_val = float(coords_data[i, 0])
+            y_val = float(coords_data[i, 1])
+            floor_val = int(coords_data[i, 2]) if coords_data.shape[1] > 2 else 0
+
             # Create location
             location = Location(
-                coordinate=Coordinate(x=float(x_vals[i]), y=float(y_vals[i])),
-                floor=int(floors[i]),
-                building_id=str(buildings[i])
+                coordinate=Coordinate(x=x_val, y=y_val),
+                floor=floor_val,
+                building_id='1'
             )
 
             self._signals.append(signal)
             self._locations.append(location)
 
-        building_info = f" (building: {self._building_param})" if self._building_param != 'all' else ""
-        print(f"Loaded {len(self._signals)} samples from Tampere dataset{building_info}")
+        print(f"Loaded {len(self._signals)} samples from Tampere dataset ({self._num_aps} APs)")
 
 
 
