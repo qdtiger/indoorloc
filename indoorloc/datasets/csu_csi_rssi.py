@@ -54,6 +54,8 @@ class CSUIndoorLocDataset(WiFiDataset):
     NUM_CSI_FEATURES = 256  # CSI subcarriers
     NUM_RSSI_FEATURES = 50  # Number of APs
 
+    _download_message_shown = False  # Class variable to avoid duplicate messages
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -87,34 +89,48 @@ class CSUIndoorLocDataset(WiFiDataset):
         return self.NUM_FEATURES
 
     def _check_exists(self) -> bool:
-        """Check if dataset files exist."""
+        """Always returns True since demo data is available."""
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        return True
+
+    def _has_real_data(self) -> bool:
+        """Check if real data files exist."""
         return (self.data_root / 'data.csv').exists() or \
                (self.data_root / 'csi_data').exists()
 
     def _download(self) -> None:
-        """Download CSUIndoorLoc dataset."""
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+        """Show download instructions for CSUIndoorLoc dataset."""
+        if self._has_real_data():
             return
 
-        print(f"Downloading CSUIndoorLoc-CSI-RSSI dataset from GitHub...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
 
-        from ..utils.download import download_from_github
+        # Show message only once
+        if not CSUIndoorLocDataset._download_message_shown:
+            CSUIndoorLocDataset._download_message_shown = True
 
-        try:
-            # Download data files from GitHub
-            download_from_github(
-                repo='EPIC-CSU/csi-rssi-dataset-indoor-nav',
-                root=self.data_root,
-                files=['data/csi_data.csv', 'data/rssi_data.csv'],
-                branch='main',
-            )
-        except Exception as e:
-            print(f"Auto-download failed: {e}")
-            print(f"Please download manually from:")
-            print(f"  https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav")
-            print(f"Place data in: {self.data_root}")
-            self.data_root.mkdir(parents=True, exist_ok=True)
+            print("\n" + "=" * 70)
+            print("CSUIndoorLoc: Raw PCAP Format Dataset")
+            print("=" * 70)
+            print("""
+This dataset contains raw PCAP (packet capture) files that require
+special processing tools (Nexmon + MATLAB) to extract CSI data.
+
+Repository: https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav
+
+The dataset includes:
+  - 127 PCAP files (~150 MB total)
+  - Location coordinates in Excel files
+  - MATLAB extraction scripts
+
+To use this dataset:
+  1. Download PCAP files from the GitHub repository
+  2. Use Nexmon CSI extraction tools to process the packets
+  3. Convert to CSV format with columns: x, y, floor, csi_0, csi_1, ...
+
+Using demo data for now...
+""")
+            print("=" * 70 + "\n")
 
     def _load_data(self) -> None:
         """Load CSUIndoorLoc dataset."""

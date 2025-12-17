@@ -5,13 +5,25 @@ WiFi CSI trajectory dataset collected in indoor corridor environment
 using ESP32-S3 with directional antenna.
 
 Reference:
-    HALOC Dataset: WiFi CSI for Indoor Localization
-    https://zenodo.org/records/10715595
+    Strohmayer, J., and Kampel, M. (2024).
+    WiFi CSI-based Long-Range Person Localization Using Directional Antennas
+    The Second Tiny Papers Track at ICLR 2024
 
 Dataset URL: https://zenodo.org/records/10715595
+GitHub: https://github.com/StrohmayerJ/HALOC
+
+Data Format:
+    CSV files containing:
+    - data: CSI values as comma-separated complex numbers (real,imag pairs)
+    - x, y, z: 3D coordinates
+    6 trajectory files (0.csv to 5.csv)
+    - Training: 0.csv, 1.csv, 2.csv, 3.csv
+    - Validation: 4.csv
+    - Test: 5.csv
 """
+import subprocess
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, List
 import numpy as np
 
 from .base import WiFiDataset
@@ -21,25 +33,33 @@ from ..locations.coordinate import Coordinate
 from ..registry import DATASETS
 
 
+# Valid L-LTF subcarrier indices (52 subcarriers, excluding pilots and guard bands)
+VALID_SUBCARRIERS = [
+    6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+    35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
+    49, 50, 51, 52, 53, 58, 59, 60, 61
+]
+
+
 @DATASETS.register_module()
 class HALOCDataset(WiFiDataset):
     """HALOC WiFi CSI Trajectory Dataset.
 
     WiFi CSI dataset collected using ESP32-S3 with directional antenna.
     Features:
-    - Indoor long corridor environment
-    - Single person walking along 6 long trajectories
+    - Indoor long corridor environment (~30m)
+    - Single person walking along 6 trajectories
     - Strong multipath environment
     - 3D coordinates (x, y, z) per CSI packet
+    - 52 subcarriers (L-LTF)
 
     Args:
         data_root: Root directory containing the dataset files.
-        split: Dataset split ('train' or 'test').
+        split: Dataset split ('train', 'val', or 'test').
         download: Whether to download the dataset if not found.
-        trajectory: Trajectory ID (1-6 or 'all').
         transform: Optional transform to apply to signals.
         normalize: Whether to normalize signal values.
-        train_ratio: Ratio for train/test split (default: 0.7).
 
     Example:
         >>> import indoorloc as iloc
@@ -47,26 +67,26 @@ class HALOCDataset(WiFiDataset):
         >>> signal, location = train[0]
     """
 
-    BASE_URL = 'https://zenodo.org/records/10715595/files/'
-    ZENODO_ID = '10715595'
+    ZENODO_URL = 'https://zenodo.org/records/10715595/files'
 
-    NOT_DETECTED_VALUE = -80.0
-    NUM_FEATURES = 128  # CSI features from ESP32-S3
+    NOT_DETECTED_VALUE = 0.0
+    NUM_FEATURES = 52  # 52 valid L-LTF subcarriers
+
+    # Dataset splits based on official split
+    TRAIN_FILES = ['0.csv', '1.csv', '2.csv', '3.csv']
+    VAL_FILE = '4.csv'
+    TEST_FILE = '5.csv'
 
     def __init__(
         self,
         data_root: Optional[str] = None,
         split: str = 'train',
         download: bool = False,
-        trajectory: str = 'all',
         transform: Optional[Any] = None,
         normalize: bool = True,
         normalize_method: str = 'minmax',
-        train_ratio: float = 0.7,
         **kwargs
     ):
-        self.train_ratio = train_ratio
-        self.trajectory = trajectory
         super().__init__(
             data_root=data_root,
             split=split,
@@ -86,108 +106,140 @@ class HALOCDataset(WiFiDataset):
         return self.NUM_FEATURES
 
     def _check_exists(self) -> bool:
-        return (self.data_root / 'data.csv').exists() or \
-               any((self.data_root / f'trajectory_{i}.csv').exists() for i in range(1, 7))
+        """Check if all required CSV files exist."""
+        all_files = self.TRAIN_FILES + [self.VAL_FILE, self.TEST_FILE]
+        return all((self.data_root / f).exists() for f in all_files)
 
     def _download(self) -> None:
+        """Download HALOC dataset from Zenodo."""
         if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+            print(f"HALOC dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading HALOC dataset from Zenodo...")
+        print("Downloading HALOC dataset from Zenodo...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
 
-        from ..utils.download import download_from_zenodo
+        all_files = self.TRAIN_FILES + [self.VAL_FILE, self.TEST_FILE]
+        downloaded = 0
 
-        try:
-            download_from_zenodo(
-                record_id='10715595',
-                root=self.data_root,
+        for filename in all_files:
+            dst = self.data_root / filename
+            if dst.exists() and dst.stat().st_size > 1000:
+                downloaded += 1
+                continue
+
+            url = f"{self.ZENODO_URL}/{filename}?download=1"
+            print(f"  Downloading {filename}...")
+
+            try:
+                subprocess.run(
+                    ['curl', '-sL', '-o', str(dst), url],
+                    capture_output=True, timeout=120
+                )
+                if dst.exists() and dst.stat().st_size > 1000:
+                    downloaded += 1
+                    print(f"    Downloaded: {dst.stat().st_size / 1024:.1f} KB")
+            except Exception as e:
+                print(f"    Error downloading {filename}: {e}")
+
+        print(f"Download complete: {downloaded}/{len(all_files)} files")
+
+        if not self._check_exists():
+            raise RuntimeError(
+                f"Failed to download HALOC dataset.\n"
+                f"Please download manually from:\n"
+                f"  https://zenodo.org/records/10715595\n"
+                f"Place CSV files (0.csv to 5.csv) in: {self.data_root}"
             )
-        except Exception as e:
-            print(f"Auto-download failed: {e}")
-            print(f"Please download manually from:")
-            print(f"  https://zenodo.org/records/10715595")
-            print(f"Place data in: {self.data_root}")
-            self.data_root.mkdir(parents=True, exist_ok=True)
+
+    def _parse_csi_string(self, csi_str: str) -> np.ndarray:
+        """Parse CSI string to amplitude values.
+
+        CSI data is stored as JSON array of integers representing
+        alternating imaginary and real parts of complex numbers.
+        Format: "[imag0,real0,imag1,real1,...]"
+        """
+        try:
+            import json
+            # Parse JSON array format
+            if csi_str.startswith('['):
+                values = json.loads(csi_str)
+            else:
+                values = [int(v) for v in csi_str.split(',')]
+        except (ValueError, AttributeError, json.JSONDecodeError):
+            return np.zeros(self.NUM_FEATURES, dtype=np.float32)
+
+        # Extract complex values for valid subcarriers
+        # Data format: pairs of (imag, real) for each subcarrier index
+        amplitudes = []
+        for idx in VALID_SUBCARRIERS:
+            imag_idx = idx * 2
+            real_idx = idx * 2 + 1
+            if real_idx < len(values):
+                imag = values[imag_idx]
+                real = values[real_idx]
+                amplitude = np.sqrt(float(real)**2 + float(imag)**2)
+                amplitudes.append(amplitude)
+            else:
+                amplitudes.append(0.0)
+
+        return np.array(amplitudes, dtype=np.float32)
 
     def _load_data(self) -> None:
-        data_file = self.data_root / 'data.csv'
-        if data_file.exists():
-            self._load_from_csv(data_file)
-        else:
-            self._generate_demo_data()
-
-    def _load_from_csv(self, filepath: Path) -> None:
+        """Load HALOC dataset from CSV files."""
         try:
             import pandas as pd
         except ImportError:
             raise ImportError("pandas is required. Install with: pip install pandas")
 
-        df = pd.read_csv(filepath)
-
-        if self.trajectory != 'all' and 'trajectory' in df.columns:
-            df = df[df['trajectory'] == int(self.trajectory)]
-
-        num_train = int(len(df) * self.train_ratio)
+        # Determine which files to load based on split
         if self.split == 'train':
-            df_split = df.iloc[:num_train]
-        else:
-            df_split = df.iloc[num_train:]
+            files_to_load = self.TRAIN_FILES
+        elif self.split == 'val':
+            files_to_load = [self.VAL_FILE]
+        else:  # test
+            files_to_load = [self.TEST_FILE]
 
-        for idx, row in df_split.iterrows():
-            x = float(row.get('x', 0.0))
-            y = float(row.get('y', 0.0))
-            z = float(row.get('z', 0.0))
+        for filename in files_to_load:
+            filepath = self.data_root / filename
+            if not filepath.exists():
+                print(f"Warning: {filename} not found, skipping")
+                continue
 
-            csi_cols = [c for c in df_split.columns if 'csi' in c.lower()]
-            if csi_cols:
-                rssi_values = np.array([float(row[c]) for c in csi_cols])
-            else:
-                rssi_values = np.zeros(self.NUM_FEATURES)
+            df = pd.read_csv(filepath)
 
-            signal = WiFiSignal(rssi_values=rssi_values)
-            location = Location(
-                coordinate=Coordinate(x=x, y=y, z=z),
-                floor=int(z),
-                building_id='0'
-            )
+            for _, row in df.iterrows():
+                # Parse CSI data
+                csi_data = row.get('data', '')
+                amplitudes = self._parse_csi_string(str(csi_data))
 
-            self._signals.append(signal)
-            self._locations.append(location)
+                # Get coordinates
+                x = float(row.get('x', 0.0))
+                y = float(row.get('y', 0.0))
+                z = float(row.get('z', 0.0))
 
-        print(f"Loaded {len(self._signals)} samples ({self.split} split)")
+                signal = WiFiSignal(rssi_values=amplitudes)
+                location = Location(
+                    coordinate=Coordinate(x=x, y=y, z=z),
+                    floor=0,
+                    building_id=filename.replace('.csv', '')
+                )
 
-    def _generate_demo_data(self) -> None:
-        np.random.seed(42 if self.split == 'train' else 123)
+                self._signals.append(signal)
+                self._locations.append(location)
 
-        n_samples = 600  # 6 trajectories
-        num_train = int(n_samples * self.train_ratio)
-        n = num_train if self.split == 'train' else n_samples - num_train
-
-        for i in range(n):
-            trajectory_id = (i % 6) + 1
-            # Long corridor trajectory
-            x = np.random.uniform(0, 30)
-            y = np.random.uniform(0, 3)
-            z = np.random.uniform(0, 0.5)
-
-            rssi_values = np.random.uniform(-70, -30, self.NUM_FEATURES)
-
-            signal = WiFiSignal(rssi_values=rssi_values)
-            location = Location(
-                coordinate=Coordinate(x=x, y=y, z=z),
-                floor=0,
-                building_id=str(trajectory_id)
-            )
-
-            self._signals.append(signal)
-            self._locations.append(location)
-
-        print(f"Generated {len(self._signals)} demo samples ({self.split} split)")
+        print(f"Loaded {len(self._signals)} samples from HALOC (split={self.split})")
 
 
 def HALOC(data_root=None, split=None, download=False, **kwargs):
-    """Convenience function for loading HALOC dataset."""
+    """
+    Convenience function for loading HALOC dataset.
+
+    Returns:
+        - If split is None: Returns tuple (train_dataset, test_dataset)
+        - If split is 'all': Returns merged train+val+test dataset
+        - Otherwise: Returns single dataset for specified split ('train', 'val', 'test')
+    """
     if split is None:
         train = HALOCDataset(data_root=data_root, split='train', download=download, **kwargs)
         test = HALOCDataset(data_root=data_root, split='test', download=download, **kwargs)
@@ -195,7 +247,8 @@ def HALOC(data_root=None, split=None, download=False, **kwargs):
     elif split == 'all':
         from torch.utils.data import ConcatDataset
         train = HALOCDataset(data_root=data_root, split='train', download=download, **kwargs)
+        val = HALOCDataset(data_root=data_root, split='val', download=download, **kwargs)
         test = HALOCDataset(data_root=data_root, split='test', download=download, **kwargs)
-        return ConcatDataset([train, test])
+        return ConcatDataset([train, val, test])
     else:
         return HALOCDataset(data_root=data_root, split=split, download=download, **kwargs)

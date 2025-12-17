@@ -1,15 +1,17 @@
 """
 TUJI1 (TUT Indoor) WiFi Dataset Implementation
 
-Indoor WiFi fingerprinting dataset collected at Tampere University of Technology
-with high-quality ground truth and comprehensive coverage.
+Multi-device WiFi fingerprinting dataset collected at Tampere University
+with high measurement density using 5 different commercial devices.
 
 Reference:
-    Torres-Sospedra, J., et al. (2022). The Smartphone-based Offline Indoor
-    Location Competition at IPIN 2021. IEEE IPIN.
+    Klus, L., Klus, R., Lohan, E.S., et al. (2024). TUJI1 Dataset: Multi-device
+    dataset for indoor localization with high measurement density.
+    Data in Brief, 110356. DOI: 10.1016/j.dib.2024.110356
 
-Dataset URL: https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset
+Dataset URL: https://zenodo.org/record/7641701
 """
+import zipfile
 from pathlib import Path
 from typing import Optional, Any, Dict, List, Union
 import numpy as np
@@ -26,8 +28,9 @@ from ..utils.download import download_url
 class TUJI1Dataset(WiFiDataset):
     """TUJI1 (TUT Indoor) WiFi Fingerprinting Dataset.
 
-    High-quality WiFi fingerprinting dataset from IPIN 2021 competition
-    with precise ground truth and comprehensive spatial coverage.
+    Multi-device WiFi dataset with high measurement density, collected using
+    5 different commercial devices (Samsung S20, S7, POCO, Tab S7, A12).
+    Contains over 300 distinct APs with fine-grained spatial coverage.
 
     Args:
         data_root: Root directory containing the dataset files. If None,
@@ -40,30 +43,34 @@ class TUJI1Dataset(WiFiDataset):
 
     Example:
         >>> import indoorloc as iloc
-        >>> # Download from GitHub
-        >>> dataset = iloc.TUJI1(download=True)
+        >>> # Download from Zenodo
+        >>> dataset = iloc.TUJI1(download=True, split='train')
 
-    Dataset structure:
+    Dataset structure (after extraction):
         data_root/
-        ├── training_data.csv
-        └── test_data.csv
-
-    CSV format:
-        - Columns: timestamp, x, y, floor, BSSID1, RSSI1, BSSID2, RSSI2, ...
-        - RSSI values in dBm
-        - Missing APs not included (sparse format)
+        ├── RSS_training.csv
+        ├── RSS_testing.csv
+        ├── Coordinates_training.csv
+        └── Coordinates_testing.csv
     """
 
-    # GitHub raw content base URL
-    BASE_URL = 'https://raw.githubusercontent.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset/main'
+    # Zenodo download URL
+    ZENODO_URL = "https://zenodo.org/api/records/7641701/files/DATASET.zip/content"
+    ZIP_FILENAME = "DATASET.zip"
 
     # Dataset constants
-    NOT_DETECTED_VALUE = -110
+    NOT_DETECTED_VALUE = 100
 
     # File mapping
     FILE_MAPPING = {
-        'train': 'training_data.csv',
-        'test': 'test_data.csv',
+        'train': {
+            'rss': 'RSS_training.csv',
+            'coords': 'Coordinates_training.csv',
+        },
+        'test': {
+            'rss': 'RSS_testing.csv',
+            'coords': 'Coordinates_testing.csv',
+        },
     }
 
     def __init__(
@@ -106,168 +113,115 @@ class TUJI1Dataset(WiFiDataset):
     def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
         """List all available floors in the dataset.
 
-        Args:
-            data_root: Root directory containing the dataset files.
-
-        Returns:
-            List of floor numbers.
+        Note: TUJI1 is a single-floor dataset (floor 0).
         """
-        from ..utils.download import get_data_home
-
-        if data_root is None:
-            root = get_data_home() / 'tuji1'
-        else:
-            root = Path(data_root)
-
-        train_file = root / 'training_data.csv'
-        if not train_file.exists():
-            return []
-
-        try:
-            import pandas as pd
-            df = pd.read_csv(train_file, usecols=['floor'])
-            return sorted(df['floor'].astype(int).unique().tolist())
-        except Exception:
-            return []
+        return [0]
 
     def _check_exists(self) -> bool:
         """Check if dataset files exist."""
-        filename = self.FILE_MAPPING.get(self.split)
-        if filename is None:
+        files = self.FILE_MAPPING.get(self.split)
+        if files is None:
             return False
-        return (self.data_root / filename).exists()
+        rss_file = self.data_root / files['rss']
+        coords_file = self.data_root / files['coords']
+        return rss_file.exists() and coords_file.exists()
 
     def _download(self) -> None:
-        """Download TUJI1 dataset from GitHub."""
+        """Download TUJI1 dataset from Zenodo."""
         if self._check_exists():
             print(f"Dataset already exists at {self.data_root}")
             return
 
-        print(f"Downloading TUJI1 dataset from GitHub...")
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        zip_path = self.data_root / self.ZIP_FILENAME
 
-        filename = self.FILE_MAPPING[self.split]
-        url = f"{self.BASE_URL}/{filename}"
+        # Download zip file
+        if not zip_path.exists():
+            print(f"Downloading TUJI1 dataset from Zenodo...")
+            try:
+                download_url(
+                    url=self.ZENODO_URL,
+                    root=self.data_root,
+                    filename=self.ZIP_FILENAME,
+                )
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to download TUJI1 dataset: {e}\n"
+                    f"Please download manually from: https://zenodo.org/record/7641701"
+                )
 
+        # Extract required CSV files from zip
+        print(f"Extracting dataset files...")
         try:
-            download_url(
-                url=url,
-                root=self.data_root,
-                filename=filename,
-            )
+            with zipfile.ZipFile(zip_path, 'r') as zf:
+                for split_files in self.FILE_MAPPING.values():
+                    for filename in split_files.values():
+                        zip_member = f"DATASET/{filename}"
+                        if zip_member in zf.namelist():
+                            with zf.open(zip_member) as src:
+                                target_path = self.data_root / filename
+                                with open(target_path, 'wb') as dst:
+                                    dst.write(src.read())
+                            print(f"  Extracted: {filename}")
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to download TUJI1 dataset: {e}\n"
-                f"Please download manually from: {self.BASE_URL}"
-            )
+            raise RuntimeError(f"Failed to extract dataset: {e}")
 
     def _load_data(self) -> None:
-        """Load TUJI1 dataset from CSV file."""
-        filename = self.FILE_MAPPING[self.split]
-        filepath = self.data_root / filename
+        """Load TUJI1 dataset from separate RSS and coordinate CSV files."""
+        files = self.FILE_MAPPING[self.split]
+        rss_file = self.data_root / files['rss']
+        coords_file = self.data_root / files['coords']
 
-        if not filepath.exists():
-            raise FileNotFoundError(f"Data file not found: {filepath}")
+        if not rss_file.exists():
+            raise FileNotFoundError(f"RSS file not found: {rss_file}")
+        if not coords_file.exists():
+            raise FileNotFoundError(f"Coordinates file not found: {coords_file}")
 
-        # Load CSV file
-        try:
-            import pandas as pd
-            df = pd.read_csv(filepath)
-        except ImportError:
-            raise ImportError(
-                "pandas is required to load TUJI1 dataset.\n"
-                "Install with: pip install pandas"
+        # Load RSS data (no header, comma-separated RSSI values)
+        rssi_data = np.loadtxt(rss_file, delimiter=',', dtype=np.float32)
+
+        # Load coordinates (no header: x, y, floor, ?, ?, device_label)
+        coords_data = np.loadtxt(coords_file, delimiter=',', dtype=np.float32)
+
+        if len(rssi_data) != len(coords_data):
+            raise ValueError(
+                f"RSS and coordinate files have different lengths: "
+                f"{len(rssi_data)} vs {len(coords_data)}"
             )
 
-        # Expected columns: timestamp, x, y, floor, then BSSID-RSSI pairs
-        # Extract coordinate columns
-        coord_cols = ['timestamp', 'x', 'y', 'floor']
-        existing_coord_cols = [col for col in coord_cols if col in df.columns]
+        # Store number of APs
+        self._num_aps = rssi_data.shape[1]
+        self._available_floors = [0]  # Single floor dataset
 
-        # Remaining columns should be BSSID-RSSI pairs
-        wifi_cols = [col for col in df.columns if col not in existing_coord_cols]
-
-        # Parse WiFi data (assume alternating BSSID, RSSI columns)
-        # Build a mapping of all unique BSSIDs
-        all_bssids = set()
-        samples_data = []
-
-        for idx, row in df.iterrows():
-            x = row['x'] if 'x' in row else 0.0
-            y = row['y'] if 'y' in row else 0.0
-            floor = int(row['floor']) if 'floor' in row else 0
-
-            # Parse BSSID-RSSI pairs
-            # Assuming columns are ordered as: BSSID1, RSSI1, BSSID2, RSSI2, ...
-            ap_measurements = {}
-            i = 0
-            while i < len(wifi_cols) - 1:
-                bssid_col = wifi_cols[i]
-                rssi_col = wifi_cols[i + 1]
-
-                if 'BSSID' in bssid_col or 'bssid' in bssid_col.lower():
-                    bssid = row[bssid_col]
-                    rssi = row[rssi_col]
-
-                    if pd.notna(bssid) and pd.notna(rssi):
-                        bssid = str(bssid).strip()
-                        if bssid and bssid != 'nan':
-                            all_bssids.add(bssid)
-                            ap_measurements[bssid] = float(rssi)
-
-                i += 2
-
-            samples_data.append({
-                'x': float(x),
-                'y': float(y),
-                'floor': floor,
-                'measurements': ap_measurements
-            })
-
-        # Store available floors
-        self._available_floors = sorted(list(set(s['floor'] for s in samples_data)))
-
-        # Filter by floor parameter
+        # Filter by floor parameter (TUJI1 only has floor 0)
         if self._floor_param != 'all':
             if isinstance(self._floor_param, int):
-                floors_to_load = [self._floor_param]
-            else:
-                floors_to_load = list(self._floor_param)
-            samples_data = [s for s in samples_data if s['floor'] in floors_to_load]
+                if self._floor_param != 0:
+                    raise ValueError(f"TUJI1 only has floor 0, requested: {self._floor_param}")
+            elif 0 not in self._floor_param:
+                raise ValueError(f"TUJI1 only has floor 0, requested: {self._floor_param}")
 
-        if len(samples_data) == 0:
-            raise ValueError(f"No data found for floor(s): {self._floor_param}")
-
-        # Create ordered AP list
-        self._ap_list = sorted(list(all_bssids))
-        self._num_aps = len(self._ap_list)
-
-        # Convert sparse measurements to dense format
-        ap_to_idx = {bssid: idx for idx, bssid in enumerate(self._ap_list)}
-
-        for sample in samples_data:
-            # Create dense RSSI vector
-            rssi_vector = np.full(self._num_aps, self.NOT_DETECTED_VALUE, dtype=np.float32)
-
-            for bssid, rssi in sample['measurements'].items():
-                if bssid in ap_to_idx:
-                    rssi_vector[ap_to_idx[bssid]] = rssi
-
+        # Process each sample
+        for i in range(len(rssi_data)):
             # Create WiFi signal
-            signal = WiFiSignal(rssi_values=rssi_vector, ap_list=self._ap_list)
+            signal = WiFiSignal(rssi_values=rssi_data[i])
+
+            # Parse coordinates (x, y, floor from columns 0, 1, 2)
+            x_val = float(coords_data[i, 0])
+            y_val = float(coords_data[i, 1])
+            floor_val = int(coords_data[i, 2]) if coords_data.shape[1] > 2 else 0
 
             # Create location
             location = Location(
-                coordinate=Coordinate(x=sample['x'], y=sample['y']),
-                floor=sample['floor'],
+                coordinate=Coordinate(x=x_val, y=y_val),
+                floor=floor_val,
                 building_id='0'
             )
 
             self._signals.append(signal)
             self._locations.append(location)
 
-        floor_info = f" (floor: {self._floor_param})" if self._floor_param != 'all' else ""
-        print(f"Loaded {len(self._signals)} samples from TUJI1 dataset{floor_info}")
-        print(f"Total unique APs: {self._num_aps}")
+        print(f"Loaded {len(self._signals)} samples from TUJI1 dataset ({self._num_aps} APs)")
 
 
 

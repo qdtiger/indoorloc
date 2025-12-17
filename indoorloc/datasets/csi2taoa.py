@@ -52,6 +52,8 @@ class CSI2TAoADataset(WiFiDataset):
     NOT_DETECTED_VALUE = 0.0
     NUM_FEATURES = 1024
 
+    _download_message_shown = False
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -83,19 +85,36 @@ class CSI2TAoADataset(WiFiDataset):
         return self.NUM_FEATURES
 
     def _check_exists(self) -> bool:
+        """Always returns True since demo data is available."""
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        return True
+
+    def _has_real_data(self) -> bool:
+        """Check if real data files exist."""
         return (self.data_root / 'data.csv').exists()
 
     def _download(self) -> None:
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+        if self._has_real_data():
             return
 
-        print(f"Downloading CSI2TAoA dataset...")
-        print(f"Note: Please download from TIB:")
-        print(f"  https://service.tib.eu/ldmservice/dataset/csi2taoa")
-        print(f"Place data in: {self.data_root}")
-
         self.data_root.mkdir(parents=True, exist_ok=True)
+
+        if not CSI2TAoADataset._download_message_shown:
+            CSI2TAoADataset._download_message_shown = True
+            print("\n" + "=" * 70)
+            print("CSI2TAoA: Dataset Download")
+            print("=" * 70)
+            print(f"""
+This Arena indoor RF testbed dataset requires manual download.
+
+Download from TIB:
+  https://service.tib.eu/ldmservice/dataset/csi2taoa
+
+Place data in: {self.data_root}
+
+Using demo data for now...
+""")
+            print("=" * 70 + "\n")
 
     def _load_data(self) -> None:
         if (self.data_root / 'data.csv').exists():
@@ -124,7 +143,7 @@ class CSI2TAoADataset(WiFiDataset):
             location = Location(
                 coordinate=Coordinate(x=x, y=y),
                 floor=0,
-                building_id='arena1'
+                building_id='0'
             )
 
             self._signals.append(signal)
@@ -149,7 +168,7 @@ class CSI2TAoADataset(WiFiDataset):
             location = Location(
                 coordinate=Coordinate(x=x, y=y),
                 floor=0,
-                building_id='arena1'
+                building_id='0'
             )
 
             self._signals.append(signal)

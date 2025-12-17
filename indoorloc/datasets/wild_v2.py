@@ -52,6 +52,8 @@ class WILDv2Dataset(WiFiDataset):
     NOT_DETECTED_VALUE = -80.0
     NUM_FEATURES = 256
 
+    _download_message_shown = False
+
     def __init__(
         self,
         data_root: Optional[str] = None,
@@ -85,19 +87,36 @@ class WILDv2Dataset(WiFiDataset):
         return self.NUM_FEATURES
 
     def _check_exists(self) -> bool:
+        """Always returns True since demo data is available."""
+        self.data_root.mkdir(parents=True, exist_ok=True)
+        return True
+
+    def _has_real_data(self) -> bool:
+        """Check if real data files exist."""
         return (self.data_root / 'train.csv').exists()
 
     def _download(self) -> None:
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
+        if self._has_real_data():
             return
 
-        print(f"Downloading WILD-v2 dataset...")
-        print(f"Note: This dataset requires Kaggle authentication.")
-        print(f"  https://www.kaggle.com/c/wild-v2")
-        print(f"Please download and place data in: {self.data_root}")
-
         self.data_root.mkdir(parents=True, exist_ok=True)
+
+        if not WILDv2Dataset._download_message_shown:
+            WILDv2Dataset._download_message_shown = True
+            print("\n" + "=" * 70)
+            print("WILD-v2: Dataset Download")
+            print("=" * 70)
+            print(f"""
+This robot-collected WiFi CSI dataset requires Kaggle authentication.
+
+Download from Kaggle:
+  https://www.kaggle.com/c/wild-v2
+
+Place data in: {self.data_root}
+
+Using demo data for now...
+""")
+            print("=" * 70 + "\n")
 
     def _load_data(self) -> None:
         data_file = self.data_root / 'train.csv'
@@ -150,7 +169,7 @@ class WILDv2Dataset(WiFiDataset):
         n = num_train if self.split == 'train' else n_samples - num_train
 
         for i in range(n):
-            env_id = (i % 8) + 1
+            env_id = i % 8  # 0-7 instead of 1-8
             x = np.random.uniform(0, 20)
             y = np.random.uniform(0, 20)
 

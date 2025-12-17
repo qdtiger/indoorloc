@@ -156,8 +156,12 @@ class MagnetometerSignal(BaseSignal):
         """Convert signal to NumPy array.
 
         Returns:
-            Magnetic field data as NumPy array with shape (N, 3).
+            Magnetic field data as NumPy array.
+            For single measurement: shape (3,)
+            For time series: shape (N, 3)
         """
+        if self.magnetic_field.shape[0] == 1:
+            return self.magnetic_field.flatten()
         return self.magnetic_field
 
     def normalize(self, method: str = 'standard') -> 'MagnetometerSignal':
