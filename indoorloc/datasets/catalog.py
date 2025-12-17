@@ -28,48 +28,10 @@ DATASET_ALIASES: Dict[str, str] = {
     'ble_rssi_uci': 'BLERSSIUCIDataset',
 
     # ========== CSI Datasets ==========
-    'csi_indoor': 'CSIIndoorDataset',
-    'csi': 'CSIIndoorDataset',
     'csi_fingerprint': 'CSIFingerprintDataset',
+    'csi': 'CSIFingerprintDataset',
     'hwild': 'HWILDDataset',
-    'csu_indoorloc': 'CSUIndoorLocDataset',
-    'csu': 'CSUIndoorLocDataset',
-    'wild_v2': 'WILDv2Dataset',
-    'wildv2': 'WILDv2Dataset',
-    'opencsi': 'OpenCSIDataset',
     'haloc': 'HALOCDataset',
-    'csi_bench': 'CSIBenchDataset',
-    'csibench': 'CSIBenchDataset',
-    'mamimo_csi': 'MaMIMOCSIDataset',
-    'mamimo': 'MaMIMOCSIDataset',
-    'dichasus': 'DICHASUSDataset',
-    'espargos': 'ESPARGOSDataset',
-    'csi2pos': 'CSI2PosDataset',
-    'csi2taoa': 'CSI2TAoADataset',
-    'deepmimo': 'DeepMIMODataset',
-    'mamimo_uav': 'MaMIMOUAVDataset',
-    'wifi_csi_d2d': 'WiFiCSID2DDataset',
-
-    # ========== UWB Datasets ==========
-    'uwb_indoor': 'UWBIndoorDataset',
-    'uwb': 'UWBIndoorDataset',
-    'uwb_ranging': 'UWBRangingDataset',
-
-    # ========== Hybrid/Multi-modal Datasets ==========
-    'wifi_imu': 'WiFiIMUHybridDataset',
-    'wifi_magnetic': 'WiFiMagneticHybridDataset',
-    'multimodal': 'MultiModalIndoorDataset',
-    'sensor_fusion': 'SensorFusionDataset',
-
-    # ========== Other Signal Types ==========
-    'magnetic_indoor': 'MagneticIndoorDataset',
-    'magnetic': 'MagneticIndoorDataset',
-    'vlc_indoor': 'VLCIndoorDataset',
-    'vlc': 'VLCIndoorDataset',
-    'ultrasound': 'UltrasoundIndoorDataset',
-    'rfid_indoor': 'RFIDIndoorDataset',
-    'rfid': 'RFIDIndoorDataset',
-    'rss_based': 'RSSBasedDataset',
 }
 
 # Group datasets by signal type for filtering
@@ -82,22 +44,7 @@ DATASETS_BY_SIGNAL: Dict[str, List[str]] = {
         'ble_indoor', 'ibeacon_rssi', 'ble_rssi_uci'
     ],
     'csi': [
-        'csi_indoor', 'csi_fingerprint', 'hwild', 'csu_indoorloc',
-        'wild_v2', 'opencsi', 'haloc', 'csi_bench', 'mamimo_csi',
-        'dichasus', 'espargos', 'csi2pos', 'csi2taoa', 'deepmimo',
-        'mamimo_uav', 'wifi_csi_d2d'
-    ],
-    'uwb': [
-        'uwb_indoor', 'uwb_ranging'
-    ],
-    'hybrid': [
-        'wifi_imu', 'wifi_magnetic', 'multimodal', 'sensor_fusion'
-    ],
-    'magnetic': [
-        'magnetic_indoor'
-    ],
-    'other': [
-        'vlc_indoor', 'ultrasound', 'rfid_indoor', 'rss_based'
+        'csi_fingerprint', 'hwild', 'haloc'
     ],
 }
 
