@@ -22,7 +22,7 @@ Skip the boilerplate. Focus on algorithms, not data formats.
 ```python
 import indoorloc as iloc
 
-train, test = iloc.load_dataset('ujindoorloc')           # Load any of 36+ datasets
+train, test = iloc.load_dataset('ujindoorloc')           # 12 verified datasets
 model = iloc.create_model('resnet18', dataset=train)     # Auto-configure model
 results = model.fit(train).evaluate(test)                # Train & evaluate
 ```
@@ -64,64 +64,42 @@ train:
 
 ## Supported Datasets
 
-**WiFi, BLE, CSI, UWB, Magnetic, and more** — all with `iloc.load_dataset()`. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
+**12 verified datasets** that work out-of-the-box with `iloc.load_dataset()`.
 
-<table>
-<tr>
-<th align="center">RSSI</th>
-<th align="center">CSI</th>
-<th align="center">Other</th>
-</tr>
-<tr>
-<td valign="top">
+### ✅ Available (Verified)
 
-**WiFi**
-- [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc)
-- [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc)
-- [LongTermWiFi](https://zenodo.org/record/889798)
-- [Tampere](https://zenodo.org/record/1066041)
-- [TUJI1](https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset)
+| Type | Dataset | ID | Samples |
+|------|---------|-----|---------|
+| **WiFi** | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | `ujindoorloc` | 21k |
+| | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | `sodindoorloc` | 24k |
+| | [LongTermWiFi](https://zenodo.org/record/1309317) | `longtermwifi` | 104k |
+| | [Tampere](https://zenodo.org/record/889798) | `tampere` | 4.6k |
+| | [WLANRSSI](https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization) | `wlanrssi` | 2k |
+| | [TUJI1](https://zenodo.org/record/7641701) | `tuji1` | 8.9k |
+| **BLE** | [BLEIndoor](https://github.com/co60ca/BBIL) | `ble_indoor` | 44k |
+| | [iBeaconRSSI](https://zenodo.org/record/1618692) | `ibeacon_rssi` | 4.7k |
+| | [BLE RSSI UCI](https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation) | `ble_rssi_uci` | 1.4k |
+| **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 |
+| | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k |
+| | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k |
 
-**BLE**
-- [iBeaconRSSI](https://zenodo.org/record/1066044)
-- [BLEIndoor](https://github.com/BLE-Indoor-Positioning/Dataset)
-- [BLERSSIU_UCI](https://archive.ics.uci.edu/dataset/519/ble+rssi+dataset+for+indoor+localization)
+### 🔄 Pending (URL Known, Not Yet Verified)
 
-</td>
-<td valign="top">
+These datasets have download sources but are **not yet integrated**:
 
-**WiFi CSI**
-- [CSIIndoor](https://github.com/CSI-Positioning/IndoorDataset)
-- [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset)
-- [HALOC](https://zenodo.org/records/10715595)
-- [CSIBench](https://ai-iot-sensing.github.io/projects/project.html)
+| Dataset | Source | Notes |
+|---------|--------|-------|
+| OpenCSI | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | ~2GB, format unverified |
+| CSUIndoorLoc | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | Format unverified |
+| DICHASUS | [DaRUS](https://darus.uni-stuttgart.de/dataverse/dichasus) | 14 scenarios |
+| ESPARGOS | [espargos.net](https://espargos.net/datasets/) | 17-86GB |
+| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | Requires `pip install DeepMIMO` |
+| CSI2Pos | [TIB](https://service.tib.eu/ldmservice/dataset/csi2pos) | Requires login |
+| CSI2TAoA | [TIB](https://service.tib.eu/ldmservice/dataset/csi2taoa) | Requires login |
+| MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | Requires account |
+| WILDv2 | [Kaggle](https://www.kaggle.com/competitions/wild-v2) | Requires Kaggle API |
 
-**Massive MIMO**
-- [MaMIMOCSI](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset)
-- [DICHASUS](https://darus.uni-stuttgart.de/dataverse/dichasus)
-- [DeepMIMO](https://www.deepmimo.net)
-
-</td>
-<td valign="top">
-
-**UWB**
-- [UWBIndoor](https://zenodo.org/record/5789876)
-- [UWBRanging](https://github.com/UWB-Positioning/RangingDataset)
-
-**Magnetic**
-- [MagneticIndoor](https://zenodo.org/record/4321098)
-
-**Fusion**
-- [WiFiIMUHybrid](https://zenodo.org/record/3932395)
-- [MultiModalIndoor](https://github.com/IndoorPositioning/MultiModalDataset)
-
-**VLC / RFID / Ultrasound**
-- [VLCIndoor](https://github.com/VLC-Positioning/IndoorDataset)
-- [RFIDIndoor](https://archive.ics.uci.edu/dataset/640/rfid+indoor+localization)
-
-</td>
-</tr>
-</table>
+> **Contributing**: Help us verify pending datasets! See [Contributing Guide](CONTRIBUTING.md)
 
 ---
 
@@ -239,7 +217,7 @@ model = iloc.create_model('MyLocalizer')
 indoorloc/
 ├── signals/          # WiFi, BLE, IMU, etc.
 ├── locations/        # Location classes
-├── datasets/         # 36+ datasets
+├── datasets/         # 12 verified + pending
 ├── localizers/       # ML & DL algorithms
 ├── evaluation/       # Metrics
 └── configs/          # YAML configs
