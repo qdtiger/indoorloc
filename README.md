@@ -105,35 +105,32 @@ These datasets have download sources but are **not yet integrated**:
 
 ## Supported Algorithms
 
-**30+ Traditional ML** via [sklearn](https://scikit-learn.org/) + **700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models) + **20+ Transfer Learning** via [SKADA](https://github.com/scikit-adaptation/skada). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
+**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
 <table>
 <tr>
-<th align="center">Traditional</th>
-<th align="center">Deep Learning</th>
-<th align="center">Fusion</th>
+<th align="center">Supervised Learning</th>
+<th align="center">Self-supervised</th>
 <th align="center">Transfer Learning</th>
+<th align="center">Fusion</th>
 </tr>
 <tr>
 <td valign="top">
 
-- [x] k-NN
-- [x] Weighted k-NN
-- [x] SVM
-- [x] Random Forest
+**Traditional (sklearn 30+)**
+- k-NN, WKNN, SVM, RF...
+
+**Deep (timm 700+)**
+- MLP, CNN1D, ResNet, ViT...
 
 </td>
 <td valign="top">
 
-**Backbones**: MLP, CNN1D, 700+ timm models (ResNet, EfficientNet, ViT, Swin...)
+**Contrastive**: SimCLR, MoCo, NNCLR
 
-**Heads**: Regression, Classification, Floor, Building, Hybrid, Hierarchical
+**Non-contrastive**: BYOL, SimSiam, BarlowTwins, VICReg
 
-</td>
-<td valign="top">
-
-- [x] Ensemble
-- [x] Stacking
+**Others**: DINO, MAE, SwAV
 
 </td>
 <td valign="top">
@@ -142,9 +139,15 @@ These datasets have download sources but are **not yet integrated**:
 
 **Reweight**: KMM, KLIEP
 
-**OT**: OTMapping, LinearMonge
+**OT**: OTMapping, EntropicOT
 
-**Deep**: DANN, MDD, MCC
+**Deep**: DANN, CDAN, MDD, MCC
+
+</td>
+<td valign="top">
+
+- Ensemble
+- Stacking
 
 </td>
 </tr>
