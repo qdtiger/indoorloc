@@ -64,7 +64,7 @@ train:
 
 ## Supported Datasets
 
-**12 verified datasets** that work out-of-the-box with `iloc.load_dataset()`.
+**12 verified datasets** that work out-of-the-box with `iloc.load_dataset()`. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
 
 ### ✅ Available (Verified)
 
