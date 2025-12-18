@@ -215,6 +215,8 @@ indoorloc/
 - [ ] Transformer
 
 ### 融合算法
+- [x] 集成学习（Ensemble）
+- [x] 堆叠学习（Stacking）
 - [ ] 卡尔曼滤波
 - [ ] 扩展卡尔曼滤波
 - [ ] 粒子滤波

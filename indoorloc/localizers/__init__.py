@@ -5,6 +5,7 @@ Provides localization algorithms for indoor positioning.
 """
 from .base import BaseLocalizer, TraditionalLocalizer
 from .fingerprint import KNNLocalizer, WKNNLocalizer, SVMLocalizer, RandomForestLocalizer
+from .fusion import EnsembleLocalizer, StackingLocalizer
 
 __all__ = [
     'BaseLocalizer',
@@ -13,4 +14,6 @@ __all__ = [
     'WKNNLocalizer',
     'SVMLocalizer',
     'RandomForestLocalizer',
+    'EnsembleLocalizer',
+    'StackingLocalizer',
 ]
