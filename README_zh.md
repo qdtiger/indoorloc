@@ -201,46 +201,49 @@ indoorloc/
 
 ## 支持的算法
 
-**30+ 传统ML** via [sklearn](https://scikit-learn.org/) + **700+ 深度学习模型** via [timm](https://github.com/huggingface/pytorch-image-models) + **20+ 迁移学习** via [SKADA](https://github.com/scikit-adaptation/skada)
+**有监督**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **自监督**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **迁移学习**: [SKADA](https://github.com/scikit-adaptation/skada) (20+)
 
 <table>
 <tr>
-<th align="center">传统ML</th>
-<th align="center">深度学习</th>
-<th align="center">融合</th>
+<th align="center">有监督学习</th>
+<th align="center">自监督学习</th>
 <th align="center">迁移学习</th>
+<th align="center">融合</th>
 </tr>
 <tr>
 <td valign="top">
 
-- [x] k-NN
-- [x] 加权 k-NN
-- [x] SVM
-- [x] 随机森林
+**传统ML (sklearn 30+)**
+- k-NN, WKNN, SVM, RF...
+
+**深度学习 (timm 700+)**
+- MLP, CNN1D, ResNet, ViT...
 
 </td>
 <td valign="top">
 
-**Backbone**: MLP, CNN1D, 700+ timm模型 (ResNet, EfficientNet, ViT, Swin...)
+**对比学习**: SimCLR, MoCo, NNCLR
 
-**Head**: 回归, 分类, 楼层, 建筑, 混合, 层级
+**非对比**: BYOL, SimSiam, BarlowTwins, VICReg
 
-</td>
-<td valign="top">
-
-- [x] 集成学习
-- [x] 堆叠学习
+**其他**: DINO, MAE, SwAV
 
 </td>
 <td valign="top">
 
-**特征**: CORAL, TCA, SA
+**特征对齐**: CORAL, TCA, SA
 
 **重加权**: KMM, KLIEP
 
-**最优传输**: OTMapping
+**最优传输**: OTMapping, EntropicOT
 
-**深度**: DANN, MDD, MCC
+**深度**: DANN, CDAN, MDD, MCC
+
+</td>
+<td valign="top">
+
+- 集成学习
+- 堆叠学习
 
 </td>
 </tr>

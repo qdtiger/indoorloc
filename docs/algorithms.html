@@ -31,11 +31,12 @@
             --warning: #d97706;
 
             /* Category colors */
-            --color-traditional: #3b82f6;
-            --color-deep: #8b5cf6;
-            --color-head: #ec4899;
-            --color-fusion: #f59e0b;
+            --color-supervised-traditional: #3b82f6;
+            --color-supervised-deep: #8b5cf6;
+            --color-selfsupervised: #06b6d4;
             --color-transfer: #10b981;
+            --color-fusion: #f59e0b;
+            --color-head: #ec4899;
         }
 
         [data-theme="dark"] {
@@ -260,19 +261,24 @@
             text-align: center;
         }
 
-        .category-traditional {
+        .category-supervised-traditional {
             background: rgba(59, 130, 246, 0.1);
-            color: var(--color-traditional);
+            color: var(--color-supervised-traditional);
         }
 
-        .category-deep {
+        .category-supervised-deep {
             background: rgba(139, 92, 246, 0.1);
-            color: var(--color-deep);
+            color: var(--color-supervised-deep);
         }
 
-        .category-head {
-            background: rgba(236, 72, 153, 0.1);
-            color: var(--color-head);
+        .category-selfsupervised {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--color-selfsupervised);
+        }
+
+        .category-transfer {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-transfer);
         }
 
         .category-fusion {
@@ -280,9 +286,9 @@
             color: var(--color-fusion);
         }
 
-        .category-transfer {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--color-transfer);
+        .category-head {
+            background: rgba(236, 72, 153, 0.1);
+            color: var(--color-head);
         }
 
         .algorithm-type {
@@ -525,20 +531,20 @@
         <div class="stats-section">
             <div class="stats-left">
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-traditional">30+</span>
-                    <span class="stat-label">Traditional (sklearn)</span>
+                    <span class="stat-value">30+</span>
+                    <span class="stat-label">Supervised-Traditional</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-deep">700+</span>
-                    <span class="stat-label">Backbones (timm)</span>
+                    <span class="stat-value">700+</span>
+                    <span class="stat-label">Supervised-Deep</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-fusion">2</span>
-                    <span class="stat-label">Fusion</span>
+                    <span class="stat-value">10+</span>
+                    <span class="stat-label">Self-supervised</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-transfer">20+</span>
-                    <span class="stat-label">Transfer (SKADA)</span>
+                    <span class="stat-value">20+</span>
+                    <span class="stat-label">Transfer</span>
                 </div>
             </div>
             <div class="chart-wrapper">
@@ -554,10 +560,11 @@
         <!-- Filters -->
         <div class="filters">
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="traditional">Traditional</button>
-            <button class="filter-btn" data-filter="deep">Deep Learning</button>
+            <button class="filter-btn" data-filter="supervised-traditional">Supervised-Traditional</button>
+            <button class="filter-btn" data-filter="supervised-deep">Supervised-Deep</button>
+            <button class="filter-btn" data-filter="selfsupervised">Self-supervised</button>
+            <button class="filter-btn" data-filter="transfer">Transfer</button>
             <button class="filter-btn" data-filter="fusion">Fusion</button>
-            <button class="filter-btn" data-filter="transfer">Transfer Learning</button>
             <button class="filter-btn" data-filter="head">Heads</button>
         </div>
 
@@ -568,11 +575,11 @@
     <script>
         // Algorithm data
         const algorithms = [
-            // ==================== Traditional ML ====================
+            // ==================== Supervised Learning - Traditional ML ====================
             {
                 name: "k-NN",
                 fullName: "k-Nearest Neighbors",
-                category: "traditional",
+                category: "supervised-traditional",
                 type: "Instance-based",
                 description: "经典K近邻算法，基于信号相似度查找最近参考点进行位置估计",
                 implemented: true,
@@ -604,7 +611,7 @@ result = model.predict(test)`,
             {
                 name: "WKNN",
                 fullName: "Weighted k-Nearest Neighbors",
-                category: "traditional",
+                category: "supervised-traditional",
                 type: "Instance-based",
                 description: "加权K近邻，距离越近的参考点权重越大，提高定位精度",
                 implemented: true,
@@ -629,7 +636,7 @@ result = model.predict(test)`,
             {
                 name: "SVM",
                 fullName: "Support Vector Machine",
-                category: "traditional",
+                category: "supervised-traditional",
                 type: "Kernel-based",
                 description: "支持向量机，通过核函数将数据映射到高维空间进行分类/回归",
                 implemented: true,
@@ -657,7 +664,7 @@ result = model.predict(test)`,
             {
                 name: "Random Forest",
                 fullName: "Random Forest",
-                category: "traditional",
+                category: "supervised-traditional",
                 type: "Ensemble",
                 description: "随机森林，集成多棵决策树进行预测，抗过拟合能力强",
                 implemented: true,
@@ -684,11 +691,11 @@ result = model.predict(test)`,
                 benchmark: { dataset: "UJIndoorLoc", meanError: "10.8m", floorAcc: "89.0%" }
             },
 
-            // ==================== Deep Learning Backbones ====================
+            // ==================== Supervised Learning - Deep Learning ====================
             {
                 name: "MLP",
                 fullName: "Multi-Layer Perceptron",
-                category: "deep",
+                category: "supervised-deep",
                 type: "MLP Backbone",
                 description: "多层感知机，全连接网络，适合表格型RSSI数据，训练快速",
                 implemented: true,
@@ -711,7 +718,7 @@ model.fit(train, epochs=50)`,
             {
                 name: "CNN1D",
                 fullName: "1D Convolutional Network",
-                category: "deep",
+                category: "supervised-deep",
                 type: "CNN Backbone",
                 description: "一维卷积网络，将RSSI序列视为1D信号，提取局部特征模式",
                 implemented: true,
@@ -734,7 +741,7 @@ model.fit(train, epochs=50)`,
             {
                 name: "ResNet18",
                 fullName: "Residual Network (18 layers)",
-                category: "deep",
+                category: "supervised-deep",
                 type: "CNN Backbone",
                 description: "18层残差网络，使用跳跃连接解决梯度消失问题，适合中等规模数据",
                 implemented: true,
@@ -760,7 +767,7 @@ model.fit(train, epochs=50)`,
             {
                 name: "EfficientNet-B0",
                 fullName: "EfficientNet Base",
-                category: "deep",
+                category: "supervised-deep",
                 type: "CNN Backbone",
                 description: "高效卷积网络，通过复合缩放平衡深度、宽度和分辨率，参数效率高",
                 implemented: true,
@@ -782,7 +789,7 @@ model.fit(train, epochs=50)`,
             {
                 name: "MobileNetV3",
                 fullName: "MobileNet V3 Small",
-                category: "deep",
+                category: "supervised-deep",
                 type: "CNN Backbone",
                 description: "轻量级网络，专为移动端设计，速度快、资源占用低",
                 implemented: true,
@@ -804,7 +811,7 @@ model.fit(train, epochs=50)`,
             {
                 name: "ViT",
                 fullName: "Vision Transformer",
-                category: "deep",
+                category: "supervised-deep",
                 type: "ViT Backbone",
                 description: "视觉Transformer，将图像分割为patches后用Transformer编码，适合大数据集",
                 implemented: true,
@@ -826,7 +833,7 @@ model.fit(train, epochs=100)`,
             {
                 name: "Swin Transformer",
                 fullName: "Swin Transformer",
-                category: "deep",
+                category: "supervised-deep",
                 type: "ViT Backbone",
                 description: "层次化Vision Transformer，使用移位窗口实现高效注意力计算",
                 implemented: true,
@@ -848,7 +855,7 @@ model.fit(train, epochs=100)`,
             {
                 name: "ConvNeXt",
                 fullName: "ConvNeXt",
-                category: "deep",
+                category: "supervised-deep",
                 type: "CNN Backbone",
                 description: "现代化的纯卷积网络，借鉴Transformer设计，性能媲美ViT",
                 implemented: true,
@@ -864,6 +871,255 @@ model.fit(train, epochs=50)`,
                     venue: "CVPR 2022",
                     year: 2022,
                     doi: "10.1109/CVPR52688.2022.01167"
+                },
+                benchmark: null
+            },
+
+            // ==================== Self-supervised Learning ====================
+            {
+                name: "SimCLR",
+                fullName: "Simple Contrastive Learning",
+                category: "selfsupervised",
+                type: "Contrastive",
+                description: "简单对比学习，通过最大化同一样本不同增强视图的相似度学习表示",
+                implemented: true,
+                params: [
+                    { name: "temperature", default: "0.5", desc: "温度参数" },
+                    { name: "projection_dim", default: "128", desc: "投影头维度" }
+                ],
+                quickStart: `import indoorloc as iloc
+from lightly.models import SimCLR
+
+# Self-supervised pretraining
+model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='SimCLR'
+)
+model.pretrain(unlabeled_data)
+model.finetune(labeled_data)`,
+                citation: {
+                    authors: "Chen, T., et al.",
+                    title: "A Simple Framework for Contrastive Learning of Visual Representations",
+                    venue: "ICML 2020",
+                    year: 2020,
+                    doi: "10.48550/arXiv.2002.05709"
+                },
+                benchmark: null
+            },
+            {
+                name: "MoCo",
+                fullName: "Momentum Contrast",
+                category: "selfsupervised",
+                type: "Contrastive",
+                description: "动量对比学习，使用动量编码器和队列维护大量负样本",
+                implemented: true,
+                params: [
+                    { name: "queue_size", default: "65536", desc: "负样本队列大小" },
+                    { name: "momentum", default: "0.999", desc: "动量系数" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='MoCo'
+)`,
+                citation: {
+                    authors: "He, K., et al.",
+                    title: "Momentum Contrast for Unsupervised Visual Representation Learning",
+                    venue: "CVPR 2020",
+                    year: 2020,
+                    doi: "10.1109/CVPR42600.2020.00975"
+                },
+                benchmark: null
+            },
+            {
+                name: "BYOL",
+                fullName: "Bootstrap Your Own Latent",
+                category: "selfsupervised",
+                type: "Non-contrastive",
+                description: "自举式表示学习，无需负样本，通过预测目标网络输出学习",
+                implemented: true,
+                params: [
+                    { name: "projection_dim", default: "256", desc: "投影维度" },
+                    { name: "hidden_dim", default: "4096", desc: "隐藏层维度" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='BYOL'
+)`,
+                citation: {
+                    authors: "Grill, J. B., et al.",
+                    title: "Bootstrap Your Own Latent: A New Approach to Self-Supervised Learning",
+                    venue: "NeurIPS 2020",
+                    year: 2020,
+                    doi: "10.48550/arXiv.2006.07733"
+                },
+                benchmark: null
+            },
+            {
+                name: "SimSiam",
+                fullName: "Simple Siamese",
+                category: "selfsupervised",
+                type: "Non-contrastive",
+                description: "简单孪生网络，无需负样本和动量编码器，通过停止梯度避免崩塌",
+                implemented: true,
+                params: [
+                    { name: "projection_dim", default: "2048", desc: "投影维度" },
+                    { name: "prediction_dim", default: "512", desc: "预测头维度" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='SimSiam'
+)`,
+                citation: {
+                    authors: "Chen, X., & He, K.",
+                    title: "Exploring Simple Siamese Representation Learning",
+                    venue: "CVPR 2021",
+                    year: 2021,
+                    doi: "10.1109/CVPR46437.2021.01549"
+                },
+                benchmark: null
+            },
+            {
+                name: "BarlowTwins",
+                fullName: "Barlow Twins",
+                category: "selfsupervised",
+                type: "Non-contrastive",
+                description: "巴洛孪生网络，通过使交叉相关矩阵接近单位矩阵学习去相关表示",
+                implemented: true,
+                params: [
+                    { name: "projection_dim", default: "8192", desc: "投影维度" },
+                    { name: "lambda_coeff", default: "0.005", desc: "冗余减少项系数" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='BarlowTwins'
+)`,
+                citation: {
+                    authors: "Zbontar, J., et al.",
+                    title: "Barlow Twins: Self-Supervised Learning via Redundancy Reduction",
+                    venue: "ICML 2021",
+                    year: 2021,
+                    doi: "10.48550/arXiv.2103.03230"
+                },
+                benchmark: null
+            },
+            {
+                name: "VICReg",
+                fullName: "Variance-Invariance-Covariance Regularization",
+                category: "selfsupervised",
+                type: "Non-contrastive",
+                description: "方差-不变性-协方差正则化，显式约束表示的方差、不变性和协方差",
+                implemented: true,
+                params: [
+                    { name: "sim_coeff", default: "25.0", desc: "不变性系数" },
+                    { name: "std_coeff", default: "25.0", desc: "方差系数" },
+                    { name: "cov_coeff", default: "1.0", desc: "协方差系数" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='VICReg'
+)`,
+                citation: {
+                    authors: "Bardes, A., Ponce, J., & LeCun, Y.",
+                    title: "VICReg: Variance-Invariance-Covariance Regularization for Self-Supervised Learning",
+                    venue: "ICLR 2022",
+                    year: 2022,
+                    doi: "10.48550/arXiv.2105.04906"
+                },
+                benchmark: null
+            },
+            {
+                name: "DINO",
+                fullName: "Self-Distillation with No Labels",
+                category: "selfsupervised",
+                type: "Knowledge Distillation",
+                description: "无标签自蒸馏，学生网络学习预测教师网络的输出分布",
+                implemented: true,
+                params: [
+                    { name: "output_dim", default: "65536", desc: "输出维度" },
+                    { name: "teacher_momentum", default: "0.996", desc: "教师动量" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'vit_small'},
+    ssl_method='DINO'
+)`,
+                citation: {
+                    authors: "Caron, M., et al.",
+                    title: "Emerging Properties in Self-Supervised Vision Transformers",
+                    venue: "ICCV 2021",
+                    year: 2021,
+                    doi: "10.1109/ICCV48922.2021.00951"
+                },
+                benchmark: null
+            },
+            {
+                name: "MAE",
+                fullName: "Masked Autoencoder",
+                category: "selfsupervised",
+                type: "Masked Prediction",
+                description: "掩码自编码器，随机遮盖输入patches并重建，学习丰富的表示",
+                implemented: true,
+                params: [
+                    { name: "mask_ratio", default: "0.75", desc: "遮盖比例" },
+                    { name: "decoder_dim", default: "512", desc: "解码器维度" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'vit_base'},
+    ssl_method='MAE'
+)`,
+                citation: {
+                    authors: "He, K., et al.",
+                    title: "Masked Autoencoders Are Scalable Vision Learners",
+                    venue: "CVPR 2022",
+                    year: 2022,
+                    doi: "10.1109/CVPR52688.2022.01553"
+                },
+                benchmark: null
+            },
+            {
+                name: "SwAV",
+                fullName: "Swapping Assignments between Views",
+                category: "selfsupervised",
+                type: "Clustering",
+                description: "视图间交换分配，通过在线聚类和交换预测学习一致性表示",
+                implemented: true,
+                params: [
+                    { name: "num_prototypes", default: "3000", desc: "原型数量" },
+                    { name: "queue_length", default: "0", desc: "队列长度" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet50'},
+    ssl_method='SwAV'
+)`,
+                citation: {
+                    authors: "Caron, M., et al.",
+                    title: "Unsupervised Learning of Visual Features by Contrasting Cluster Assignments",
+                    venue: "NeurIPS 2020",
+                    year: 2020,
+                    doi: "10.48550/arXiv.2006.09882"
+                },
+                benchmark: null
+            },
+            {
+                name: "NNCLR",
+                fullName: "Nearest-Neighbor Contrastive Learning",
+                category: "selfsupervised",
+                type: "Contrastive",
+                description: "最近邻对比学习，使用支持集中的最近邻作为正样本增强多样性",
+                implemented: true,
+                params: [
+                    { name: "queue_size", default: "65536", desc: "支持集大小" },
+                    { name: "temperature", default: "0.1", desc: "温度参数" }
+                ],
+                quickStart: `model = iloc.DeepLocalizer(
+    backbone={'type': 'TimmBackbone', 'model_name': 'resnet18'},
+    ssl_method='NNCLR'
+)`,
+                citation: {
+                    authors: "Dwibedi, D., et al.",
+                    title: "With a Little Help from My Friends: Nearest-Neighbor Contrastive Learning",
+                    venue: "ICCV 2021",
+                    year: 2021,
+                    doi: "10.1109/ICCV48922.2021.00945"
                 },
                 benchmark: null
             },
@@ -1457,10 +1713,11 @@ model.fit(source_train, target_data=target_unlabeled)`,
         function updateChart() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
-            const traditionalCount = algorithms.filter(a => a.category === 'traditional').length;
-            const deepCount = algorithms.filter(a => a.category === 'deep').length;
-            const fusionCount = algorithms.filter(a => a.category === 'fusion').length;
+            const traditionalCount = algorithms.filter(a => a.category === 'supervised-traditional').length;
+            const deepCount = algorithms.filter(a => a.category === 'supervised-deep').length;
+            const selfsupervisedCount = algorithms.filter(a => a.category === 'selfsupervised').length;
             const transferCount = algorithms.filter(a => a.category === 'transfer').length;
+            const fusionCount = algorithms.filter(a => a.category === 'fusion').length;
             const headCount = algorithms.filter(a => a.category === 'head').length;
 
             if (chart) chart.destroy();
@@ -1468,10 +1725,10 @@ model.fit(source_train, target_data=target_unlabeled)`,
             chart = new Chart(document.getElementById('categoryChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Traditional', 'Deep Learning', 'Fusion', 'Transfer', 'Heads'],
+                    labels: ['Supervised-Traditional', 'Supervised-Deep', 'Self-supervised', 'Transfer', 'Fusion', 'Heads'],
                     datasets: [{
-                        data: [traditionalCount, deepCount, fusionCount, transferCount, headCount],
-                        backgroundColor: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899'],
+                        data: [traditionalCount, deepCount, selfsupervisedCount, transferCount, fusionCount, headCount],
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ec4899'],
                         borderWidth: 0
                     }]
                 },
