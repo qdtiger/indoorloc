@@ -105,13 +105,14 @@ These datasets have download sources but are **not yet integrated**:
 
 ## Supported Algorithms
 
-**Traditional ML + 700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
+**Traditional ML + 700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models) + **Transfer Learning** via [SKADA](https://github.com/scikit-adaptation/skada). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
 <table>
 <tr>
 <th align="center">Traditional</th>
-<th align="center">Deep Learning Backbones</th>
-<th align="center">Prediction Heads</th>
+<th align="center">Deep Learning</th>
+<th align="center">Fusion</th>
+<th align="center">Transfer Learning</th>
 </tr>
 <tr>
 <td valign="top">
@@ -120,26 +121,30 @@ These datasets have download sources but are **not yet integrated**:
 - [x] Weighted k-NN
 - [x] SVM
 - [x] Random Forest
-- [ ] Gaussian Process
 
 </td>
 <td valign="top">
 
-**CNN**: ResNet, EfficientNet, ConvNeXt, MobileNet, RegNet, DenseNet...
+**Backbones**: MLP, CNN1D, 700+ timm models (ResNet, EfficientNet, ViT, Swin...)
 
-**ViT**: ViT, Swin, DeiT, BEiT, EVA...
-
-**Hybrid**: CoAtNet, MaxViT, EfficientFormer...
+**Heads**: Regression, Classification, Floor, Building, Hybrid, Hierarchical
 
 </td>
 <td valign="top">
 
-- [x] RegressionHead
-- [x] ClassificationHead
-- [x] FloorHead
-- [x] BuildingHead
-- [x] HybridHead
-- [x] HierarchicalHead
+- [x] Ensemble
+- [x] Stacking
+
+</td>
+<td valign="top">
+
+**Feature**: CORAL, TCA, SA
+
+**Reweight**: KMM, KLIEP
+
+**OT**: OTMapping, LinearMonge
+
+**Deep**: DANN, MDD, MCC
 
 </td>
 </tr>

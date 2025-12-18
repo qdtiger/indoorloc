@@ -201,25 +201,50 @@ indoorloc/
 
 ## 支持的算法
 
-### 指纹定位
-- [x] k-NN（k近邻）
+**传统ML + 700+深度学习模型** via [timm](https://github.com/huggingface/pytorch-image-models) + **迁移学习** via [SKADA](https://github.com/scikit-adaptation/skada)
+
+<table>
+<tr>
+<th align="center">传统ML</th>
+<th align="center">深度学习</th>
+<th align="center">融合</th>
+<th align="center">迁移学习</th>
+</tr>
+<tr>
+<td valign="top">
+
+- [x] k-NN
 - [x] 加权 k-NN
-- [x] SVM（支持向量机）
+- [x] SVM
 - [x] 随机森林
-- [ ] 高斯过程
 
-### 深度学习
-- [x] MLP（多层感知机）
-- [x] CNN（卷积神经网络）
-- [ ] LSTM（长短期记忆网络）
-- [ ] Transformer
+</td>
+<td valign="top">
 
-### 融合算法
-- [x] 集成学习（Ensemble）
-- [x] 堆叠学习（Stacking）
-- [ ] 卡尔曼滤波
-- [ ] 扩展卡尔曼滤波
-- [ ] 粒子滤波
+**Backbone**: MLP, CNN1D, 700+ timm模型 (ResNet, EfficientNet, ViT, Swin...)
+
+**Head**: 回归, 分类, 楼层, 建筑, 混合, 层级
+
+</td>
+<td valign="top">
+
+- [x] 集成学习
+- [x] 堆叠学习
+
+</td>
+<td valign="top">
+
+**特征**: CORAL, TCA, SA
+
+**重加权**: KMM, KLIEP
+
+**最优传输**: OTMapping
+
+**深度**: DANN, MDD, MCC
+
+</td>
+</tr>
+</table>
 
 ## 支持的数据集
 
