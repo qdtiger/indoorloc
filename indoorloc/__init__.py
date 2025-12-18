@@ -51,6 +51,8 @@ from .localizers import (
     WKNNLocalizer,
     SVMLocalizer,
     RandomForestLocalizer,
+    EnsembleLocalizer,
+    StackingLocalizer,
 )
 
 from .models import (
@@ -405,6 +407,8 @@ __all__ = [
     'WKNNLocalizer',
     'SVMLocalizer',
     'RandomForestLocalizer',
+    'EnsembleLocalizer',
+    'StackingLocalizer',
 
     # Models - Backbones
     'BaseBackbone',
