@@ -201,49 +201,50 @@ indoorloc/
 
 ## 支持的算法
 
-**有监督**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **自监督**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **迁移学习**: [SKADA](https://github.com/scikit-adaptation/skada) (20+)
+**有监督**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **自监督**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **元学习**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **迁移学习**: [SKADA](https://github.com/scikit-adaptation/skada) (20+)
 
 <table>
 <tr>
-<th align="center">有监督学习</th>
-<th align="center">自监督学习</th>
+<th align="center">有监督</th>
+<th align="center">自监督</th>
+<th align="center">元学习</th>
 <th align="center">迁移学习</th>
-<th align="center">融合</th>
 </tr>
 <tr>
 <td valign="top">
 
-**传统ML (sklearn 30+)**
+**传统ML (30+)**
 - k-NN, WKNN, SVM, RF...
 
-**深度学习 (timm 700+)**
+**深度学习 (700+)**
 - MLP, CNN1D, ResNet, ViT...
 
 </td>
 <td valign="top">
 
-**对比学习**: SimCLR, MoCo, NNCLR
+**对比学习**
+- SimCLR, MoCo, NNCLR
 
-**非对比**: BYOL, SimSiam, BarlowTwins, VICReg
-
-**其他**: DINO, MAE, SwAV
+**非对比**
+- BYOL, SimSiam, VICReg
 
 </td>
 <td valign="top">
 
-**特征对齐**: CORAL, TCA, SA
+**基于梯度**
+- MAML, FOMAML, Reptile
+
+**基于度量**
+- ProtoNet, MatchingNet
+
+</td>
+<td valign="top">
+
+**特征**: CORAL, TCA
 
 **重加权**: KMM, KLIEP
 
-**最优传输**: OTMapping, EntropicOT
-
-**深度**: DANN, CDAN, MDD, MCC
-
-</td>
-<td valign="top">
-
-- 集成学习
-- 堆叠学习
+**深度**: DANN, MDD
 
 </td>
 </tr>

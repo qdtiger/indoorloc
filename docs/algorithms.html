@@ -34,8 +34,9 @@
             --color-supervised-traditional: #3b82f6;
             --color-supervised-deep: #8b5cf6;
             --color-selfsupervised: #06b6d4;
+            --color-meta: #f97316;
             --color-transfer: #10b981;
-            --color-fusion: #f59e0b;
+            --color-fusion: #a855f7;
             --color-head: #ec4899;
         }
 
@@ -276,13 +277,18 @@
             color: var(--color-selfsupervised);
         }
 
+        .category-meta {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--color-meta);
+        }
+
         .category-transfer {
             background: rgba(16, 185, 129, 0.1);
             color: var(--color-transfer);
         }
 
         .category-fusion {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(168, 85, 247, 0.1);
             color: var(--color-fusion);
         }
 
@@ -532,7 +538,7 @@
             <div class="stats-left">
                 <div class="stat-item">
                     <span class="stat-value">30+</span>
-                    <span class="stat-label">Supervised-Traditional</span>
+                    <span class="stat-label">Supervised-Trad</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value">700+</span>
@@ -541,6 +547,10 @@
                 <div class="stat-item">
                     <span class="stat-value">10+</span>
                     <span class="stat-label">Self-supervised</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">7+</span>
+                    <span class="stat-label">Meta-learning</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-value">20+</span>
@@ -560,9 +570,10 @@
         <!-- Filters -->
         <div class="filters">
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="supervised-traditional">Supervised-Traditional</button>
+            <button class="filter-btn" data-filter="supervised-traditional">Supervised-Trad</button>
             <button class="filter-btn" data-filter="supervised-deep">Supervised-Deep</button>
             <button class="filter-btn" data-filter="selfsupervised">Self-supervised</button>
+            <button class="filter-btn" data-filter="meta">Meta-learning</button>
             <button class="filter-btn" data-filter="transfer">Transfer</button>
             <button class="filter-btn" data-filter="fusion">Fusion</button>
             <button class="filter-btn" data-filter="head">Heads</button>
@@ -1309,6 +1320,186 @@ result = stacking.predict(test)`,
                 benchmark: { dataset: "UJIndoorLoc", meanError: "6.5m", floorAcc: "94.0%" }
             },
 
+            // ==================== Meta-Learning ====================
+            {
+                name: "MAML",
+                fullName: "Model-Agnostic Meta-Learning",
+                category: "meta",
+                type: "Gradient-based",
+                description: "模型无关元学习，学习一个好的初始化参数，使模型能通过少量梯度步骤快速适应新任务",
+                implemented: true,
+                params: [
+                    { name: "lr", default: "0.01", desc: "内循环学习率" },
+                    { name: "adaptation_steps", default: "1", desc: "适应步数" },
+                    { name: "first_order", default: "False", desc: "是否使用一阶近似" }
+                ],
+                quickStart: `import indoorloc as iloc
+import learn2learn as l2l
+
+model = iloc.DeepLocalizer(backbone='resnet18')
+maml = l2l.algorithms.MAML(model, lr=0.01)
+
+# Meta-training
+for task in tasks:
+    learner = maml.clone()
+    # Adapt to task
+    for step in range(adaptation_steps):
+        loss = compute_loss(learner, task.support)
+        learner.adapt(loss)
+    # Meta-update
+    meta_loss = compute_loss(learner, task.query)
+    meta_loss.backward()`,
+                citation: {
+                    authors: "Finn, C., Abbeel, P., & Levine, S.",
+                    title: "Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks",
+                    venue: "ICML 2017",
+                    year: 2017,
+                    doi: "10.48550/arXiv.1703.03400"
+                },
+                benchmark: null
+            },
+            {
+                name: "FOMAML",
+                fullName: "First-Order MAML",
+                category: "meta",
+                type: "Gradient-based",
+                description: "一阶MAML，忽略二阶导数，计算更快，效果接近MAML",
+                implemented: true,
+                params: [
+                    { name: "lr", default: "0.01", desc: "内循环学习率" },
+                    { name: "adaptation_steps", default: "1", desc: "适应步数" }
+                ],
+                quickStart: `maml = l2l.algorithms.MAML(model, lr=0.01, first_order=True)`,
+                citation: {
+                    authors: "Finn, C., Abbeel, P., & Levine, S.",
+                    title: "Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks",
+                    venue: "ICML 2017",
+                    year: 2017,
+                    doi: "10.48550/arXiv.1703.03400"
+                },
+                benchmark: null
+            },
+            {
+                name: "Meta-SGD",
+                fullName: "Meta Stochastic Gradient Descent",
+                category: "meta",
+                type: "Gradient-based",
+                description: "元SGD，不仅学习初始化，还学习每个参数的学习率",
+                implemented: true,
+                params: [
+                    { name: "lr", default: "0.01", desc: "初始学习率" }
+                ],
+                quickStart: `metasgd = l2l.algorithms.MetaSGD(model, lr=0.01)`,
+                citation: {
+                    authors: "Li, Z., et al.",
+                    title: "Meta-SGD: Learning to Learn Quickly for Few-Shot Learning",
+                    venue: "arXiv 2017",
+                    year: 2017,
+                    doi: "10.48550/arXiv.1707.09835"
+                },
+                benchmark: null
+            },
+            {
+                name: "ANIL",
+                fullName: "Almost No Inner Loop",
+                category: "meta",
+                type: "Gradient-based",
+                description: "几乎无内循环，只在最后一层进行适应，大幅减少计算量",
+                implemented: true,
+                params: [
+                    { name: "lr", default: "0.01", desc: "内循环学习率" }
+                ],
+                quickStart: `# ANIL: Only adapt the head, freeze backbone
+anil = l2l.algorithms.MAML(model.head, lr=0.01)`,
+                citation: {
+                    authors: "Raghu, A., et al.",
+                    title: "Rapid Learning or Feature Reuse? Towards Understanding the Effectiveness of MAML",
+                    venue: "ICLR 2020",
+                    year: 2020,
+                    doi: "10.48550/arXiv.1909.09157"
+                },
+                benchmark: null
+            },
+            {
+                name: "Reptile",
+                fullName: "Reptile",
+                category: "meta",
+                type: "Gradient-based",
+                description: "爬行动物算法，通过多步SGD后向初始点移动，简单高效",
+                implemented: true,
+                params: [
+                    { name: "lr", default: "0.01", desc: "内循环学习率" },
+                    { name: "adaptation_steps", default: "5", desc: "适应步数" }
+                ],
+                quickStart: `# Reptile: Simple meta-learning
+for task in tasks:
+    weights_before = model.state_dict()
+    # Train on task
+    for step in range(k):
+        loss = compute_loss(model, task)
+        loss.backward()
+        optimizer.step()
+    # Reptile update
+    weights_after = model.state_dict()
+    model.load_state_dict(interpolate(weights_before, weights_after, epsilon))`,
+                citation: {
+                    authors: "Nichol, A., Achiam, J., & Schulman, J.",
+                    title: "On First-Order Meta-Learning Algorithms",
+                    venue: "arXiv 2018",
+                    year: 2018,
+                    doi: "10.48550/arXiv.1803.02999"
+                },
+                benchmark: null
+            },
+            {
+                name: "ProtoNet",
+                fullName: "Prototypical Networks",
+                category: "meta",
+                type: "Metric-based",
+                description: "原型网络，通过计算到类原型的距离进行分类，简单有效",
+                implemented: true,
+                params: [
+                    { name: "distance", default: "'euclidean'", desc: "距离度量" }
+                ],
+                quickStart: `# Prototypical Networks
+def prototypical_loss(support, query, n_way, n_shot):
+    # Compute class prototypes
+    prototypes = support.reshape(n_way, n_shot, -1).mean(dim=1)
+    # Compute distances to prototypes
+    dists = torch.cdist(query, prototypes)
+    return F.cross_entropy(-dists, labels)`,
+                citation: {
+                    authors: "Snell, J., Swersky, K., & Zemel, R.",
+                    title: "Prototypical Networks for Few-shot Learning",
+                    venue: "NeurIPS 2017",
+                    year: 2017,
+                    doi: "10.48550/arXiv.1703.05175"
+                },
+                benchmark: null
+            },
+            {
+                name: "MatchingNet",
+                fullName: "Matching Networks",
+                category: "meta",
+                type: "Metric-based",
+                description: "匹配网络，使用注意力机制计算测试样本与支持集的相似度",
+                implemented: true,
+                params: [
+                    { name: "fce", default: "True", desc: "是否使用全上下文嵌入" }
+                ],
+                quickStart: `# Matching Networks with attention
+attention = softmax(cosine_similarity(query, support))
+prediction = attention @ support_labels`,
+                citation: {
+                    authors: "Vinyals, O., et al.",
+                    title: "Matching Networks for One Shot Learning",
+                    venue: "NeurIPS 2016",
+                    year: 2016,
+                    doi: "10.48550/arXiv.1606.04080"
+                },
+                benchmark: null
+            },
+
             // ==================== Transfer Learning ====================
             {
                 name: "CORAL",
@@ -1716,6 +1907,7 @@ model.fit(source_train, target_data=target_unlabeled)`,
             const traditionalCount = algorithms.filter(a => a.category === 'supervised-traditional').length;
             const deepCount = algorithms.filter(a => a.category === 'supervised-deep').length;
             const selfsupervisedCount = algorithms.filter(a => a.category === 'selfsupervised').length;
+            const metaCount = algorithms.filter(a => a.category === 'meta').length;
             const transferCount = algorithms.filter(a => a.category === 'transfer').length;
             const fusionCount = algorithms.filter(a => a.category === 'fusion').length;
             const headCount = algorithms.filter(a => a.category === 'head').length;
@@ -1725,10 +1917,10 @@ model.fit(source_train, target_data=target_unlabeled)`,
             chart = new Chart(document.getElementById('categoryChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Supervised-Traditional', 'Supervised-Deep', 'Self-supervised', 'Transfer', 'Fusion', 'Heads'],
+                    labels: ['Supervised-Trad', 'Supervised-Deep', 'Self-supervised', 'Meta-learning', 'Transfer', 'Fusion', 'Heads'],
                     datasets: [{
-                        data: [traditionalCount, deepCount, selfsupervisedCount, transferCount, fusionCount, headCount],
-                        backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ec4899'],
+                        data: [traditionalCount, deepCount, selfsupervisedCount, metaCount, transferCount, fusionCount, headCount],
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#06b6d4', '#f97316', '#10b981', '#a855f7', '#ec4899'],
                         borderWidth: 0
                     }]
                 },

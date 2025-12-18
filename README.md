@@ -105,49 +105,50 @@ These datasets have download sources but are **not yet integrated**:
 
 ## Supported Algorithms
 
-**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
+**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Meta-learning**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
 <table>
 <tr>
-<th align="center">Supervised Learning</th>
+<th align="center">Supervised</th>
 <th align="center">Self-supervised</th>
-<th align="center">Transfer Learning</th>
-<th align="center">Fusion</th>
+<th align="center">Meta-learning</th>
+<th align="center">Transfer</th>
 </tr>
 <tr>
 <td valign="top">
 
-**Traditional (sklearn 30+)**
+**Traditional (30+)**
 - k-NN, WKNN, SVM, RF...
 
-**Deep (timm 700+)**
+**Deep (700+)**
 - MLP, CNN1D, ResNet, ViT...
 
 </td>
 <td valign="top">
 
-**Contrastive**: SimCLR, MoCo, NNCLR
+**Contrastive**
+- SimCLR, MoCo, NNCLR
 
-**Non-contrastive**: BYOL, SimSiam, BarlowTwins, VICReg
-
-**Others**: DINO, MAE, SwAV
+**Non-contrastive**
+- BYOL, SimSiam, VICReg
 
 </td>
 <td valign="top">
 
-**Feature**: CORAL, TCA, SA
+**Gradient-based**
+- MAML, FOMAML, Reptile
+
+**Metric-based**
+- ProtoNet, MatchingNet
+
+</td>
+<td valign="top">
+
+**Feature**: CORAL, TCA
 
 **Reweight**: KMM, KLIEP
 
-**OT**: OTMapping, EntropicOT
-
-**Deep**: DANN, CDAN, MDD, MCC
-
-</td>
-<td valign="top">
-
-- Ensemble
-- Stacking
+**Deep**: DANN, MDD
 
 </td>
 </tr>
