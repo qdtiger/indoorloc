@@ -97,23 +97,42 @@ class BLESignal(BaseSignal):
         beacon_ids: Optional[List[str]] = None,
         timestamp: Optional[float] = None,
         scan_duration: Optional[float] = None,
+        metadata=None,
         **kwargs
     ):
-        super().__init__(**kwargs)
-
         self.beacons = beacons or []
-        self.rssi_values = rssi_values
         self.beacon_ids = beacon_ids
         self.timestamp = timestamp
         self.scan_duration = scan_duration
 
-        # Validate inputs
+        # Process rssi_values
         if rssi_values is not None:
             self.rssi_values = np.asarray(rssi_values, dtype=np.float32)
+        else:
+            self.rssi_values = None
+
+        # Build data for base class
+        if self.rssi_values is not None:
+            data = self.rssi_values
+        elif self.beacons:
+            data = np.array([b.rssi for b in self.beacons], dtype=np.float32)
+        else:
+            data = np.array([], dtype=np.float32)
+
+        super().__init__(data=data, metadata=metadata)
 
     @property
     def signal_type(self) -> str:
         return 'ble'
+
+    @property
+    def feature_dim(self) -> int:
+        """Get feature dimension (number of RSSI values)."""
+        if self.rssi_values is not None:
+            return len(self.rssi_values)
+        elif self.is_sparse:
+            return len(self.beacons)
+        return 0
 
     @property
     def is_sparse(self) -> bool:
@@ -179,6 +198,15 @@ class BLESignal(BaseSignal):
         else:
             return torch.tensor([], dtype=torch.float32, device=device)
 
+    def to_numpy(self) -> np.ndarray:
+        """Convert to NumPy array."""
+        if self.rssi_values is not None:
+            return self.rssi_values.copy()
+        elif self.is_sparse:
+            return np.array([b.rssi for b in self.beacons], dtype=np.float32)
+        else:
+            return np.array([], dtype=np.float32)
+
     def normalize(self, method: str = 'minmax') -> 'BLESignal':
         """Normalize RSSI values.
 
@@ -189,6 +217,9 @@ class BLESignal(BaseSignal):
             New BLESignal with normalized values.
         """
         if self.rssi_values is None:
+            if not self.beacons:
+                # Empty signal - return as is
+                return BLESignal(rssi_values=np.array([], dtype=np.float32))
             # Convert to dense first
             dense = self.to_dense()
             return dense.normalize(method)
@@ -251,6 +282,35 @@ class BLESignal(BaseSignal):
             ]
 
         return result
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> 'BLESignal':
+        """Create BLESignal from dictionary representation."""
+        beacons = None
+        if 'beacons' in d and d['beacons']:
+            beacons = [
+                BLEBeacon(
+                    uuid=b.get('uuid'),
+                    major=b.get('major'),
+                    minor=b.get('minor'),
+                    rssi=b.get('rssi', -100.0),
+                    tx_power=b.get('tx_power'),
+                    mac_address=b.get('mac_address'),
+                )
+                for b in d['beacons']
+            ]
+
+        rssi_values = None
+        if 'rssi_values' in d and d['rssi_values']:
+            rssi_values = np.array(d['rssi_values'], dtype=np.float32)
+
+        return cls(
+            beacons=beacons,
+            rssi_values=rssi_values,
+            beacon_ids=d.get('beacon_ids'),
+            timestamp=d.get('timestamp'),
+            scan_duration=d.get('scan_duration'),
+        )
 
     def __repr__(self) -> str:
         return f"BLESignal(num_beacons={self.num_beacons}, sparse={self.is_sparse})"

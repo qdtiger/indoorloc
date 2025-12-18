@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndoorLoc Datasets | Research Benchmarks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        /* ========================================
+           Theme: Neoteric Lab - Fresh & Tech
+           ======================================== */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-surface-hover: #f1f5f9;
+            --bg-subtle: #e2e8f0;
+
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-bg: rgba(13, 148, 136, 0.08);
+
+            --accent: #6366f1;
+            --accent-bg: rgba(99, 102, 241, 0.1);
+
+            --success: #10b981;
+            --warning: #f59e0b;
+
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-surface-hover: #334155;
+            --bg-subtle: #334155;
+
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+
+            --primary: #2dd4bf;
+            --primary-dark: #14b8a6;
+            --primary-bg: rgba(45, 212, 191, 0.15);
+
+            --accent: #818cf8;
+
+            --glass: rgba(30, 41, 59, 0.8);
+            --border: #334155;
+            --shadow-sm: none;
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s, border-color 0.2s; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            font-size: 15px;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        code, pre, .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ========================================
+           Hero Section
+           ======================================== */
+        .hero {
+            position: relative;
+            padding: 80px 20px 60px;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--bg-body) 0%, var(--bg-surface) 100%);
+            overflow: hidden;
+        }
+
+        #heroCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            border: 1px solid var(--primary-bg);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: var(--bg-body);
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-outline {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+        .btn-outline:hover { border-color: var(--text-muted); background: var(--bg-surface); }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 10px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            color: var(--text-main);
+        }
+        [data-theme="dark"] .sun-icon { display: block; }
+        [data-theme="dark"] .moon-icon { display: none; }
+        .sun-icon { display: none; }
+
+        /* ========================================
+           Dashboard
+           ======================================== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-box {
+            position: relative;
+            height: 140px;
+            overflow: hidden;
+        }
+
+        .chart-box canvas {
+            max-height: 100%;
+        }
+
+        .chart-header {
+            font-family: 'Outfit';
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-overview { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        /* ========================================
+           Toolbar
+           ======================================== */
+        .toolbar {
+            position: sticky;
+            top: 20px;
+            z-index: 50;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .toolbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-bg);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-categories {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-bottom: 4px;
+        }
+
+        .filter-pill {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        .filter-pill.active {
+            background: var(--text-main);
+            color: var(--bg-body);
+            border-color: var(--text-main);
+        }
+
+        /* ========================================
+           View Toggles
+           ======================================== */
+        .view-toggles {
+            display: flex;
+            background: var(--bg-body);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            gap: 2px;
+        }
+
+        .view-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover { color: var(--text-main); }
+        .view-btn.active {
+            background: var(--bg-surface);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* ========================================
+           Grid Layout (Cards)
+           ======================================== */
+        .dataset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            padding-bottom: 100px;
+        }
+
+        .ds-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ds-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .ds-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .ds-titles h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .ds-source {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .ds-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .badge-rssi { background: #e0f2fe; color: #0284c7; }
+        .badge-csi { background: #eef2ff; color: #4f46e5; }
+        .badge-tof { background: #f3e8ff; color: #9333ea; }
+        .badge-hybrid { background: #fce7f3; color: #db2777; }
+        .badge-other { background: var(--bg-subtle); color: var(--text-muted); }
+
+        [data-theme="dark"] .badge-rssi { background: rgba(2, 132, 199, 0.2); color: #7dd3fc; }
+        [data-theme="dark"] .badge-csi { background: rgba(79, 70, 229, 0.2); color: #a5b4fc; }
+        [data-theme="dark"] .badge-tof { background: rgba(147, 51, 234, 0.2); color: #c4b5fd; }
+        [data-theme="dark"] .badge-hybrid { background: rgba(219, 39, 119, 0.2); color: #f9a8d4; }
+
+        .ds-body {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .ds-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .meta-value {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .download-indic {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-auto { background: var(--success); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
+        .dot-manual { background: var(--warning); box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2); }
+
+        .ds-footer {
+            padding: 12px 20px;
+            background: var(--bg-surface-hover);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .icon-btn input { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); }
+
+        .expand-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .expand-btn:hover { text-decoration: underline; }
+        .expand-btn svg { transition: transform 0.2s; }
+
+        /* Card Expanded Details */
+        .ds-details {
+            display: none;
+            border-top: 1px solid var(--border);
+            background: var(--bg-body);
+            padding: 20px;
+        }
+        .ds-card.expanded .ds-details { display: block; }
+        .ds-card.expanded .expand-btn svg { transform: rotate(180deg); }
+
+        .code-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .code-box pre {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .copy-sm {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 10px;
+            padding: 2px 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg-body);
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .copy-sm:hover { border-color: var(--primary); color: var(--primary); }
+
+        .citation-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+            border-left: 2px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        /* ========================================
+           List View (Smart Rows)
+           ======================================== */
+        .dataset-grid.list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ds-row {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .ds-row:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ds-row-main {
+            display: grid;
+            grid-template-columns: 36px minmax(160px, 1.5fr) 80px 80px 100px 80px 36px;
+            align-items: center;
+            padding: 10px 16px;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .ds-row-main h3 {
+            font-size: 14px;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .ds-row-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ds-row .download-indic {
+            margin-top: 0;
+            font-size: 11px;
+        }
+
+        .ds-row .ds-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            text-align: center;
+        }
+
+        .ds-row-details {
+            display: none;
+            padding: 16px 16px 16px 64px;
+            border-top: 1px dashed var(--border);
+            background: var(--bg-surface-hover);
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .ds-row.expanded .ds-row-details {
+            display: block;
+        }
+
+        .ds-row.expanded {
+            background: var(--bg-surface-hover);
+        }
+
+        .ds-row.expanded .expand-btn svg {
+            transform: rotate(180deg);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sample Bar (Data Density Indicator) */
+        .sample-bar {
+            height: 3px;
+            background: var(--bg-subtle);
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .sample-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        /* ========================================
+           Compare Panel
+           ======================================== */
+        .compare-float {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(150%);
+            background: var(--text-main);
+            color: var(--bg-body);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            z-index: 200;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 300px;
+        }
+
+        .compare-float.active {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .compare-info {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compare-pill {
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .compare-btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-compare-action {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-run-compare { background: var(--bg-body); color: var(--text-main); }
+        .btn-clear-compare { background: transparent; color: var(--text-light); border: 1px solid #475569; }
+        .btn-run-compare:hover { background: var(--primary); color: white; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-content {
+            background: var(--bg-surface);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid var(--border);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .compare-table th { text-align: left; color: var(--text-muted); font-weight: 500; padding: 12px; border-bottom: 2px solid var(--border); font-size: 13px; }
+        .compare-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-main); vertical-align: top; }
+        .compare-table tr:last-child td { border-bottom: none; }
+        .attr-col { width: 140px; background: var(--bg-surface-hover); font-weight: 600; color: var(--text-main); }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .view-toggles { display: none; }
+            .ds-row-main { grid-template-columns: 1fr; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <canvas id="heroCanvas"></canvas>
+        <div class="hero-content">
+            <span class="hero-badge" id="heroBadge">IndoorLoc v1.0</span>
+            <h1>Indoor Localization<br>Dataset Library</h1>
+            <p id="heroDesc">A curated, standardized collection of <span id="datasetCount">37</span>+ datasets for WiFi, CSI, BLE and UWB research benchmarks.</p>
+            <div class="hero-actions">
+                <a href="https://github.com/qdtiger/indoorloc" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    GitHub Project
+                </a>
+                <a href="#browse" class="btn btn-outline">Browse Data</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container" id="browse">
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="chart-box">
+                <div class="chart-header">Signal Distribution</div>
+                <canvas id="signalChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <div class="chart-header">Data Sources</div>
+                <canvas id="sourceChart"></canvas>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <div class="chart-header">Library Status</div>
+                <div style="font-family: 'Outfit'; font-size: 36px; font-weight: 700; color: var(--text-main);">
+                    <span id="totalCount">0</span>
+                    <span style="font-size: 14px; color: var(--text-muted); font-weight: 400;">Datasets</span>
+                </div>
+                <div style="font-size: 13px; color: var(--text-light); margin-top: 8px;">
+                    Covering Multi-floor, 2D, and 3D positioning scenarios.
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-top">
+                <div class="search-wrapper">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="search" placeholder="Type to filter by name, signal, or environment...">
+                </div>
+                <!-- View Toggles -->
+                <div class="view-toggles">
+                    <button class="view-btn" data-view="grid" title="Grid View">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button class="view-btn active" data-view="list" title="List View">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="filter-categories">
+                <button class="filter-pill active" data-filter="all">All</button>
+                <button class="filter-pill" data-filter="wifi-rssi">WiFi RSSI</button>
+                <button class="filter-pill" data-filter="csi">CSI</button>
+                <button class="filter-pill" data-filter="ble">BLE</button>
+                <button class="filter-pill" data-filter="uwb">UWB</button>
+                <button class="filter-pill" data-filter="fusion">Sensor Fusion</button>
+                <button class="filter-pill" data-filter="multi-floor">Multi-floor</button>
+            </div>
+        </div>
+
+        <!-- Cards/List Grid -->
+        <div class="dataset-grid list-view" id="gridContainer"></div>
+    </div>
+
+    <!-- Floating Compare Bar -->
+    <div class="compare-float" id="comparePanel">
+        <div class="compare-info">
+            <span class="compare-pill" id="compareCount">0</span>
+            <span>Selected to compare</span>
+        </div>
+        <div class="compare-btn-group">
+            <button class="btn-compare-action btn-clear-compare" onclick="clearCompare()">Clear</button>
+            <button class="btn-compare-action btn-run-compare" onclick="showCompareModal()">Compare Now</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="compareModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-weight: 600;">Dataset Comparison</h3>
+                <button onclick="closeCompareModal()" style="background:none; border:none; cursor:pointer; color:var(--text-muted);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="compare-table" id="compareTable"></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // Data Definitions (Full 37 datasets)
+        // ========================================
+        const datasets = [
+            { name: "UJIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "19,937 train / 1,111 test", features: "520 WAPs", environment: "3 buildings, 5 floors, Universitat Jaume I", citation: "Torres-Sospedra et al., UJIndoorLoc, IPIN 2014", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000 per building", features: "~100 WAPs", environment: "2 buildings, multi-floor office", citation: "SODIndoorLoc: WiFi fingerprint dataset", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000 over 15 months", features: "~200 WAPs", environment: "University building, temporal study", citation: "Long-term WiFi fingerprinting dataset", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 ref points", features: "~300 WAPs", environment: "Tampere University, academic building", citation: "Tampere University WiFi dataset", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 points", features: "7 WAPs", environment: "Small indoor area", citation: "UCI ML Repository - WLAN RSSI", tags: ["wifi-rssi"] },
+            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000 samples", features: "~150 WAPs", environment: "Multi-device, university building", citation: "TUJI1 WiFi fingerprinting dataset", tags: ["wifi-rssi", "multi-floor"] },
+            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800 samples", features: "~50 WAPs", environment: "Office environment, single floor", citation: "RSS-based indoor positioning dataset", tags: ["wifi-rssi"] },
+            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420 samples", features: "13 iBeacons", environment: "Indoor space with iBeacons", citation: "UCI ML Repository - iBeacon RSSI", tags: ["ble"] },
+            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000 samples", features: "~20 beacons", environment: "Multi-floor with BLE beacons", citation: "BLE indoor positioning dataset", tags: ["ble", "multi-floor"] },
+            { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000 samples", features: "~10 beacons", environment: "Controlled indoor environment", citation: "UCI ML Repository - BLE RSSI", tags: ["ble"] },
+            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000 samples", features: "CSI amplitude/phase", environment: "Indoor office, commodity WiFi", citation: "CSI-based indoor localization", tags: ["csi", "multi-floor"] },
+            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000 samples", features: "30 subcarriers x 3 antennas", environment: "Lab environment, Intel 5300", citation: "WiFi CSI fingerprinting", tags: ["csi"] },
+            { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000 samples", features: "CSI commodity hardware", environment: "Multi-room indoor", citation: "HWILD: WiFi-based indoor localization", tags: ["csi", "multi-floor"] },
+            { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000 samples", features: "CSI + RSSI combined", environment: "Colorado State University", citation: "CSU Indoor Navigation CSI-RSSI", tags: ["csi", "multi-floor"] },
+            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000 samples", features: "CSI measurements", environment: "Large-scale indoor", citation: "WILD v2: WiFi Indoor Localization", tags: ["csi", "multi-floor"] },
+            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000 samples", features: "CSI amplitude", environment: "Office building, multiple APs", citation: "HALOC: Hardware-agnostic Localization", tags: ["csi", "multi-floor"] },
+            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark collection", features: "Various CSI formats", environment: "Multiple indoor scenarios", citation: "CSIBench: A benchmark for CSI", tags: ["csi"] },
+            { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000 samples", features: "Device-to-device CSI", environment: "Indoor D2D scenario", citation: "WiFi CSI for D2D localization", tags: ["csi"] },
+            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000 samples", features: "LTE CSI measurements", environment: "Cellular network indoor", citation: "OpenCSI: Open LTE CSI dataset", tags: ["csi"] },
+            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000 samples", features: "64-antenna array CSI", environment: "Massive MIMO testbed", citation: "Massive MIMO CSI dataset", tags: ["csi"] },
+            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: false, samples: "~50,000 samples", features: "Distributed antenna CSI", environment: "Industrial hall, 3D positioning", citation: "DICHASUS: Distributed CSI dataset", tags: ["csi"] },
+            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000 samples", features: "Sparse antenna array", environment: "Research testbed", citation: "ESPARGOS: Sparse array positioning", tags: ["csi"] },
+            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000 samples", features: "UAV-collected CSI", environment: "Outdoor-indoor, drone platform", citation: "Massive MIMO UAV localization", tags: ["csi"] },
+            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: false, samples: "Synthetic (configurable)", features: "Ray-tracing CSI", environment: "Simulated urban/indoor", citation: "DeepMIMO: Generic deep learning", tags: ["csi"] },
+            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000 samples", features: "Sub-6GHz CSI", environment: "Office building, multiple floors", citation: "CSI2Pos: Channel state to position", tags: ["csi", "multi-floor"] },
+            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000 samples", features: "Time/Angle of Arrival", environment: "Indoor geometric constraints", citation: "CSI-based Time and Angle of Arrival", tags: ["csi", "multi-floor"] },
+            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000 samples", features: "UWB ranging + IMU", environment: "3D indoor tracking", citation: "UWB indoor positioning dataset", tags: ["uwb"] },
+            { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000 measurements", features: "Two-way ranging", environment: "Controlled ranging experiments", citation: "UWB two-way ranging dataset", tags: ["uwb"] },
+            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000 samples", features: "3-axis magnetic field", environment: "Building with magnetic anomalies", citation: "Magnetic field indoor positioning", tags: ["multi-floor"] },
+            { name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000 samples", features: "WiFi RSSI + IMU 6-axis", environment: "Pedestrian navigation", citation: "WiFi-IMU fusion dataset", tags: ["fusion", "multi-floor"] },
+            { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~6,000 samples", features: "WiFi + Magnetometer", environment: "Office with steel structures", citation: "WiFi and magnetic field fusion", tags: ["fusion", "multi-floor"] },
+            { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~10,000 samples", features: "WiFi + BLE + IMU + Mag", environment: "Shopping mall, complex", citation: "Multi-modal indoor positioning", tags: ["fusion", "multi-floor"] },
+            { name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000 samples", features: "Multiple sensor streams", environment: "Research building", citation: "Sensor fusion for indoor positioning", tags: ["fusion", "multi-floor"] },
+            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~3,000 samples", features: "Visible light measurements", environment: "Office with LED lighting", citation: "VLC positioning dataset", tags: ["multi-floor"] },
+            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~2,000 samples", features: "Ultrasonic ToF", environment: "Room-level positioning", citation: "Ultrasound indoor positioning", tags: ["multi-floor"] },
+            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~4,000 samples", features: "RFID signal strength", environment: "Warehouse with RFID readers", citation: "RFID indoor localization", tags: ["multi-floor"] }
+        ];
+
+        // ========================================
+        // State
+        // ========================================
+        let viewMode = 'list'; // 'grid' or 'list'
+        let currentFilter = 'all';
+        let searchTerm = '';
+        let compareList = [];
+
+        // Max samples for bar calculation
+        const maxSamples = 50000;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            initCharts();
+        }
+
+        // ========================================
+        // View Toggle
+        // ========================================
+        function initViewToggles() {
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    viewMode = e.currentTarget.dataset.view;
+                    renderGrid();
+                });
+            });
+        }
+
+        // ========================================
+        // Rendering
+        // ========================================
+        function getSignalColor(sig) {
+            if(sig === 'RSSI') return 'rssi';
+            if(sig === 'CSI') return 'csi';
+            if(sig === 'ToF') return 'tof';
+            if(sig === 'Hybrid') return 'hybrid';
+            return 'other';
+        }
+
+        function parseSamples(str) {
+            const num = parseInt(str.replace(/[^0-9]/g, ''));
+            return isNaN(num) ? 0 : num;
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('gridContainer');
+            const countDisplay = document.getElementById('totalCount');
+
+            container.className = `dataset-grid ${viewMode === 'list' ? 'list-view' : ''}`;
+
+            const filtered = datasets.filter(d => {
+                const matchesSearch = d.name.toLowerCase().includes(searchTerm) ||
+                                      d.environment.toLowerCase().includes(searchTerm) ||
+                                      d.signal.toLowerCase().includes(searchTerm);
+                if(currentFilter === 'all') return matchesSearch;
+                return d.tags.includes(currentFilter) && matchesSearch;
+            });
+
+            countDisplay.innerText = filtered.length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="opacity:0.3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <p>No datasets match your criteria.</p>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(d => {
+                const badgeClass = getSignalColor(d.signal);
+                const isCompared = compareList.includes(d.name);
+                const autoDot = d.auto ? 'dot-auto' : 'dot-manual';
+                const autoText = d.auto ? 'Auto' : 'Manual';
+                const sampleNum = parseSamples(d.samples);
+                const barPercent = Math.min(100, (sampleNum / maxSamples) * 100);
+
+                const checkbox = `<label class="icon-btn" style="border:none;background:transparent;" onclick="event.stopPropagation()">
+                    <input type="checkbox" ${isCompared ? 'checked' : ''} onchange="toggleCompare(event, '${d.name}')">
+                </label>`;
+
+                if (viewMode === 'list') {
+                    return `
+                    <div class="ds-row" id="row-${d.name}" onclick="toggleRow('${d.name}')">
+                        <div class="ds-row-main">
+                            ${checkbox}
+                            <h3>${d.name}</h3>
+                            <span class="ds-badge badge-${badgeClass}">${d.signal}</span>
+                            <span class="ds-row-meta">${d.dataSource}</span>
+                            <div>
+                                <span class="ds-row-meta mono">${d.samples.split(' ')[0]}</span>
+                                <div class="sample-bar"><div class="sample-bar-fill" style="width:${barPercent}%"></div></div>
+                            </div>
+                            <div class="download-indic"><div class="dot ${autoDot}"></div> ${autoText}</div>
+                            <button class="expand-btn" onclick="event.stopPropagation(); toggleRow('${d.name}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                        </div>
+                        <div class="ds-row-details">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-bottom:16px;">
+                                <div><span class="meta-label">Environment</span><div class="meta-value">${d.environment}</div></div>
+                                <div><span class="meta-label">Features</span><div class="meta-value">${d.features}</div></div>
+                                <div><span class="meta-label">Position</span><div class="meta-value">${d.position}</div></div>
+                            </div>
+                            <div class="code-box">
+                                <button class="copy-sm" onclick="event.stopPropagation(); copySnippet(this, '${d.name}')">Copy</button>
+                                <pre>import indoorloc as iloc
+data = iloc.${d.name}(download=True)</pre>
+                            </div>
+                            <div class="citation-text">${d.citation}</div>
+                        </div>
+                    </div>`;
+                } else {
+                    return `
+                    <div class="ds-card" id="card-${d.name}">
+                        <div class="ds-header">
+                            <div class="ds-titles">
+                                <div class="ds-source">${d.dataSource}</div>
+                                <h3>${d.name}</h3>
+                                <span class="ds-badge badge-${badgeClass}">${d.signal}</span>
+                            </div>
+                            <div class="action-group">${checkbox}</div>
+                        </div>
+                        <div class="ds-body">
+                            <div class="ds-meta">
+                                <div class="meta-item"><span class="meta-label">Environment</span><span class="meta-value">${d.environment.substring(0, 28)}${d.environment.length>28?'...':''}</span></div>
+                                <div class="meta-item"><span class="meta-label">Geometry</span><span class="meta-value">${d.position}</span></div>
+                                <div class="meta-item"><span class="meta-label">Samples</span><span class="meta-value">${d.samples.split(' ')[0]}</span></div>
+                                <div class="meta-item"><span class="meta-label">Features</span><span class="meta-value">${d.features.substring(0, 18)}${d.features.length>18?'..':''}</span></div>
+                            </div>
+                            <div class="download-indic"><div class="dot ${autoDot}"></div> ${autoText}</div>
+                            <div class="ds-details">
+                                <div class="code-box">
+                                    <button class="copy-sm" onclick="copySnippet(this, '${d.name}')">Copy</button>
+                                    <pre>import indoorloc as iloc
+data = iloc.${d.name}(download=True)</pre>
+                                </div>
+                                <div class="citation-text">${d.citation}</div>
+                            </div>
+                        </div>
+                        <div class="ds-footer">
+                            <button class="expand-btn" onclick="toggleCard('${d.name}')">
+                                View Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                            <div style="font-size:11px; color:var(--text-light)">${d.subtype}</div>
+                        </div>
+                    </div>`;
+                }
+            }).join('');
+        }
+
+        function toggleCard(name) {
+            document.getElementById(`card-${name}`).classList.toggle('expanded');
+        }
+
+        function toggleRow(name) {
+            const row = document.getElementById(`row-${name}`);
+            row.classList.toggle('expanded');
+        }
+
+        function copySnippet(btn, name) {
+            navigator.clipboard.writeText(`import indoorloc as iloc\ndata = iloc.${name}(download=True)`);
+            const original = btn.innerText;
+            btn.innerText = 'Copied!';
+            btn.style.borderColor = 'var(--success)';
+            btn.style.color = 'var(--success)';
+            setTimeout(() => { btn.innerText = original; btn.style.borderColor = ''; btn.style.color = ''; }, 1500);
+        }
+
+        // ========================================
+        // Filters & Search
+        // ========================================
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderGrid();
+            });
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderGrid();
+        });
+
+        // ========================================
+        // Compare
+        // ========================================
+        function toggleCompare(e, name) {
+            if (e.target.checked) {
+                if (compareList.length >= 4) {
+                    alert("Max 4 datasets for comparison.");
+                    e.target.checked = false;
+                    return;
+                }
+                compareList.push(name);
+            } else {
+                compareList = compareList.filter(n => n !== name);
+            }
+            updateCompareFloat();
+        }
+
+        function updateCompareFloat() {
+            const p = document.getElementById('comparePanel');
+            document.getElementById('compareCount').innerText = compareList.length;
+            if (compareList.length > 0) p.classList.add('active');
+            else p.classList.remove('active');
+        }
+
+        function clearCompare() {
+            compareList = [];
+            renderGrid();
+            updateCompareFloat();
+        }
+
+        function showCompareModal() {
+            const modal = document.getElementById('compareModal');
+            const table = document.getElementById('compareTable');
+
+            const items = datasets.filter(d => compareList.includes(d.name));
+            if(items.length === 0) return;
+
+            const attrs = [
+                { l: 'Signal', k: 'signal' },
+                { l: 'Samples', k: 'samples' },
+                { l: 'Position', k: 'position' },
+                { l: 'Environment', k: 'environment' },
+                { l: 'Features', k: 'features' },
+                { l: 'Source', k: 'dataSource' },
+                { l: 'Auto Download', k: 'auto' }
+            ];
+
+            let html = `<thead><tr><th class="attr-col">Feature</th>${items.map(i=>`<th>${i.name}</th>`).join('')}</tr></thead><tbody>`;
+            attrs.forEach(attr => {
+                html += `<tr><td class="attr-col">${attr.l}</td>${items.map(i=>{
+                    let val = i[attr.k];
+                    if(attr.k === 'auto') val = val ? 'Yes' : 'Manual';
+                    return `<td>${val}</td>`;
+                }).join('')}</tr>`;
+            });
+            html += `</tbody>`;
+
+            table.innerHTML = html;
+            modal.classList.add('open');
+        }
+
+        function closeCompareModal() {
+            document.getElementById('compareModal').classList.remove('open');
+        }
+
+        // ========================================
+        // Canvas Animation
+        // ========================================
+        function initCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resize() {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particles = [];
+            for(let i=0; i<50; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 1.2,
+                    vy: (Math.random() - 0.5) * 1.2
+                });
+            }
+
+            function animate() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = isDark ? '#2dd4bf' : '#0d9488';
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if(p.x < 0 || p.x > width) p.vx *= -1;
+                    if(p.y < 0 || p.y > height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                    ctx.globalAlpha = 0.5;
+                    ctx.fill();
+                });
+
+                ctx.strokeStyle = isDark ? '#2dd4bf' : '#0d9488';
+                ctx.lineWidth = 0.5;
+                particles.forEach((p1, i) => {
+                    particles.slice(i+1).forEach(p2 => {
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.globalAlpha = (1 - (dist / 100)) * 0.5;
+                            ctx.stroke();
+                        }
+                    });
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ========================================
+        // Charts
+        // ========================================
+        let charts = [];
+        function initCharts() {
+            charts.forEach(c => c.destroy());
+            charts = [];
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const colorText = isDark ? '#94a3b8' : '#475569';
+
+            const signalCounts = {};
+            const sourceCounts = {};
+            datasets.forEach(d => {
+                signalCounts[d.signal] = (signalCounts[d.signal] || 0) + 1;
+                sourceCounts[d.dataSource] = (sourceCounts[d.dataSource] || 0) + 1;
+            });
+
+            const signalColors = {
+                'RSSI': '#0d9488',
+                'CSI': '#6366f1',
+                'ToF': '#9333ea',
+                'Hybrid': '#db2777',
+                'Magnetic': '#64748b',
+                'Other': '#94a3b8'
+            };
+
+            const sigCtx = document.getElementById('signalChart');
+            charts.push(new Chart(sigCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(signalCounts),
+                    datasets: [{
+                        data: Object.values(signalCounts),
+                        backgroundColor: Object.keys(signalCounts).map(k => signalColors[k] || '#94a3b8'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '60%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: 0 },
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: colorText,
+                                font: { family: 'Inter', size: 10 },
+                                padding: 6,
+                                usePointStyle: true,
+                                boxWidth: 8
+                            }
+                        }
+                    }
+                }
+            }));
+
+            const srcCtx = document.getElementById('sourceChart');
+            charts.push(new Chart(srcCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(sourceCounts),
+                    datasets: [{
+                        data: Object.values(sourceCounts),
+                        backgroundColor: isDark ? '#2dd4bf' : '#0d9488',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { grid: {display:false}, ticks: {color: colorText, font: {size: 10}} },
+                        y: { grid: {display:false}, ticks: {color: colorText, font: {size: 10}} }
+                    },
+                    plugins: { legend: {display:false} },
+                    maintainAspectRatio: false
+                }
+            }));
+        }
+
+        // Update dynamic content
+        function updateDynamicContent() {
+            document.getElementById('datasetCount').textContent = datasets.length;
+        }
+
+        // Boot
+        initTheme();
+        initViewToggles();
+        renderGrid();
+        initCharts();
+        initCanvas();
+        updateDynamicContent();
+    </script>
+</body>
+</html>

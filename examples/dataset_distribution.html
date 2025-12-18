@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dataset Distribution Visualization</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .toggle-group {
+            display: flex;
+            gap: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .toggle-btn {
+            padding: 8px 20px;
+            border: none;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover { background: #f0f0f0; }
+        .toggle-btn.active {
+            background: #2171b5;
+            color: white;
+        }
+        .toggle-btn:first-child { border-right: 1px solid #ccc; }
+        .frame-container {
+            width: 100%;
+            height: calc(100vh - 60px);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dataset Distribution</h1>
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="switchView('2d')">2D View</button>
+            <button class="toggle-btn" onclick="switchView('3d')">3D View</button>
+        </div>
+    </div>
+    <div class="frame-container">
+        <iframe id="viz-frame" src="dataset_distribution_2d.html"></iframe>
+    </div>
+    <script>
+        function switchView(mode) {
+            const frame = document.getElementById('viz-frame');
+            const btns = document.querySelectorAll('.toggle-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            if (mode === '2d') {
+                frame.src = 'dataset_distribution_2d.html';
+                btns[0].classList.add('active');
+            } else {
+                frame.src = 'dataset_distribution_3d.html';
+                btns[1].classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -88,8 +88,7 @@ class IMUSignal(BaseSignal):
         sampling_rate: Optional[float] = None,
         **kwargs
     ):
-        super().__init__(**kwargs)
-
+        # Initialize readings first so we can extract data for base class
         self.readings = readings or []
         self.sampling_rate = sampling_rate
 
@@ -117,6 +116,16 @@ class IMUSignal(BaseSignal):
         # If readings provided, extract arrays
         if self.readings and self.accelerometer is None:
             self._extract_from_readings()
+
+        # Build data for base class
+        data = {}
+        if self.accelerometer is not None:
+            data['accelerometer'] = self.accelerometer
+        if self.gyroscope is not None:
+            data['gyroscope'] = self.gyroscope
+        if self.magnetometer is not None:
+            data['magnetometer'] = self.magnetometer
+        super().__init__(data, kwargs.get('metadata'))
 
     def _extract_from_readings(self) -> None:
         """Extract arrays from readings list."""
@@ -306,6 +315,54 @@ class IMUSignal(BaseSignal):
             result['timestamps'] = self.timestamps.tolist()
 
         return result
+
+    @property
+    def feature_dim(self) -> int:
+        """Return feature dimensionality of the IMU signal."""
+        dim = 0
+        if self.accelerometer is not None:
+            dim += 3
+        if self.gyroscope is not None:
+            dim += 3
+        if self.magnetometer is not None:
+            dim += 3
+        return dim
+
+    def to_numpy(self) -> np.ndarray:
+        """Convert to numpy array.
+
+        Returns:
+            Array of shape (N, C) where C is number of channels.
+        """
+        arrays = []
+        if self.accelerometer is not None:
+            arrays.append(self.accelerometer)
+        if self.gyroscope is not None:
+            arrays.append(self.gyroscope)
+        if self.magnetometer is not None:
+            arrays.append(self.magnetometer)
+
+        if not arrays:
+            return np.array([])
+
+        return np.concatenate(arrays, axis=1)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'IMUSignal':
+        """Create IMUSignal from dictionary representation."""
+        accel = np.array(data['accelerometer'], dtype=np.float32) if 'accelerometer' in data else None
+        gyro = np.array(data['gyroscope'], dtype=np.float32) if 'gyroscope' in data else None
+        mag = np.array(data['magnetometer'], dtype=np.float32) if 'magnetometer' in data else None
+        timestamps = np.array(data['timestamps'], dtype=np.float64) if 'timestamps' in data else None
+        sampling_rate = data.get('sampling_rate')
+
+        return cls(
+            accelerometer=accel,
+            gyroscope=gyro,
+            magnetometer=mag,
+            timestamps=timestamps,
+            sampling_rate=sampling_rate
+        )
 
     def __repr__(self) -> str:
         return (

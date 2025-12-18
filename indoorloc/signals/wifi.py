@@ -7,7 +7,6 @@ for indoor localization.
 from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass
 import numpy as np
-import torch
 
 from .base import BaseSignal, SignalMetadata
 from ..registry import SIGNALS
@@ -50,7 +49,7 @@ class WiFiSignal(BaseSignal):
 
     def __init__(
         self,
-        rssi_values: Union[Dict[str, float], np.ndarray, torch.Tensor, List[float]],
+        rssi_values: Union[Dict[str, float], np.ndarray, 'torch.Tensor', List[float]],
         ap_list: Optional[List[str]] = None,
         ap_info: Optional[Dict[str, APInfo]] = None,
         metadata: Optional[SignalMetadata] = None
@@ -78,8 +77,9 @@ class WiFiSignal(BaseSignal):
         else:
             if isinstance(rssi_values, list):
                 rssi_values = np.array(rssi_values, dtype=np.float32)
-            elif isinstance(rssi_values, torch.Tensor):
-                rssi_values = rssi_values.numpy()
+            elif all(hasattr(rssi_values, attr) for attr in ('detach', 'cpu', 'numpy')):
+                # Torch tensor-like (avoid importing torch at module import time)
+                rssi_values = rssi_values.detach().cpu().numpy()
             self._dense_data = rssi_values.astype(np.float32)
             data = self._dense_data
 
@@ -203,8 +203,15 @@ class WiFiSignal(BaseSignal):
             metadata=self._metadata
         )
 
-    def to_tensor(self, device: str = 'cpu') -> torch.Tensor:
+    def to_tensor(self, device: str = 'cpu') -> 'torch.Tensor':
         """Convert to PyTorch tensor."""
+        try:
+            import torch
+        except ImportError as e:
+            raise ImportError(
+                "PyTorch is required for WiFiSignal.to_tensor(). Install with: pip install torch"
+            ) from e
+
         if self._dense_data is None:
             raise ValueError("Convert to dense format first using to_dense()")
         return torch.tensor(self._dense_data, dtype=torch.float32, device=device)
