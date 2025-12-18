@@ -6,7 +6,7 @@ Provides localization algorithms for indoor positioning.
 from .base import BaseLocalizer, TraditionalLocalizer
 from .fingerprint import KNNLocalizer, WKNNLocalizer, SVMLocalizer, RandomForestLocalizer
 from .fusion import EnsembleLocalizer, StackingLocalizer
-from .transfer import TransferLocalizer, CORALLocalizer, TCALocalizer, KMMLocalizer
+from .transfer import TransferLocalizer
 
 __all__ = [
     'BaseLocalizer',
@@ -21,7 +21,4 @@ __all__ = [
     'StackingLocalizer',
     # Transfer Learning
     'TransferLocalizer',
-    'CORALLocalizer',
-    'TCALocalizer',
-    'KMMLocalizer',
 ]

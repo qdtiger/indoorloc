@@ -69,41 +69,32 @@ class TransferLocalizer(TraditionalLocalizer):
         >>> result = model.predict(target_signal)
     """
 
-    # Supported methods
-    METHODS = {
-        'coral': 'CORAL',
-        'tca': 'TransferComponentAnalysis',
-        'sa': 'SubspaceAlignment',
-        'kmm': 'KMMReweight',
-        'jdot': 'JDOTRegressor',
-        'otda': 'OTMapping',
-    }
-
     def __init__(
         self,
-        method: str = 'coral',
+        method: str = 'CORAL',
         base_estimator: Any = None,
-        n_components: Optional[int] = None,
-        kernel: str = 'rbf',
         predict_floor: bool = True,
         predict_building: bool = True,
         **kwargs
     ):
+        """
+        Initialize transfer localizer.
+
+        Args:
+            method: Any SKADA method name, e.g.:
+                - Feature: 'CORAL', 'SubspaceAlignment', 'TransferComponentAnalysis'
+                - Reweight: 'KMMReweight', 'KLIEPReweight', 'GaussianReweight'
+                - OT: 'OTMapping', 'EntropicOTMapping', 'LinearMonge'
+                - Deep: 'DANN', 'CDAN', 'MDD', 'MCC', 'DeepCORAL'
+            base_estimator: Base sklearn estimator (default: KNeighborsRegressor)
+            **kwargs: Arguments passed to SKADA method
+        """
         super().__init__(
             predict_floor=predict_floor,
             predict_building=predict_building,
-            **kwargs
         )
 
-        if method.lower() not in self.METHODS:
-            raise ValueError(
-                f"Unknown method: {method}. "
-                f"Supported: {list(self.METHODS.keys())}"
-            )
-
-        self.method = method.lower()
-        self.n_components = n_components
-        self.kernel = kernel
+        self.method = method
         self._da_kwargs = kwargs
 
         # Base estimator for coordinate regression
@@ -122,52 +113,44 @@ class TransferLocalizer(TraditionalLocalizer):
 
     @property
     def localizer_type(self) -> str:
-        return f'transfer_{self.method}'
+        return f'transfer_{self.method.lower()}'
 
     def _create_da_model(self, base_estimator, is_classifier: bool = False):
-        """Create domain adaptation model based on method."""
+        """Create domain adaptation model by dynamically importing from SKADA."""
         _check_skada()
+        import skada
 
-        if self.method == 'coral':
-            from skada import CORAL
-            return CORAL(base_estimator=base_estimator)
+        # Try to get the method class from skada
+        method_class = None
 
-        elif self.method == 'tca':
-            from skada import TransferComponentAnalysis
-            n_comp = self.n_components or 50
-            return TransferComponentAnalysis(
-                base_estimator=base_estimator,
-                n_components=n_comp
+        # Check common module locations
+        for module_name in ['', 'feature_based', 'instance_based', 'deep']:
+            try:
+                if module_name:
+                    module = getattr(skada, module_name, None)
+                    if module:
+                        method_class = getattr(module, self.method, None)
+                else:
+                    method_class = getattr(skada, self.method, None)
+
+                if method_class is not None:
+                    break
+            except AttributeError:
+                continue
+
+        if method_class is None:
+            raise ValueError(
+                f"Method '{self.method}' not found in SKADA. "
+                f"Check available methods at: https://scikit-adaptation.github.io/"
             )
 
-        elif self.method == 'sa':
-            from skada import SubspaceAlignment
-            n_comp = self.n_components or 50
-            return SubspaceAlignment(
-                base_estimator=base_estimator,
-                n_components=n_comp
-            )
-
-        elif self.method == 'kmm':
-            from skada import KMMReweight
-            # KMM requires sample_weight support
+        # For reweighting methods, need sample_weight support
+        if 'Reweight' in self.method or 'KMM' in self.method:
             if hasattr(base_estimator, 'set_fit_request'):
                 base_estimator = base_estimator.set_fit_request(sample_weight=True)
-            return KMMReweight(
-                base_estimator=base_estimator,
-                kernel=self.kernel
-            )
 
-        elif self.method == 'jdot':
-            from skada import JDOTRegressor
-            return JDOTRegressor(base_estimator=base_estimator)
-
-        elif self.method == 'otda':
-            from skada import OTMapping
-            return OTMapping(base_estimator=base_estimator)
-
-        else:
-            raise ValueError(f"Method {self.method} not implemented")
+        # Create the DA model with base estimator and any extra kwargs
+        return method_class(base_estimator=base_estimator, **self._da_kwargs)
 
     def _fit_impl(
         self,
@@ -351,8 +334,7 @@ class TransferLocalizer(TraditionalLocalizer):
         """Get model state for saving."""
         return {
             'method': self.method,
-            'n_components': self.n_components,
-            'kernel': self.kernel,
+            'da_kwargs': self._da_kwargs,
             'da_coord_model': self._da_coord_model,
             'da_floor_model': self._da_floor_model,
             'da_building_model': self._da_building_model,
@@ -361,53 +343,10 @@ class TransferLocalizer(TraditionalLocalizer):
     def _set_state(self, state: Dict[str, Any]) -> None:
         """Set model state from loading."""
         self.method = state['method']
-        self.n_components = state['n_components']
-        self.kernel = state['kernel']
+        self._da_kwargs = state.get('da_kwargs', {})
         self._da_coord_model = state['da_coord_model']
         self._da_floor_model = state['da_floor_model']
         self._da_building_model = state['da_building_model']
 
 
-# Convenience aliases
-@LOCALIZERS.register_module()
-class CORALLocalizer(TransferLocalizer):
-    """CORAL (Correlation Alignment) Localizer."""
-
-    def __init__(self, **kwargs):
-        super().__init__(method='coral', **kwargs)
-
-    @property
-    def localizer_type(self) -> str:
-        return 'coral'
-
-
-@LOCALIZERS.register_module()
-class TCALocalizer(TransferLocalizer):
-    """TCA (Transfer Component Analysis) Localizer."""
-
-    def __init__(self, n_components: int = 50, **kwargs):
-        super().__init__(method='tca', n_components=n_components, **kwargs)
-
-    @property
-    def localizer_type(self) -> str:
-        return 'tca'
-
-
-@LOCALIZERS.register_module()
-class KMMLocalizer(TransferLocalizer):
-    """KMM (Kernel Mean Matching) Localizer."""
-
-    def __init__(self, kernel: str = 'rbf', **kwargs):
-        super().__init__(method='kmm', kernel=kernel, **kwargs)
-
-    @property
-    def localizer_type(self) -> str:
-        return 'kmm'
-
-
-__all__ = [
-    'TransferLocalizer',
-    'CORALLocalizer',
-    'TCALocalizer',
-    'KMMLocalizer',
-]
+__all__ = ['TransferLocalizer']
