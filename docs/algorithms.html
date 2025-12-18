@@ -34,6 +34,8 @@
             --color-traditional: #3b82f6;
             --color-deep: #8b5cf6;
             --color-head: #ec4899;
+            --color-fusion: #f59e0b;
+            --color-transfer: #10b981;
         }
 
         [data-theme="dark"] {
@@ -271,6 +273,16 @@
         .category-head {
             background: rgba(236, 72, 153, 0.1);
             color: var(--color-head);
+        }
+
+        .category-fusion {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-fusion);
+        }
+
+        .category-transfer {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-transfer);
         }
 
         .algorithm-type {
@@ -513,7 +525,7 @@
         <div class="stats-section">
             <div class="stats-left">
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-traditional">2</span>
+                    <span class="stat-value" id="stat-traditional">4</span>
                     <span class="stat-label">Traditional</span>
                 </div>
                 <div class="stat-item">
@@ -521,8 +533,12 @@
                     <span class="stat-label">Backbones (timm)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-heads">7</span>
-                    <span class="stat-label">Prediction Heads</span>
+                    <span class="stat-value" id="stat-fusion">2</span>
+                    <span class="stat-label">Fusion</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-transfer">10+</span>
+                    <span class="stat-label">Transfer (SKADA)</span>
                 </div>
             </div>
             <div class="chart-wrapper">
@@ -540,6 +556,8 @@
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="traditional">Traditional</button>
             <button class="filter-btn" data-filter="deep">Deep Learning</button>
+            <button class="filter-btn" data-filter="fusion">Fusion</button>
+            <button class="filter-btn" data-filter="transfer">Transfer Learning</button>
             <button class="filter-btn" data-filter="head">Heads</button>
         </div>
 
@@ -614,13 +632,19 @@ result = model.predict(test)`,
                 category: "traditional",
                 type: "Kernel-based",
                 description: "支持向量机，通过核函数将数据映射到高维空间进行分类/回归",
-                implemented: false,
+                implemented: true,
                 params: [
-                    { name: "kernel", default: "'rbf'", desc: "核函数: rbf | linear | poly" },
-                    { name: "C", default: "1.0", desc: "正则化参数" }
+                    { name: "kernel", default: "'rbf'", desc: "核函数: rbf | linear | poly | sigmoid" },
+                    { name: "C", default: "1.0", desc: "正则化参数" },
+                    { name: "gamma", default: "'scale'", desc: "核系数: scale | auto | float" },
+                    { name: "predict_floor", default: "true", desc: "是否预测楼层" },
+                    { name: "predict_building", default: "true", desc: "是否预测建筑" }
                 ],
-                quickStart: `# Coming soon
-model = iloc.create_model('svm', kernel='rbf')`,
+                quickStart: `import indoorloc as iloc
+
+model = iloc.SVMLocalizer(kernel='rbf', C=1.0)
+model.fit(train)
+result = model.predict(test)`,
                 citation: {
                     authors: "Vapnik, V. N.",
                     title: "The Nature of Statistical Learning Theory",
@@ -628,7 +652,7 @@ model = iloc.create_model('svm', kernel='rbf')`,
                     year: 1995,
                     doi: "10.1007/978-1-4757-2440-0"
                 },
-                benchmark: null
+                benchmark: { dataset: "UJIndoorLoc", meanError: "9.5m", floorAcc: "88.0%" }
             },
             {
                 name: "Random Forest",
@@ -636,13 +660,20 @@ model = iloc.create_model('svm', kernel='rbf')`,
                 category: "traditional",
                 type: "Ensemble",
                 description: "随机森林，集成多棵决策树进行预测，抗过拟合能力强",
-                implemented: false,
+                implemented: true,
                 params: [
                     { name: "n_estimators", default: "100", desc: "树的数量" },
-                    { name: "max_depth", default: "None", desc: "最大深度" }
+                    { name: "max_depth", default: "None", desc: "最大深度" },
+                    { name: "min_samples_split", default: "2", desc: "内部节点分裂最小样本数" },
+                    { name: "n_jobs", default: "-1", desc: "并行数 (-1=全部CPU)" },
+                    { name: "predict_floor", default: "true", desc: "是否预测楼层" },
+                    { name: "predict_building", default: "true", desc: "是否预测建筑" }
                 ],
-                quickStart: `# Coming soon
-model = iloc.create_model('rf', n_estimators=100)`,
+                quickStart: `import indoorloc as iloc
+
+model = iloc.RandomForestLocalizer(n_estimators=100)
+model.fit(train)
+result = model.predict(test)`,
                 citation: {
                     authors: "Breiman, L.",
                     title: "Random Forests",
@@ -654,6 +685,52 @@ model = iloc.create_model('rf', n_estimators=100)`,
             },
 
             // ==================== Deep Learning Backbones ====================
+            {
+                name: "MLP",
+                fullName: "Multi-Layer Perceptron",
+                category: "deep",
+                type: "MLP Backbone",
+                description: "多层感知机，全连接网络，适合表格型RSSI数据，训练快速",
+                implemented: true,
+                params: [
+                    { name: "hidden_dims", default: "[512, 256, 128]", desc: "隐藏层维度列表" },
+                    { name: "dropout", default: "0.3", desc: "Dropout比例" },
+                    { name: "activation", default: "'relu'", desc: "激活函数: relu | gelu | silu" },
+                    { name: "batch_norm", default: "True", desc: "是否使用BatchNorm" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.DeepLocalizer(
+    backbone={'type': 'MLPBackbone', 'hidden_dims': [512, 256]},
+    head={'type': 'HybridHead', 'num_floors': 5}
+)
+model.fit(train, epochs=50)`,
+                citation: null,
+                benchmark: { dataset: "UJIndoorLoc", meanError: "8-12m", floorAcc: "~90%" }
+            },
+            {
+                name: "CNN1D",
+                fullName: "1D Convolutional Network",
+                category: "deep",
+                type: "CNN Backbone",
+                description: "一维卷积网络，将RSSI序列视为1D信号，提取局部特征模式",
+                implemented: true,
+                params: [
+                    { name: "channels", default: "[64, 128, 256]", desc: "卷积通道数列表" },
+                    { name: "kernel_size", default: "3", desc: "卷积核大小" },
+                    { name: "dropout", default: "0.3", desc: "Dropout比例" },
+                    { name: "pool_type", default: "'avg'", desc: "池化类型: avg | max" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.DeepLocalizer(
+    backbone={'type': 'CNN1DBackbone', 'channels': [64, 128, 256]},
+    head={'type': 'RegressionHead'}
+)
+model.fit(train, epochs=50)`,
+                citation: null,
+                benchmark: { dataset: "UJIndoorLoc", meanError: "6-10m", floorAcc: "~92%" }
+            },
             {
                 name: "ResNet18",
                 fullName: "Residual Network (18 layers)",
@@ -919,6 +996,210 @@ model.fit(train, epochs=50)`,
 )`,
                 citation: null,
                 benchmark: null
+            },
+
+            // ==================== Fusion Algorithms ====================
+            {
+                name: "Ensemble",
+                fullName: "Ensemble Localizer",
+                category: "fusion",
+                type: "Model Fusion",
+                description: "集成学习，组合多个定位器的预测结果，支持投票、平均等策略",
+                implemented: true,
+                params: [
+                    { name: "localizers", default: "required", desc: "基础定位器列表" },
+                    { name: "voting", default: "'soft'", desc: "投票方式: soft | hard" },
+                    { name: "weights", default: "None", desc: "各模型权重" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+ensemble = iloc.EnsembleLocalizer(
+    localizers=[
+        iloc.KNNLocalizer(k=3),
+        iloc.KNNLocalizer(k=5),
+        iloc.WKNNLocalizer(k=7)
+    ],
+    voting='soft'
+)
+ensemble.fit(train)
+result = ensemble.predict(test)`,
+                citation: null,
+                benchmark: { dataset: "UJIndoorLoc", meanError: "6.8m", floorAcc: "93.0%" }
+            },
+            {
+                name: "Stacking",
+                fullName: "Stacking Localizer",
+                category: "fusion",
+                type: "Model Fusion",
+                description: "堆叠学习，使用元学习器组合基础定位器的预测，自动学习最优组合权重",
+                implemented: true,
+                params: [
+                    { name: "localizers", default: "required", desc: "基础定位器列表" },
+                    { name: "meta_learner", default: "Ridge()", desc: "元学习器" },
+                    { name: "cv", default: "5", desc: "交叉验证折数" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+stacking = iloc.StackingLocalizer(
+    localizers=[
+        iloc.KNNLocalizer(k=5),
+        iloc.SVMLocalizer(),
+        iloc.RandomForestLocalizer()
+    ]
+)
+stacking.fit(train)
+result = stacking.predict(test)`,
+                citation: null,
+                benchmark: { dataset: "UJIndoorLoc", meanError: "6.5m", floorAcc: "94.0%" }
+            },
+
+            // ==================== Transfer Learning ====================
+            {
+                name: "CORAL",
+                fullName: "Correlation Alignment",
+                category: "transfer",
+                type: "Feature Alignment",
+                description: "相关对齐，通过对齐源域和目标域的二阶统计量实现域适应",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'CORAL'", desc: "SKADA方法名" },
+                    { name: "base_estimator", default: "KNeighborsRegressor()", desc: "基础估计器" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='CORAL')
+model.fit(source_train, target_data=target_unlabeled)
+result = model.predict(target_test)`,
+                citation: {
+                    authors: "Sun, B., Feng, J., & Saenko, K.",
+                    title: "Return of Frustratingly Easy Domain Adaptation",
+                    venue: "AAAI 2016",
+                    year: 2016,
+                    doi: "10.1609/aaai.v30i1.10306"
+                },
+                benchmark: null
+            },
+            {
+                name: "TCA",
+                fullName: "Transfer Component Analysis",
+                category: "transfer",
+                type: "Feature Alignment",
+                description: "迁移成分分析，在再生核希尔伯特空间中学习域不变特征",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'TransferComponentAnalysis'", desc: "SKADA方法名" },
+                    { name: "n_components", default: "30", desc: "迁移成分数量" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(
+    method='TransferComponentAnalysis',
+    n_components=30
+)
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Pan, S. J., et al.",
+                    title: "Domain Adaptation via Transfer Component Analysis",
+                    venue: "IEEE TNN 2011",
+                    year: 2011,
+                    doi: "10.1109/TNN.2010.2091281"
+                },
+                benchmark: null
+            },
+            {
+                name: "KMM",
+                fullName: "Kernel Mean Matching",
+                category: "transfer",
+                type: "Instance Reweight",
+                description: "核均值匹配，通过实例重加权减少源域与目标域分布差异",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'KMMReweight'", desc: "SKADA方法名" },
+                    { name: "kernel", default: "'rbf'", desc: "核函数" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='KMMReweight')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Huang, J., et al.",
+                    title: "Correcting Sample Selection Bias by Unlabeled Data",
+                    venue: "NIPS 2006",
+                    year: 2006,
+                    doi: "10.7551/mitpress/7503.003.0080"
+                },
+                benchmark: null
+            },
+            {
+                name: "DANN",
+                fullName: "Domain-Adversarial Neural Network",
+                category: "transfer",
+                type: "Deep Transfer",
+                description: "域对抗神经网络，通过对抗训练学习域不变特征表示",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'DANN'", desc: "SKADA方法名" },
+                    { name: "base_estimator", default: "MLPClassifier()", desc: "基础神经网络" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='DANN')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Ganin, Y., et al.",
+                    title: "Domain-Adversarial Training of Neural Networks",
+                    venue: "JMLR 2016",
+                    year: 2016,
+                    doi: "10.5555/2946645.2946704"
+                },
+                benchmark: null
+            },
+            {
+                name: "MDD",
+                fullName: "Margin Disparity Discrepancy",
+                category: "transfer",
+                type: "Deep Transfer",
+                description: "边际差异度量，基于分类器边际的域适应方法",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'MDD'", desc: "SKADA方法名" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='MDD')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Zhang, Y., et al.",
+                    title: "Bridging Theory and Algorithm for Domain Adaptation",
+                    venue: "ICML 2019",
+                    year: 2019,
+                    doi: "10.48550/arXiv.1904.05801"
+                },
+                benchmark: null
+            },
+            {
+                name: "OTMapping",
+                fullName: "Optimal Transport Mapping",
+                category: "transfer",
+                type: "Optimal Transport",
+                description: "最优传输映射，通过最优传输理论实现域间样本对齐",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'OTMapping'", desc: "SKADA方法名" },
+                    { name: "reg", default: "0.1", desc: "正则化参数" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='OTMapping')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Courty, N., et al.",
+                    title: "Optimal Transport for Domain Adaptation",
+                    venue: "IEEE TPAMI 2017",
+                    year: 2017,
+                    doi: "10.1109/TPAMI.2016.2615921"
+                },
+                benchmark: null
             }
         ];
 
@@ -1038,6 +1319,8 @@ model.fit(train, epochs=50)`,
 
             const traditionalCount = algorithms.filter(a => a.category === 'traditional').length;
             const deepCount = algorithms.filter(a => a.category === 'deep').length;
+            const fusionCount = algorithms.filter(a => a.category === 'fusion').length;
+            const transferCount = algorithms.filter(a => a.category === 'transfer').length;
             const headCount = algorithms.filter(a => a.category === 'head').length;
 
             if (chart) chart.destroy();
@@ -1045,10 +1328,10 @@ model.fit(train, epochs=50)`,
             chart = new Chart(document.getElementById('categoryChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Traditional', 'Deep Learning', 'Heads'],
+                    labels: ['Traditional', 'Deep Learning', 'Fusion', 'Transfer', 'Heads'],
                     datasets: [{
-                        data: [traditionalCount, deepCount, headCount],
-                        backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899'],
+                        data: [traditionalCount, deepCount, fusionCount, transferCount, headCount],
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899'],
                         borderWidth: 0
                     }]
                 },
