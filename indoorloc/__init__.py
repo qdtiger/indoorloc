@@ -53,6 +53,11 @@ from .localizers import (
     RandomForestLocalizer,
     EnsembleLocalizer,
     StackingLocalizer,
+    # Transfer Learning
+    TransferLocalizer,
+    CORALLocalizer,
+    TCALocalizer,
+    KMMLocalizer,
 )
 
 from .models import (
@@ -409,6 +414,11 @@ __all__ = [
     'RandomForestLocalizer',
     'EnsembleLocalizer',
     'StackingLocalizer',
+    # Transfer Learning
+    'TransferLocalizer',
+    'CORALLocalizer',
+    'TCALocalizer',
+    'KMMLocalizer',
 
     # Models - Backbones
     'BaseBackbone',
