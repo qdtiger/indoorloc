@@ -738,3 +738,8 @@ class DeepLocalizer(nn.Module):
     def is_trained(self) -> bool:
         """Check if the model has been trained."""
         return getattr(self, '_is_trained', False)
+
+    @property
+    def localizer_type(self) -> str:
+        """Get the localizer type identifier (BaseLocalizer API compatibility)."""
+        return 'deep'

@@ -37,7 +37,7 @@ class KNNLocalizer(TraditionalLocalizer):
     def __init__(
         self,
         k: int = 5,
-        weights: str = 'distance',
+        weights: str = 'uniform',
         metric: str = 'euclidean',
         algorithm: str = 'auto',
         leaf_size: int = 30,
