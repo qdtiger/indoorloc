@@ -118,8 +118,8 @@ These datasets have download sources but are **not yet integrated**:
 
 - [x] k-NN
 - [x] Weighted k-NN
-- [ ] SVM
-- [ ] Random Forest
+- [x] SVM
+- [x] Random Forest
 - [ ] Gaussian Process
 
 </td>
