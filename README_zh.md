@@ -204,13 +204,13 @@ indoorloc/
 ### 指纹定位
 - [x] k-NN（k近邻）
 - [x] 加权 k-NN
-- [ ] SVM（支持向量机）
-- [ ] 随机森林
+- [x] SVM（支持向量机）
+- [x] 随机森林
 - [ ] 高斯过程
 
 ### 深度学习
-- [ ] MLP（多层感知机）
-- [ ] CNN（卷积神经网络）
+- [x] MLP（多层感知机）
+- [x] CNN（卷积神经网络）
 - [ ] LSTM（长短期记忆网络）
 - [ ] Transformer
 
@@ -346,6 +346,26 @@ dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
 | TUJI1 | [Tampere 大学](https://trepo.tuni.fi/handle/10024/211225) + [Zenodo](https://zenodo.org/records/1226835) | 多设备采集 |
 | WiFi-RSSI | [GitHub 仓库](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | 小规模 (250 点) |
 | OWP-IMU | [arXiv](https://arxiv.org/abs/2505.16823) | 光学无线 + IMU 融合 |
+
+### 大文件数据集
+
+以下数据集文件较大，需要手动下载：
+
+| 数据集 | 大小 | 下载地址 | 存放位置 |
+|-------|------|---------|---------|
+| OpenCSI | ~2 GB | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | `~/.cache/indoorloc/datasets/opencsi/` |
+| CSUIndoorLoc | ~150 MB | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | 需要 PCAP 解析工具 |
+
+```bash
+# OpenCSI 下载命令
+curl -L -o ~/.cache/indoorloc/datasets/opencsi/openCSI.zip \
+  'https://ndownloader.figshare.com/files/34809589'
+
+# 解压
+cd ~/.cache/indoorloc/datasets/opencsi && unzip openCSI.zip
+```
+
+> **提示**：大文件数据集在未下载时会自动使用 demo 数据，方便快速测试代码逻辑。
 
 ## 评估指标
 

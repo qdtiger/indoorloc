@@ -49,6 +49,8 @@ from .localizers import (
     TraditionalLocalizer,
     KNNLocalizer,
     WKNNLocalizer,
+    SVMLocalizer,
+    RandomForestLocalizer,
 )
 
 from .models import (
@@ -401,6 +403,8 @@ __all__ = [
     'TraditionalLocalizer',
     'KNNLocalizer',
     'WKNNLocalizer',
+    'SVMLocalizer',
+    'RandomForestLocalizer',
 
     # Models - Backbones
     'BaseBackbone',
