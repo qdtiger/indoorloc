@@ -105,7 +105,7 @@ These datasets have download sources but are **not yet integrated**:
 
 ## Supported Algorithms
 
-**Traditional ML + 700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models) + **Transfer Learning** via [SKADA](https://github.com/scikit-adaptation/skada). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
+**30+ Traditional ML** via [sklearn](https://scikit-learn.org/) + **700+ Deep Learning backbones** via [timm](https://github.com/huggingface/pytorch-image-models) + **20+ Transfer Learning** via [SKADA](https://github.com/scikit-adaptation/skada). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
 
 <table>
 <tr>

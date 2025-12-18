@@ -11,7 +11,8 @@ class TestiBeaconRSSIDataset:
 
         assert iBeaconRSSIDataset is not None
         assert iBeaconRSSI is not None
-        assert iBeaconRSSI == iBeaconRSSIDataset
+        # iBeaconRSSI is a convenience function, not the class itself
+        assert callable(iBeaconRSSI)
 
     def test_dataset_constants(self):
         """Test dataset constants."""
@@ -19,7 +20,7 @@ class TestiBeaconRSSIDataset:
 
         assert hasattr(iBeaconRSSIDataset, 'ZENODO_RECORD_ID')
         assert hasattr(iBeaconRSSIDataset, 'NOT_DETECTED_VALUE')
-        assert iBeaconRSSIDataset.ZENODO_RECORD_ID == '1066044'
+        assert iBeaconRSSIDataset.ZENODO_RECORD_ID == '1618692'  # UJI BLE RSS DB
 
 
 class TestBLEIndoorDataset:
@@ -31,7 +32,8 @@ class TestBLEIndoorDataset:
 
         assert BLEIndoorDataset is not None
         assert BLEIndoor is not None
-        assert BLEIndoor == BLEIndoorDataset
+        # BLEIndoor is a convenience function, not the class itself
+        assert callable(BLEIndoor)
 
     def test_dataset_constants(self):
         """Test dataset constants."""
@@ -51,13 +53,14 @@ class TestBLERSSIUCIDataset:
 
         assert BLERSSIUCIDataset is not None
         assert BLERSSIU_UCI is not None
-        assert BLERSSIU_UCI == BLERSSIUCIDataset
+        # BLERSSIU_UCI is a convenience function, not the class itself
+        assert callable(BLERSSIU_UCI)
 
     def test_dataset_constants(self):
         """Test dataset constants."""
         from indoorloc.datasets import BLERSSIUCIDataset
 
-        assert hasattr(BLERSSIUCIDataset, 'UCI_DATASET_NAME')
+        assert hasattr(BLERSSIUCIDataset, 'UCI_URL')
         assert hasattr(BLERSSIUCIDataset, 'NUM_BEACONS')
         assert BLERSSIUCIDataset.NUM_BEACONS == 13
 

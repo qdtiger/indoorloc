@@ -20,8 +20,9 @@ class BenchmarkEntry:
 
     Attributes:
         method: Method/model name (e.g., "CNNLoc", "WKNN")
-        mean_error: Mean position error in meters
+        mean_error: Mean position error in meters (optional)
         median_error: Median position error in meters (optional)
+        accuracy: Classification accuracy in % for room/zone classification (optional)
         floor_accuracy: Floor classification accuracy as fraction 0-1 (optional)
         building_accuracy: Building classification accuracy as fraction 0-1 (optional)
         source: Paper citation or source
@@ -30,8 +31,9 @@ class BenchmarkEntry:
         notes: Additional notes about the benchmark
     """
     method: str
-    mean_error: float
+    mean_error: Optional[float] = None
     median_error: Optional[float] = None
+    accuracy: Optional[float] = None  # Classification accuracy in %
     floor_accuracy: Optional[float] = None
     building_accuracy: Optional[float] = None
     source: str = ""

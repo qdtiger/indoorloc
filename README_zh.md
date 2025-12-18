@@ -201,7 +201,7 @@ indoorloc/
 
 ## 支持的算法
 
-**传统ML + 700+深度学习模型** via [timm](https://github.com/huggingface/pytorch-image-models) + **迁移学习** via [SKADA](https://github.com/scikit-adaptation/skada)
+**30+ 传统ML** via [sklearn](https://scikit-learn.org/) + **700+ 深度学习模型** via [timm](https://github.com/huggingface/pytorch-image-models) + **20+ 迁移学习** via [SKADA](https://github.com/scikit-adaptation/skada)
 
 <table>
 <tr>

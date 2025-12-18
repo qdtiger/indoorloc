@@ -6,9 +6,11 @@ Provides abstract base classes for handling various sensor signals
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, TYPE_CHECKING
 import numpy as np
-import torch
+
+if TYPE_CHECKING:
+    import torch
 
 
 @dataclass
@@ -48,7 +50,7 @@ class BaseSignal(ABC):
 
     def __init__(
         self,
-        data: Union[np.ndarray, torch.Tensor, Dict],
+        data: Union[np.ndarray, 'torch.Tensor', Dict],
         metadata: Optional[SignalMetadata] = None
     ):
         """
@@ -62,7 +64,7 @@ class BaseSignal(ABC):
         self._metadata = metadata or SignalMetadata()
 
     @property
-    def data(self) -> Union[np.ndarray, torch.Tensor, Dict]:
+    def data(self) -> Union[np.ndarray, 'torch.Tensor', Dict]:
         """Get raw signal data."""
         return self._data
 
@@ -94,7 +96,7 @@ class BaseSignal(ABC):
         pass
 
     @abstractmethod
-    def to_tensor(self, device: str = 'cpu') -> torch.Tensor:
+    def to_tensor(self, device: str = 'cpu') -> 'torch.Tensor':
         """
         Convert signal to PyTorch tensor.
 
@@ -136,9 +138,13 @@ class BaseSignal(ABC):
         Returns:
             Dictionary representation
         """
+        def _looks_like_torch_tensor(x: Any) -> bool:
+            # Avoid importing torch at module import time (torch may be unavailable).
+            return all(hasattr(x, attr) for attr in ('detach', 'cpu', 'numpy'))
+
         data = self._data
-        if isinstance(data, torch.Tensor):
-            data = data.cpu().numpy()
+        if _looks_like_torch_tensor(data):
+            data = data.detach().cpu().numpy()
         if isinstance(data, np.ndarray):
             data = data.tolist()
 
@@ -170,7 +176,7 @@ class BaseSignal(ABC):
         pass
 
     @classmethod
-    def collate(cls, signals: List['BaseSignal']) -> torch.Tensor:
+    def collate(cls, signals: List['BaseSignal']) -> 'torch.Tensor':
         """
         Collate multiple signals into a batch tensor.
 
@@ -182,6 +188,13 @@ class BaseSignal(ABC):
         Returns:
             Batched tensor of shape (batch_size, feature_dim)
         """
+        try:
+            import torch
+        except ImportError as e:
+            raise ImportError(
+                "PyTorch is required for BaseSignal.collate(). Install with: pip install torch"
+            ) from e
+
         tensors = [s.to_tensor() for s in signals]
         return torch.stack(tensors, dim=0)
 
