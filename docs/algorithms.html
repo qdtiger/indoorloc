@@ -537,7 +537,7 @@
                     <span class="stat-label">Fusion</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value" id="stat-transfer">10+</span>
+                    <span class="stat-value" id="stat-transfer">13</span>
                     <span class="stat-label">Transfer (SKADA)</span>
                 </div>
             </div>
@@ -1198,6 +1198,146 @@ model.fit(source_train, target_data=target_unlabeled)`,
                     venue: "IEEE TPAMI 2017",
                     year: 2017,
                     doi: "10.1109/TPAMI.2016.2615921"
+                },
+                benchmark: null
+            },
+            {
+                name: "SA",
+                fullName: "Subspace Alignment",
+                category: "transfer",
+                type: "Feature Alignment",
+                description: "子空间对齐，通过学习源域和目标域子空间的变换矩阵实现对齐",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'SubspaceAlignment'", desc: "SKADA方法名" },
+                    { name: "n_components", default: "None", desc: "子空间维度" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='SubspaceAlignment')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Fernando, B., et al.",
+                    title: "Unsupervised Visual Domain Adaptation Using Subspace Alignment",
+                    venue: "ICCV 2013",
+                    year: 2013,
+                    doi: "10.1109/ICCV.2013.368"
+                },
+                benchmark: null
+            },
+            {
+                name: "KLIEP",
+                fullName: "Kullback-Leibler Importance Estimation",
+                category: "transfer",
+                type: "Instance Reweight",
+                description: "KL重要性估计，通过最小化KL散度估计样本权重",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'KLIEPReweight'", desc: "SKADA方法名" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='KLIEPReweight')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Sugiyama, M., et al.",
+                    title: "Direct Importance Estimation with Model Selection",
+                    venue: "NIPS 2007",
+                    year: 2007,
+                    doi: "10.5555/2981562.2981699"
+                },
+                benchmark: null
+            },
+            {
+                name: "DeepCORAL",
+                fullName: "Deep Correlation Alignment",
+                category: "transfer",
+                type: "Deep Transfer",
+                description: "深度CORAL，在深度网络中加入CORAL损失实现端到端域适应",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'DeepCORAL'", desc: "SKADA方法名" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='DeepCORAL')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Sun, B., & Saenko, K.",
+                    title: "Deep CORAL: Correlation Alignment for Deep Domain Adaptation",
+                    venue: "ECCV Workshops 2016",
+                    year: 2016,
+                    doi: "10.1007/978-3-319-49409-8_35"
+                },
+                benchmark: null
+            },
+            {
+                name: "CDAN",
+                fullName: "Conditional Domain Adversarial Network",
+                category: "transfer",
+                type: "Deep Transfer",
+                description: "条件域对抗网络，利用分类器预测信息增强域判别器",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'CDAN'", desc: "SKADA方法名" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='CDAN')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Long, M., et al.",
+                    title: "Conditional Adversarial Domain Adaptation",
+                    venue: "NeurIPS 2018",
+                    year: 2018,
+                    doi: "10.5555/3327345.3327453"
+                },
+                benchmark: null
+            },
+            {
+                name: "MCC",
+                fullName: "Minimum Class Confusion",
+                category: "transfer",
+                type: "Deep Transfer",
+                description: "最小类混淆，通过最小化类别间混淆来提升迁移性能",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'MCC'", desc: "SKADA方法名" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='MCC')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Jin, Y., et al.",
+                    title: "Minimum Class Confusion for Versatile Domain Adaptation",
+                    venue: "ECCV 2020",
+                    year: 2020,
+                    doi: "10.1007/978-3-030-58589-1_28"
+                },
+                benchmark: null
+            },
+            {
+                name: "EntropicOT",
+                fullName: "Entropic Optimal Transport",
+                category: "transfer",
+                type: "Optimal Transport",
+                description: "熵正则化最优传输，通过熵正则化加速OT计算并提升泛化",
+                implemented: true,
+                params: [
+                    { name: "method", default: "'EntropicOTMapping'", desc: "SKADA方法名" },
+                    { name: "reg_e", default: "1.0", desc: "熵正则化系数" }
+                ],
+                quickStart: `import indoorloc as iloc
+
+model = iloc.TransferLocalizer(method='EntropicOTMapping')
+model.fit(source_train, target_data=target_unlabeled)`,
+                citation: {
+                    authors: "Cuturi, M.",
+                    title: "Sinkhorn Distances: Lightspeed Computation of Optimal Transport",
+                    venue: "NeurIPS 2013",
+                    year: 2013,
+                    doi: "10.5555/2999611.2999792"
                 },
                 benchmark: null
             }
