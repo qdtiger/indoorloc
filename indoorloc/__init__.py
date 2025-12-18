@@ -55,9 +55,6 @@ from .localizers import (
     StackingLocalizer,
     # Transfer Learning
     TransferLocalizer,
-    CORALLocalizer,
-    TCALocalizer,
-    KMMLocalizer,
 )
 
 from .models import (
@@ -416,9 +413,6 @@ __all__ = [
     'StackingLocalizer',
     # Transfer Learning
     'TransferLocalizer',
-    'CORALLocalizer',
-    'TCALocalizer',
-    'KMMLocalizer',
 
     # Models - Backbones
     'BaseBackbone',
