@@ -1252,7 +1252,25 @@
                     ]
                 }
             },
-            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
+            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] },
+                benchmark: {
+                    sota: { method: "KD-3D CNN (Student)", error: 0.84, year: 2025 },
+                    baseline: { method: "WKNN (k=5)", error: 2.29, year: 2024 },
+                    entries: [
+                        { method: "KD-3D CNN (Student)", error: 0.84, year: 2025, ref: 1, isSota: true },
+                        { method: "3D-Separable CNN", error: 1.04, year: 2025, ref: 2 },
+                        { method: "2D-CNN + KD", error: 1.33, year: 2025, ref: 3 },
+                        { method: "WKNN (k=5)", error: 2.29, year: 2024, ref: 4 },
+                        { method: "KNN (k=3)", error: 2.37, year: 2024, ref: 4 }
+                    ],
+                    references: [
+                        "G. Rizwan et al., \"Knowledge Distillation-Driven 3D CNNs for Indoor Localization,\" Monash University, 2025.",
+                        "G. Rizwan et al., \"Enhancing Indoor Localization With Temporally-Aware Separable Group Shuffled CNNs,\" IEEE Access, 2025, doi: 10.1109/ACCESS.2025.3535948.",
+                        "G. Rizwan et al., \"Precise indoor localization using lightweight 2D-CNN with adaptive temperature guided knowledge distillation,\" Scientific Reports, 2025.",
+                        "IndoorLoc Team, \"IndoorLoc: A Unified Framework for Indoor Localization,\" GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
+                    ]
+                }
+            },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041",
                 benchmark: {
                     sota: { method: "DML-WKNN (Siamese Triplet)", error: 6.67, year: 2024 },
