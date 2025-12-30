@@ -1345,31 +1345,44 @@
 		            },
 	            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation",
 	                benchmark: {
-	                    metricLabel: "Mean Error",
+	                    metricLabel: "75th Percentile Error",
 	                    unit: "m",
 	                    direction: "lower",
+	                    decimals: 2,
+	                    note: "75th-percentile positioning error in Library zone (Tables 4–5). WC uses KF10; FP uses k=72.",
+	                    sota: { method: "WC (KF10, S6)", error: 1.83, year: 2019 },
+	                    baseline: { method: "FP kNN (k=72, A5)", error: 4.43, year: 2019 },
 	                    entries: [
-	                        { method: "KNN", error: null, year: 2019, ref: 1 },
-	                        { method: "CNN-based", error: null, year: 2022, ref: 2 }
+	                        { method: "WC (KF10, S6)", error: 1.83, year: 2019, ref: 1, isSota: true },
+	                        { method: "WC (KF10, BQ)", error: 1.88, year: 2019, ref: 1 },
+	                        { method: "WC (KF10, A5)", error: 2.63, year: 2019, ref: 1 },
+	                        { method: "FP kNN (k=72, A5)", error: 4.43, year: 2019, ref: 1 },
+	                        { method: "FP kNN (k=72, BQ)", error: 4.61, year: 2019, ref: 1 },
+	                        { method: "FP kNN (k=72, S6)", error: 4.88, year: 2019, ref: 1 }
 	                    ],
 	                    references: [
 	                        "G. M. Mendoza-Silva, M. Matey-Sanz, J. Torres-Sospedra, and J. Huerta, “BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning,” Data, vol. 4, no. 1, Art. no. 12, 2019, doi: 10.3390/data4010012.",
+	                        "G. M. Mendoza-Silva et al., “BLE RSS measurements database and supporting materials,” Zenodo, 2018, doi: 10.5281/zenodo.1618692.",
 	                        "N. Koutris et al., “Deep Learning-Based Indoor Localization Using Multi-View BLE Signal,” Sensors, vol. 22, no. 7, Art. no. 2759, 2022, doi: 10.3390/s22072759."
 	                    ]
 	                }
 	            },
-	            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] },
+	            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] }, url: "https://github.com/co60ca/BBIL",
 	                benchmark: {
-	                    metricLabel: "Mean Error",
+	                    metricLabel: "90th Percentile Error",
 	                    unit: "m",
 	                    direction: "lower",
+	                    decimals: 2,
+	                    note: "90th-percentile absolute error on test sets (BBIL README, Performance section).",
+	                    sota: { method: "Elman Network (Exp2)", error: 1.3792, year: 2019 },
+	                    baseline: { method: "LSTM (Exp1)", error: 2.3059, year: 2019 },
 	                    entries: [
-	                        { method: "Fingerprinting", error: null, year: 2018, ref: 1 },
-	                        { method: "Smart Museum System", error: null, year: 2020, ref: 2 }
+	                        { method: "Elman Network (Exp2)", error: 1.3792, year: 2019, ref: 2, isSota: true },
+	                        { method: "LSTM (Exp1)", error: 2.3059, year: 2019, ref: 2 }
 	                    ],
 	                    references: [
-	                        "B. Kennedy, G. Taylor, and P. Spachos, “BLE Beacon Based Patient Tracking in Smart Care Facilities,” in Proc. IEEE PerCom Workshops, 2018, doi: 10.1109/PERCOMW.2018.8480315.",
-	                        "P. Spachos and K. N. Plataniotis, “BLE Beacons for Indoor Positioning at an Interactive IoT-Based Smart Museum,” IEEE Syst. J., 2020, doi: 10.1109/JSYST.2020.2969088."
+	                        "M. Kennedy, P. Spachos, and G. W. Taylor, “BLE beacon indoor localization dataset,” Borealis, V1, 2019, doi: 10.5683/SP2/UTZTFT.",
+	                        "M. Kennedy, P. Spachos, and G. W. Taylor, “BBIL: BLE Beacon Indoor Localization Dataset,” GitHub repository, 2019. [Online]. Available: https://github.com/co60ca/BBIL."
 	                    ]
 	                }
 	            },
@@ -1424,16 +1437,20 @@
             },
 	            { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"], url: "https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset",
 	                benchmark: {
-	                    metricLabel: "Mean Error",
+	                    metricLabel: "Tracking MAE",
 	                    unit: "m",
 	                    direction: "lower",
-	                    note: "Benchmarks not yet curated for this dataset (methods listed from references).",
+	                    decimals: 2,
+	                    note: "Mean MAE across scenario sets S1–S6 (Table 3). Computed by averaging the per-scenario MAE means.",
+	                    sota: { method: "RLoc", error: 0.51, year: 2023 },
+	                    baseline: { method: "LOWESS", error: 0.58, year: 2023 },
 	                    entries: [
-	                        { method: "RLoc", error: null, year: 2023, ref: 1 },
-	                        { method: "Triangulation (AoA FFT)", error: null, year: null, ref: 2 }
+	                        { method: "RLoc", error: 0.51, year: 2023, ref: 1, isSota: true },
+	                        { method: "LOWESS", error: 0.58, year: 2023, ref: 1 },
+	                        { method: "UAT", error: 0.59, year: 2023, ref: 1 }
 	                    ],
 	                    references: [
-	                        "T. Zhang et al., “RLoc,” Proc. ACM Interact. Mob. Wearable Ubiquitous Technol., vol. 7, no. 4, pp. 1–28, 2023, doi: 10.1145/3631437.",
+	                        "T. Zhang et al., “RLoc,” Proc. ACM Interact. Mob. Wearable Ubiquitous Technol., vol. 7, no. 4, Art. no. 200, 2023, doi: 10.1145/3631437.",
 	                        "H-WILD: Human-held device WiFi indoor localization dataset, GitHub repository. [Online]. Available: https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset."
 	                    ]
 	                }
@@ -1540,12 +1557,17 @@
 	            },
 	            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"], url: "https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset",
 	                benchmark: {
-	                    metricLabel: "Task Metric",
-	                    unit: "",
+	                    metricLabel: "Median Error",
+	                    unit: "cm",
 	                    direction: "lower",
-	                    note: "Channel dataset; localization benchmarks depend on downstream task and protocol.",
+	                    decimals: 2,
+	                    note: "All-metric fingerprinting (ε-SVR), N=11 (12.5 cm grid). DIS achieves 1.88 cm median (95th: 4.38 cm).",
+	                    sota: { method: "ε-SVR (DIS, all-metric)", error: 1.88, year: 2022 },
+	                    baseline: { method: "ε-SVR (URA, all-metric)", error: 9.93, year: 2022 },
 	                    entries: [
-	                        { method: "Localization (task-specific)", error: null, year: 2022, ref: 2 }
+	                        { method: "ε-SVR (DIS, all-metric)", error: 1.88, year: 2022, ref: 2, isSota: true },
+	                        { method: "ε-SVR (ULA, all-metric)", error: 2.67, year: 2022, ref: 2 },
+	                        { method: "ε-SVR (URA, all-metric)", error: 9.93, year: 2022, ref: 2 }
 	                    ],
 	                    references: [
 	                        "Ultra-Dense Indoor MaMIMO CSI Dataset, IEEE DataPort, 2021, doi: 10.21227/nr6k-8r78.",
@@ -1612,15 +1634,21 @@
 	            },
 	            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2pos",
 	                benchmark: {
-	                    metricLabel: "Mean Error",
+	                    metricLabel: "Median Error",
 	                    unit: "m",
 	                    direction: "lower",
-	                    note: "Benchmarks not yet curated for this dataset.",
+	                    decimals: 2,
+	                    note: "In-domain (Arena 1→Arena 1) median position error reported in Table 3 (RadioBench).",
+	                    sota: { method: "PER2Pos (PER→Position)", error: 0.03, year: 2022 },
+	                    baseline: { method: "CSI2Pos (CSI→Position)", error: 0.07, year: 2022 },
 	                    entries: [
-	                        { method: "TBD", error: null, year: 2025, ref: 1 }
+	                        { method: "PER2Pos (PER→Position)", error: 0.03, year: 2022, ref: 2, isSota: true },
+	                        { method: "TAoA2Pos (TAoA→Position)", error: 0.03, year: 2022, ref: 2 },
+	                        { method: "CSI2Pos (CSI→Position)", error: 0.07, year: 2022, ref: 2 }
 	                    ],
 	                    references: [
-	                        "CSI2Pos dataset, TIB LDM Service, 2025, doi: 10.57702/z6ou3mng."
+	                        "CSI2Pos dataset, TIB LDM Service, 2025, doi: 10.57702/z6ou3mng.",
+	                        "M. Arnold and M. Alloulah, “Benchmarking Learnt Radio Localisation Under Distribution Shift,” arXiv:2210.01930, 2022. [Online]. Available: https://arxiv.org/abs/2210.01930."
 	                    ]
 	                }
 	            },
