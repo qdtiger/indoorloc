@@ -1233,7 +1233,25 @@
                     footnote: "* = building+floor success rate"
                 }
             },
-            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "1, 2", floor: "1-4", area: "per bldg", methods: ["list_buildings()", "list_floors()", "list_areas()"] } },
+            { name: "SODIndoorLoc", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~2,000/bldg", features: "~100 WAPs", environment: "2 buildings", citation: "SODIndoorLoc dataset", bibtex: "@misc{sodindoorloc...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "1, 2", floor: "1-4", area: "per bldg", methods: ["list_buildings()", "list_floors()", "list_areas()"] },
+                benchmark: {
+                    sota: { method: "MLP Regression", error: 2.3, year: 2022 },
+                    baseline: { method: "WKNN (k=5)", error: 4.2, year: 2022 },
+                    entries: [
+                        { method: "MLP Regression", error: 2.3, year: 2022, ref: 1, isSota: true },
+                        { method: "KNN Regression", error: 2.8, year: 2022, ref: 1 },
+                        { method: "Random Forest Regression", error: 3.1, year: 2022, ref: 1 },
+                        { method: "SVM Regression", error: 3.5, year: 2022, ref: 1 },
+                        { method: "FasterKAN", error: 3.56, floorAcc: 0.99, year: 2024, ref: 2 },
+                        { method: "WKNN (k=5)", error: 4.2, year: 2022, ref: 1 },
+                        { method: "KNN (k=1)", error: 5.1, year: 2022, ref: 1 }
+                    ],
+                    references: [
+                        "J. Bi et al., \"Supplementary open dataset for WiFi indoor localization based on received signal strength,\" Satellite Navigation, 2022. DOI: 10.1186/s43020-022-00086-y.",
+                        "Y. Feng et al., \"Machine Learning-Based WiFi Indoor Localization with FasterKAN,\" Engineered Science, 2024. DOI: 10.30919/es1289."
+                    ]
+                }
+            },
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041" },
             { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
