@@ -1520,17 +1520,21 @@
                     ]
                 }
             },
-	            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"],
+	            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"], url: "https://figshare.com/articles/dataset/openCSI/19596379",
 	                benchmark: {
-	                    metricLabel: "Mean Error",
+	                    metricLabel: "Median Error",
 	                    unit: "m",
 	                    direction: "lower",
-	                    note: "Benchmarks not yet curated for this dataset.",
+	                    note: "Reported on the openCSI radio map (small-scale LTE setup).",
+	                    sota: { method: "CNN (OpenCSI)", error: 0.65, year: 2021 },
+	                    baseline: { method: "No-Predictive-Value Baseline", error: 1.75, year: 2021 },
 	                    entries: [
-	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                        { method: "CNN (OpenCSI)", error: 0.65, year: 2021, ref: 1, isSota: true },
+	                        { method: "No-Predictive-Value Baseline", error: 1.75, year: 2021, ref: 1 }
 	                    ],
 	                    references: [
-	                        "OpenCSI dataset (Figshare)."
+	                        "A. Gassner, C. Musat, A. Rusu, and A. Burg, “OpenCSI: An Open-Source Dataset for Indoor Localization Using CSI-Based Fingerprinting,” arXiv:2104.07963, 2021. [Online]. Available: https://arxiv.org/abs/2104.07963.",
+	                        "A. Gassner, “openCSI,” Figshare, dataset, 2022, doi: 10.6084/m9.figshare.19596379.v1."
 	                    ]
 	                }
 	            },
