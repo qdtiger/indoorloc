@@ -2076,8 +2076,9 @@
                 `;
             }
 
-            const topEntries = sortedEntries.slice(0, 4);
-            const totalMethods = sortedEntries.length;
+	            const topEntries = sortedEntries.slice(0, 4);
+	            const extraEntries = sortedEntries.slice(4);
+	            const totalMethods = sortedEntries.length;
 
             const renderMethodCell = (e) => {
                 const hasRef = refs.length > 0 && e.ref;
@@ -2095,16 +2096,18 @@
             const renderFloorCell = (e) => `<td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>`;
             const renderYearCell = (e) => `<td>${e.year || '-'}</td>`;
 
-            const referencesHTML = refs.length
-                ? `
-                    <div class="benchmark-refs">
-                        <h5>References</h5>
-                        <ol>
-                            ${refs.map((r, i) => `<li id="ref-${d.name}-${i + 1}">${r}</li>`).join('')}
-                        </ol>
-                    </div>
-                `
-                : '';
+	            const referencesHTML = refs.length
+	                ? `
+	                    <div class="benchmark-refs">
+	                        <h5>References</h5>
+	                        <ol>
+	                            ${refs.map((r, i) => `<li id="ref-${d.name}-${i + 1}">${r}</li>`).join('')}
+	                        </ol>
+	                    </div>
+	                `
+	                : '';
+
+	            const showExpanded = isExpanded || (totalMethods <= 4 && refs.length > 0);
 
 	            return `
 	                <div class="benchmark-card">
@@ -2143,29 +2146,31 @@
                             <button class="benchmark-expand-btn" onclick="toggleBenchmarkExpand('${d.name}', event)">
                                 ${isExpanded ? '▲ Show Less' : `▼ Show All ${totalMethods} Methods`}
                             </button>
-                        ` : ''}
+	                        ` : ''}
 
-                        <!-- Expanded Content -->
-                        <div class="benchmark-expanded ${isExpanded ? 'show' : ''}">
-                            <table class="benchmark-table">
-                                <tbody>
-                                    ${sortedEntries.slice(4).map(e => `
-                                        <tr>
-                                            ${renderMethodCell(e)}
-                                            ${renderValueCell(e)}
-                                            ${renderFloorCell(e)}
-                                            ${renderYearCell(e)}
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
+	                        <!-- Expanded Content -->
+	                        <div class="benchmark-expanded ${showExpanded ? 'show' : ''}">
+	                            ${extraEntries.length ? `
+	                                <table class="benchmark-table">
+	                                    <tbody>
+	                                        ${extraEntries.map(e => `
+	                                            <tr>
+	                                                ${renderMethodCell(e)}
+	                                                ${renderValueCell(e)}
+	                                                ${renderFloorCell(e)}
+	                                                ${renderYearCell(e)}
+	                                            </tr>
+	                                        `).join('')}
+	                                    </tbody>
+	                                </table>
+	                            ` : ''}
 
-                            ${referencesHTML}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+	                            ${referencesHTML}
+	                        </div>
+	                    </div>
+	                </div>
+	            `;
+	        }
 
         function renderDetail(d) {
             const code = generateCode(d);
