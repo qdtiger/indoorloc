@@ -1255,7 +1255,22 @@
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041" },
             { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
-            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
+            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] },
+                benchmark: {
+                    sota: { method: "kNN (Best Tuned)", error: 1.8, year: 2024 },
+                    baseline: { method: "1NN (Baseline)", error: 2.5, year: 2024 },
+                    entries: [
+                        { method: "kNN (Best Tuned)", error: 1.8, year: 2024, ref: 1, isSota: true },
+                        { method: "1NN (Baseline)", error: 2.5, year: 2024, ref: 1 },
+                        { method: "WKNN (k=5)", error: 2.73, year: 2024, ref: 2 },
+                        { method: "KNN (k=3)", error: 2.9, year: 2024, ref: 2 }
+                    ],
+                    references: [
+                        "L. Klus et al., \"TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density,\" Data in Brief, 2024. DOI: 10.1016/j.dib.2024.110356.",
+                        "IndoorLoc Library Baseline (re-implementation / testing runs; not a peer-reviewed benchmark)."
+                    ]
+                }
+            },
             { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
             { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation" },
             { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
