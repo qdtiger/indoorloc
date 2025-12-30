@@ -5,13 +5,13 @@ Test Script for IndoorLoc
 Evaluate a trained model on a test dataset.
 
 Usage:
-    indoorloc-test configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl
+    indoorloc-test indoorloc/configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl
 
     # With custom data root
-    indoorloc-test configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl --data-root data/ujindoorloc
+    indoorloc-test indoorloc/configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl --data-root data/ujindoorloc
 
     # Save predictions
-    indoorloc-test configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl --out predictions.csv
+    indoorloc-test indoorloc/configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl --out predictions.csv
 """
 import argparse
 import csv

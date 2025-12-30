@@ -6,6 +6,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/indoorloc)](https://pypi.org/project/indoorloc/)
 [![Build](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions)
+[![Docs](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://qdtiger.github.io/indoorloc/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
@@ -13,6 +14,8 @@
 [![Issues](https://img.shields.io/github/issues/qdtiger/indoorloc)](https://github.com/qdtiger/indoorloc/issues)
 [![Last Commit](https://img.shields.io/github/last-commit/qdtiger/indoorloc)](https://github.com/qdtiger/indoorloc/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/qdtiger/indoorloc/pulls)
+
+[文档](https://qdtiger.github.io/indoorloc/) · [安装](#安装) · [快速开始](#快速开始) · [支持的数据集](#支持的数据集) · [支持的算法](#支持的算法) · [贡献](#贡献) · [引用](#引用)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -25,6 +28,8 @@
 **一行代码**加载任意室内定位数据集。**一行代码**完成训练和评估。
 
 ```python
+import indoorloc as iloc
+
 train, test = iloc.UJIndoorLoc(download=True)  # 就这么简单。自动下载、自动解析、开箱即用。
 ```
 
@@ -35,6 +40,8 @@ IndoorLoc 为 36+ 室内定位数据集提供统一接口，涵盖 WiFi、BLE、
 **一行代码 = 一个数据集。** 专注于学习算法，而不是和数据格式较劲。
 
 ```python
+import indoorloc as iloc
+
 # 36+ 数据集，统一 API
 train, test = iloc.UJIndoorLoc(download=True)    # WiFi RSSI
 train, test = iloc.CSIIndoor(download=True)       # WiFi CSI
@@ -46,6 +53,10 @@ train, test = iloc.UWBIndoor(download=True)       # UWB 测距
 **需要时完全可控。** 灵活的数据流水线、可定制的预处理、插件化的算法扩展。
 
 ```python
+import indoorloc as iloc
+from indoorloc.localizers.base import BaseLocalizer
+from indoorloc.registry import LOCALIZERS
+
 # 自定义预处理流水线（先过滤弱AP，再归一化）
 dataset = iloc.UJIndoorLoc(
     download=True,
@@ -74,33 +85,42 @@ class MyNovelLocalizer(BaseLocalizer):
 
 ## 安装
 
+### Conda（推荐）
+
+#### GPU (CUDA 11.8)
+
 ```bash
-# 推荐：Conda + PyTorch（Python 3.10）
-# 二选一：
-# GPU (CUDA 11.8)
 conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
-
-# 仅 CPU
-conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
-
 conda activate indoorloc
 pip install "indoorloc[full]"
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
 
-# 自检
+#### 仅 CPU
+
+```bash
+conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
+conda activate indoorloc
+pip install "indoorloc[full]"
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
 <details>
 <summary>Legacy（Python 3.8 + PyTorch 1.10.1）</summary>
 
+#### GPU (CUDA 11.3)
+
 ```bash
-# 二选一：
-# GPU (CUDA 11.3)
 conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
+conda activate indoorloc-py38
+pip install "indoorloc[full]"
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
 
-# 仅 CPU
+#### 仅 CPU
+
+```bash
 conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
-
 conda activate indoorloc-py38
 pip install "indoorloc[full]"
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
@@ -166,7 +186,7 @@ print(f"预测楼层: {result.floor}")
 ## 使用配置文件
 
 ```yaml
-# configs/wifi/knn_ujindoorloc.yaml
+# indoorloc/configs/wifi/knn_ujindoorloc.yaml
 model:
   type: KNNLocalizer
   k: 5
@@ -180,7 +200,7 @@ model:
 import indoorloc as iloc
 
 # 从配置文件加载
-model = iloc.create_model(config='configs/wifi/knn_ujindoorloc.yaml')
+model = iloc.create_model(config='indoorloc/configs/wifi/knn_ujindoorloc.yaml')
 ```
 
 ## 自定义模型注册
