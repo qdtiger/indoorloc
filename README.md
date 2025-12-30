@@ -2,12 +2,17 @@
 
 <img src="assets/logo.png" width="600">
 
-**室内定位工具库 | Multi-dataset, multi-model indoor localization toolkit**
+**IndoorLoc | 室内定位工具库**  
+Multi-dataset, multi-model indoor localization toolkit
 
 [![PyPI](https://img.shields.io/pypi/v/indoorloc)](https://pypi.org/project/indoorloc/)
+[![CI](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://qdtiger.github.io/indoorloc/)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
+
+[Docs](https://qdtiger.github.io/indoorloc/) · [Installation](#installation) · [Quickstart](#quickstart) · [Datasets](#datasets) · [Models](#models--algorithms) · [Contributing](#contributing) · [Citation](#citation)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -15,35 +20,110 @@
 
 ---
 
-### For Beginners: 3 Lines = Complete Workflow
+## Highlights
 
-Skip the boilerplate. Focus on algorithms, not data formats.
+- Unified API for indoor localization across WiFi / BLE / CSI / UWB
+- 12 verified datasets (auto-download when available) + extensible dataset registry
+- Classic ML (scikit-learn) + deep models (PyTorch, `timm`)
+- OpenMMLab-style YAML configs for reproducible experiments
+
+## Installation
+
+### Conda (recommended)
+
+#### GPU (CUDA 11.8)
+
+```bash
+conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
+conda activate indoorloc
+pip install "indoorloc[full]"
+
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
+
+#### CPU-only
+
+```bash
+conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
+conda activate indoorloc
+pip install "indoorloc[full]"
+
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
+
+### Optional extras
+
+```bash
+pip install "indoorloc[vision]"     # torchvision + opencv-python
+pip install "indoorloc[datasets]"   # scipy + h5py + requests
+pip install "indoorloc[deep]"       # timm backbones
+pip install "indoorloc[deepmimo]"   # DeepMIMO (requires Python >= 3.10)
+```
+
+<details>
+<summary>Legacy (Python 3.8 + PyTorch 1.10.1)</summary>
+
+#### GPU (CUDA 11.3)
+
+```bash
+conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
+conda activate indoorloc-py38
+pip install "indoorloc[full]"
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
+
+#### CPU-only
+
+```bash
+conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
+conda activate indoorloc-py38
+pip install "indoorloc[full]"
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
+
+</details>
+
+<details>
+<summary>Quick install (less reproducible)</summary>
+
+```bash
+pip install indoorloc
+pip install "indoorloc[full]"
+```
+
+</details>
+
+---
+
+## Quickstart
+
+### Python API (recommended)
 
 ```python
 import indoorloc as iloc
 
-train, test = iloc.load_dataset('ujindoorloc')           # 12 verified datasets
-model = iloc.create_model('resnet18', dataset=train)     # Auto-configure model
+train, test = iloc.load_dataset("ujindoorloc")            # 12 verified datasets
+model = iloc.create_model("resnet18", dataset=train)      # Auto-configure model
 results = model.fit(train).evaluate(test)                # Train & evaluate
 ```
 
 Auto-download datasets · Auto-adapt dimensions · Auto-configure model
 
-### For Experts: YAML Config + CLI
+### YAML Config + CLI
 
-Full control via OpenMMLab-style configuration system.
+Config templates live in `indoorloc/configs/`.
 
 ```bash
-python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml
+indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
 
 # Override any parameter
-python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml \
-    --model.backbone.model_name efficientnet_b0 \
-    --train.lr 5e-4 --train.epochs 200
+indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml \
+  --model.backbone.model_name efficientnet_b0 \
+  --train.lr 5e-4 --train.epochs 200
 ```
 
 ```yaml
-# configs/wifi/resnet18_ujindoorloc.yaml
+# indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
 _base_:
   - ../_base_/models/resnet.yaml
 
@@ -60,13 +140,25 @@ train:
   lr: 0.001
 ```
 
----
+## Documentation
 
-## Supported Datasets
+- Dataset catalogue: https://qdtiger.github.io/indoorloc/datasets.html
+- Algorithm zoo: https://qdtiger.github.io/indoorloc/algorithms.html
+- Config reference: `indoorloc/configs/README.md`
 
-**12 verified datasets** that work out-of-the-box with `iloc.load_dataset()`. [View Details →](https://qdtiger.github.io/indoorloc/datasets.html)
+## Datasets
 
-### ✅ Available (Verified)
+- List available dataset IDs: `iloc.list_available_datasets()`
+- Load a dataset: `train, test = iloc.load_dataset("ujindoorloc")`
+
+Verified dataset IDs (12):
+
+- WiFi: `ujindoorloc`, `sodindoorloc`, `longtermwifi`, `tampere`, `wlanrssi`, `tuji1`
+- BLE: `ble_indoor`, `ibeacon_rssi`, `ble_rssi_uci`
+- CSI: `csi_fingerprint`, `hwild`, `haloc`
+
+<details>
+<summary>Verified datasets (table)</summary>
 
 | Type | Dataset | ID | Samples |
 |------|---------|-----|---------|
@@ -83,7 +175,10 @@ train:
 | | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k |
 | | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k |
 
-### 🔄 Pending (URL Known, Not Yet Verified)
+</details>
+
+<details>
+<summary>Pending datasets (help wanted)</summary>
 
 These datasets have download sources but are **not yet integrated**:
 
@@ -99,13 +194,19 @@ These datasets have download sources but are **not yet integrated**:
 | MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | Requires account |
 | WILDv2 | [Kaggle](https://www.kaggle.com/competitions/wild-v2) | Requires Kaggle API |
 
-> **Contributing**: Help us verify pending datasets! See [Contributing Guide](CONTRIBUTING.md)
+> Contribute: help us verify pending datasets! See `CONTRIBUTING.md`.
 
----
+</details>
 
-## Supported Algorithms
+## Models & Algorithms
 
-**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Meta-learning**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+). [View Details →](https://qdtiger.github.io/indoorloc/algorithms.html)
+- List available models: `iloc.list_models()`
+- Create a model: `iloc.create_model("KNNLocalizer", k=5)` / `iloc.create_model("resnet18", dataset=train)`
+
+<details>
+<summary>Algorithm families</summary>
+
+**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Meta-learning**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+).
 
 <table>
 <tr>
@@ -154,88 +255,15 @@ These datasets have download sources but are **not yet integrated**:
 </tr>
 </table>
 
----
-
-## Installation
-
-```bash
-# Recommended: Conda + PyTorch (Python 3.10)
-# Choose ONE:
-# GPU (CUDA 11.8)
-conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
-
-# CPU-only
-conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
-
-conda activate indoorloc
-pip install "indoorloc[full]"
-
-# Verify
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
-<details>
-<summary>Legacy (Python 3.8 + PyTorch 1.10.1)</summary>
-
-```bash
-# Choose ONE:
-# GPU (CUDA 11.3)
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
-
-# CPU-only
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
-
-conda activate indoorloc-py38
-pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
 </details>
 
 <details>
-<summary>Quick install (less reproducible)</summary>
+<summary><b>Advanced usage</b></summary>
 
-```bash
-pip install indoorloc
-pip install "indoorloc[vision]"   # With vision support
-pip install "indoorloc[full]"     # All features
-pip install -e ".[full,dev]"      # Development
-```
-
-</details>
-
----
-
-<details>
-<summary><b>Advanced Usage</b></summary>
-
-### YAML Configuration
-
-```yaml
-# configs/wifi/resnet18_ujindoorloc.yaml
-_base_:
-  - ../_base_/models/resnet.yaml
-
-model:
-  backbone:
-    model_name: resnet18
-    pretrained: true
-  head:
-    num_floors: 5
-    num_buildings: 3
-
-train:
-  epochs: 100
-  lr: 0.001
-```
-
-```bash
-python tools/train.py configs/wifi/resnet18_ujindoorloc.yaml
-```
-
-### Custom Model Registration
+### Custom model registration
 
 ```python
+import indoorloc as iloc
 from indoorloc.registry import LOCALIZERS
 from indoorloc.localizers.base import BaseLocalizer
 
@@ -246,24 +274,24 @@ class MyLocalizer(BaseLocalizer):
         return self
 
     def predict(self, signal):
-        pass
+        raise NotImplementedError
 
-model = iloc.create_model('MyLocalizer')
+model = iloc.create_model("MyLocalizer")
 ```
 
-### Project Structure
+### Project structure
 
 ```
 indoorloc/
 ├── signals/          # WiFi, BLE, IMU, etc.
 ├── locations/        # Location classes
-├── datasets/         # 12 verified + pending
+├── datasets/         # Verified + pending
 ├── localizers/       # ML & DL algorithms
 ├── evaluation/       # Metrics
 └── configs/          # YAML configs
 ```
 
-### Evaluation Metrics
+### Evaluation metrics
 
 | Metric | Description |
 |--------|-------------|
@@ -274,7 +302,9 @@ indoorloc/
 
 </details>
 
----
+## Contributing
+
+See `CONTRIBUTING.md`.
 
 ## License
 

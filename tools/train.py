@@ -8,7 +8,7 @@ is in indoorloc.tools.train.
 For installed package, use: indoorloc-train
 
 Usage:
-    python tools/train.py configs/wifi/knn_ujindoorloc.yaml
+    python tools/train.py indoorloc/configs/wifi/knn_ujindoorloc.yaml
 """
 import sys
 from pathlib import Path

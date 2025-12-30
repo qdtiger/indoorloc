@@ -3,13 +3,13 @@
 Train Script for IndoorLoc
 
 Usage:
-    indoorloc-train configs/wifi/knn_ujindoorloc.yaml
+    indoorloc-train indoorloc/configs/wifi/knn_ujindoorloc.yaml
 
     # With overrides
-    indoorloc-train configs/wifi/knn_ujindoorloc.yaml --model.k 7
+    indoorloc-train indoorloc/configs/wifi/knn_ujindoorloc.yaml --model.k 7
 
     # Specify work directory
-    indoorloc-train configs/wifi/knn_ujindoorloc.yaml --work-dir work_dirs/exp1
+    indoorloc-train indoorloc/configs/wifi/knn_ujindoorloc.yaml --work-dir work_dirs/exp1
 """
 import argparse
 import ast

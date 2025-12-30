@@ -8,7 +8,7 @@ is in indoorloc.tools.test.
 For installed package, use: indoorloc-test
 
 Usage:
-    python tools/test.py configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl
+    python tools/test.py indoorloc/configs/wifi/knn_ujindoorloc.yaml checkpoint.pkl
 """
 import sys
 from pathlib import Path
