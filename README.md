@@ -159,16 +159,47 @@ These datasets have download sources but are **not yet integrated**:
 ## Installation
 
 ```bash
-pip install indoorloc
+# Recommended: Conda + PyTorch (Python 3.10)
+# Choose ONE:
+# GPU (CUDA 11.8)
+conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
+
+# CPU-only
+conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
+
+conda activate indoorloc
+pip install "indoorloc[full]"
+
+# Verify
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
 <details>
-<summary>More options</summary>
+<summary>Legacy (Python 3.8 + PyTorch 1.10.1)</summary>
 
 ```bash
-pip install indoorloc[vision]   # With vision support
-pip install indoorloc[full]     # All features
-pip install -e ".[dev]"         # Development
+# Choose ONE:
+# GPU (CUDA 11.3)
+conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
+
+# CPU-only
+conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
+
+conda activate indoorloc-py38
+pip install "indoorloc[full]"
+python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
+```
+
+</details>
+
+<details>
+<summary>Quick install (less reproducible)</summary>
+
+```bash
+pip install indoorloc
+pip install "indoorloc[vision]"   # With vision support
+pip install "indoorloc[full]"     # All features
+pip install -e ".[full,dev]"      # Development
 ```
 
 </details>
