@@ -1247,33 +1247,25 @@
                         { method: "KNN (k=1)", error: 5.1, year: 2022, ref: 1 }
                     ],
                     references: [
-                        "J. Bi et al., \"Supplementary open dataset for WiFi indoor localization based on received signal strength,\" Satellite Navigation, 2022. DOI: 10.1186/s43020-022-00086-y.",
-                        "Y. Feng et al., \"Machine Learning-Based WiFi Indoor Localization with FasterKAN,\" Engineered Science, 2024. DOI: 10.30919/es1289."
+                        "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, and L. Huang, \"Supplementary open dataset for WiFi indoor localization based on received signal strength,\" Satellite Navigation, vol. 3, Art. no. 25, 2022, doi: 10.1186/s43020-022-00086-y.",
+                        "Y. Feng et al., \"Machine Learning-Based WiFi Indoor Localization with FasterKAN,\" Engineered Science, 2024, doi: 10.30919/es1289."
                     ]
                 }
             },
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041",
                 benchmark: {
-                    sota: { method: "CNN-1D", error: 2.89, floorAcc: 0.981, year: 2020 },
-                    baseline: { method: "KNN (k=1)", error: 5.21, floorAcc: 0.912, year: 2017 },
+                    sota: { method: "DML-WKNN (Siamese Triplet)", error: 6.67, year: 2024 },
+                    baseline: { method: "Euc-WKNN", error: 8.72, year: 2024 },
                     entries: [
-                        { method: "CNN-1D", error: 2.89, floorAcc: 0.981, year: 2020, ref: 1, isSota: true },
-                        { method: "ResNet-18", error: 3.12, floorAcc: 0.974, year: 2021, ref: 2 },
-                        { method: "DNN (3-layer)", error: 3.45, floorAcc: 0.967, year: 2017, ref: 3 },
-                        { method: "Gaussian Process", error: 3.89, floorAcc: 0.956, year: 2018, ref: 4 },
-                        { method: "WKNN (k=5)", error: 4.32, floorAcc: 0.941, year: 2017, ref: 5 },
-                        { method: "WKNN (k=3)", error: 4.56, floorAcc: 0.934, year: 2017, ref: 5 },
-                        { method: "Random Forest", error: 4.78, floorAcc: 0.923, year: 2019, ref: 6 },
-                        { method: "KNN (k=1)", error: 5.21, floorAcc: 0.912, year: 2017, ref: 5 }
+                        { method: "DML-WKNN (Siamese Triplet)", error: 6.67, year: 2024, ref: 1, isSota: true },
+                        { method: "APD-WKNN", error: 7.96, year: 2024, ref: 1 },
+                        { method: "Euc-WKNN", error: 8.72, year: 2024, ref: 1 },
+                        { method: "SAWKNN", error: 9.01, year: 2024, ref: 1 },
+                        { method: "Man-WKNN", error: 9.12, year: 2024, ref: 1 }
                     ],
                     references: [
-                        "1D Conv Study (2020).",
-                        "Transfer Learning Study (2021).",
-                        "Tampere Dataset Paper (2017).",
-                        "GP Localization (2018).",
-                        "Baseline (2017).",
-                        "Ensemble Study (2019)."
+                        "J.-H. Park, D. Kim, and Y.-J. Suh, \"WKNN-Based Wi-Fi Fingerprinting with Deep Distance Metric Learning via Siamese Triplet Network for Indoor Positioning,\" Electronics, vol. 13, no. 22, Art. no. 4448, 2024, doi: 10.3390/electronics13224448."
                     ]
                 }
             },
@@ -1289,8 +1281,8 @@
                         { method: "KNN (k=3)", error: 2.9, year: 2024, ref: 2 }
                     ],
                     references: [
-                        "L. Klus et al., \"TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density,\" Data in Brief, 2024. DOI: 10.1016/j.dib.2024.110356.",
-                        "IndoorLoc Library Baseline (re-implementation / testing runs; not a peer-reviewed benchmark)."
+                        "L. Klus et al., \"TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density,\" Data in Brief, Art. no. 110356, 2024, doi: 10.1016/j.dib.2024.110356.",
+                        "IndoorLoc Team, \"IndoorLoc: A Unified Framework for Indoor Localization,\" GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
                     ]
                 }
             },
