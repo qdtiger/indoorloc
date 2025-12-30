@@ -850,14 +850,21 @@
             color: #86efac;
         }
 
-        .benchmark-content {
-            padding: 14px;
-        }
+	        .benchmark-content {
+	            padding: 14px;
+	        }
 
-        /* Error Range Bar */
-        .benchmark-range {
-            margin-bottom: 14px;
-        }
+	        .benchmark-note {
+	            font-size: 0.6875rem;
+	            color: var(--text-secondary);
+	            line-height: 1.35;
+	            margin: 0 0 10px 0;
+	        }
+
+	        /* Error Range Bar */
+	        .benchmark-range {
+	            margin-bottom: 14px;
+	        }
 
         .range-labels-top {
             display: flex;
@@ -1252,25 +1259,25 @@
                     ]
                 }
             },
-            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] },
-                benchmark: {
-                    sota: { method: "KD-3D CNN (Student)", error: 0.84, year: 2025 },
-                    baseline: { method: "WKNN (k=5)", error: 2.29, year: 2024 },
-                    entries: [
-                        { method: "KD-3D CNN (Student)", error: 0.84, year: 2025, ref: 1, isSota: true },
-                        { method: "3D-Separable CNN", error: 1.04, year: 2025, ref: 2 },
-                        { method: "2D-CNN + KD", error: 1.33, year: 2025, ref: 3 },
-                        { method: "WKNN (k=5)", error: 2.29, year: 2024, ref: 4 },
-                        { method: "KNN (k=3)", error: 2.37, year: 2024, ref: 4 }
-                    ],
-                    references: [
-                        "G. Rizwan et al., \"Knowledge Distillation-Driven 3D CNNs for Indoor Localization,\" Monash University, 2025.",
-                        "G. Rizwan et al., \"Enhancing Indoor Localization With Temporally-Aware Separable Group Shuffled CNNs,\" IEEE Access, 2025, doi: 10.1109/ACCESS.2025.3535948.",
-                        "G. Rizwan et al., \"Precise indoor localization using lightweight 2D-CNN with adaptive temperature guided knowledge distillation,\" Scientific Reports, 2025.",
-                        "IndoorLoc Team, \"IndoorLoc: A Unified Framework for Indoor Localization,\" GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
-                    ]
-                }
-            },
+	            { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] },
+	                benchmark: {
+	                    sota: { method: "KD-3D CNN (Student)", error: 0.84, year: 2025 },
+	                    baseline: { method: "WKNN (k=5)", error: 2.29, year: 2024 },
+	                    entries: [
+	                        { method: "KD-3D CNN (Student)", error: 0.84, year: 2025, ref: 1, isSota: true },
+	                        { method: "3D-Separable CNN", error: 1.04, year: 2025, ref: 2 },
+	                        { method: "2D-CNN + KD", error: 1.33, year: 2025, ref: 3 },
+	                        { method: "WKNN (k=5)", error: 2.29, year: 2024, ref: 4 },
+	                        { method: "KNN (k=3)", error: 2.37, year: 2024, ref: 4 }
+	                    ],
+	                    references: [
+	                        "M. Rizwan, Y. H. Ng, H.-Y. Wong, and C. K. Tan, “Knowledge Distillation-Driven 3D Convolutional Neural Networks for Efficient and Robust Indoor Localization,” IEEE Access, vol. 13, pp. 157764–157779, 2025, doi: 10.1109/ACCESS.2025.3602462.",
+	                        "M. Rizwan, Y. H. Ng, H.-Y. Wong, and C. K. Tan, “Enhancing Indoor Localization With Temporally-Aware Separable Group Shuffled CNNs and Skip Connections,” IEEE Access, vol. 13, pp. 30274–30286, 2025, doi: 10.1109/ACCESS.2025.3535948.",
+	                        "M. Rizwan et al., “Precise indoor localization using a lightweight 2D-CNN with adaptive temperature guided iterative self-knowledge distillation,” Sci. Rep., vol. 15, no. 1, 2025, doi: 10.1038/s41598-025-25589-x.",
+	                        "IndoorLoc Team, “IndoorLoc: A Unified Framework for Indoor Localization,” GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
+	                    ]
+	                }
+	            },
             { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041",
                 benchmark: {
                     sota: { method: "DML-WKNN (Siamese Triplet)", error: 6.67, year: 2024 },
@@ -1287,9 +1294,27 @@
                     ]
                 }
             },
-            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
-            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] },
+            { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] },
                 benchmark: {
+                    metricLabel: "Accuracy",
+                    unit: "%",
+                    direction: "higher",
+                    sota: { method: "WKNN (k=5)", error: 98.3, year: 2024 },
+                    baseline: { method: "Logistic Regression", error: 97.2, year: 2020 },
+                    entries: [
+                        { method: "WKNN (k=5)", error: 98.3, year: 2024, ref: 2, isSota: true },
+                        { method: "KNN (k=1)", error: 98.3, year: 2024, ref: 2 },
+                        { method: "KNN (k=3)", error: 98.2, year: 2024, ref: 2 },
+                        { method: "Logistic Regression", error: 97.2, year: 2020, ref: 1 }
+                    ],
+                    references: [
+                        "Subhash Karthik, \"WiFi Indoor Localization Tutorial,\" 2020.",
+                        "IndoorLoc Team, \"IndoorLoc: A Unified Framework for Indoor Localization,\" GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
+                    ]
+                }
+            },
+	            { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] },
+	                benchmark: {
                     sota: { method: "kNN (Best Tuned)", error: 1.8, year: 2024 },
                     baseline: { method: "1NN (Baseline)", error: 2.5, year: 2024 },
                     entries: [
@@ -1302,39 +1327,452 @@
                         "L. Klus et al., \"TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density,\" Data in Brief, Art. no. 110356, 2024, doi: 10.1016/j.dib.2024.110356.",
                         "IndoorLoc Team, \"IndoorLoc: A Unified Framework for Indoor Localization,\" GitHub repository, 2024. [Online]. Available: https://github.com/qdtiger/indoorloc."
                     ]
+	                }
+	            },
+		            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] },
+		                benchmark: {
+		                    metricLabel: "Mean Error",
+		                    unit: "m",
+		                    direction: "lower",
+		                    note: "Benchmarks not yet curated for this dataset.",
+		                    entries: [
+		                        { method: "TBD", error: null, year: null, ref: 1 }
+		                    ],
+		                    references: [
+		                        "RSS-based indoor localization dataset (Zenodo)."
+		                    ]
+		                }
+		            },
+	            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation",
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    entries: [
+	                        { method: "KNN", error: null, year: 2019, ref: 1 },
+	                        { method: "CNN-based", error: null, year: 2022, ref: 2 }
+	                    ],
+	                    references: [
+	                        "G. M. Mendoza-Silva, M. Matey-Sanz, J. Torres-Sospedra, and J. Huerta, “BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning,” Data, vol. 4, no. 1, Art. no. 12, 2019, doi: 10.3390/data4010012.",
+	                        "N. Koutris et al., “Deep Learning-Based Indoor Localization Using Multi-View BLE Signal,” Sensors, vol. 22, no. 7, Art. no. 2759, 2022, doi: 10.3390/s22072759."
+	                    ]
+	                }
+	            },
+	            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] },
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    entries: [
+	                        { method: "Fingerprinting", error: null, year: 2018, ref: 1 },
+	                        { method: "Smart Museum System", error: null, year: 2020, ref: 2 }
+	                    ],
+	                    references: [
+	                        "B. Kennedy, G. Taylor, and P. Spachos, “BLE Beacon Based Patient Tracking in Smart Care Facilities,” in Proc. IEEE PerCom Workshops, 2018, doi: 10.1109/PERCOMW.2018.8480315.",
+	                        "P. Spachos and K. N. Plataniotis, “BLE Beacons for Indoor Positioning at an Interactive IoT-Based Smart Museum,” IEEE Syst. J., 2020, doi: 10.1109/JSYST.2020.2969088."
+	                    ]
+	                }
+	            },
+	            { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000", features: "~10 beacons", environment: "Controlled", citation: "UCI BLE dataset", bibtex: "@misc{blerssiu...}", tags: ["ble"],
+	                benchmark: {
+	                    metricLabel: "Accuracy",
+	                    unit: "%",
+	                    direction: "higher",
+	                    decimals: 2,
+	                    note: "Average accuracy reported in Table 2 (13 beacon classes).",
+	                    sota: { method: "Optimized CNN (Improved PSO)", error: 97.92, year: 2021 },
+	                    baseline: { method: "KNN", error: 75.78, year: 2021 },
+	                    entries: [
+	                        { method: "Optimized CNN (Improved PSO)", error: 97.92, year: 2021, ref: 1, isSota: true },
+	                        { method: "CNN", error: 91.35, year: 2021, ref: 1 },
+	                        { method: "MLP", error: 90.85, year: 2021, ref: 1 },
+	                        { method: "SVM", error: 88.67, year: 2021, ref: 1 },
+	                        { method: "Logistic Regression", error: 86.32, year: 2021, ref: 1 },
+	                        { method: "Decision Tree", error: 83.95, year: 2021, ref: 1 },
+	                        { method: "ANN", error: 81.27, year: 2021, ref: 1 },
+	                        { method: "KNN", error: 75.78, year: 2021, ref: 1 }
+	                    ],
+	                    references: [
+	                        "M. Mohammadi and A. Al-Fuqaha, “Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO,” Sensors, vol. 21, no. 6, Art. no. 1995, 2021, doi: 10.3390/s21061995."
+	                    ]
+	                }
+	            },
+            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] },
+                benchmark: {
+                    sota: { method: "ResNet18", error: 18.17, year: 2024 },
+                    baseline: { method: "KNN (k=3)", error: 20.83, year: 2024 },
+                    entries: [
+                        { method: "ResNet18", error: 18.17, year: 2024, ref: 1, isSota: true },
+                        { method: "KNN (k=3)", error: 20.83, year: 2024, ref: 1 }
+                    ],
+                    references: [
+                        "IndoorLoc Team, \"IndoorLoc Library Benchmark (Demo Data, 10 epochs),\" 2024."
+                    ]
                 }
             },
-            { name: "RSSBased", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D", auto: true, samples: "~800", features: "~50 WAPs", environment: "Office", citation: "RSS-based dataset", bibtex: "@dataset{rssbased...}", tags: ["wifi-rssi"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
-            { name: "iBeaconRSSI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "1,420", features: "13 iBeacons", environment: "Indoor space", citation: "UCI iBeacon dataset", bibtex: "@misc{ibeaconrssi...}", tags: ["ble"], envParams: { floor: "varies", methods: ["list_floors()"] }, url: "https://archive.ics.uci.edu/dataset/527/ibeacon+rssi+dataset+for+indoor+localization+and+navigation" },
-            { name: "BLEIndoor", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~3,000", features: "~20 beacons", environment: "Multi-floor", citation: "BLE indoor dataset", bibtex: "@misc{bleindoor...}", tags: ["ble", "multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
-            { name: "BLERSSIU_UCI", signal: "RSSI", subtype: "BLE RSSI", source: "BLE", dataSource: "UCI", position: "2D", auto: true, samples: "~2,000", features: "~10 beacons", environment: "Controlled", citation: "UCI BLE dataset", bibtex: "@misc{blerssiu...}", tags: ["ble"] },
-            { name: "CSIIndoor", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~10,000", features: "CSI amp/phase", environment: "Office", citation: "CSI indoor dataset", bibtex: "@misc{csiindoor...}", tags: ["csi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] } },
-            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"], envParams: { environment: "1-4", methods: ["list_environments()"] } },
-            { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"] },
-            { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000", features: "CSI+RSSI", environment: "CSU campus", citation: "CSU dataset", bibtex: "@misc{csuindoorloc...}", tags: ["csi", "multi-floor"] },
-            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"], envParams: { environment: "1-8" }, url: "https://www.kaggle.com/competitions/wild-v2" },
-            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"], envParams: { trajectory: "1-6" } },
-            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"], url: "https://ai-iot-sensing.github.io/projects/project.html" },
-            { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000", features: "D2D CSI", environment: "D2D scenario", citation: "WiFi CSI D2D", bibtex: "@dataset{wificsi_d2d...}", tags: ["csi"] },
-            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"] },
-            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"], url: "https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset" },
-            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: true, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"], envParams: { scenario: "indoor_los, indoor_nlos, outdoor, cell_edge", methods: ["list_scenarios()"] }, url: "https://darus.uni-stuttgart.de/dataverse/dichasus" },
-            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"], url: "https://espargos.net/datasets/" },
-            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"], url: "https://doi.org/10.48804/0IMQDF" },
-            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: true, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"], envParams: { scenario: "O1_60, I1_2p4, etc.", methods: ["list_scenarios()"] }, url: "https://www.deepmimo.net" },
-            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2pos" },
-            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2taoa" },
-            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"], envParams: { floor: "varies", methods: ["list_floors()"] } },
-            { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000", features: "TWR", environment: "Ranging", citation: "UWB ranging dataset", bibtex: "@dataset{uwbranging...}", tags: ["uwb"] },
-            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] } },
-            { name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "WiFi+IMU", environment: "Pedestrian", citation: "WiFi-IMU fusion", bibtex: "@dataset{wifiimuhybrid...}", tags: ["fusion", "multi-floor"] },
-            { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~6,000", features: "WiFi+Mag", environment: "Steel building", citation: "WiFi-Mag fusion", bibtex: "@misc{wifimagnetichybrid...}", tags: ["fusion", "multi-floor"] },
-            { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~10,000", features: "WiFi+BLE+IMU", environment: "Mall", citation: "Multi-modal dataset", bibtex: "@dataset{multimodalindoor...}", tags: ["fusion", "multi-floor"] },
-            { name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "Multi-sensor", environment: "Research bldg", citation: "Sensor fusion dataset", bibtex: "@dataset{sensorfusion...}", tags: ["fusion", "multi-floor"] },
-            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~3,000", features: "Visible light", environment: "LED office", citation: "VLC positioning", bibtex: "@dataset{vlcindoor...}", tags: ["multi-floor"] },
-            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~2,000", features: "Ultrasonic ToF", environment: "Room-level", citation: "Ultrasound dataset", bibtex: "@dataset{ultrasoundindoor...}", tags: ["multi-floor"] },
-            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~4,000", features: "RFID RSS", environment: "Warehouse", citation: "RFID indoor dataset", bibtex: "@misc{rfidindoor...}", tags: ["multi-floor"] }
-        ];
+            { name: "CSIFingerprint", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D", auto: true, samples: "~5,000", features: "30×3 subcarriers", environment: "Lab", citation: "CSI fingerprint dataset", bibtex: "@misc{csifingerprint...}", tags: ["csi"], envParams: { environment: "1-4", methods: ["list_environments()"] },
+                benchmark: {
+                    entries: [
+                        { method: "BLS-Location", error: null, year: 2023, ref: 1 },
+                        { method: "CSI Image + CNN", error: null, year: 2022, ref: 2 }
+                    ],
+                    references: [
+                        "X. Zhu et al., \"BLS-Location: A Wireless Fingerprint Localization Algorithm Based on Broad Learning,\" IEEE Trans. Mobile Computing, 2023, doi: 10.1109/TMC.2021.3073005.",
+                        "X. Zhu et al., \"Intelligent Fingerprint-Based Localization Scheme Using CSI Images for Internet of Things,\" IEEE Trans. Network Science and Engineering, 2022, doi: 10.1109/TNSE.2022.3163358."
+                    ]
+                }
+            },
+	            { name: "HWILD", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~8,000", features: "Commodity CSI", environment: "Multi-room", citation: "HWILD dataset", bibtex: "@misc{hwild...}", tags: ["csi", "multi-floor"], url: "https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset",
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset (methods listed from references).",
+	                    entries: [
+	                        { method: "RLoc", error: null, year: 2023, ref: 1 },
+	                        { method: "Triangulation (AoA FFT)", error: null, year: null, ref: 2 }
+	                    ],
+	                    references: [
+	                        "T. Zhang et al., “RLoc,” Proc. ACM Interact. Mob. Wearable Ubiquitous Technol., vol. 7, no. 4, pp. 1–28, 2023, doi: 10.1145/3631437.",
+	                        "H-WILD: Human-held device WiFi indoor localization dataset, GitHub repository. [Online]. Available: https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset."
+	                    ]
+	                }
+	            },
+	            { name: "CSUIndoorLoc", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~6,000", features: "CSI+RSSI", environment: "CSU campus", citation: "CSU dataset", bibtex: "@misc{csuindoorloc...}", tags: ["csi", "multi-floor"], url: "https://github.com/awang0413/CSILoc",
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset (methods listed from references).",
+	                    entries: [
+	                        { method: "CSILoc (1D-CNN)", error: null, year: 2022, ref: 1 },
+	                        { method: "OpenCSI", error: null, year: null, ref: 1 },
+	                        { method: "CiFi", error: null, year: null, ref: 1 },
+	                        { method: "DelFin", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "L. Wang and S. Pasricha, “A Framework for CSI-Based Indoor Localization with 1D Convolutional Neural Networks,” in Proc. IEEE IPIN, 2022, doi: 10.1109/IPIN54987.2022.9918112.",
+	                        "CSILoc project repository. [Online]. Available: https://github.com/awang0413/CSILoc."
+	                    ]
+	                }
+	            },
+	            { name: "WILDv2", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Kaggle", position: "2D+Floor", auto: false, samples: "~15,000", features: "CSI", environment: "Large-scale", citation: "WILD v2 dataset", bibtex: "@misc{wildv2...}", tags: ["csi", "multi-floor"], envParams: { environment: "1-8" }, url: "https://www.kaggle.com/competitions/wild-v2",
+	                benchmark: {
+                    sota: { method: "ResNet18", error: 8.40, year: 2024 },
+                    baseline: { method: "KNN (k=3)", error: 8.74, year: 2024 },
+                    entries: [
+                        { method: "ResNet18", error: 8.40, year: 2024, ref: 1, isSota: true },
+                        { method: "KNN (k=3)", error: 8.74, year: 2024, ref: 1 }
+                    ],
+                    references: [
+                        "IndoorLoc Team, \"IndoorLoc Library Benchmark (Demo Data, 10 epochs),\" 2024."
+                    ]
+	                }
+	            },
+	            { name: "HALOC", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "CSI amplitude", environment: "Office", citation: "HALOC dataset", bibtex: "@dataset{haloc...}", tags: ["csi", "multi-floor"], envParams: { trajectory: "1-6" }, url: "https://zenodo.org/records/10715595",
+	                benchmark: {
+	                    metricLabel: "RMSE",
+	                    unit: "m",
+	                    direction: "lower",
+	                    decimals: 3,
+	                    note: "Test RMSE reported on the HALOC test sequence.",
+	                    entries: [
+	                        { method: "EfficientNetV2-S (regression)", error: 0.197, year: 2024, ref: 1, isSota: true }
+	                    ],
+	                    references: [
+	                        "J. Strohmayer and M. Kampel, “WiFi CSI-Based Long-Range Person Localization Using Directional Antennas,” in Proc. ICLR (Tiny Papers Track), 2024. [Online]. Available: https://openreview.net/forum?id=AOJFcEh5Eb."
+	                    ]
+	                }
+	            },
+	            { name: "CSIBench", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Web", position: "2D", auto: false, samples: "Benchmark", features: "Various CSI", environment: "Multiple", citation: "CSIBench", bibtex: "@misc{csibench...}", tags: ["csi"], url: "https://ai-iot-sensing.github.io/projects/project.html",
+	                benchmark: {
+	                    metricLabel: "Accuracy",
+	                    unit: "%",
+	                    direction: "higher",
+	                    decimals: 2,
+	                    note: "Room-level localization results (Table 3 in CSI-Bench paper).",
+	                    sota: { method: "ResNet-18", error: 100.00, year: 2025 },
+	                    baseline: { method: "MLP", error: 87.14, year: 2025 },
+	                    entries: [
+	                        { method: "ResNet-18", error: 100.00, year: 2025, ref: 1, isSota: true },
+	                        { method: "TimeSformer-1D", error: 100.00, year: 2025, ref: 1 },
+	                        { method: "ViT", error: 99.94, year: 2025, ref: 1 },
+	                        { method: "PatchTST", error: 99.91, year: 2025, ref: 1 },
+	                        { method: "Transformer", error: 99.27, year: 2025, ref: 1 },
+	                        { method: "LSTM", error: 99.12, year: 2025, ref: 1 },
+	                        { method: "MLP", error: 87.14, year: 2025, ref: 1 }
+	                    ],
+	                    references: [
+	                        "G. Zhu et al., “CSI-Bench: A Large-Scale In-the-Wild Dataset for Multi-task WiFi Sensing,” arXiv:2505.21866, 2025. [Online]. Available: https://arxiv.org/abs/2505.21866."
+	                    ]
+	                }
+	            },
+	            { name: "WiFiCSID2D", signal: "CSI", subtype: "WiFi CSI", source: "WiFi", dataSource: "Figshare", position: "2D", auto: true, samples: "~4,000", features: "D2D CSI", environment: "D2D scenario", citation: "WiFi CSI D2D", bibtex: "@dataset{wificsi_d2d...}", tags: ["csi"],
+	                benchmark: {
+                    sota: { method: "ResNet18", error: 2.54, year: 2024 },
+                    baseline: { method: "KNN (k=3)", error: 2.65, year: 2024 },
+                    entries: [
+                        { method: "ResNet18", error: 2.54, year: 2024, ref: 1, isSota: true },
+                        { method: "KNN (k=3)", error: 2.65, year: 2024, ref: 1 }
+                    ],
+                    references: [
+                        "IndoorLoc Team, \"IndoorLoc Library Benchmark (Demo Data, 10 epochs),\" 2024."
+                    ]
+                }
+            },
+	            { name: "OpenCSI", signal: "CSI", subtype: "LTE CSI", source: "LTE", dataSource: "Figshare", position: "2D", auto: true, samples: "~20,000", features: "LTE CSI", environment: "Cellular", citation: "OpenCSI dataset", bibtex: "@dataset{opencsi...}", tags: ["csi"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "OpenCSI dataset (Figshare)."
+	                    ]
+	                }
+	            },
+	            { name: "MaMIMOCSI", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "IEEE", position: "2D", auto: false, samples: "~30,000", features: "64-antenna", environment: "Testbed", citation: "MaMIMO CSI", bibtex: "@misc{mamimocsi...}", tags: ["csi"], url: "https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset",
+	                benchmark: {
+	                    metricLabel: "Task Metric",
+	                    unit: "",
+	                    direction: "lower",
+	                    note: "Channel dataset; localization benchmarks depend on downstream task and protocol.",
+	                    entries: [
+	                        { method: "Localization (task-specific)", error: null, year: 2022, ref: 2 }
+	                    ],
+	                    references: [
+	                        "Ultra-Dense Indoor MaMIMO CSI Dataset, IEEE DataPort, 2021, doi: 10.21227/nr6k-8r78.",
+	                        "H. Li et al., “Toward Fine-Grained Indoor Localization Based on Massive MIMO-OFDM System: Experiment and Analysis,” IEEE Sensors J., vol. 22, no. 6, pp. 5318–5328, 2022, doi: 10.1109/JSEN.2021.3111986."
+	                    ]
+	                }
+	            },
+	            { name: "DICHASUS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DaRUS", position: "3D", auto: true, samples: "~50,000", features: "Distributed", environment: "Industrial", citation: "DICHASUS dataset", bibtex: "@dataset{dichasus...}", tags: ["csi"], envParams: { scenario: "indoor_los, indoor_nlos, outdoor, cell_edge", methods: ["list_scenarios()"] }, url: "https://darus.uni-stuttgart.de/dataverse/dichasus",
+	                benchmark: {
+	                    metricLabel: "Task Metric",
+	                    unit: "",
+	                    direction: "lower",
+	                    note: "CSI dataset; no standardized indoor localization benchmark on this page yet.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: 2024, ref: 1 }
+	                    ],
+	                    references: [
+	                        "F. Euchner et al., “CSI Dataset dichasus-adxx: ARENA2036: Distributed setup in industrial environment at 3.4GHz,” DaRUS, 2024, doi: 10.18419/DARUS-4062."
+	                    ]
+	                }
+	            },
+	            { name: "ESPARGOS", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "2D", auto: false, samples: "~10,000", features: "Sparse array", environment: "Testbed", citation: "ESPARGOS", bibtex: "@misc{espargos...}", tags: ["csi"], url: "https://espargos.net/datasets/",
+	                benchmark: {
+	                    metricLabel: "Task Metric",
+	                    unit: "",
+	                    direction: "lower",
+	                    note: "CSI dataset; no standardized indoor localization benchmark on this page yet.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: 2024, ref: 1 }
+	                    ],
+	                    references: [
+	                        "ESPARGOS datasets. [Online]. Available: https://espargos.net/datasets/.",
+	                        "Example ESPARGOS DaRUS record, 2024, doi: 10.18419/DARUS-4973."
+	                    ]
+	                }
+	            },
+	            { name: "MaMIMOUAV", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "DOI", position: "3D", auto: false, samples: "~8,000", features: "UAV CSI", environment: "Outdoor-indoor", citation: "MaMIMO UAV", bibtex: "@misc{mamimouav...}", tags: ["csi"], url: "https://doi.org/10.48804/0IMQDF",
+	                benchmark: {
+	                    metricLabel: "Task Metric",
+	                    unit: "",
+	                    direction: "lower",
+	                    note: "CSI dataset; no standardized indoor localization benchmark on this page yet.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "MaMIMO UAV dataset, doi: 10.48804/0IMQDF."
+	                    ]
+	                }
+	            },
+	            { name: "DeepMIMO", signal: "CSI", subtype: "Massive MIMO", source: "Massive MIMO", dataSource: "Web", position: "3D", auto: true, samples: "Synthetic", features: "Ray-tracing", environment: "Simulated", citation: "DeepMIMO, ITA 2019", bibtex: "@article{deepmimo...}", tags: ["csi"], envParams: { scenario: "O1_60, I1_2p4, etc.", methods: ["list_scenarios()"] }, url: "https://www.deepmimo.net",
+	                benchmark: {
+	                    metricLabel: "Task Metric",
+	                    unit: "",
+	                    direction: "lower",
+	                    note: "Synthetic channel dataset; localization benchmarks depend on task setup.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "DeepMIMO dataset. [Online]. Available: https://www.deepmimo.net."
+	                    ]
+	                }
+	            },
+	            { name: "CSI2Pos", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~25,000", features: "Sub-6GHz", environment: "Office", citation: "CSI2Pos dataset", bibtex: "@dataset{csi2pos...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2pos",
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: 2025, ref: 1 }
+	                    ],
+	                    references: [
+	                        "CSI2Pos dataset, TIB LDM Service, 2025, doi: 10.57702/z6ou3mng."
+	                    ]
+	                }
+	            },
+            { name: "CSI2TAoA", signal: "CSI", subtype: "RF CSI", source: "RF", dataSource: "TIB", position: "2D+Floor", auto: false, samples: "~20,000", features: "ToA/AoA", environment: "Geometric", citation: "CSI2TAoA dataset", bibtex: "@dataset{csi2taoa...}", tags: ["csi", "multi-floor"], url: "https://service.tib.eu/ldmservice/dataset/csi2taoa",
+                benchmark: {
+                    sota: { method: "KNN (k=3)", error: 4.22, year: 2024 },
+                    baseline: { method: "ResNet18", error: 4.25, year: 2024 },
+                    entries: [
+                        { method: "KNN (k=3)", error: 4.22, year: 2024, ref: 1, isSota: true },
+                        { method: "ResNet18", error: 4.25, year: 2024, ref: 1 }
+                    ],
+                    references: [
+                        "IndoorLoc Team, \"IndoorLoc Library Benchmark (Demo Data, 10 epochs),\" 2024."
+                    ]
+                }
+            },
+	            { name: "UWBIndoor", signal: "ToF", subtype: "UWB ToF", source: "UWB", dataSource: "Zenodo", position: "3D", auto: true, samples: "~15,000", features: "UWB+IMU", environment: "3D tracking", citation: "UWB indoor dataset", bibtex: "@dataset{uwbindoor...}", tags: ["uwb"], envParams: { floor: "varies", methods: ["list_floors()"] },
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "UWB indoor dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "UWBRanging", signal: "ToF", subtype: "UWB TWR", source: "UWB", dataSource: "Zenodo", position: "2D", auto: true, samples: "~5,000", features: "TWR", environment: "Ranging", citation: "UWB ranging dataset", bibtex: "@dataset{uwbranging...}", tags: ["uwb"],
+	                benchmark: {
+	                    metricLabel: "Ranging Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "UWB ranging dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+            { name: "MagneticIndoor", signal: "Magnetic", subtype: "Magnetic", source: "Magnetometer", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "3-axis mag", environment: "Anomalies", citation: "Magnetic dataset", bibtex: "@dataset{magneticindoor...}", tags: ["multi-floor"], envParams: { building: "varies", floor: "varies", methods: ["list_buildings()", "list_floors()"] },
+                benchmark: {
+                    sota: { method: "ResNet18", error: 18.05, year: 2024 },
+                    baseline: { method: "KNN (k=3)", error: 20.56, year: 2024 },
+                    entries: [
+                        { method: "ResNet18", error: 18.05, year: 2024, ref: 1, isSota: true },
+                        { method: "KNN (k=3)", error: 20.56, year: 2024, ref: 1 }
+                    ],
+                    references: [
+                        "IndoorLoc Team, \"IndoorLoc Library Benchmark (Demo Data, 10 epochs),\" 2024."
+                    ]
+                }
+            },
+	            { name: "WiFiIMUHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~12,000", features: "WiFi+IMU", environment: "Pedestrian", citation: "WiFi-IMU fusion", bibtex: "@dataset{wifiimuhybrid...}", tags: ["fusion", "multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "WiFi-IMU hybrid dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "WiFiMagneticHybrid", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~6,000", features: "WiFi+Mag", environment: "Steel building", citation: "WiFi-Mag fusion", bibtex: "@misc{wifimagnetichybrid...}", tags: ["fusion", "multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "WiFi-magnetic hybrid dataset (UCI)."
+	                    ]
+	                }
+	            },
+	            { name: "MultiModalIndoor", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~10,000", features: "WiFi+BLE+IMU", environment: "Mall", citation: "Multi-modal dataset", bibtex: "@dataset{multimodalindoor...}", tags: ["fusion", "multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "Multi-modal indoor dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "SensorFusion", signal: "Hybrid", subtype: "Multi-modal", source: "Multi-sensor", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~8,000", features: "Multi-sensor", environment: "Research bldg", citation: "Sensor fusion dataset", bibtex: "@dataset{sensorfusion...}", tags: ["fusion", "multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "Sensor fusion dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "VLCIndoor", signal: "Other", subtype: "VLC", source: "VLC", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~3,000", features: "Visible light", environment: "LED office", citation: "VLC positioning", bibtex: "@dataset{vlcindoor...}", tags: ["multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "VLC indoor dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "UltrasoundIndoor", signal: "Other", subtype: "Ultrasound", source: "Ultrasound", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~2,000", features: "Ultrasonic ToF", environment: "Room-level", citation: "Ultrasound dataset", bibtex: "@dataset{ultrasoundindoor...}", tags: ["multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "Ultrasound indoor dataset (Zenodo)."
+	                    ]
+	                }
+	            },
+	            { name: "RFIDIndoor", signal: "Other", subtype: "RFID", source: "RFID", dataSource: "UCI", position: "2D+Floor", auto: true, samples: "~4,000", features: "RFID RSS", environment: "Warehouse", citation: "RFID indoor dataset", bibtex: "@misc{rfidindoor...}", tags: ["multi-floor"],
+	                benchmark: {
+	                    metricLabel: "Mean Error",
+	                    unit: "m",
+	                    direction: "lower",
+	                    note: "Benchmarks not yet curated for this dataset.",
+	                    entries: [
+	                        { method: "TBD", error: null, year: null, ref: 1 }
+	                    ],
+	                    references: [
+	                        "RFID indoor dataset (UCI)."
+	                    ]
+	                }
+	            }
+	        ];
 
         const views = {
             signal: { group: 'subtype', cols: ['', 'Dataset', 'Source', 'Samples', 'DL'] },
@@ -1544,55 +1982,146 @@
             }, 50);
         }
 
-        function renderBenchmark(d) {
-            if (!d.benchmark) {
-                return `<div class="no-benchmark">No benchmark data available yet</div>`;
+	        function renderBenchmark(d) {
+	            if (!d.benchmark) {
+	                return `<div class="no-benchmark">No benchmark data available yet</div>`;
+	            }
+
+	            const b = d.benchmark;
+	            const isExpanded = expandedBenchmarks[d.name];
+
+	            const metricLabel = b.metricLabel || 'Error';
+	            const unit = b.unit || 'm';
+	            const direction = (b.direction || 'lower').toLowerCase();
+	            const higherIsBetter = direction === 'higher';
+	            const decimalsOverride = (typeof b.decimals === 'number' && isFinite(b.decimals)) ? b.decimals : null;
+
+	            const entries = Array.isArray(b.entries) ? b.entries : [];
+	            const refs = Array.isArray(b.references) ? b.references : [];
+	            const noteHTML = (typeof b.note === 'string' && b.note.trim().length > 0)
+	                ? `<div class="benchmark-note">${b.note}</div>`
+	                : '';
+
+            const sortedEntries = entries.slice().sort((a, c) => {
+                const av = (typeof a.error === 'number' && isFinite(a.error)) ? a.error : null;
+                const cv = (typeof c.error === 'number' && isFinite(c.error)) ? c.error : null;
+                if (av === null && cv === null) return 0;
+                if (av === null) return 1;
+                if (cv === null) return -1;
+                return higherIsBetter ? (cv - av) : (av - cv);
+            });
+
+            const numericValues = sortedEntries
+                .map(e => (typeof e.error === 'number' && isFinite(e.error)) ? e.error : null)
+                .filter(v => v !== null);
+
+            const bestValue = numericValues.length
+                ? (higherIsBetter ? Math.max(...numericValues) : Math.min(...numericValues))
+                : null;
+            const worstValue = numericValues.length
+                ? (higherIsBetter ? Math.min(...numericValues) : Math.max(...numericValues))
+                : null;
+
+            const inferredSota = bestValue === null ? null : (() => {
+                const bestEntry = sortedEntries.find(e => typeof e.error === 'number' && isFinite(e.error));
+                return bestEntry ? { method: bestEntry.method, error: bestEntry.error } : null;
+            })();
+
+            const sota = (b.sota && typeof b.sota.error === 'number' && isFinite(b.sota.error))
+                ? b.sota
+                : inferredSota;
+
+            const baseline = (b.baseline && typeof b.baseline.error === 'number' && isFinite(b.baseline.error))
+                ? b.baseline
+                : null;
+
+            const maxValue = (typeof b.maxError === 'number' && isFinite(b.maxError)) ? b.maxError : worstValue;
+
+	            const formatValue = (value) => {
+	                if (value === null || value === undefined || !isFinite(value)) return '-';
+	                const decimals = decimalsOverride !== null ? decimalsOverride : (unit === '%' ? 1 : 2);
+	                return `${value.toFixed(decimals)}${unit}`;
+	            };
+
+            // Range bar (only if we have numeric values)
+            let rangeHTML = '';
+            if (bestValue !== null && maxValue !== null && bestValue !== maxValue) {
+                const denom = higherIsBetter ? (bestValue - maxValue) : (maxValue - bestValue);
+                const baselinePos = (baseline && denom !== 0)
+                    ? (higherIsBetter
+                        ? ((bestValue - baseline.error) / denom) * 100
+                        : ((baseline.error - bestValue) / denom) * 100)
+                    : null;
+
+                const baselinePosClamped = baselinePos === null
+                    ? null
+                    : Math.max(0, Math.min(100, baselinePos));
+
+                rangeHTML = `
+                    <div class="benchmark-range">
+                        <div class="range-labels-top">
+                            <span>${sota ? `${formatValue(sota.error)} (${sota.method})` : 'SOTA: N/A'}</span>
+                            <span>${formatValue(maxValue)}</span>
+                        </div>
+                        <div class="range-bar">
+                            <div class="range-marker" style="left: 0%"></div>
+                            ${baselinePosClamped === null ? '' : `<div class="range-marker" style="left: ${baselinePosClamped}%"></div>`}
+                        </div>
+                        <div class="range-labels-bottom">
+                            <span>SOTA</span>
+                            ${baselinePosClamped === null ? '' : `<span style="position:absolute;left:${baselinePosClamped}%;transform:translateX(-50%)">Baseline</span>`}
+                            <span>Worst</span>
+                        </div>
+                    </div>
+                `;
             }
 
-            const b = d.benchmark;
-            const isExpanded = expandedBenchmarks[d.name];
-            const topEntries = b.entries.slice(0, 4);
-            const allEntries = b.entries;
-            const totalMethods = b.entries.length;
+            const topEntries = sortedEntries.slice(0, 4);
+            const totalMethods = sortedEntries.length;
 
-            // Calculate marker positions for range bar
-            const minError = b.sota.error;
-            const maxError = b.maxError || Math.max(...b.entries.map(e => e.error));
-            const baselinePos = ((b.baseline.error - minError) / (maxError - minError)) * 100;
+            const renderMethodCell = (e) => {
+                const hasRef = refs.length > 0 && e.ref;
+                const refSup = hasRef
+                    ? `<sup><a href="#ref-${d.name}-${e.ref}" class="ref-link" onclick="handleRefClick(event, '${d.name}', ${e.ref})">[${e.ref}]</a></sup>`
+                    : '';
+                return `<td class="method-name">${e.method}${refSup}</td>`;
+            };
 
-            // Use references array
-            const refs = b.references || [];
+            const renderValueCell = (e) => {
+                const v = (typeof e.error === 'number' && isFinite(e.error)) ? e.error : null;
+                return `<td class="error-val">${formatValue(v)}</td>`;
+            };
 
-            return `
-                <div class="benchmark-card">
-                    <div class="benchmark-header">
-                        <span class="benchmark-title">Benchmark Results</span>
-                        <span class="sota-badge">SOTA: ${b.sota.error}m</span>
+            const renderFloorCell = (e) => `<td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>`;
+            const renderYearCell = (e) => `<td>${e.year || '-'}</td>`;
+
+            const referencesHTML = refs.length
+                ? `
+                    <div class="benchmark-refs">
+                        <h5>References</h5>
+                        <ol>
+                            ${refs.map((r, i) => `<li id="ref-${d.name}-${i + 1}">${r}</li>`).join('')}
+                        </ol>
                     </div>
-                    <div class="benchmark-content">
-                        <!-- Error Range Bar -->
-                        <div class="benchmark-range">
-                            <div class="range-labels-top">
-                                <span>${b.sota.error}m (${b.sota.method})</span>
-                                <span>${maxError.toFixed(1)}m</span>
-                            </div>
-                            <div class="range-bar">
-                                <div class="range-marker" style="left: 0%"></div>
-                                <div class="range-marker" style="left: ${baselinePos}%"></div>
-                            </div>
-                            <div class="range-labels-bottom">
-                                <span>SOTA</span>
-                                <span style="position:absolute;left:${baselinePos}%;transform:translateX(-50%)">Baseline</span>
-                                <span>Max</span>
-                            </div>
-                        </div>
+                `
+                : '';
 
-                        <!-- Top Methods Table -->
-                        <table class="benchmark-table">
-                            <thead>
-                                <tr>
+	            return `
+	                <div class="benchmark-card">
+	                    <div class="benchmark-header">
+	                        <span class="benchmark-title">Benchmark Results</span>
+	                        <span class="sota-badge">${sota ? `SOTA: ${formatValue(sota.error)}` : 'SOTA: N/A'}</span>
+	                    </div>
+	                    <div class="benchmark-content">
+	                        ${rangeHTML}
+	                        ${noteHTML}
+
+	                        <!-- Top Methods Table -->
+	                        <table class="benchmark-table">
+	                            <thead>
+	                                <tr>
                                     <th>Method</th>
-                                    <th>Error</th>
+                                    <th>${metricLabel}</th>
                                     <th>Floor Acc</th>
                                     <th>Year</th>
                                 </tr>
@@ -1600,10 +2129,10 @@
                             <tbody>
                                 ${topEntries.map(e => `
                                     <tr class="${e.isSota ? 'sota-row' : ''}">
-                                        <td class="method-name">${e.method}<sup><a href="#ref-${d.name}-${e.ref}" class="ref-link" onclick="handleRefClick(event, '${d.name}', ${e.ref})">[${e.ref}]</a></sup></td>
-                                        <td class="error-val">${e.error}m</td>
-                                        <td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>
-                                        <td>${e.year}</td>
+                                        ${renderMethodCell(e)}
+                                        ${renderValueCell(e)}
+                                        ${renderFloorCell(e)}
+                                        ${renderYearCell(e)}
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -1620,24 +2149,18 @@
                         <div class="benchmark-expanded ${isExpanded ? 'show' : ''}">
                             <table class="benchmark-table">
                                 <tbody>
-                                    ${allEntries.slice(4).map(e => `
+                                    ${sortedEntries.slice(4).map(e => `
                                         <tr>
-                                            <td class="method-name">${e.method}<sup><a href="#ref-${d.name}-${e.ref}" class="ref-link" onclick="handleRefClick(event, '${d.name}', ${e.ref})">[${e.ref}]</a></sup></td>
-                                            <td class="error-val">${e.error}m</td>
-                                            <td class="floor-val">${e.floorAcc ? (e.floorAcc * 100).toFixed(1) + '%' : '-'}</td>
-                                            <td>${e.year}</td>
+                                            ${renderMethodCell(e)}
+                                            ${renderValueCell(e)}
+                                            ${renderFloorCell(e)}
+                                            ${renderYearCell(e)}
                                         </tr>
                                     `).join('')}
                                 </tbody>
                             </table>
 
-                            <!-- References -->
-                            <div class="benchmark-refs">
-                                <h5>References</h5>
-                                <ol>
-                                    ${refs.map((r, i) => `<li id="ref-${d.name}-${i+1}">${r}</li>`).join('')}
-                                </ol>
-                            </div>
+                            ${referencesHTML}
                         </div>
                     </div>
                 </div>
