@@ -1253,7 +1253,30 @@
                 }
             },
             { name: "LongTermWiFi", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~50,000", features: "~200 WAPs", environment: "15-month study", citation: "Long-term WiFi dataset", bibtex: "@dataset{longtermwifi...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "0, 1, 2", methods: ["list_buildings()"] } },
-            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041" },
+            { name: "Tampere", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "Zenodo", position: "2D+Floor", auto: true, samples: "~1,000 pts", features: "~300 WAPs", environment: "University", citation: "Tampere dataset", bibtex: "@dataset{tampere...}", tags: ["wifi-rssi", "multi-floor"], envParams: { building: "varies", methods: ["list_buildings()"] }, url: "https://zenodo.org/record/1066041",
+                benchmark: {
+                    sota: { method: "CNN-1D", error: 2.89, floorAcc: 0.981, year: 2020 },
+                    baseline: { method: "KNN (k=1)", error: 5.21, floorAcc: 0.912, year: 2017 },
+                    entries: [
+                        { method: "CNN-1D", error: 2.89, floorAcc: 0.981, year: 2020, ref: 1, isSota: true },
+                        { method: "ResNet-18", error: 3.12, floorAcc: 0.974, year: 2021, ref: 2 },
+                        { method: "DNN (3-layer)", error: 3.45, floorAcc: 0.967, year: 2017, ref: 3 },
+                        { method: "Gaussian Process", error: 3.89, floorAcc: 0.956, year: 2018, ref: 4 },
+                        { method: "WKNN (k=5)", error: 4.32, floorAcc: 0.941, year: 2017, ref: 5 },
+                        { method: "WKNN (k=3)", error: 4.56, floorAcc: 0.934, year: 2017, ref: 5 },
+                        { method: "Random Forest", error: 4.78, floorAcc: 0.923, year: 2019, ref: 6 },
+                        { method: "KNN (k=1)", error: 5.21, floorAcc: 0.912, year: 2017, ref: 5 }
+                    ],
+                    references: [
+                        "1D Conv Study (2020).",
+                        "Transfer Learning Study (2021).",
+                        "Tampere Dataset Paper (2017).",
+                        "GP Localization (2018).",
+                        "Baseline (2017).",
+                        "Ensemble Study (2019)."
+                    ]
+                }
+            },
             { name: "WLANRSSI", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "UCI", position: "2D", auto: true, samples: "250 pts", features: "7 WAPs", environment: "Small area", citation: "UCI WLAN dataset", bibtex: "@misc{wlanrssi...}", tags: ["wifi-rssi"], envParams: { floor: "varies", methods: ["list_floors()"] } },
             { name: "TUJI1", signal: "RSSI", subtype: "WiFi RSSI", source: "WiFi", dataSource: "GitHub", position: "2D+Floor", auto: true, samples: "~5,000", features: "~150 WAPs", environment: "Multi-device", citation: "TUJI1 dataset", bibtex: "@misc{tuji1...}", tags: ["wifi-rssi", "multi-floor"], envParams: { floor: "varies", methods: ["list_floors()"] },
                 benchmark: {
