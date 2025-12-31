@@ -102,11 +102,13 @@ train:
 
 ## Documentation
 
-- Dataset catalogue: https://qdtiger.github.io/indoorloc/datasets.html
-- Algorithm zoo: https://qdtiger.github.io/indoorloc/algorithms.html
+- Dataset catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html
+- Algorithm zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html
 - Config reference: `indoorloc/configs/README.md`
 
 ## Datasets
+
+> Full dataset catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html
 
 - List available dataset IDs: `iloc.list_available_datasets()`
 - Load a dataset: `train, test = iloc.load_dataset("ujindoorloc")`
@@ -160,60 +162,29 @@ These datasets have download sources but are **not yet integrated**:
 
 ## Models & Algorithms
 
+> Full algorithm zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html
+
 - List available models: `iloc.list_models()`
 - Create a model: `iloc.create_model("KNNLocalizer", k=5)` / `iloc.create_model("resnet18", dataset=train)`
 
 <details>
 <summary>Algorithm families</summary>
 
-**Supervised**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **Self-supervised**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **Meta-learning**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **Transfer**: [SKADA](https://github.com/scikit-adaptation/skada) (20+).
+Backed by [sklearn](https://scikit-learn.org/) (30+), [timm](https://github.com/huggingface/pytorch-image-models) (700+), [lightly](https://github.com/lightly-ai/lightly) (10+), [learn2learn](https://github.com/learnables/learn2learn) (7+), and [SKADA](https://github.com/scikit-adaptation/skada) (20+).
 
-<table>
-<tr>
-<th align="center">Supervised</th>
-<th align="center">Self-supervised</th>
-<th align="center">Meta-learning</th>
-<th align="center">Transfer</th>
-</tr>
-<tr>
-<td valign="top">
-
-**Traditional (30+)**
-- k-NN, WKNN, SVM, RF...
-
-**Deep (700+)**
-- MLP, CNN1D, ResNet, ViT...
-
-</td>
-<td valign="top">
-
-**Contrastive**
-- SimCLR, MoCo, NNCLR
-
-**Non-contrastive**
-- BYOL, SimSiam, VICReg
-
-</td>
-<td valign="top">
-
-**Gradient-based**
-- MAML, FOMAML, Reptile
-
-**Metric-based**
-- ProtoNet, MatchingNet
-
-</td>
-<td valign="top">
-
-**Feature**: CORAL, TCA
-
-**Reweight**: KMM, KLIEP
-
-**Deep**: DANN, MDD
-
-</td>
-</tr>
-</table>
+- **Supervised**
+  - Traditional ML: k-NN, WKNN, SVM, RF...
+  - Deep: MLP, CNN1D, ResNet, ViT...
+- **Self-supervised**
+  - Contrastive: SimCLR, MoCo, NNCLR
+  - Non-contrastive: BYOL, SimSiam, VICReg
+- **Meta-learning**
+  - Gradient-based: MAML, FOMAML, Reptile
+  - Metric-based: ProtoNet, MatchingNet
+- **Transfer**
+  - Feature: CORAL, TCA
+  - Reweight: KMM, KLIEP
+  - Deep: DANN, MDD
 
 </details>
 
