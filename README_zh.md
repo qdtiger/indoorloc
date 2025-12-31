@@ -85,69 +85,29 @@ class MyNovelLocalizer(BaseLocalizer):
 
 ## 安装
 
-### Conda（推荐）
-
-#### GPU (CUDA 11.8)
+### GPU (CUDA 11.8)
 
 ```bash
 conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate indoorloc
 pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-#### 仅 CPU
+### 仅 CPU
 
 ```bash
 conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
 conda activate indoorloc
 pip install "indoorloc[full]"
+```
+
+### 自检（可选）
+
+```bash
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-<details>
-<summary>Legacy（Python 3.8 + PyTorch 1.10.1）</summary>
-
-#### GPU (CUDA 11.3)
-
-```bash
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
-conda activate indoorloc-py38
-pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
-#### 仅 CPU
-
-```bash
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
-conda activate indoorloc-py38
-pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
-</details>
-
-<details>
-<summary>快速安装（不追求可复现）</summary>
-
-```bash
-# 基础安装
-pip install indoorloc
-
-# 包含视觉定位支持
-pip install "indoorloc[vision]"
-
-# 完整安装（所有功能）
-pip install "indoorloc[full]"
-
-# 开发模式安装
-git clone https://github.com/qdtiger/indoorloc.git
-cd indoorloc
-pip install -e ".[full,dev]"
-```
-
-</details>
+更多安装选项（legacy、可选 extras、排错）：`docs/installation_zh.md`。
 
 ## 快速开始
 
