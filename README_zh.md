@@ -220,202 +220,87 @@ indoorloc/
 
 ## 支持的算法
 
-**有监督**: [sklearn](https://scikit-learn.org/) (30+) + [timm](https://github.com/huggingface/pytorch-image-models) (700+) | **自监督**: [lightly](https://github.com/lightly-ai/lightly) (10+) | **元学习**: [learn2learn](https://github.com/learnables/learn2learn) (7+) | **迁移学习**: [SKADA](https://github.com/scikit-adaptation/skada) (20+)
+算法总览（Web）：https://qdtiger.github.io/indoorloc/algorithms.html
 
-<table>
-<tr>
-<th align="center">有监督</th>
-<th align="center">自监督</th>
-<th align="center">元学习</th>
-<th align="center">迁移学习</th>
-</tr>
-<tr>
-<td valign="top">
+- 列出可用模型：`iloc.list_models()`
+- 创建模型：`iloc.create_model("KNNLocalizer", k=5)` / `iloc.create_model("resnet18", dataset=train)`
 
-**传统ML (30+)**
-- k-NN, WKNN, SVM, RF...
+<details>
+<summary>算法家族（概览）</summary>
 
-**深度学习 (700+)**
-- MLP, CNN1D, ResNet, ViT...
+依托 [sklearn](https://scikit-learn.org/) (30+)、[timm](https://github.com/huggingface/pytorch-image-models) (700+)、[lightly](https://github.com/lightly-ai/lightly) (10+)、[learn2learn](https://github.com/learnables/learn2learn) (7+) 与 [SKADA](https://github.com/scikit-adaptation/skada) (20+)。
 
-</td>
-<td valign="top">
+- **有监督**
+  - 传统 ML：k-NN, WKNN, SVM, RF...
+  - 深度学习：MLP, CNN1D, ResNet, ViT...
+- **自监督**
+  - 对比：SimCLR, MoCo, NNCLR
+  - 非对比：BYOL, SimSiam, VICReg
+- **元学习**
+  - 基于梯度：MAML, FOMAML, Reptile
+  - 基于度量：ProtoNet, MatchingNet
+- **迁移学习**
+  - 特征：CORAL, TCA
+  - 重加权：KMM, KLIEP
+  - 深度：DANN, MDD
 
-**对比学习**
-- SimCLR, MoCo, NNCLR
-
-**非对比**
-- BYOL, SimSiam, VICReg
-
-</td>
-<td valign="top">
-
-**基于梯度**
-- MAML, FOMAML, Reptile
-
-**基于度量**
-- ProtoNet, MatchingNet
-
-</td>
-<td valign="top">
-
-**特征**: CORAL, TCA
-
-**重加权**: KMM, KLIEP
-
-**深度**: DANN, MDD
-
-</td>
-</tr>
-</table>
+</details>
 
 ## 支持的数据集
 
-**36 个数据集**，支持多种信号模态，并提供**自动下载**功能。[查看详情 →](https://qdtiger.github.io/indoorloc/datasets_zh.html)
+数据集目录（Web）：https://qdtiger.github.io/indoorloc/datasets_zh.html
 
-<table>
-<tr>
-<th align="center" bgcolor="#f6f8fa">RSSI</th>
-<th align="center" bgcolor="#f6f8fa">CSI</th>
-<th align="center" bgcolor="#f6f8fa">其他</th>
-</tr>
-<tr>
-<td valign="top">
+- 列出可用数据集 ID：`iloc.list_available_datasets()`
+- 加载数据集：`train, test = iloc.load_dataset("ujindoorloc")`
 
-**WiFi**
-- [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc)
-- [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc)
-- [LongTermWiFi](https://zenodo.org/record/889798)
-- [Tampere](https://zenodo.org/record/1066041)
-- [WLANRSSI](https://archive.ics.uci.edu/dataset/422/localization+data+for+person+activity)
-- [TUJI1](https://github.com/IndoorLocation/IPIN2021-Competition-Track3-Dataset)
-- [RSSBased](https://zenodo.org/record/5678901)
+已验证数据集 ID（12）：
 
-**BLE**
-- [iBeaconRSSI](https://zenodo.org/record/1066044)
-- [BLEIndoor](https://github.com/BLE-Indoor-Positioning/Dataset)
-- [BLERSSIU_UCI](https://archive.ics.uci.edu/dataset/519/ble+rssi+dataset+for+indoor+localization)
+- WiFi：`ujindoorloc`, `sodindoorloc`, `longtermwifi`, `tampere`, `wlanrssi`, `tuji1`
+- BLE：`ble_indoor`, `ibeacon_rssi`, `ble_rssi_uci`
+- CSI：`csi_fingerprint`, `hwild`, `haloc`
 
-</td>
-<td valign="top">
+<details>
+<summary>已验证数据集（表格）</summary>
 
-**WiFi**
-- [CSIIndoor](https://github.com/CSI-Positioning/IndoorDataset)
-- [CSIFingerprint](https://github.com/qiang5love1314/CSI-dataset)
-- [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset)
-- [CSUIndoorLoc](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav)
-- [WILDv2](https://www.kaggle.com/c/wild-v2)
-- [HALOC](https://zenodo.org/records/10715595)
-- [CSIBench](https://ai-iot-sensing.github.io/projects/project.html)
-- [WiFiCSID2D](https://figshare.com/articles/dataset/WiFi_CSI_D2D/20943706)
+| 类型 | 数据集 | ID | 样本数 |
+|------|--------|----|--------|
+| **WiFi** | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | `ujindoorloc` | 21k |
+| | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | `sodindoorloc` | 24k |
+| | [LongTermWiFi](https://zenodo.org/record/1309317) | `longtermwifi` | 104k |
+| | [Tampere](https://zenodo.org/record/889798) | `tampere` | 4.6k |
+| | [WLANRSSI](https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization) | `wlanrssi` | 2k |
+| | [TUJI1](https://zenodo.org/record/7641701) | `tuji1` | 8.9k |
+| **BLE** | [BLEIndoor](https://github.com/co60ca/BBIL) | `ble_indoor` | 44k |
+| | [iBeaconRSSI](https://zenodo.org/record/1618692) | `ibeacon_rssi` | 4.7k |
+| | [BLE RSSI UCI](https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation) | `ble_rssi_uci` | 1.4k |
+| **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 |
+| | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k |
+| | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k |
 
-**LTE**
-- [OpenCSI](https://figshare.com/articles/dataset/OpenCSI/19596379)
+</details>
 
-**Massive MIMO**
-- [MaMIMOCSI](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset)
-- [DICHASUS](https://darus.uni-stuttgart.de/dataverse/dichasus)
-- [ESPARGOS](https://espargos.net/datasets/)
-- [MaMIMOUAV](https://doi.org/10.48804/0IMQDF)
-- [DeepMIMO](https://www.deepmimo.net)
+<details>
+<summary>待集成数据集（欢迎贡献）</summary>
 
-**RF**
-- [CSI2Pos](https://service.tib.eu/ldmservice/dataset/csi2pos)
-- [CSI2TAoA](https://service.tib.eu/ldmservice/dataset/csi2taoa)
+这些数据集有下载来源，但尚未集成：
 
-</td>
-<td valign="top">
+| 数据集 | 来源 | 备注 |
+|--------|------|------|
+| OpenCSI | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | ~2GB，格式未验证 |
+| CSUIndoorLoc | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | 格式未验证 |
+| DICHASUS | [DaRUS](https://darus.uni-stuttgart.de/dataverse/dichasus) | 14 scenarios |
+| ESPARGOS | [espargos.net](https://espargos.net/datasets/) | 17-86GB |
+| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | 需要 `pip install DeepMIMO` |
+| CSI2Pos | [TIB](https://service.tib.eu/ldmservice/dataset/csi2pos) | 需要登录 |
+| CSI2TAoA | [TIB](https://service.tib.eu/ldmservice/dataset/csi2taoa) | 需要登录 |
+| MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | 需要账号 |
+| WILDv2 | [Kaggle](https://www.kaggle.com/competitions/wild-v2) | 需要 Kaggle API |
 
-**UWB**
-- [UWBIndoor](https://zenodo.org/record/5789876)
-- [UWBRanging](https://github.com/UWB-Positioning/RangingDataset)
+> 贡献：欢迎帮我们验证并接入更多数据集！详见 `CONTRIBUTING.md`。
 
-**磁场**
-- [MagneticIndoor](https://zenodo.org/record/4321098)
+</details>
 
-**融合**
-- [WiFiIMUHybrid](https://zenodo.org/record/3932395)
-- [WiFiMagneticHybrid](https://archive.ics.uci.edu/dataset/626/wifi+magnetic+indoor+localization)
-- [MultiModalIndoor](https://github.com/IndoorPositioning/MultiModalDataset)
-- [SensorFusion](https://zenodo.org/record/4567890)
-
-**VLC**
-- [VLCIndoor](https://github.com/VLC-Positioning/IndoorDataset)
-
-**超声波**
-- [UltrasoundIndoor](https://archive.ics.uci.edu/dataset/632/ultrasound+indoor+localization)
-
-**RFID**
-- [RFIDIndoor](https://archive.ics.uci.edu/dataset/640/rfid+indoor+localization)
-
-</td>
-</tr>
-</table>
-
-<sub>📋 所有数据集保留其原始许可证，下载使用官方源/API。[查看许可证详情 →](https://qdtiger.github.io/indoorloc/datasets_zh.html#licenses)</sub>
-
-### 自动下载用法
-
-```python
-import indoorloc as iloc
-
-# UJIndoorLoc - 自动下载到 ~/.cache/indoorloc/datasets/
-dataset = iloc.UJIndoorLoc(download=True)
-train = iloc.UJIndoorLoc(download=True, split='train')
-test = iloc.UJIndoorLoc(download=True, split='test')
-
-# SODIndoorLoc - 指定建筑
-cetc_train = iloc.SODIndoorLoc(building='CETC331', download=True)
-hcxy_train = iloc.SODIndoorLoc(building='HCXY', download=True)
-
-# BLE 数据集
-ble_dataset = iloc.iBeaconRSSI(download=True)
-
-# UWB 数据集
-uwb_dataset = iloc.UWBIndoor(download=True)
-
-# 混合数据集（返回多种信号）
-hybrid = iloc.WiFiIMUHybrid(download=True)
-signals, location = hybrid[0]
-wifi_signal = signals['wifi']
-imu_signal = signals['imu']
-
-# 或指定自定义目录
-dataset = iloc.UJIndoorLoc(data_root='./data', download=True)
-```
-
-### 手动下载
-
-也可以从官方源手动下载数据集：
-
-| 数据集 | 官方来源 | 说明 |
-|-------|---------|------|
-| UJIndoorLoc | [UCI 机器学习库](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | 直接 ZIP 下载 |
-| SODIndoorLoc | [GitHub 仓库](https://github.com/renwudao24/SODIndoorLoc) | GitHub 上的 CSV 文件 |
-| Microsoft Indoor 2.0 | [Microsoft Research](https://aka.ms/location20dataset) + [GitHub](https://github.com/location-competition/indoor-location-competition-20) | 多传感器 (WiFi, BLE, IMU, Magnetometer) |
-| TUJI1 | [Tampere 大学](https://trepo.tuni.fi/handle/10024/211225) + [Zenodo](https://zenodo.org/records/1226835) | 多设备采集 |
-| WiFi-RSSI | [GitHub 仓库](https://github.com/m-nabati/WiFi-RSSI-Localization-Dataset) | 小规模 (250 点) |
-| OWP-IMU | [arXiv](https://arxiv.org/abs/2505.16823) | 光学无线 + IMU 融合 |
-
-### 大文件数据集
-
-以下数据集文件较大，需要手动下载：
-
-| 数据集 | 大小 | 下载地址 | 存放位置 |
-|-------|------|---------|---------|
-| OpenCSI | ~2 GB | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | `~/.cache/indoorloc/datasets/opencsi/` |
-| CSUIndoorLoc | ~150 MB | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | 需要 PCAP 解析工具 |
-
-```bash
-# OpenCSI 下载命令
-curl -L -o ~/.cache/indoorloc/datasets/opencsi/openCSI.zip \
-  'https://ndownloader.figshare.com/files/34809589'
-
-# 解压
-cd ~/.cache/indoorloc/datasets/opencsi && unzip openCSI.zip
-```
-
-> **提示**：大文件数据集在未下载时会自动使用 demo 数据，方便快速测试代码逻辑。
+<sub>更多数据集、下载方式与许可证说明：https://qdtiger.github.io/indoorloc/datasets_zh.html</sub>
 
 ## 评估指标
 
