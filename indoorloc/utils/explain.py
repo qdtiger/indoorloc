@@ -274,7 +274,7 @@ def explain_model(model_name: str, show_all: bool = False):
         print(f"   {line}")
 
     # Config path
-    print(f"\n📖 进阶配置:")
+    print("\n📖 进阶配置:")
     print(f"   python tools/train.py {doc['config_path']}")
     print()
 

@@ -4,12 +4,15 @@ WiFi Signal Implementation
 Handles WiFi RSSI (Received Signal Strength Indicator) fingerprints
 for indoor localization.
 """
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any, Union, TYPE_CHECKING
 from dataclasses import dataclass
 import numpy as np
 
 from .base import BaseSignal, SignalMetadata
 from ..registry import SIGNALS
+
+if TYPE_CHECKING:
+    import torch
 
 
 @dataclass

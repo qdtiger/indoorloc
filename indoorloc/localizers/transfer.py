@@ -4,7 +4,7 @@ Transfer Learning Localizers
 Domain adaptation methods for cross-device, cross-time, cross-environment localization.
 Based on SKADA (scikit-adaptation) library.
 """
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional, Dict, Any, Union, TYPE_CHECKING
 
 import numpy as np
 
@@ -13,6 +13,9 @@ from ..signals.base import BaseSignal
 from ..locations.location import Location, LocalizationResult
 from ..locations.coordinate import Coordinate
 from ..registry import LOCALIZERS
+
+if TYPE_CHECKING:
+    from ..datasets.base import BaseDataset
 
 
 def _check_skada():

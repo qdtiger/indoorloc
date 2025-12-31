@@ -98,7 +98,7 @@ class ComparisonReport:
         """User's floor accuracy (as fraction 0-1)."""
         try:
             return self.user_result.floor_accuracy / 100  # Convert from % to fraction
-        except:
+        except (TypeError, AttributeError):
             return None
 
     def beats_count(self) -> int:
@@ -177,7 +177,7 @@ class ComparisonReport:
             gap = self.gap_to_sota()
             gap_pct = self.gap_to_sota_percent()
             if gap <= 0:
-                lines.append(f"  Congratulations! You achieved SOTA performance!")
+                lines.append("  Congratulations! You achieved SOTA performance!")
             else:
                 lines.append(f"  Gap to SOTA: {gap:.2f}m ({gap_pct:.0f}% of SOTA error)")
 

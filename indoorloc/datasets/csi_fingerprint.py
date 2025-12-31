@@ -213,7 +213,7 @@ class CSIFingerprintDataset(WiFiDataset):
 
         if not self._check_exists():
             print("Warning: Download incomplete. Some files may be missing.")
-            print(f"You can manually download from: https://github.com/qiang5love1314/CSI-dataset")
+            print("You can manually download from: https://github.com/qiang5love1314/CSI-dataset")
 
     def _parse_coordinate(self, filename: str, area: str) -> tuple:
         """Parse x, y coordinates from filename.

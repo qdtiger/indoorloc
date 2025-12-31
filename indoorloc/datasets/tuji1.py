@@ -137,7 +137,7 @@ class TUJI1Dataset(WiFiDataset):
 
         # Download zip file
         if not zip_path.exists():
-            print(f"Downloading TUJI1 dataset from Zenodo...")
+            print("Downloading TUJI1 dataset from Zenodo...")
             try:
                 download_url(
                     url=self.ZENODO_URL,
@@ -151,7 +151,7 @@ class TUJI1Dataset(WiFiDataset):
                 )
 
         # Extract required CSV files from zip
-        print(f"Extracting dataset files...")
+        print("Extracting dataset files...")
         try:
             with zipfile.ZipFile(zip_path, 'r') as zf:
                 for split_files in self.FILE_MAPPING.values():
@@ -305,4 +305,3 @@ def TUJI1(data_root=None, split=None, download=False, floor='all', **kwargs):
 
 # Attach class method to convenience function
 TUJI1.list_floors = TUJI1Dataset.list_floors
-

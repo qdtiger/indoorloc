@@ -4,11 +4,14 @@ Evaluation Metrics for Indoor Localization
 Provides various metrics for evaluating indoor localization performance.
 """
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, TYPE_CHECKING
 import numpy as np
 
 from ..locations.location import Location, LocalizationResult
 from ..registry import METRICS
+
+if TYPE_CHECKING:
+    from .benchmarks import ComparisonReport
 
 
 class BaseMetric(ABC):
