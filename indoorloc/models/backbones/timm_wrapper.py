@@ -265,12 +265,6 @@ class TimmBackbone(BaseBackbone):
         # Try to get the first conv layer
         first_conv_name, first_conv = None, None
 
-        # Common first conv layer names in different architectures
-        possible_names = [
-            'conv1', 'conv_stem', 'stem.conv', 'patch_embed.proj',
-            'features.0', 'stem.0', 'conv1.conv'
-        ]
-
         for name, module in self.model.named_modules():
             if isinstance(module, nn.Conv2d):
                 first_conv_name = name

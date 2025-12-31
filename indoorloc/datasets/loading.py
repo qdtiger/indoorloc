@@ -11,6 +11,7 @@ Example:
 from typing import Union, Tuple, Optional, List
 
 from .catalog import get_dataset_class_name, get_all_dataset_names, DATASETS_BY_SIGNAL
+from .base import BaseDataset
 from ..registry import DATASETS
 
 
@@ -19,7 +20,7 @@ def load_dataset(
     split: Optional[str] = None,
     download: bool = True,
     **kwargs
-) -> Union['BaseDataset', Tuple['BaseDataset', 'BaseDataset']]:
+) -> Union[BaseDataset, Tuple[BaseDataset, BaseDataset]]:
     """
     Load a dataset by short name (HuggingFace-style).
 

@@ -136,7 +136,7 @@ class TampereDataset(WiFiDataset):
 
         # Download zip file
         if not zip_path.exists():
-            print(f"Downloading Tampere dataset from Zenodo...")
+            print("Downloading Tampere dataset from Zenodo...")
             try:
                 download_url(
                     url=self.ZENODO_URL,
@@ -150,7 +150,7 @@ class TampereDataset(WiFiDataset):
                 )
 
         # Extract required CSV files from zip
-        print(f"Extracting dataset files...")
+        print("Extracting dataset files...")
         try:
             with zipfile.ZipFile(zip_path, 'r') as zf:
                 for split_files in self.FILE_MAPPING.values():
@@ -297,4 +297,3 @@ def Tampere(data_root=None, split=None, download=False, building='all', **kwargs
 
 # Attach class method to convenience function
 Tampere.list_buildings = TampereDataset.list_buildings
-

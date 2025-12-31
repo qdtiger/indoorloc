@@ -339,7 +339,6 @@ def download_from_zenodo(
         filename = file_info['key']
         file_url = file_info['links']['self']
         file_size = file_info['size']
-        file_checksum = file_info.get('checksum', '').split(':')[-1]  # md5:hash
 
         filepath = root / filename
 

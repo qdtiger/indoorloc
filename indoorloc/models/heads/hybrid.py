@@ -309,8 +309,6 @@ class HierarchicalHead(BaseHead):
         Returns:
             Dictionary with all predictions
         """
-        batch_size = x.shape[0]
-
         # Building prediction
         building_logits = self.building_head(x)
 

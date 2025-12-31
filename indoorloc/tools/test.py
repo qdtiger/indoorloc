@@ -88,10 +88,10 @@ def main() -> int:
         test_dataset = build_dataset_from_config(dataset_cfg, split=args.split)
         print(f"  Test samples: {len(test_dataset)}")
         print(f"  Split: {args.split}")
-    except (FileNotFoundError, RuntimeError) as e:
+    except (FileNotFoundError, RuntimeError):
         data_root = dataset_cfg.get('data_root', 'data/ujindoorloc')
         print(f"\nError: Dataset not found at {data_root}")
-        print(f"Please download the dataset first.")
+        print("Please download the dataset first.")
         return 1
 
     stats = test_dataset.get_statistics()

@@ -138,13 +138,13 @@ def main() -> int:
         if not args.no_validate:
             val_dataset = build_dataset_from_config(dataset_cfg, split='test')
             print(f"  Validation samples: {len(val_dataset)}")
-    except (FileNotFoundError, RuntimeError) as e:
+    except (FileNotFoundError, RuntimeError):
         dataset_type = dataset_cfg.get('type', 'UJIndoorLocDataset')
         data_root = dataset_cfg.get('data_root', 'data/ujindoorloc')
-        print(f"\nError: Dataset not found!")
-        print(f"Please download the dataset using:")
+        print("\nError: Dataset not found!")
+        print("Please download the dataset using:")
         print(f"  python -c \"import indoorloc as iloc; iloc.datasets.{dataset_type}.download('{data_root}')\"")
-        print(f"\nOr with download=True:")
+        print("\nOr with download=True:")
         print(f"  iloc.load_dataset('{dataset_type}', download=True)")
         return 1
 
