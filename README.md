@@ -29,69 +29,29 @@ Multi-dataset, multi-model indoor localization toolkit
 
 ## Installation
 
-### Conda (recommended)
-
-#### GPU (CUDA 11.8)
+### GPU (CUDA 11.8)
 
 ```bash
 conda create -n indoorloc python=3.10 pytorch torchvision pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate indoorloc
 pip install "indoorloc[full]"
-
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-#### CPU-only
+### CPU-only
 
 ```bash
 conda create -n indoorloc python=3.10 pytorch torchvision cpuonly -c pytorch -y
 conda activate indoorloc
 pip install "indoorloc[full]"
+```
 
+### Verify (optional)
+
+```bash
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-### Optional extras
-
-```bash
-pip install "indoorloc[vision]"     # torchvision + opencv-python
-pip install "indoorloc[datasets]"   # scipy + h5py + requests
-pip install "indoorloc[deep]"       # timm backbones
-pip install "indoorloc[deepmimo]"   # DeepMIMO (requires Python >= 3.10)
-```
-
-<details>
-<summary>Legacy (Python 3.8 + PyTorch 1.10.1)</summary>
-
-#### GPU (CUDA 11.3)
-
-```bash
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cudatoolkit=11.3 -c pytorch -y
-conda activate indoorloc-py38
-pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
-#### CPU-only
-
-```bash
-conda create -n indoorloc-py38 python=3.8 pytorch==1.10.1 torchvision==0.11.2 cpuonly -c pytorch -y
-conda activate indoorloc-py38
-pip install "indoorloc[full]"
-python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
-```
-
-</details>
-
-<details>
-<summary>Quick install (less reproducible)</summary>
-
-```bash
-pip install indoorloc
-pip install "indoorloc[full]"
-```
-
-</details>
+More install options (legacy, optional extras, troubleshooting): `docs/installation.md`.
 
 ---
 
