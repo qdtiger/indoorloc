@@ -233,18 +233,60 @@ indoorloc/
 - **有监督**
   - 传统 ML：k-NN, WKNN, SVM, RF...
   - 深度学习：MLP, CNN1D, ResNet, ViT...
-- **自监督**
+- **自监督**（规划中）
   - 对比：SimCLR, MoCo, NNCLR
   - 非对比：BYOL, SimSiam, VICReg
-- **元学习**
+- **元学习**（规划中）
   - 基于梯度：MAML, FOMAML, Reptile
   - 基于度量：ProtoNet, MatchingNet
 - **迁移学习**
   - 特征：CORAL, TCA
   - 重加权：KMM, KLIEP
-  - 深度：DANN, MDD
+  - 深度：DANN, MDD（规划中）
 
 </details>
+
+## 全栈分类与路线图
+
+IndoorLoc 按室内定位综述惯用的分类法组织为五层技术栈——自底向上：数据 → 信号 → 方法 → 评测 → 应用。
+
+图例：✅ 已实现 · 🚧 部分实现 · 📋 规划中
+
+```text
+L1  数据层
+├── 实测数据                        ✅ 12 个数据集（WiFi 6 · BLE 3 · CSI 3）
+│   └── 高精度 Massive-MIMO CSI     📋 DICHASUS、MaMIMO（待接入）
+├── 仿真数据                        📋
+│   ├── 射线追踪引擎                📋 Sionna RT · Wireless InSite · NVIDIA AODT
+│   ├── 统计信道模型                📋 3GPP TR 38.901（InH/InF）· QuaDRiGa
+│   ├── 预生成合成数据集            📋 DeepMIMO v4（首选目标）· WAIR-D
+│   └── 学习式射频场                📋 NeRF2 · 高斯泼溅 RF
+└── 仿真-实测孪生配对               📋 如 DICHASUS ↔ Sionna RT 校准
+
+L2  信号/观测层                     🚧 RSSI + BLE 已激活；CSI、ToA/TDoA、
+                                       AoA/AoD、IMU、UWB、地磁、VLC 已定义
+
+L3  方法层
+├── Model-based（模型驱动）         📋 几何解算 · 贝叶斯滤波 · 地图约束
+├── Model-free（免模型）            📋 加权质心 · 空间插值 · 图/流形 · Channel Charting
+└── Data-driven（数据驱动）         🚧
+    ├── 确定性指纹                  ✅ kNN · WKNN
+    ├── 机器学习回归                ✅ SVM · 随机森林
+    ├── 深度神经网络                ✅ MLP · CNN1D · timm 骨干 × 7 种预测头
+    ├── 集成融合                    ✅ Ensemble · Stacking
+    ├── 迁移/域适应                 🚧 浅层 skada（CORAL · TCA · KMM）；深度 DA 规划中
+    ├── 自监督预训练                📋 SimCLR · MoCo · BYOL ...
+    ├── 元学习/少样本               📋 MAML · ProtoNet ...
+    ├── 概率/生成式指纹             📋
+    └── 序列跟踪 · 神经无线电地图 · Channel Charting   📋
+
+L4  评测层                          ✅ 9 项指标 · 16 个数据集的文献基准表
+    └── CRLB 理论界 · 跨设备/跨时间与 Sim2Real 协议    📋
+
+L5  应用/部署层                     📋 实时推理 · 跟踪滤波（Kalman/粒子滤波）· PDR · 导航
+```
+
+仿真数据层的首选落地目标是 **DeepMIMO v4**（`pip install deepmimo`）：其场景库自带含原生位置标签的室内场景，并提供 Wireless InSite、Sionna RT、NVIDIA AODT 三家的格式转换器——接入一个 loader 即可打通整个射线追踪生态。
 
 ## 支持的数据集
 
