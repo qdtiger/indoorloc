@@ -175,16 +175,16 @@ Backed by [sklearn](https://scikit-learn.org/) (30+), [timm](https://github.com/
 - **Supervised**
   - Traditional ML: k-NN, WKNN, SVM, RF...
   - Deep: MLP, CNN1D, ResNet, ViT...
-- **Self-supervised**
+- **Self-supervised** *(planned)*
   - Contrastive: SimCLR, MoCo, NNCLR
   - Non-contrastive: BYOL, SimSiam, VICReg
-- **Meta-learning**
+- **Meta-learning** *(planned)*
   - Gradient-based: MAML, FOMAML, Reptile
   - Metric-based: ProtoNet, MatchingNet
 - **Transfer**
   - Feature: CORAL, TCA
   - Reweight: KMM, KLIEP
-  - Deep: DANN, MDD
+  - Deep: DANN, MDD *(planned)*
 
 </details>
 
@@ -232,6 +232,54 @@ indoorloc/
 | Building Accuracy | Building classification |
 
 </details>
+
+## Taxonomy & Roadmap
+
+IndoorLoc is organized as a five-layer stack, following the taxonomy used by recent indoor-localization surveys — from data sources at the bottom to applications on top.
+
+Legend: ✅ available · 🚧 partial · 📋 planned
+
+```text
+L1  Data
+├── Measured                                  ✅ 12 datasets (6 WiFi · 3 BLE · 3 CSI)
+│   └── High-precision massive-MIMO CSI       📋 DICHASUS, MaMIMO (pending)
+├── Simulated                                 📋
+│   ├── Ray-tracing engines                   📋 Sionna RT · Wireless InSite · NVIDIA AODT
+│   ├── Statistical channel models            📋 3GPP TR 38.901 (InH/InF) · QuaDRiGa
+│   ├── Pre-generated synthetic datasets      📋 DeepMIMO v4 (first target) · WAIR-D
+│   └── Learned radio fields                  📋 NeRF2 · Gaussian-splatting RF
+└── Sim2Real digital-twin pairs               📋 e.g. DICHASUS ↔ Sionna RT calibration
+
+L2  Signals / Observables                     🚧 RSSI + BLE active; CSI, ToA/TDoA,
+                                                 AoA/AoD, IMU, UWB, magnetic, VLC defined
+
+L3  Methods
+├── Model-based                               📋 geometric solvers · Bayesian filtering ·
+│                                                map constraints
+├── Model-free                                📋 weighted centroid · interpolation ·
+│                                                graph/manifold · channel charting
+└── Data-driven                               🚧
+    ├── Deterministic fingerprinting          ✅ kNN · WKNN
+    ├── ML regression                         ✅ SVM · Random Forest
+    ├── Deep neural networks                  ✅ MLP · CNN1D · timm backbones × 7 heads
+    ├── Ensembling                            ✅ Ensemble · Stacking
+    ├── Transfer / domain adaptation          🚧 shallow skada (CORAL · TCA · KMM);
+    │                                            deep DA planned
+    ├── Self-supervised pretraining           📋 SimCLR · MoCo · BYOL ...
+    ├── Meta-learning / few-shot              📋 MAML · ProtoNet ...
+    ├── Probabilistic / generative            📋
+    └── Sequential tracking · neural radio    📋
+        maps · channel charting
+
+L4  Evaluation                                ✅ 9 metrics · published benchmarks
+    └── CRLB bounds · cross-device/time       📋
+        & sim2real protocols
+
+L5  Applications / Deployment                 📋 real-time inference · tracking filters
+                                                 (Kalman/PF) · PDR · navigation
+```
+
+First target for the simulated-data layer: **DeepMIMO v4** (`pip install deepmimo`) — its scenario database ships indoor scenes with native position labels and converters from Wireless InSite, Sionna RT, and NVIDIA AODT, so one loader connects the whole ray-tracing ecosystem.
 
 ## Contributing
 
