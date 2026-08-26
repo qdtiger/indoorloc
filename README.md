@@ -2,8 +2,9 @@
 
 <img src="assets/logo.png" width="600">
 
-**IndoorLoc | 室内定位工具库**  
-Multi-dataset, multi-model indoor localization toolkit
+**IndoorLoc | 室内定位工具库**
+
+*Datasets · Algorithms · Evaluation — one reproducible stack for indoor wireless localization.*
 
 [![PyPI](https://img.shields.io/pypi/v/indoorloc)](https://pypi.org/project/indoorloc/)
 [![CI](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml)
@@ -12,7 +13,7 @@ Multi-dataset, multi-model indoor localization toolkit
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
 
-[Docs](https://qdtiger.github.io/indoorloc/) · [Installation](#installation) · [Quickstart](#quickstart) · [Datasets](#datasets) · [Models](#models--algorithms) · [Contributing](#contributing) · [Citation](#citation)
+[Docs](https://qdtiger.github.io/indoorloc/) · [Installation](#installation) · [Quickstart](#quickstart) · [Datasets](#datasets) · [Models](#models--algorithms) · [Roadmap](#taxonomy--roadmap) · [Contributing](#contributing)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -20,12 +21,27 @@ Multi-dataset, multi-model indoor localization toolkit
 
 ---
 
-## Highlights
+```python
+import indoorloc as iloc
 
-- Unified API for indoor localization across WiFi / BLE / CSI / UWB
-- 12 verified datasets (auto-download when available) + extensible dataset registry
-- Classic ML (scikit-learn) + deep models (PyTorch, `timm`)
-- OpenMMLab-style YAML configs for reproducible experiments
+train, test = iloc.load_dataset("ujindoorloc")   # auto-download, unified format
+model = iloc.create_model("wknn", k=5)           # classic ML or deep (timm) models
+results = model.fit(train).evaluate(test)        # unified metrics
+print(results)                                   # mean/median error · floor & building accuracy
+```
+
+## Why IndoorLoc?
+
+Indoor-positioning research has a comparability problem: most papers never release code, few public datasets ship standard train/test splits, and published numbers are rarely reproducible across labs. Deployment services, dataset tools, and hundreds of single-paper repos exist — but no framework unifies the three things a benchmark needs.
+
+IndoorLoc is built, in the spirit of [OpenMMLab](https://github.com/open-mmlab), to be that missing layer:
+
+- **Unified data** — one registry, auto-download, one sample format across WiFi / BLE / CSI datasets
+- **Unified algorithms** — classic ML and deep models behind one `fit / predict / evaluate` API
+- **Unified evaluation** — shared metrics (incl. floor/building accuracy) and published-benchmark comparison
+- **Config-driven reproducibility** — OpenMMLab-style YAML configs with `_base_` inheritance
+
+> **Honesty note.** We are rebuilding the verification chain for every public claim. Dataset rows below are tiered: ✅ means verified end-to-end (auto-download → train → evaluate) with committed evidence; 🧪 means the loader is implemented and re-verification is in progress. See the [development plan](docs/DEVELOPMENT_PLAN.md).
 
 ## Installation
 
@@ -51,9 +67,7 @@ pip install "indoorloc[full]"
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-More install options (legacy, optional extras, troubleshooting): `docs/installation.md`.
-
----
+More install options: `docs/installation.md`.
 
 ## Quickstart
 
@@ -62,82 +76,59 @@ More install options (legacy, optional extras, troubleshooting): `docs/installat
 ```python
 import indoorloc as iloc
 
-train, test = iloc.load_dataset("ujindoorloc")            # 12 verified datasets
-model = iloc.create_model("resnet18", dataset=train)      # Auto-configure model
-results = model.fit(train).evaluate(test)                # Train & evaluate
+train, test = iloc.load_dataset("ujindoorloc")            # any integrated dataset ID
+model = iloc.create_model("resnet18", dataset=train)      # timm backbone, auto-configured
+results = model.fit(train).evaluate(test)
 ```
 
-Auto-download datasets · Auto-adapt dimensions · Auto-configure model
-
-### YAML Config + CLI
+### YAML config + CLI
 
 Config templates live in `indoorloc/configs/`.
 
 ```bash
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
 
-# Override any parameter
+# Override any parameter (Python literals: True/False, not true/false)
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml \
   --model.backbone.model_name efficientnet_b0 \
   --train.lr 5e-4 --train.epochs 200
 ```
 
 ```yaml
-# indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
+# indoorloc/configs/wifi/resnet18_ujindoorloc.yaml (abridged)
 _base_:
+  - ../_base_/default.yaml
+  - ../_base_/datasets/ujindoorloc.yaml
   - ../_base_/models/resnet.yaml
+  - ../_base_/schedules/schedule_1x.yaml
 
 model:
-  backbone:
-    model_name: resnet18
-    pretrained: true
-  head:
-    num_floors: 5
-    num_buildings: 3
+  backbone: {model_name: resnet18, pretrained: true, input_type: '1d'}
+  head:     {type: HybridHead, num_coords: 2, num_floors: 5, num_buildings: 3}
 
-train:
-  epochs: 100
-  lr: 0.001
+train: {epochs: 100, batch_size: 64, lr: 1e-3}
 ```
-
-## Documentation
-
-- Dataset catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html
-- Algorithm zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html
-- Config reference: `indoorloc/configs/README.md`
 
 ## Datasets
 
-> Full dataset catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html
+> Catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html · List IDs: `iloc.list_available_datasets()`
 
-- List available dataset IDs: `iloc.list_available_datasets()`
-- Load a dataset: `train, test = iloc.load_dataset("ujindoorloc")`
+Status: ✅ verified end-to-end · 🧪 integrated, re-verification in progress
 
-Verified dataset IDs (12):
-
-- WiFi: `ujindoorloc`, `sodindoorloc`, `longtermwifi`, `tampere`, `wlanrssi`, `tuji1`
-- BLE: `ble_indoor`, `ibeacon_rssi`, `ble_rssi_uci`
-- CSI: `csi_fingerprint`, `hwild`, `haloc`
-
-<details>
-<summary>Verified datasets (table)</summary>
-
-| Type | Dataset | ID | Samples |
-|------|---------|-----|---------|
-| **WiFi** | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | `ujindoorloc` | 21k |
-| | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | `sodindoorloc` | 24k |
-| | [LongTermWiFi](https://zenodo.org/record/1309317) | `longtermwifi` | 104k |
-| | [Tampere](https://zenodo.org/record/889798) | `tampere` | 4.6k |
-| | [WLANRSSI](https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization) | `wlanrssi` | 2k |
-| | [TUJI1](https://zenodo.org/record/7641701) | `tuji1` | 8.9k |
-| **BLE** | [BLEIndoor](https://github.com/co60ca/BBIL) | `ble_indoor` | 44k |
-| | [iBeaconRSSI](https://zenodo.org/record/1618692) | `ibeacon_rssi` | 4.7k |
-| | [BLE RSSI UCI](https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation) | `ble_rssi_uci` | 1.4k |
-| **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 |
-| | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k |
-| | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k |
-
-</details>
+| Type | Dataset | ID | Samples | Status |
+|------|---------|-----|---------|:------:|
+| **WiFi** | [UJIndoorLoc](https://archive.ics.uci.edu/dataset/310/ujiindoorloc) | `ujindoorloc` | 21k | ✅ |
+| | [SODIndoorLoc](https://github.com/renwudao24/SODIndoorLoc) | `sodindoorloc` | 24k | 🧪 |
+| | [LongTermWiFi](https://zenodo.org/record/1309317) | `longtermwifi` | 104k | 🧪 |
+| | [Tampere](https://zenodo.org/record/889798) | `tampere` | 4.6k | 🧪 |
+| | [WLANRSSI](https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization) | `wlanrssi` | 2k | 🧪 |
+| | [TUJI1](https://zenodo.org/record/7641701) | `tuji1` | 8.9k | 🧪 |
+| **BLE** | [BLEIndoor](https://github.com/co60ca/BBIL) | `ble_indoor` | 44k | 🧪 |
+| | [iBeaconRSSI](https://zenodo.org/record/1618692) | `ibeacon_rssi` | 4.7k | 🧪 |
+| | [BLE RSSI UCI](https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation) | `ble_rssi_uci` | 1.4k | 🧪 |
+| **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 | 🧪 |
+| | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k | 🧪 |
+| | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k | 🧪 |
 
 <details>
 <summary>Pending datasets (help wanted)</summary>
@@ -146,50 +137,41 @@ These datasets have download sources but are **not yet integrated**:
 
 | Dataset | Source | Notes |
 |---------|--------|-------|
+| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | Ray-tracing synthetic; first target of the simulated-data layer |
+| DICHASUS | [DaRUS](https://darus.uni-stuttgart.de/dataverse/dichasus) | Massive-MIMO CSI, cm-accurate ground truth |
+| MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | Requires account |
 | OpenCSI | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | ~2GB, format unverified |
 | CSUIndoorLoc | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | Format unverified |
-| DICHASUS | [DaRUS](https://darus.uni-stuttgart.de/dataverse/dichasus) | 14 scenarios |
-| ESPARGOS | [espargos.net](https://espargos.net/datasets/) | 17-86GB |
-| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | Requires `pip install DeepMIMO` |
-| CSI2Pos | [TIB](https://service.tib.eu/ldmservice/dataset/csi2pos) | Requires login |
-| CSI2TAoA | [TIB](https://service.tib.eu/ldmservice/dataset/csi2taoa) | Requires login |
-| MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | Requires account |
+| ESPARGOS | [espargos.net](https://espargos.net/datasets/) | 17–86GB |
+| CSI2Pos / CSI2TAoA | [TIB](https://service.tib.eu/ldmservice/) | Requires login |
 | WILDv2 | [Kaggle](https://www.kaggle.com/competitions/wild-v2) | Requires Kaggle API |
 
-> Contribute: help us verify pending datasets! See `CONTRIBUTING.md`.
+> Contribute a loader: see `CONTRIBUTING.md`.
 
 </details>
 
 ## Models & Algorithms
 
-> Full algorithm zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html
+> Zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html · List models: `iloc.list_models()`
 
-- List available models: `iloc.list_models()`
-- Create a model: `iloc.create_model("KNNLocalizer", k=5)` / `iloc.create_model("resnet18", dataset=train)`
+**Implemented today:**
+
+| Family | Methods |
+|--------|---------|
+| Traditional ML | kNN · WKNN · SVM · Random Forest |
+| Deep supervised | MLP · CNN1D · [timm](https://github.com/huggingface/pytorch-image-models) backbones (ResNet · EfficientNet · ViT · …) × 7 task heads (regression / multi-scale / classification / floor / building / hybrid / hierarchical) |
+| Fusion | Ensemble · Stacking |
+| Transfer (shallow) | CORAL · TCA · KMM via [SKADA](https://github.com/scikit-adaptation/skada) |
 
 <details>
-<summary>Algorithm families</summary>
+<summary>Planned families (roadmap — no code yet)</summary>
 
-Backed by [sklearn](https://scikit-learn.org/) (30+), [timm](https://github.com/huggingface/pytorch-image-models) (700+), [lightly](https://github.com/lightly-ai/lightly) (10+), [learn2learn](https://github.com/learnables/learn2learn) (7+), and [SKADA](https://github.com/scikit-adaptation/skada) (20+).
-
-- **Supervised**
-  - Traditional ML: k-NN, WKNN, SVM, RF...
-  - Deep: MLP, CNN1D, ResNet, ViT...
-- **Self-supervised** *(planned)*
-  - Contrastive: SimCLR, MoCo, NNCLR
-  - Non-contrastive: BYOL, SimSiam, VICReg
-- **Meta-learning** *(planned)*
-  - Gradient-based: MAML, FOMAML, Reptile
-  - Metric-based: ProtoNet, MatchingNet
-- **Transfer**
-  - Feature: CORAL, TCA
-  - Reweight: KMM, KLIEP
-  - Deep: DANN, MDD *(planned)*
+- **Self-supervised pretraining**: SimCLR, MoCo, BYOL, SimSiam, VICReg …
+- **Meta-learning / few-shot**: MAML, FOMAML, Reptile, ProtoNet, MatchingNet …
+- **Deep domain adaptation**: DANN, MDD, DeepCORAL …
+- **Model-based / model-free methods**: geometric solvers, Bayesian filtering, weighted centroid, channel charting …
 
 </details>
-
-<details>
-<summary><b>Advanced usage</b></summary>
 
 ### Custom model registration
 
@@ -200,38 +182,31 @@ from indoorloc.localizers.base import BaseLocalizer
 
 @LOCALIZERS.register_module()
 class MyLocalizer(BaseLocalizer):
-    def fit(self, signals, locations, **kwargs):
+    @property
+    def localizer_type(self) -> str:
+        return "my_localizer"
+
+    def _fit_impl(self, signals, locations, **kwargs):
+        ...  # your training logic
         self._is_trained = True
         return self
 
     def predict(self, signal):
-        raise NotImplementedError
+        ...  # return a LocalizationResult
 
 model = iloc.create_model("MyLocalizer")
 ```
 
-### Project structure
-
-```
-indoorloc/
-├── signals/          # WiFi, BLE, IMU, etc.
-├── locations/        # Location classes
-├── datasets/         # Verified + pending
-├── localizers/       # ML & DL algorithms
-├── evaluation/       # Metrics
-└── configs/          # YAML configs
-```
-
-### Evaluation metrics
+## Evaluation
 
 | Metric | Description |
 |--------|-------------|
-| Mean Position Error | Average error (m) |
-| Median Position Error | Median error (m) |
+| Mean / Median / RMS / P75 Position Error | Localization error (m) |
 | Floor Accuracy | Floor classification |
 | Building Accuracy | Building classification |
+| CDF Analysis | Error distribution |
 
-</details>
+`evaluate()` can compare your run against literature-reported numbers for the same dataset. Reproduced-by-this-repo numbers and literature-reported numbers are always labeled separately — they never share a column.
 
 ## Taxonomy & Roadmap
 
@@ -250,8 +225,8 @@ L1  Data
 │   └── Learned radio fields                  📋 NeRF2 · Gaussian-splatting RF
 └── Sim2Real digital-twin pairs               📋 e.g. DICHASUS ↔ Sionna RT calibration
 
-L2  Signals / Observables                     🚧 RSSI + BLE active; CSI, ToA/TDoA,
-                                                 AoA/AoD, IMU, UWB, magnetic, VLC defined
+L2  Signals / Observables                     🚧 RSSI + BLE active; CSI, UWB (ToF/TDoA),
+                                                 IMU, magnetic, VLC, ultrasound defined
 
 L3  Methods
 ├── Model-based                               📋 geometric solvers · Bayesian filtering ·
@@ -279,11 +254,27 @@ L5  Applications / Deployment                 📋 real-time inference · tracki
                                                  (Kalman/PF) · PDR · navigation
 ```
 
-First target for the simulated-data layer: **DeepMIMO v4** (`pip install deepmimo`) — its scenario database ships indoor scenes with native position labels and converters from Wireless InSite, Sionna RT, and NVIDIA AODT, so one loader connects the whole ray-tracing ecosystem.
+Execution details — milestones, decision gates, and the full known-issues worklist — live in [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md).
+
+<details>
+<summary>Project structure</summary>
+
+```
+indoorloc/
+├── signals/          # WiFi, BLE, CSI, IMU, ... signal classes
+├── locations/        # Coordinate & Location classes
+├── datasets/         # Dataset loaders + registry + transforms
+├── localizers/       # Classic ML localizers (fingerprint / fusion / transfer)
+├── models/           # Deep models: backbones × heads + DeepLocalizer
+├── evaluation/       # Metrics + published-benchmark tables
+└── configs/          # OpenMMLab-style YAML configs
+```
+
+</details>
 
 ## Contributing
 
-See `CONTRIBUTING.md`.
+See `CONTRIBUTING.md`. Adding a dataset loader or a localizer that passes the reproducibility contract is the most valuable contribution you can make.
 
 ## License
 
@@ -294,12 +285,13 @@ Apache License 2.0
 ```bibtex
 @software{indoorloc,
   title = {IndoorLoc: A Unified Framework for Indoor Localization},
-  year = {2024},
+  year = {2025},
   url = {https://github.com/qdtiger/indoorloc}
 }
 ```
 
 ## Acknowledgements
 
-- [OpenMMLab](https://github.com/open-mmlab) — Registry and config system
-- [timm](https://github.com/huggingface/pytorch-image-models) — 700+ pretrained models
+- [OpenMMLab](https://github.com/open-mmlab) — registry and config system design
+- [timm](https://github.com/huggingface/pytorch-image-models) — pretrained backbones
+- [scikit-learn](https://scikit-learn.org/) / [SKADA](https://github.com/scikit-adaptation/skada) — classic ML & domain adaptation
