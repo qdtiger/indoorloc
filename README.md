@@ -34,12 +34,12 @@ print(results)                                   # mean/median error · floor & 
 
 Indoor-positioning research has a comparability problem: most papers never release code, few public datasets ship standard train/test splits, and published numbers are rarely reproducible across labs. Deployment services, dataset tools, and hundreds of single-paper repos exist — but no framework unifies the three things a benchmark needs.
 
-IndoorLoc is built, in the spirit of [OpenMMLab](https://github.com/open-mmlab), to be that missing layer:
+IndoorLoc is built to be that missing layer:
 
 - **Unified data** — one registry, auto-download, one sample format across WiFi / BLE / CSI datasets
 - **Unified algorithms** — classic ML and deep models behind one `fit / predict / evaluate` API
 - **Unified evaluation** — shared metrics (incl. floor/building accuracy) and published-benchmark comparison
-- **Config-driven reproducibility** — OpenMMLab-style YAML configs with `_base_` inheritance
+- **Config-driven reproducibility** — YAML configs with `_base_` inheritance; a full experiment reruns from one command
 
 > **Dataset status.** In the table below, ✅ means the full auto-download → train → evaluate pipeline has been run end-to-end, with the evidence committed to this repo; 🧪 means the loader is implemented and re-verification is in progress. Details in the [development plan](docs/DEVELOPMENT_PLAN.md).
 
@@ -267,7 +267,7 @@ indoorloc/
 ├── localizers/       # Classic ML localizers (fingerprint / fusion / transfer)
 ├── models/           # Deep models: backbones × heads + DeepLocalizer
 ├── evaluation/       # Metrics + published-benchmark tables
-└── configs/          # OpenMMLab-style YAML configs
+└── configs/          # YAML configs with _base_ inheritance
 ```
 
 </details>
