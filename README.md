@@ -40,6 +40,7 @@ IndoorLoc is built to be that missing layer:
 - **Unified algorithms** — classic ML and deep models behind one `fit / predict / evaluate` API
 - **Unified evaluation** — shared metrics (incl. floor/building accuracy) and published-benchmark comparison
 - **Config-driven reproducibility** — YAML configs with `_base_` inheritance; a full experiment reruns from one command
+- **À la carte** — every layer stands on its own: datasets export to standard formats for any framework, models train on your own arrays, and the evaluation protocols work with your own predictions (interfaces rolling out per the [development plan](docs/DEVELOPMENT_PLAN.md))
 
 > **Dataset status.** In the table below, ✅ means the full auto-download → train → evaluate pipeline has been run end-to-end, with the evidence committed to this repo; 🧪 means the loader is implemented and re-verification is in progress. Details in the [development plan](docs/DEVELOPMENT_PLAN.md).
 

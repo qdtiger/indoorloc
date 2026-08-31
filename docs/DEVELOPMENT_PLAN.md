@@ -63,7 +63,27 @@
 - **Release 门控**：打 tag 时重跑全部 zoo 配置，复现容差内才放行。
 - ruff **钉版本**；生成表格配 regenerate-and-diff 检查，防手编。
 
-### 2.4 等预算调参协议（论文方法论脊柱）
+### 2.4 分层独立可用契约（à la carte，一等设计原则）
+
+**原则**：每层对外说两种语言——层间组合用本库对象，进出边界用生态标准格式（numpy / DataFrame / torch / CSV）。三条规则：**进得来**（用户自有数据/模型可从任意层进入）、**出得去**（任意层的产物可导出为标准格式离开）、**不绑架**（只用一层不被迫安装或学习其他层）。定位语：每层独立可用，层层打通更强。
+
+目标 API 形态（实现对应工单 P1-11~13）：
+
+```python
+# 只用数据层：拿数据走人
+X, y = iloc.load_dataset("ujindoorloc", split="v1")[0].to_numpy()   # 或 to_dataframe()/to_torch()
+# 只用方法层：自有数据喂本库模型（并兼容 sklearn estimator 协议）
+iloc.create_model("wknn", k=5).fit(X_own, y_own).predict(X_new)
+# 只用评测层：模型与数据全是用户自己的
+iloc.evaluate(y_true, y_pred, dataset="ujindoorloc")   # 指标+文献对照+to_latex
+iloc.make_protocol_split(meta, protocol="cross-device") # 协议切分器用于自有数据
+# 只用信号层：变换管线直接吃裸数组
+iloc.transforms.CSISanitize()(raw_csi)
+```
+
+配套约束：标准切分以**纯 CSV 索引**落盘（语言中立，MATLAB/R 用户可直接消费）；pip 依赖分层（基础安装不强制 torch）。**注意**：P1-1 的契约统一手术必须按"数组进出为一等公民"来定接口，一次手术同时满足本节。
+
+### 2.5 等预算调参协议（论文方法论脊柱）
 
 经典与深度方法使用**相同的超参搜索预算**（如每方法每数据集 20 次随机搜索）、相同切分、3 个种子；每次运行落盘 config + seed + log + metrics JSON；聚合脚本渲染基准表（mean/median/P75 误差 + 楼层命中，对齐 IPIN 惯例）。
 
@@ -136,6 +156,10 @@
 | P1-8 | `csi_fingerprint.py:346`、`hwild.py:294`、`haloc.py:221` vs `signals/csi.py` | CSI 幅度塞进 WiFiSignal，被 RSSI 语义（NOT_DETECTED=100、MIN_RSSI 归一化）错误处理；351 行 CSISignal 是死代码 | CSI loader 改产 CSISignal（或明确文档化降级理由） |
 | P1-9 | `indoorloc/datasets/loading.py:84-86` | `split=None` 双重构建数据集：下载检查+解析跑两遍；SOD/LongTermWiFi 的派生维度在 train/test 间一致性无保障 | 单次构建后切分，或缓存共享；维度一致性断言 |
 | P1-10 | `indoorloc/datasets/base.py:164-169` + `signals/wifi.py:260-267` | 归一化按**逐样本**统计（`method='standard'` 时每条信号用自身均值/方差归一化），train/test 无共享冻结统计（评测语义错配） | 数据集级统计从 train 计算、冻结后应用于 test；作为协议问题在论文中说明 |
+| P1-11 | `indoorloc/datasets/base.py`（现仅有 `to_torch_tensors` :293） | 数据层缺标准格式出口：无 `to_numpy()` / `to_dataframe()`，无整库 CSV 导出；用户拿不走数据 | 补齐三个导出方法 + `iloc.export()`；切分索引以纯 CSV 落盘（§2.4） |
+| P1-12 | `indoorloc/localizers/base.py:75-111` | `fit()` 只收 BaseDataset 或 Signal 列表，不收裸 ndarray；不兼容 sklearn estimator 协议，无法进 Pipeline/GridSearchCV | `fit/predict` 增加裸数组路径；通过 `sklearn.utils.estimator_checks` 的核心检查；与 P1-1 同一次手术完成 |
+| P1-13 | `indoorloc/evaluation/metrics.py:438`（Evaluator 类方法） | 评测与 Dataset/Location 对象耦合，无函数式入口；自有模型+自有数据的用户用不了本库指标与文献对照 | 顶层 `iloc.evaluate(y_true, y_pred, dataset=None)` 直接吃数组；`make_protocol_split()` 独立可用（§2.4） |
+| P1-14 | `pyproject.toml:52-`（optional-dependencies） | 依赖未按层拆分，只用数据/评测层的用户可能被迫装深度学习栈 | 梳理为：基础安装（numpy 系）→ `[torch]` → `[full]`；核实基础依赖不含 torch |
 
 ### P2 —— 卫生与信任（M0/M2 范围）
 
@@ -159,8 +183,8 @@
 M0: P2-1(删) → P2-3 → P2-6 → P2-2(CI部分)
 M1: P0-1 → P0-2 → P0-3 → P0-4
 M2: P2-4 → P2-5 → (6个WiFi loader逐个过契约)
-M3: P1-1 → P1-2 → P1-6
-M4: P1-3 → P1-4 → P1-5 → P1-9 → P1-10 → P2-8 → P2-9
+M3: P1-1(+P1-12 同一手术) → P1-2 → P1-6 → P1-11 → P1-13
+M4: P1-3 → P1-4 → P1-5 → P1-9 → P1-10 → P1-14 → P2-8 → P2-9
 随手: P2-7 → P2-10 → P1-7 → P1-8 → P2-11(决策后)
 ```
 
