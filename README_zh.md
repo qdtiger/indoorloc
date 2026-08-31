@@ -4,7 +4,7 @@
 
 **IndoorLoc | 室内定位工具库**
 
-*数据 · 算法 · 评测——室内无线定位的一站式可复现技术栈*
+*把室内定位研究的数据集、算法和评测收进同一个库*
 
 [![PyPI](https://img.shields.io/pypi/v/indoorloc)](https://pypi.org/project/indoorloc/)
 [![CI](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml)
@@ -32,16 +32,16 @@ print(results)                                   # 平均/中位误差 · 楼层
 
 ## 为什么做 IndoorLoc？
 
-室内定位研究有一个"不可比"的顽疾：绝大多数论文不开源代码，公开数据集很少附带标准切分，论文里的数字在别的实验室几乎无法复现。领域里有部署服务、有数据工具、有几百个单篇论文的仓库——但没有一个框架把基准测试需要的三件事统一起来。
+做室内定位研究的人多半都遇到过这几件事：想复现一篇论文，发现没放代码；找到了公开数据集，却没有统一的训练/测试切分；各家论文里的精度数字口径不一，根本没法直接比。这个领域不缺部署方案，不缺采集工具，更不缺单篇论文的配套仓库，缺的是把这些东西串起来的框架。
 
-IndoorLoc 以 [OpenMMLab](https://github.com/open-mmlab) 的方式补上这一层：
+IndoorLoc 照着 [OpenMMLab](https://github.com/open-mmlab) 的路子来补这一课：
 
-- **统一数据**——一个注册表，自动下载，WiFi / BLE / CSI 数据集统一样本格式
-- **统一算法**——传统 ML 与深度模型共用一套 `fit / predict / evaluate` API
-- **统一评测**——共享指标（含楼层/建筑准确率）+ 文献基准对照
-- **配置驱动可复现**——OpenMMLab 风格 YAML 配置，支持 `_base_` 继承
+- 数据集统一注册、自动下载，WiFi / BLE / CSI 共用一种样本格式
+- 传统机器学习和深度模型走同一套 `fit / predict / evaluate` 接口
+- 评测指标只有一份实现（含楼层、建筑准确率），结果可以直接和文献数字对照
+- 实验由 YAML 配置驱动，支持 `_base_` 继承，改参数、换模型都是一行命令的事
 
-> **诚实声明。** 我们正在为每一条公开宣称重建验证链。下方数据集分级标注：✅ 表示端到端验证通过（自动下载 → 训练 → 评测）且证据已入库；🧪 表示 loader 已实现、复验进行中。详见[开发规划](docs/DEVELOPMENT_PLAN.md)。
+> **关于数据集状态**：下表中 ✅ 表示从自动下载到训练、评测完整跑通过，记录在仓库里可查；🧪 表示加载器已经写好，还在逐个复核。进度见[开发规划](docs/DEVELOPMENT_PLAN.md)。
 
 ## 安装
 
@@ -67,7 +67,7 @@ pip install "indoorloc[full]"
 python -c "import indoorloc, torch; print('indoorloc', indoorloc.__version__, '| torch', torch.__version__, '| cuda', torch.cuda.is_available())"
 ```
 
-更多安装方式：`docs/installation_zh.md`。
+更多安装方式见 `docs/installation_zh.md`。
 
 ## 快速开始
 
@@ -83,12 +83,12 @@ results = model.fit(train).evaluate(test)
 
 ### YAML 配置 + 命令行
 
-配置模板位于 `indoorloc/configs/`。
+配置模板在 `indoorloc/configs/` 下。
 
 ```bash
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
 
-# 覆盖任意参数（布尔值用 Python 字面量 True/False，不是 true/false）
+# 覆盖任意参数（布尔值写 True/False，小写不认）
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml \
   --model.backbone.model_name efficientnet_b0 \
   --train.lr 5e-4 --train.epochs 200
@@ -111,9 +111,9 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 
 ## 数据集
 
-> 数据集目录（Web）：https://qdtiger.github.io/indoorloc/datasets_zh.html · 列出 ID：`iloc.list_available_datasets()`
+> 数据集目录（Web）：https://qdtiger.github.io/indoorloc/datasets_zh.html · 列出全部 ID：`iloc.list_available_datasets()`
 
-状态：✅ 端到端验证通过 · 🧪 已集成、复验进行中
+状态：✅ 完整跑通 · 🧪 已集成，复核中
 
 | 类型 | 数据集 | ID | 样本数 | 状态 |
 |------|--------|-----|--------|:----:|
@@ -131,22 +131,22 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 | | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k | 🧪 |
 
 <details>
-<summary>待集成数据集（欢迎贡献）</summary>
+<summary>还没接入的数据集（欢迎认领）</summary>
 
-以下数据集有下载源但**尚未集成**：
+这些数据集有公开下载源，但加载器还没写：
 
 | 数据集 | 来源 | 说明 |
 |--------|------|------|
-| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | 射线追踪合成数据；仿真层首选目标 |
+| DeepMIMO | [deepmimo.net](https://www.deepmimo.net) | 射线追踪合成数据，仿真层打算最先接它 |
 | DICHASUS | [DaRUS](https://darus.uni-stuttgart.de/dataverse/dichasus) | Massive-MIMO CSI，厘米级真值 |
 | MaMIMO CSI | [IEEE DataPort](https://ieee-dataport.org/open-access/ultra-dense-indoor-mamimo-csi-dataset) | 需注册账号 |
-| OpenCSI | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | 约 2GB，格式待验证 |
-| CSUIndoorLoc | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | 格式待验证 |
+| OpenCSI | [Figshare](https://doi.org/10.6084/m9.figshare.19596379.v1) | 约 2GB，格式待确认 |
+| CSUIndoorLoc | [GitHub](https://github.com/EPIC-CSU/csi-rssi-dataset-indoor-nav) | 格式待确认 |
 | ESPARGOS | [espargos.net](https://espargos.net/datasets/) | 17–86GB |
 | CSI2Pos / CSI2TAoA | [TIB](https://service.tib.eu/ldmservice/) | 需登录 |
 | WILDv2 | [Kaggle](https://www.kaggle.com/competitions/wild-v2) | 需 Kaggle API |
 
-> 贡献 loader 请见 `CONTRIBUTING.md`。
+> 想认领一个？见 `CONTRIBUTING.md`。
 
 </details>
 
@@ -154,26 +154,26 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 
 > 算法总览（Web）：https://qdtiger.github.io/indoorloc/algorithms.html · 列出模型：`iloc.list_models()`
 
-**当前已实现：**
+已经实现的：
 
-| 家族 | 方法 |
+| 类别 | 方法 |
 |------|------|
 | 传统机器学习 | kNN · WKNN · SVM · 随机森林 |
 | 深度监督 | MLP · CNN1D · [timm](https://github.com/huggingface/pytorch-image-models) 骨干（ResNet · EfficientNet · ViT ……）× 7 种任务头（回归 / 多尺度回归 / 分类 / 楼层 / 建筑 / 混合 / 层次化） |
 | 集成融合 | Ensemble · Stacking |
-| 迁移（浅层） | CORAL · TCA · KMM（基于 [SKADA](https://github.com/scikit-adaptation/skada)） |
+| 迁移学习（浅层） | CORAL · TCA · KMM（基于 [SKADA](https://github.com/scikit-adaptation/skada)） |
 
 <details>
-<summary>规划中的家族（路线图——暂无代码）</summary>
+<summary>路线图上的（还没有代码）</summary>
 
-- **自监督预训练**：SimCLR、MoCo、BYOL、SimSiam、VICReg……
-- **元学习/少样本**：MAML、FOMAML、Reptile、ProtoNet、MatchingNet……
-- **深度域适应**：DANN、MDD、DeepCORAL……
-- **模型驱动/免模型方法**：几何解算、贝叶斯滤波、加权质心、Channel Charting……
+- 自监督预训练：SimCLR、MoCo、BYOL、SimSiam、VICReg 等
+- 元学习 / 少样本：MAML、FOMAML、Reptile、ProtoNet、MatchingNet 等
+- 深度域适应：DANN、MDD、DeepCORAL 等
+- 模型驱动 / 免模型方法：几何解算、贝叶斯滤波、加权质心、Channel Charting 等
 
 </details>
 
-### 自定义模型注册
+### 注册自己的模型
 
 ```python
 import indoorloc as iloc
@@ -206,11 +206,11 @@ model = iloc.create_model("MyLocalizer")
 | 建筑准确率 | 建筑分类 |
 | CDF 分析 | 误差分布 |
 
-`evaluate()` 可将你的结果与同数据集的文献报告数字对照。**本仓库复现的数字与文献报告的数字始终分开标注，绝不混在同一列。**
+`evaluate()` 会把你的结果和同一数据集上文献报告的数字放在一起对照。我们自己复现出来的数字和从文献里摘的数字始终分开标注，不会混在一列。
 
 ## 全栈分类与路线图
 
-IndoorLoc 按室内定位综述惯用的分类法组织为五层技术栈——自底向上：数据 → 信号 → 方法 → 评测 → 应用。
+IndoorLoc 按室内定位综述里常见的分类方式组织成五层，自底向上是数据、信号、方法、评测、应用。
 
 图例：✅ 已实现 · 🚧 部分实现 · 📋 规划中
 
@@ -248,7 +248,7 @@ L4  评测层                          ✅ 9 项指标 · 文献基准对照
 L5  应用/部署层                     📋 实时推理 · 跟踪滤波（Kalman/粒子滤波）· PDR · 导航
 ```
 
-执行细节——里程碑、决策门、以及完整的已知问题工单——见 [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md)。
+更细的开发计划、里程碑和已知问题清单都在 [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md)。
 
 <details>
 <summary>项目结构</summary>
@@ -268,7 +268,7 @@ indoorloc/
 
 ## 贡献
 
-见 `CONTRIBUTING.md`。通过复现契约的数据集 loader 或定位器是最有价值的贡献。
+欢迎提 PR。眼下最缺的是新数据集的加载器和新算法实现，具体要求见 `CONTRIBUTING.md`。
 
 ## 许可证
 
@@ -286,6 +286,6 @@ Apache License 2.0
 
 ## 致谢
 
-- [OpenMMLab](https://github.com/open-mmlab)——注册表与配置系统设计
-- [timm](https://github.com/huggingface/pytorch-image-models)——预训练骨干网络
-- [scikit-learn](https://scikit-learn.org/) / [SKADA](https://github.com/scikit-adaptation/skada)——传统 ML 与域适应
+- [OpenMMLab](https://github.com/open-mmlab)：注册表和配置系统的设计来源
+- [timm](https://github.com/huggingface/pytorch-image-models)：预训练骨干网络
+- [scikit-learn](https://scikit-learn.org/) / [SKADA](https://github.com/scikit-adaptation/skada)：传统机器学习与域适应

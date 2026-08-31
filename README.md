@@ -41,7 +41,7 @@ IndoorLoc is built, in the spirit of [OpenMMLab](https://github.com/open-mmlab),
 - **Unified evaluation** — shared metrics (incl. floor/building accuracy) and published-benchmark comparison
 - **Config-driven reproducibility** — OpenMMLab-style YAML configs with `_base_` inheritance
 
-> **Honesty note.** We are rebuilding the verification chain for every public claim. Dataset rows below are tiered: ✅ means verified end-to-end (auto-download → train → evaluate) with committed evidence; 🧪 means the loader is implemented and re-verification is in progress. See the [development plan](docs/DEVELOPMENT_PLAN.md).
+> **Dataset status.** In the table below, ✅ means the full auto-download → train → evaluate pipeline has been run end-to-end, with the evidence committed to this repo; 🧪 means the loader is implemented and re-verification is in progress. Details in the [development plan](docs/DEVELOPMENT_PLAN.md).
 
 ## Installation
 
@@ -254,7 +254,7 @@ L5  Applications / Deployment                 📋 real-time inference · tracki
                                                  (Kalman/PF) · PDR · navigation
 ```
 
-Execution details — milestones, decision gates, and the full known-issues worklist — live in [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md).
+Milestones, decision gates, and the full known-issues list live in [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md).
 
 <details>
 <summary>Project structure</summary>
@@ -274,7 +274,7 @@ indoorloc/
 
 ## Contributing
 
-See `CONTRIBUTING.md`. Adding a dataset loader or a localizer that passes the reproducibility contract is the most valuable contribution you can make.
+PRs welcome. New dataset loaders and new localizer implementations are what we need most — see `CONTRIBUTING.md` for the requirements.
 
 ## License
 
