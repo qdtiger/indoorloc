@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
 
-[Docs](https://qdtiger.github.io/indoorloc/) · [Installation](#installation) · [Quickstart](#quickstart) · [Datasets](#datasets) · [Models](#models--algorithms) · [Roadmap](#taxonomy--roadmap) · [Contributing](#contributing)
+[Docs](https://qdtiger.github.io/indoorloc/) · [Five layers](#the-five-layers) · [Installation](#installation) · [Quickstart](#quickstart) · [Layer by layer](#layer-by-layer) · [Roadmap](#roadmap) · [Contributing](#contributing)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -32,17 +32,21 @@ print(results)                                   # mean/median error · floor & 
 
 ## Why IndoorLoc?
 
-Indoor-positioning research has a comparability problem: most papers never release code, few public datasets ship standard train/test splits, and published numbers are rarely reproducible across labs. Deployment services, dataset tools, and hundreds of single-paper repos exist — but no framework unifies the three things a benchmark needs.
+Indoor-positioning research has a comparability problem: most papers never release code, few public datasets ship standard train/test splits, and published numbers are rarely reproducible across labs. Deployment services, dataset tools, and hundreds of single-paper repos exist — but no framework unifies the three things a benchmark needs: data, algorithms, and evaluation.
 
-IndoorLoc is built to be that missing layer:
+IndoorLoc is built to be that missing layer. It is organized as five layers, and **every layer can be used on its own**: take the datasets and leave, run our models on your own data, or score your own model with our metrics. The stack is stronger together, but nothing forces you to take all of it.
 
-- **Unified data** — one registry, auto-download, one sample format across WiFi / BLE / CSI datasets
-- **Unified algorithms** — classic ML and deep models behind one `fit / predict / evaluate` API
-- **Unified evaluation** — shared metrics (incl. floor/building accuracy) and published-benchmark comparison
-- **Config-driven reproducibility** — YAML configs with `_base_` inheritance; a full experiment reruns from one command
-- **À la carte** — every layer stands on its own: datasets export to standard formats for any framework, models train on your own arrays, and the evaluation protocols work with your own predictions (interfaces rolling out per the [development plan](docs/DEVELOPMENT_PLAN.md))
+## The five layers
 
-> **Dataset status.** In the table below, ✅ means the full auto-download → train → evaluate pipeline has been run end-to-end, with the evidence committed to this repo; 🧪 means the loader is implemented and re-verification is in progress. Details in the [development plan](docs/DEVELOPMENT_PLAN.md).
+| Layer | What it provides | Use it alone | Status |
+|---|---|---|---|
+| **L1 · Data** | 12 measured datasets (WiFi / BLE / CSI): one registry, auto-download, one sample format | Export to numpy / torch with `to_tensors()` and continue in any framework | 12 integrated, verification in progress · simulated data planned |
+| **L2 · Signals** | Signal abstractions (WiFi, BLE, CSI, UWB, IMU, …) and preprocessing transforms | Transform pipelines apply to a single signal built from your own array | RSSI + BLE active · CSI pipeline planned |
+| **L3 · Methods** | kNN / WKNN / SVM / RF · MLP / CNN1D / timm backbones × 7 heads · ensembles · shallow transfer | Train on your own data via `WiFiSignal` + `Location` | Supervised ✅ · self-supervised / meta-learning planned |
+| **L4 · Evaluation** | 9 metrics, error CDFs, comparison against published results | Score any model's predictions, whatever produced them | Metrics ✅ · standard splits & protocol suite planned |
+| **L5 · Applications** | Real-time inference, tracking filters, navigation | — | Planned |
+
+Experiments are driven by YAML configs with `_base_` inheritance, so any reported result reruns from a single command.
 
 ## Installation
 
@@ -89,7 +93,7 @@ Config templates live in `indoorloc/configs/`.
 ```bash
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml
 
-# Override any parameter (Python literals: True/False, not true/false)
+# Override any parameter (booleans as Python literals: True/False)
 indoorloc-train indoorloc/configs/wifi/resnet18_ujindoorloc.yaml \
   --model.backbone.model_name efficientnet_b0 \
   --train.lr 5e-4 --train.epochs 200
@@ -110,7 +114,9 @@ model:
 train: {epochs: 100, batch_size: 64, lr: 1e-3}
 ```
 
-## Datasets
+## Layer by layer
+
+### L1 · Data
 
 > Catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html · List IDs: `iloc.list_available_datasets()`
 
@@ -130,6 +136,16 @@ Status: ✅ verified end-to-end · 🧪 integrated, re-verification in progress
 | **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 | 🧪 |
 | | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k | 🧪 |
 | | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k | 🧪 |
+
+> **Dataset status.** ✅ means the full auto-download → train → evaluate pipeline has been run end-to-end, with the evidence committed to this repo; 🧪 means the loader is implemented and re-verification is in progress. Details in the [development plan](docs/DEVELOPMENT_PLAN.md).
+
+Take the data and leave — the loaders export plain arrays for any framework:
+
+```python
+train, test = iloc.load_dataset("ujindoorloc")
+X, y = train.to_tensors()            # numpy: X (N, D), y (N, 4) = [x, y, floor, building]
+X_t, y_t = train.to_torch_tensors()  # or torch tensors
+```
 
 <details>
 <summary>Pending datasets (help wanted)</summary>
@@ -151,11 +167,25 @@ These datasets have download sources but are **not yet integrated**:
 
 </details>
 
-## Models & Algorithms
+Next for this layer: `to_numpy()` / `to_dataframe()` / CSV export, versioned standard splits committed with every dataset, and DeepMIMO v4 as the first simulated-data source.
+
+### L2 · Signals
+
+Nine signal types are defined (WiFi, BLE, CSI, UWB, IMU, magnetometer, VLC, ultrasound, hybrid); the current loaders produce WiFi and BLE signals. Preprocessing transforms compose like torchvision's and work on a single signal built from your own array:
+
+```python
+sig = iloc.WiFiSignal(rssi_values=rssi_row)   # one RSSI vector from your data
+pipeline = iloc.Compose([iloc.APFilter(threshold=-90), iloc.RSSINormalize(method="minmax")])
+sig = pipeline(sig)
+```
+
+Next for this layer: a validated CSI preprocessing pipeline (phase sanitization, amplitude / angle extraction).
+
+### L3 · Methods
 
 > Zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html · List models: `iloc.list_models()`
 
-**Implemented today:**
+Implemented:
 
 | Family | Methods |
 |--------|---------|
@@ -164,17 +194,19 @@ These datasets have download sources but are **not yet integrated**:
 | Fusion | Ensemble · Stacking |
 | Transfer (shallow) | CORAL · TCA · KMM via [SKADA](https://github.com/scikit-adaptation/skada) |
 
+Run our models on your own data:
+
+```python
+signals   = [iloc.WiFiSignal(rssi_values=row) for row in X_own]
+locations = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in xy_own]
+model  = iloc.create_model("wknn", k=5).fit(signals, locations)
+result = model.predict(signals[0])              # LocalizationResult
+```
+
+Plain-array `fit(X, y)` and scikit-learn estimator compatibility are on the roadmap, so the models will drop into `Pipeline` and `GridSearchCV` directly.
+
 <details>
-<summary>Planned families (roadmap — no code yet)</summary>
-
-- **Self-supervised pretraining**: SimCLR, MoCo, BYOL, SimSiam, VICReg …
-- **Meta-learning / few-shot**: MAML, FOMAML, Reptile, ProtoNet, MatchingNet …
-- **Deep domain adaptation**: DANN, MDD, DeepCORAL …
-- **Model-based / model-free methods**: geometric solvers, Bayesian filtering, weighted centroid, channel charting …
-
-</details>
-
-### Custom model registration
+<summary>Custom model registration</summary>
 
 ```python
 import indoorloc as iloc
@@ -198,7 +230,19 @@ class MyLocalizer(BaseLocalizer):
 model = iloc.create_model("MyLocalizer")
 ```
 
-## Evaluation
+</details>
+
+<details>
+<summary>Planned families (no code yet)</summary>
+
+- **Self-supervised pretraining**: SimCLR, MoCo, BYOL, SimSiam, VICReg …
+- **Meta-learning / few-shot**: MAML, FOMAML, Reptile, ProtoNet, MatchingNet …
+- **Deep domain adaptation**: DANN, MDD, DeepCORAL …
+- **Model-based / model-free methods**: geometric solvers, Bayesian filtering, weighted centroid, channel charting …
+
+</details>
+
+### L4 · Evaluation
 
 | Metric | Description |
 |--------|-------------|
@@ -207,11 +251,37 @@ model = iloc.create_model("MyLocalizer")
 | Building Accuracy | Building classification |
 | CDF Analysis | Error distribution |
 
-`evaluate()` can compare your run against literature-reported numbers for the same dataset. Reproduced-by-this-repo numbers and literature-reported numbers are always labeled separately — they never share a column.
+Score any model's predictions, whatever produced them:
 
-## Taxonomy & Roadmap
+```python
+from indoorloc.evaluation import EvaluationResults
 
-IndoorLoc is organized as a five-layer stack, following the taxonomy used by recent indoor-localization surveys — from data sources at the bottom to applications on top.
+truths = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in y_true]
+preds  = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in y_pred]
+results = EvaluationResults.from_predictions(preds, truths)
+results.mean_error, results.p75_error         # metrics as properties
+print(results.summary())
+```
+
+Calling `evaluate()` on a model additionally compares the run against literature-reported numbers for the same dataset. Numbers reproduced by this repo and numbers reported in the literature are always labeled separately — they never share a column.
+
+Next for this layer: versioned standard splits, a generalization-protocol suite (cross-device, cross-time, sim-to-real), and a functional `iloc.evaluate(y_true, y_pred)` entry point.
+
+### L5 · Applications
+
+Planned: real-time inference, tracking filters (Kalman / particle), pedestrian dead reckoning, navigation. Nothing ships here yet.
+
+## Roadmap
+
+Near-term directions, in priority order:
+
+1. **Verification** — bring every dataset to ✅ with checksums and committed standard splits
+2. **Evaluation protocols** — versioned splits; cross-device / cross-time / sim-to-real protocols
+3. **Model zoo** — released weights and training logs for every benchmark row
+4. **Simulated data** — DeepMIMO v4 first, then ray-tracing sources such as Sionna RT
+
+<details>
+<summary>Full taxonomy (including planned items)</summary>
 
 Legend: ✅ available · 🚧 partial · 📋 planned
 
@@ -255,6 +325,8 @@ L5  Applications / Deployment                 📋 real-time inference · tracki
                                                  (Kalman/PF) · PDR · navigation
 ```
 
+</details>
+
 Milestones, decision gates, and the full known-issues list live in [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md).
 
 <details>
@@ -262,12 +334,12 @@ Milestones, decision gates, and the full known-issues list live in [`docs/DEVELO
 
 ```
 indoorloc/
-├── signals/          # WiFi, BLE, CSI, IMU, ... signal classes
+├── signals/          # L2 · WiFi, BLE, CSI, IMU, ... signal classes + transforms
 ├── locations/        # Coordinate & Location classes
-├── datasets/         # Dataset loaders + registry + transforms
-├── localizers/       # Classic ML localizers (fingerprint / fusion / transfer)
-├── models/           # Deep models: backbones × heads + DeepLocalizer
-├── evaluation/       # Metrics + published-benchmark tables
+├── datasets/         # L1 · dataset loaders + registry
+├── localizers/       # L3 · classic ML localizers (fingerprint / fusion / transfer)
+├── models/           # L3 · deep models: backbones × heads + DeepLocalizer
+├── evaluation/       # L4 · metrics + published-benchmark tables
 └── configs/          # YAML configs with _base_ inheritance
 ```
 

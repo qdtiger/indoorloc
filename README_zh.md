@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
 
-[文档](https://qdtiger.github.io/indoorloc/) · [安装](#安装) · [快速开始](#快速开始) · [数据集](#数据集) · [模型](#模型与算法) · [路线图](#全栈分类与路线图) · [贡献](#贡献)
+[文档](https://qdtiger.github.io/indoorloc/) · [五层架构](#五层架构) · [安装](#安装) · [快速开始](#快速开始) · [逐层说明](#逐层说明) · [路线图](#路线图) · [贡献](#贡献)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -34,15 +34,19 @@ print(results)                                   # 平均/中位误差 · 楼层
 
 室内定位研究长期存在结果难以复现、方法难以横向比较的问题：多数论文不公开代码；公开数据集大多缺少统一的训练/测试划分；不同文献的评测口径各异，精度数字难以直接对比。社区中已有大量部署系统、采集工具和单篇论文的配套代码，缺少的是一个将数据、算法与评测统一起来的研究框架。
 
-IndoorLoc 的目标正是补上这一层：
+IndoorLoc 的目标正是补上这一层。整个库组织为五层，并且**每一层都可以独立使用**：只取数据集，或用本库模型训练自有数据，或用本库指标评测自有模型，均无需接受整套框架。各层打通后能力更强，但不强制一次性全部采用。
 
-- **统一数据**：数据集统一注册、自动下载，WiFi / BLE / CSI 采用一致的样本格式
-- **统一算法**：传统机器学习与深度模型共用一套 `fit / predict / evaluate` 接口
-- **统一评测**：指标只有一份实现（含楼层、建筑准确率），结果可与文献数值直接对照
-- **配置化复现**：实验由 YAML 配置驱动，支持 `_base_` 继承，完整实验可由单条命令复现
-- **按需取用**：各层均可独立使用——数据集可导出为标准格式供任意框架消费，算法可直接训练自有数据，评测协议同样适用于自有模型（相关接口按[开发规划](docs/DEVELOPMENT_PLAN.md)逐步提供）
+## 五层架构
 
-> **关于数据集状态**：下表中 ✅ 表示已完整通过自动下载、训练、评测的端到端验证，验证记录随仓库提供；🧪 表示加载器已实现，验证工作正在逐个进行。进度详见[开发规划](docs/DEVELOPMENT_PLAN.md)。
+| 层 | 提供什么 | 单独使用 | 状态 |
+|---|---|---|---|
+| **L1 · 数据** | 12 个实测数据集（WiFi / BLE / CSI）：统一注册、自动下载、统一样本格式 | `to_tensors()` 导出 numpy / torch，可接任意框架 | 12 个已集成，验证中 · 仿真数据规划中 |
+| **L2 · 信号** | WiFi、BLE、CSI、UWB、IMU 等信号抽象与预处理变换 | 变换管线可直接作用于由自有数组构造的单条信号 | RSSI + BLE 已激活 · CSI 管线规划中 |
+| **L3 · 方法** | kNN / WKNN / SVM / RF · MLP / CNN1D / timm 骨干 × 7 种预测头 · 集成 · 浅层迁移 | 自有数据经 `WiFiSignal` + `Location` 构造即可训练 | 监督方法 ✅ · 自监督 / 元学习规划中 |
+| **L4 · 评测** | 9 项指标、误差 CDF、文献结果对照 | 任意来源的预测结果均可评测 | 指标 ✅ · 标准切分与协议套件规划中 |
+| **L5 · 应用** | 实时推理、跟踪滤波、导航 | — | 规划中 |
+
+实验由 YAML 配置驱动，支持 `_base_` 继承，任何已报告的结果都可由单条命令复现。
 
 ## 安装
 
@@ -110,7 +114,9 @@ model:
 train: {epochs: 100, batch_size: 64, lr: 1e-3}
 ```
 
-## 数据集
+## 逐层说明
+
+### L1 · 数据
 
 > 数据集目录（Web）：https://qdtiger.github.io/indoorloc/datasets_zh.html · 列出全部 ID：`iloc.list_available_datasets()`
 
@@ -130,6 +136,16 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 | **CSI** | [CSI Fingerprint](https://github.com/qiang5love1314/CSI-dataset) | `csi_fingerprint` | 489 | 🧪 |
 | | [HWILD](https://github.com/H-WILD/human_held_device_wifi_indoor_localization_dataset) | `hwild` | 409k | 🧪 |
 | | [HALOC](https://zenodo.org/records/10715595) | `haloc` | 111k | 🧪 |
+
+> **关于数据集状态**：✅ 表示已完整通过自动下载、训练、评测的端到端验证，验证记录随仓库提供；🧪 表示加载器已实现，验证工作正在逐个进行。进度详见[开发规划](docs/DEVELOPMENT_PLAN.md)。
+
+只取数据：加载器可直接导出为数组，供任意框架使用。
+
+```python
+train, test = iloc.load_dataset("ujindoorloc")
+X, y = train.to_tensors()            # numpy：X (N, D)，y (N, 4) = [x, y, floor, building]
+X_t, y_t = train.to_torch_tensors()  # 或 torch 张量
+```
 
 <details>
 <summary>待接入数据集（欢迎贡献）</summary>
@@ -151,7 +167,21 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 
 </details>
 
-## 模型与算法
+本层下一步：`to_numpy()` / `to_dataframe()` / CSV 导出，随每个数据集提交版本化标准切分，以 DeepMIMO v4 作为首个仿真数据源。
+
+### L2 · 信号
+
+已定义九类信号（WiFi、BLE、CSI、UWB、IMU、地磁、VLC、超声、混合），当前加载器产出 WiFi 与 BLE 两类。预处理变换的组合方式与 torchvision 一致，可直接作用于由自有数组构造的单条信号：
+
+```python
+sig = iloc.WiFiSignal(rssi_values=rssi_row)   # 自有数据中的一条 RSSI 向量
+pipeline = iloc.Compose([iloc.APFilter(threshold=-90), iloc.RSSINormalize(method="minmax")])
+sig = pipeline(sig)
+```
+
+本层下一步：经过验证的 CSI 预处理管线（相位清洗、幅度 / 角度提取）。
+
+### L3 · 方法
 
 > 算法总览（Web）：https://qdtiger.github.io/indoorloc/algorithms.html · 列出模型：`iloc.list_models()`
 
@@ -164,17 +194,19 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 | 集成融合 | Ensemble · Stacking |
 | 迁移学习（浅层） | CORAL · TCA · KMM（基于 [SKADA](https://github.com/scikit-adaptation/skada)） |
 
+用本库模型训练自有数据：
+
+```python
+signals   = [iloc.WiFiSignal(rssi_values=row) for row in X_own]
+locations = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in xy_own]
+model  = iloc.create_model("wknn", k=5).fit(signals, locations)
+result = model.predict(signals[0])              # LocalizationResult
+```
+
+裸数组形式的 `fit(X, y)` 与 scikit-learn estimator 兼容已列入路线图，届时模型可直接放入 `Pipeline` 与 `GridSearchCV`。
+
 <details>
-<summary>规划中（尚未实现）</summary>
-
-- **自监督预训练**：SimCLR、MoCo、BYOL、SimSiam、VICReg 等
-- **元学习 / 少样本**：MAML、FOMAML、Reptile、ProtoNet、MatchingNet 等
-- **深度域适应**：DANN、MDD、DeepCORAL 等
-- **模型驱动 / 免模型方法**：几何解算、贝叶斯滤波、加权质心、Channel Charting 等
-
-</details>
-
-### 自定义模型注册
+<summary>自定义模型注册</summary>
 
 ```python
 import indoorloc as iloc
@@ -198,7 +230,19 @@ class MyLocalizer(BaseLocalizer):
 model = iloc.create_model("MyLocalizer")
 ```
 
-## 评估指标
+</details>
+
+<details>
+<summary>规划中（尚未实现）</summary>
+
+- **自监督预训练**：SimCLR、MoCo、BYOL、SimSiam、VICReg 等
+- **元学习 / 少样本**：MAML、FOMAML、Reptile、ProtoNet、MatchingNet 等
+- **深度域适应**：DANN、MDD、DeepCORAL 等
+- **模型驱动 / 免模型方法**：几何解算、贝叶斯滤波、加权质心、Channel Charting 等
+
+</details>
+
+### L4 · 评测
 
 | 指标 | 说明 |
 |------|------|
@@ -207,11 +251,37 @@ model = iloc.create_model("MyLocalizer")
 | 建筑准确率 | 建筑分类 |
 | CDF 分析 | 误差分布 |
 
-`evaluate()` 支持将评测结果与同一数据集上的文献报告值对照。本仓库实际复现的结果与文献摘录的数值始终分列标注，不作混排。
+评测任意来源的预测结果：
 
-## 全栈分类与路线图
+```python
+from indoorloc.evaluation import EvaluationResults
 
-IndoorLoc 参照室内定位综述中通行的分类体系，组织为自底向上的五层结构：数据、信号、方法、评测与应用。
+truths = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in y_true]
+preds  = [iloc.Location(coordinate=iloc.Coordinate(x, y)) for x, y in y_pred]
+results = EvaluationResults.from_predictions(preds, truths)
+results.mean_error, results.p75_error         # 指标以属性形式提供
+print(results.summary())
+```
+
+对模型调用 `evaluate()` 时还会与同一数据集上的文献报告值对照。本仓库实际复现的结果与文献摘录的数值始终分列标注，不作混排。
+
+本层下一步：版本化标准切分、泛化协议套件（跨设备、跨时间、仿真到实测），以及函数式入口 `iloc.evaluate(y_true, y_pred)`。
+
+### L5 · 应用
+
+规划中：实时推理、跟踪滤波（Kalman / 粒子滤波）、行人航位推算、导航。本层尚无实现。
+
+## 路线图
+
+近期方向，按优先级排列：
+
+1. **数据验证**：所有数据集达到 ✅，附校验和与随仓库提交的标准切分
+2. **评测协议**：版本化切分；跨设备 / 跨时间 / 仿真到实测协议
+3. **模型库**：为每一条基准结果发布权重与训练日志
+4. **仿真数据**：先接入 DeepMIMO v4，再扩展至 Sionna RT 等射线追踪源
+
+<details>
+<summary>完整分类树（含规划项）</summary>
 
 图例：✅ 已实现 · 🚧 部分实现 · 📋 规划中
 
@@ -249,6 +319,8 @@ L4  评测层                          ✅ 9 项指标 · 文献基准对照
 L5  应用/部署层                     📋 实时推理 · 跟踪滤波（Kalman/粒子滤波）· PDR · 导航
 ```
 
+</details>
+
 详细的开发计划、里程碑与已知问题清单见 [`docs/DEVELOPMENT_PLAN.md`](docs/DEVELOPMENT_PLAN.md)。
 
 <details>
@@ -256,12 +328,12 @@ L5  应用/部署层                     📋 实时推理 · 跟踪滤波（Kal
 
 ```
 indoorloc/
-├── signals/          # WiFi、BLE、CSI、IMU 等信号类
+├── signals/          # L2 · WiFi、BLE、CSI、IMU 等信号类 + 变换
 ├── locations/        # 坐标与位置类
-├── datasets/         # 数据集 loader + 注册表 + 变换
-├── localizers/       # 传统 ML 定位器（指纹 / 融合 / 迁移）
-├── models/           # 深度模型：骨干 × 预测头 + DeepLocalizer
-├── evaluation/       # 指标 + 文献基准表
+├── datasets/         # L1 · 数据集 loader + 注册表
+├── localizers/       # L3 · 传统 ML 定位器（指纹 / 融合 / 迁移）
+├── models/           # L3 · 深度模型：骨干 × 预测头 + DeepLocalizer
+├── evaluation/       # L4 · 指标 + 文献基准表
 └── configs/          # YAML 配置（支持 _base_ 继承）
 ```
 
