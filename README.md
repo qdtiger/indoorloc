@@ -7,13 +7,20 @@
 *Datasets · Algorithms · Evaluation — one reproducible stack for indoor wireless localization.*
 
 [![PyPI](https://img.shields.io/pypi/v/indoorloc)](https://pypi.org/project/indoorloc/)
+[![Downloads](https://static.pepy.tech/badge/indoorloc)](https://pepy.tech/project/indoorloc)
 [![CI](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml/badge.svg)](https://github.com/qdtiger/indoorloc/actions/workflows/ci.yml)
 [![Docs](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://qdtiger.github.io/indoorloc/)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/pypi/pyversions/indoorloc)](https://pypi.org/project/indoorloc/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Stars](https://img.shields.io/github/stars/qdtiger/indoorloc?style=social)](https://github.com/qdtiger/indoorloc)
 
-[Docs](https://qdtiger.github.io/indoorloc/) · [Five layers](#the-five-layers) · [Installation](#installation) · [Quickstart](#quickstart) · [Layer by layer](#layer-by-layer) · [Roadmap](#roadmap) · [Contributing](#contributing)
+[📘 Documentation](https://qdtiger.github.io/indoorloc/) |
+[🧱 Architecture](#introduction) |
+[🛠️ Installation](#installation) |
+[🚀 Quickstart](#quickstart) |
+[🗂️ Layer by layer](#layer-by-layer) |
+[🗺️ Roadmap](#roadmap) |
+[🤝 Contributing](#contributing)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -30,23 +37,128 @@ results = model.fit(train).evaluate(test)        # unified metrics
 print(results)                                   # mean/median error · floor & building accuracy
 ```
 
-## Why IndoorLoc?
+## Introduction
 
 Indoor-positioning research has a comparability problem: most papers never release code, few public datasets ship standard train/test splits, and published numbers are rarely reproducible across labs. Deployment services, dataset tools, and hundreds of single-paper repos exist — but no framework unifies the three things a benchmark needs: data, algorithms, and evaluation.
 
-IndoorLoc is built to be that missing layer. It is organized as five layers, and **every layer can be used on its own**: take the datasets and leave, run our models on your own data, or score your own model with our metrics. The stack is stronger together, but nothing forces you to take all of it.
+IndoorLoc is built to be that missing layer. It is organized as five layers, and **every layer can be used on its own** — take the datasets and leave, run our models on your own data, or score your own model with our metrics.
 
-## The five layers
+<p align="center">
+  <img src="assets/architecture.png" width="820"><br>
+  <b>Figure</b>: the five-layer architecture. Filled = available, outlined = planned; every layer exposes standard-format entry and exit points.
+</p>
 
-| Layer | What it provides | Use it alone | Status |
-|---|---|---|---|
-| **L1 · Data** | 12 measured datasets (WiFi / BLE / CSI): one registry, auto-download, one sample format | Export to numpy / torch with `to_tensors()` and continue in any framework | 12 integrated, verification in progress · simulated data planned |
-| **L2 · Signals** | Signal abstractions (WiFi, BLE, CSI, UWB, IMU, …) and preprocessing transforms | Transform pipelines apply to a single signal built from your own array | RSSI + BLE active · CSI pipeline planned |
-| **L3 · Methods** | kNN / WKNN / SVM / RF · MLP / CNN1D / timm backbones × 7 heads · ensembles · shallow transfer | Train on your own data via `WiFiSignal` + `Location` | Supervised ✅ · self-supervised / meta-learning planned |
-| **L4 · Evaluation** | 9 metrics, error CDFs, comparison against published results | Score any model's predictions, whatever produced them | Metrics ✅ · standard splits & protocol suite planned |
-| **L5 · Applications** | Real-time inference, tracking filters, navigation | — | Planned |
+<details open>
+<summary>Major features</summary>
 
-Experiments are driven by YAML configs with `_base_` inheritance, so any reported result reruns from a single command.
+- **Unified data** — one registry, auto-download, and one sample format across WiFi / BLE / CSI datasets
+- **Unified algorithms** — classic ML and deep models behind one `fit / predict / evaluate` API
+- **Unified evaluation** — shared metrics (incl. floor/building accuracy) and comparison against published results
+- **Config-driven reproducibility** — YAML configs with `_base_` inheritance; any reported result reruns from one command
+- **À la carte** — datasets export to standard formats, models train on your own arrays, evaluation scores your own predictions
+
+</details>
+
+## What's New
+
+- **2026-09-03** — Five-layer architecture, per-layer standalone usage, and a public [development plan](docs/DEVELOPMENT_PLAN.md) with the reproducibility contract.
+- **2025-12-31** — Literature benchmark tables for every integrated dataset on the [docs site](https://qdtiger.github.io/indoorloc/datasets.html).
+- **2025-12-17** — Dataset registry consolidated to 12 integrated datasets; pending datasets documented.
+- **2025-12-16** — `indoorloc` 0.1.3 released on [PyPI](https://pypi.org/project/indoorloc/).
+- **2025-11-26** — First public release (0.1.0).
+
+## Overview
+
+Every entry links to its implementation.
+
+<table align="center">
+  <tbody>
+    <tr align="center" valign="bottom">
+      <td><b>Datasets (12)</b></td>
+      <td><b>Localizers (8)</b></td>
+      <td><b>Backbones (3) · Heads (7)</b></td>
+      <td><b>Evaluation (9 metrics)</b></td>
+    </tr>
+    <tr valign="top">
+      <td>
+        <b>WiFi RSSI</b>
+        <ul>
+          <li><a href="indoorloc/datasets/ujindoorloc.py">UJIndoorLoc</a></li>
+          <li><a href="indoorloc/datasets/sodindoorloc.py">SODIndoorLoc</a></li>
+          <li><a href="indoorloc/datasets/longtermwifi.py">LongTermWiFi</a></li>
+          <li><a href="indoorloc/datasets/tampere.py">Tampere</a></li>
+          <li><a href="indoorloc/datasets/wlanrssi.py">WLANRSSI</a></li>
+          <li><a href="indoorloc/datasets/tuji1.py">TUJI1</a></li>
+        </ul>
+        <b>BLE</b>
+        <ul>
+          <li><a href="indoorloc/datasets/ble_indoor.py">BLEIndoor</a></li>
+          <li><a href="indoorloc/datasets/ibeacon_rssi.py">iBeaconRSSI</a></li>
+          <li><a href="indoorloc/datasets/ble_rssi_uci.py">BLE RSSI UCI</a></li>
+        </ul>
+        <b>CSI</b>
+        <ul>
+          <li><a href="indoorloc/datasets/csi_fingerprint.py">CSI Fingerprint</a></li>
+          <li><a href="indoorloc/datasets/hwild.py">HWILD</a></li>
+          <li><a href="indoorloc/datasets/haloc.py">HALOC</a></li>
+        </ul>
+      </td>
+      <td>
+        <b>Fingerprinting</b>
+        <ul>
+          <li><a href="indoorloc/localizers/fingerprint/knn.py">KNN</a></li>
+          <li><a href="indoorloc/localizers/fingerprint/knn.py">WKNN</a></li>
+          <li><a href="indoorloc/localizers/fingerprint/traditional.py">SVM</a></li>
+          <li><a href="indoorloc/localizers/fingerprint/traditional.py">Random Forest</a></li>
+        </ul>
+        <b>Fusion</b>
+        <ul>
+          <li><a href="indoorloc/localizers/fusion.py">Ensemble</a></li>
+          <li><a href="indoorloc/localizers/fusion.py">Stacking</a></li>
+        </ul>
+        <b>Transfer</b>
+        <ul>
+          <li><a href="indoorloc/localizers/transfer.py">TransferLocalizer</a> (SKADA: CORAL · TCA · KMM)</li>
+        </ul>
+        <b>Deep</b>
+        <ul>
+          <li><a href="indoorloc/models/localizers/deep_localizer.py">DeepLocalizer</a> (backbone × head)</li>
+        </ul>
+      </td>
+      <td>
+        <b>Backbones</b>
+        <ul>
+          <li><a href="indoorloc/models/backbones/mlp.py">MLP</a></li>
+          <li><a href="indoorloc/models/backbones/cnn1d.py">CNN1D</a></li>
+          <li><a href="indoorloc/models/backbones/timm_wrapper.py">timm wrapper</a> (ResNet · EfficientNet · ViT · …)</li>
+        </ul>
+        <b>Heads</b>
+        <ul>
+          <li><a href="indoorloc/models/heads/regression.py">Regression</a></li>
+          <li><a href="indoorloc/models/heads/regression.py">Multi-scale regression</a></li>
+          <li><a href="indoorloc/models/heads/classification.py">Classification</a></li>
+          <li><a href="indoorloc/models/heads/classification.py">Floor</a></li>
+          <li><a href="indoorloc/models/heads/classification.py">Building</a></li>
+          <li><a href="indoorloc/models/heads/hybrid.py">Hybrid</a></li>
+          <li><a href="indoorloc/models/heads/hybrid.py">Hierarchical</a></li>
+        </ul>
+      </td>
+      <td>
+        <b>Metrics</b>
+        <ul>
+          <li><a href="indoorloc/evaluation/metrics.py">Mean / Median / RMS / Max position error</a></li>
+          <li><a href="indoorloc/evaluation/metrics.py">Percentile error (P75, P90, …)</a></li>
+          <li><a href="indoorloc/evaluation/metrics.py">Floor · Building · Floor+Building accuracy</a></li>
+          <li><a href="indoorloc/evaluation/metrics.py">CDF analysis</a></li>
+        </ul>
+        <b>Comparison</b>
+        <ul>
+          <li><a href="indoorloc/evaluation/benchmarks.py">Published-result tables</a> (literature-reported, labeled as such)</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## Installation
 
@@ -116,6 +228,8 @@ train: {epochs: 100, batch_size: 64, lr: 1e-3}
 
 ## Layer by layer
 
+Each layer below shows what exists today, how to use it on its own, and what comes next.
+
 ### L1 · Data
 
 > Catalogue (web): https://qdtiger.github.io/indoorloc/datasets.html · List IDs: `iloc.list_available_datasets()`
@@ -167,7 +281,7 @@ These datasets have download sources but are **not yet integrated**:
 
 </details>
 
-Next for this layer: `to_numpy()` / `to_dataframe()` / CSV export, versioned standard splits committed with every dataset, and DeepMIMO v4 as the first simulated-data source.
+Next: `to_numpy()` / `to_dataframe()` / CSV export, versioned standard splits committed with every dataset, and DeepMIMO v4 as the first simulated-data source.
 
 ### L2 · Signals
 
@@ -179,20 +293,11 @@ pipeline = iloc.Compose([iloc.APFilter(threshold=-90), iloc.RSSINormalize(method
 sig = pipeline(sig)
 ```
 
-Next for this layer: a validated CSI preprocessing pipeline (phase sanitization, amplitude / angle extraction).
+Next: a validated CSI preprocessing pipeline (phase sanitization, amplitude / angle extraction).
 
 ### L3 · Methods
 
-> Zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html · List models: `iloc.list_models()`
-
-Implemented:
-
-| Family | Methods |
-|--------|---------|
-| Traditional ML | kNN · WKNN · SVM · Random Forest |
-| Deep supervised | MLP · CNN1D · [timm](https://github.com/huggingface/pytorch-image-models) backbones (ResNet · EfficientNet · ViT · …) × 7 task heads (regression / multi-scale / classification / floor / building / hybrid / hierarchical) |
-| Fusion | Ensemble · Stacking |
-| Transfer (shallow) | CORAL · TCA · KMM via [SKADA](https://github.com/scikit-adaptation/skada) |
+> Zoo (web): https://qdtiger.github.io/indoorloc/algorithms.html · List models: `iloc.list_models()` · Inventory: [Overview](#overview)
 
 Run our models on your own data:
 
@@ -242,14 +347,9 @@ model = iloc.create_model("MyLocalizer")
 
 </details>
 
-### L4 · Evaluation
+Next: released weights and training logs for every benchmark row, and a tuned-baseline protocol so classic and deep methods are compared under equal search budgets.
 
-| Metric | Description |
-|--------|-------------|
-| Mean / Median / RMS / P75 Position Error | Localization error (m) |
-| Floor Accuracy | Floor classification |
-| Building Accuracy | Building classification |
-| CDF Analysis | Error distribution |
+### L4 · Evaluation
 
 Score any model's predictions, whatever produced them:
 
@@ -265,7 +365,7 @@ print(results.summary())
 
 Calling `evaluate()` on a model additionally compares the run against literature-reported numbers for the same dataset. Numbers reproduced by this repo and numbers reported in the literature are always labeled separately — they never share a column.
 
-Next for this layer: versioned standard splits, a generalization-protocol suite (cross-device, cross-time, sim-to-real), and a functional `iloc.evaluate(y_true, y_pred)` entry point.
+Next: versioned standard splits, a generalization-protocol suite (cross-device, cross-time, sim-to-real), and a functional `iloc.evaluate(y_true, y_pred)` entry point.
 
 ### L5 · Applications
 
@@ -349,10 +449,6 @@ indoorloc/
 
 PRs welcome. New dataset loaders and new localizer implementations are what we need most — see `CONTRIBUTING.md` for the requirements.
 
-## License
-
-Apache License 2.0
-
 ## Citation
 
 ```bibtex
@@ -362,6 +458,10 @@ Apache License 2.0
   url = {https://github.com/qdtiger/indoorloc}
 }
 ```
+
+## License
+
+Apache License 2.0
 
 ## Acknowledgements
 
