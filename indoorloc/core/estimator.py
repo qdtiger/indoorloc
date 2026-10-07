@@ -111,6 +111,12 @@ class Estimator:
                 if not _same(v, defaults[k].default)]
         return f"{type(self).__name__}({', '.join(args)})"
 
+    def __sklearn_clone__(self):
+        # sklearn.base.clone defers to this hook, so GridSearchCV and friends clone through
+        # indoorloc's own rules (set_fit_request kept as a plain dict, which sklearn >= 1.9
+        # would otherwise try to clone value by value and refuse).
+        return clone(self)
+
     def set_fit_request(self, **requests):
         """sklearn metadata routing (``sklearn.set_config(enable_metadata_routing=True)``): the
         fit keywords a meta-estimator should pass on, e.g. ``set_fit_request(floor=True)``.

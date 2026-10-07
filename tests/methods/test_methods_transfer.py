@@ -197,7 +197,7 @@ def test_tca_rbf_with_large_mu_is_kernel_pca():
     assert np.allclose(got, ref * signs, atol=1e-10)
     assert np.allclose(tca.transform(X), V * np.sqrt(lam) * signs, atol=1e-10)  # fitted rows: the kPCA scores
     tca._block = 7  # several blocks, the last one partial
-    assert np.array_equal(tca.transform(X_new), got)
+    assert np.allclose(tca.transform(X_new), got, rtol=0, atol=1e-12)  # bit-equality varies with the BLAS build
 
 
 def test_tca_solves_the_generalized_eigenproblem_for_any_mu():
