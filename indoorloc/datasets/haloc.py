@@ -1,254 +1,154 @@
-"""
-HALOC Dataset Implementation
+"""HALOC: complex WiFi CSI of a person walking a hallway, with 3-D position labels (ESP32-S3)."""
+from __future__ import annotations
 
-WiFi CSI trajectory dataset collected in indoor corridor environment
-using ESP32-S3 with directional antenna.
+import csv
+import io
+import zipfile
+from pathlib import PurePosixPath
 
-Reference:
-    Strohmayer, J., and Kampel, M. (2024).
-    WiFi CSI-based Long-Range Person Localization Using Directional Antennas
-    The Second Tiny Papers Track at ICLR 2024
-
-Dataset URL: https://zenodo.org/records/10715595
-GitHub: https://github.com/StrohmayerJ/HALOC
-
-Data Format:
-    CSV files containing:
-    - data: CSI values as comma-separated complex numbers (real,imag pairs)
-    - x, y, z: 3D coordinates
-    6 trajectory files (0.csv to 5.csv)
-    - Training: 0.csv, 1.csv, 2.csv, 3.csv
-    - Validation: 4.csv
-    - Test: 5.csv
-"""
-import subprocess
-from pathlib import Path
-from typing import Optional, Any, List
 import numpy as np
 
-from .base import WiFiDataset
-from ..signals.wifi import WiFiSignal
-from ..locations.location import Location
-from ..locations.coordinate import Coordinate
-from ..registry import DATASETS
+from ..core import SampleTable
+from ._base import Dataset
+
+# Positions in the 128 (imag, real) pairs of an ESP32 HT packet with the secondary channel below:
+# L-LTF then HT-LTF, each 64 subcarriers in ascending order -32..31 (null guards and DC verified
+# on the data: every packet of every sequence is zero exactly outside these positions).
+_LLTF = np.r_[6:32, 33:59]          # subcarriers -26..-1, 1..26 (the authors' 52)
+_HTLTF = np.r_[68:96, 97:125]       # subcarriers -28..-1, 1..28
+SUBCARRIERS = {
+    "lltf": (_LLTF, np.r_[-26:0, 1:27]),
+    "htltf": (_HTLTF, np.r_[-28:0, 1:29]),
+}
+# The packet format these positions assume (every one of the 138,879 packets has it):
+# HT (sig_mode 1), 20 MHz (bandwidth 0), no STBC, secondary channel below (2), 128 pairs (len 256).
+_FORMAT = {"sig_mode": "1", "bandwidth": "0", "stbc": "0", "secondary_channel": "2", "len": "256"}
+_SUBCARRIER_SPACING_HZ = 312.5e3  # 802.11n, 20 MHz
+
+# The Zenodo archive, read in place (28.6 MB; the six CSVs inside are 127 MB). md5 f3bf1e60cc2f0d1bd6e6a75cce247437
+# as listed by Zenodo; sha256 of the members: 0.csv 4c882722..., 1.csv aeb98f30..., 2.csv 9666f0a4...,
+# 3.csv 3c253aeb..., 4.csv 221cf633..., 5.csv 82caaf40...
+_ARCHIVE = ("HALOC.zip", "51183ac2d1ca5126095a583906da843145b779ae47baec9121d987590439b1dc")
+_SPLITS = {"train": (0, 1, 2, 3), "valid": (4,), "test": (5,), "all": (0, 1, 2, 3, 4, 5)}  # the authors' split
 
 
-# Valid L-LTF subcarrier indices (52 subcarriers, excluding pilots and guard bands)
-VALID_SUBCARRIERS = [
-    6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-    35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
-    49, 50, 51, 52, 53, 58, 59, 60, 61
-]
+def parse_esp32_csi(buffer: str, pairs: np.ndarray) -> np.ndarray:
+    """``"[i0,r0,i1,r1,...]"`` (ESP-IDF ``wifi_csi_info_t.buf``) -> complex64 CSI of the given pair positions.
+
+    ESP-IDF stores each subcarrier as two signed bytes, imaginary part first, then real part.
+    """
+    raw = np.array(buffer.strip()[1:-1].split(","), dtype=np.int16)
+    return (raw[2 * pairs + 1] + 1j * raw[2 * pairs]).astype(np.complex64)
 
 
-@DATASETS.register_module()
-class HALOCDataset(WiFiDataset):
-    """HALOC WiFi CSI Trajectory Dataset.
+class HALOC(Dataset):
+    """HALOC: WiFi CSI and 3-D positions of a person walking a hallway (Strohmayer & Kampel, ICLR 2024 Tiny Papers).
 
-    WiFi CSI dataset collected using ESP32-S3 with directional antenna.
-    Features:
-    - Indoor long corridor environment (~30m)
-    - Single person walking along 6 trajectories
-    - Strong multipath environment
-    - 3D coordinates (x, y, z) per CSI packet
-    - 52 subcarriers (L-LTF)
+    An ESP32-S3 behind a directional antenna captured the CSI of about 100 packets/s from a
+    transmitter while one person walked up and down a hallway; every packet is labelled with
+    the person's 3-D position. Six sequences (``0.csv`` .. ``5.csv``, 138,879 packets in all)
+    come with the authors' split: train = sequences 0-3, valid = 4, test = 5. The sequences are
+    read straight from the Zenodo archive ``HALOC.zip`` (one sha256), which stays packed.
 
-    Args:
-        data_root: Root directory containing the dataset files.
-        split: Dataset split ('train', 'val', or 'test').
-        download: Whether to download the dataset if not found.
-        transform: Optional transform to apply to signals.
-        normalize: Whether to normalize signal values.
+    ``X``      (N, 1, 1, n_sub) complex64 (one receive and one transmit antenna), the raw int8 I/Q
+               of ESP-IDF, **not calibrated** (the receiver's gain control changes their scale).
+               ``subcarriers="lltf"`` (default): the 52 L-LTF data subcarriers the authors use;
+               ``"htltf"``: the 56 HT-LTF data subcarriers. ``meta["subcarriers"]`` holds their 802.11
+               subcarrier numbers (the convention of ``indoorloc.signals.csi``),
+               ``meta["subcarrier_offsets_hz"]`` their offsets from ``meta["carrier_hz"]`` (channel 11,
+               2.462 GHz; 312.5 kHz spacing). Every packet is checked to be HT, 20 MHz, non-STBC with
+               the secondary channel below, the format these subcarrier positions belong to.
+    ``pos``    (x, y, z) in metres as given by the authors (x runs 0-20 m along the hallway; z is
+               about 1.2-1.3 m).
+    ``groups`` ``trajectory`` (sequence 0-5), ``time`` (seconds since the sequence's first packet,
+               from the ESP32 microsecond clock).
 
-    Example:
-        >>> import indoorloc as iloc
-        >>> train, test = iloc.HALOC(download=True)
-        >>> signal, location = train[0]
+    The authors' loader (github.com/StrohmayerJ/HALOC) builds subcarrier ``i`` as
+    ``complex(buf[2i], buf[2i-1])``, which pairs the imaginary part of subcarrier ``i`` with the real
+    part of subcarrier ``i-1``. This loader follows the ESP-IDF layout (``buf[2i]`` imaginary,
+    ``buf[2i+1]`` real). On the first 3,000 packets of sequence 0 it gives smoother spectra: mean
+    absolute amplitude step between adjacent subcarriers 0.41 vs 0.60, mean phase step 0.034 vs
+    0.064 rad. Amplitude features therefore differ slightly from the authors' pipeline.
+    The per-packet RSSI, noise floor and rate fields of the CSV are not loaded.
+
+    Parameters
+    ----------
+    sequences : None (every sequence of the split) or an iterable of sequence numbers (0-5) to
+        load a subset, e.g. ``HALOC(sequences=[0]).load("train")``; only the splits holding one of
+        them remain. Split ``"all"`` holds all six.
+    subcarriers : "lltf" (default) or "htltf".
+
+    References
+    ----------
+    Strohmayer, J., Kampel, M., "WiFi CSI-based Long-Range Person Localization Using Directional
+    Antennas", The Second Tiny Papers Track at ICLR 2024. https://openreview.net/forum?id=AOJFcEh5Eb
+
+    Strohmayer, J., Kampel, M., "HALOC Dataset", Zenodo, 2024. https://doi.org/10.5281/zenodo.10715595
+
+    Espressif Systems, "ESP-IDF Programming Guide: Wi-Fi Channel State Information".
+    https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-guides/wifi.html
     """
 
-    ZENODO_URL = 'https://zenodo.org/records/10715595/files'
+    name = "haloc"
+    urls = ("https://zenodo.org/records/10715595/files/HALOC.zip?download=1",)
+    files = dict.fromkeys(_SPLITS, _ARCHIVE)
+    split_aliases = {"validation": "valid", "val": "valid"}
+    meta = {
+        "modality": "csi",
+        "units": "raw int8 I/Q of ESP-IDF (not calibrated)",
+        "crs": "local",
+        "pos_names": ("x", "y", "z"),
+        "pos_units": "m",
+        "csi_axes": ("rx", "tx", "subcarrier"),
+        "device": "ESP32-S3 with a directional antenna, channel 11, HT20",
+        "license": "CC BY 4.0 (Zenodo record; the description asks for non-commercial research use)",
+        "doi": "10.5281/zenodo.10715595",
+        "citation": "Strohmayer, Kampel, WiFi CSI-based Long-Range Person Localization Using Directional "
+                    "Antennas, ICLR 2024 Tiny Papers",
+        "url": "https://github.com/StrohmayerJ/HALOC",
+    }
 
-    NOT_DETECTED_VALUE = 0.0
-    NUM_FEATURES = 52  # 52 valid L-LTF subcarriers
+    def __init__(self, root=None, *, download: bool = False, verify: bool = True, sequences=None,
+                 subcarriers: str = "lltf"):
+        super().__init__(root, download=download, verify=verify)
+        if subcarriers not in SUBCARRIERS:
+            raise ValueError(f"subcarriers must be one of {sorted(SUBCARRIERS)}, got {subcarriers!r}")
+        self.subcarriers = subcarriers
+        every = _SPLITS["all"]
+        self.sequences = every if sequences is None else tuple(sorted({int(s) for s in sequences}))
+        if not self.sequences or set(self.sequences) - set(every):
+            raise ValueError(f"sequences must be a non-empty subset of {list(every)}, got {sequences!r}")
+        # a split exists only if it holds a selected sequence
+        self.files = {split: _ARCHIVE for split, seqs in _SPLITS.items() if set(seqs) & set(self.sequences)}
 
-    # Dataset splits based on official split
-    TRAIN_FILES = ['0.csv', '1.csv', '2.csv', '3.csv']
-    VAL_FILE = '4.csv'
-    TEST_FILE = '5.csv'
-
-    def __init__(
-        self,
-        data_root: Optional[str] = None,
-        split: str = 'train',
-        download: bool = False,
-        transform: Optional[Any] = None,
-        normalize: bool = True,
-        normalize_method: str = 'minmax',
-        **kwargs
-    ):
-        super().__init__(
-            data_root=data_root,
-            split=split,
-            download=download,
-            transform=transform,
-            normalize=normalize,
-            normalize_method=normalize_method,
-            **kwargs
-        )
-
-    @property
-    def dataset_name(self) -> str:
-        return 'HALOC'
-
-    @property
-    def num_aps(self) -> int:
-        return self.NUM_FEATURES
-
-    def _check_exists(self) -> bool:
-        """Check if all required CSV files exist."""
-        all_files = self.TRAIN_FILES + [self.VAL_FILE, self.TEST_FILE]
-        return all((self.data_root / f).exists() for f in all_files)
-
-    def _download(self) -> None:
-        """Download HALOC dataset from Zenodo."""
-        if self._check_exists():
-            print(f"HALOC dataset already exists at {self.data_root}")
-            return
-
-        print("Downloading HALOC dataset from Zenodo...")
-        self.data_root.mkdir(parents=True, exist_ok=True)
-
-        all_files = self.TRAIN_FILES + [self.VAL_FILE, self.TEST_FILE]
-        downloaded = 0
-
-        for filename in all_files:
-            dst = self.data_root / filename
-            if dst.exists() and dst.stat().st_size > 1000:
-                downloaded += 1
-                continue
-
-            url = f"{self.ZENODO_URL}/{filename}?download=1"
-            print(f"  Downloading {filename}...")
-
-            try:
-                subprocess.run(
-                    ['curl', '-sL', '-o', str(dst), url],
-                    capture_output=True, timeout=120
-                )
-                if dst.exists() and dst.stat().st_size > 1000:
-                    downloaded += 1
-                    print(f"    Downloaded: {dst.stat().st_size / 1024:.1f} KB")
-            except Exception as e:
-                print(f"    Error downloading {filename}: {e}")
-
-        print(f"Download complete: {downloaded}/{len(all_files)} files")
-
-        if not self._check_exists():
-            raise RuntimeError(
-                f"Failed to download HALOC dataset.\n"
-                f"Please download manually from:\n"
-                f"  https://zenodo.org/records/10715595\n"
-                f"Place CSV files (0.csv to 5.csv) in: {self.data_root}"
-            )
-
-    def _parse_csi_string(self, csi_str: str) -> np.ndarray:
-        """Parse CSI string to amplitude values.
-
-        CSI data is stored as JSON array of integers representing
-        alternating imaginary and real parts of complex numbers.
-        Format: "[imag0,real0,imag1,real1,...]"
-        """
-        try:
-            import json
-            # Parse JSON array format
-            if csi_str.startswith('['):
-                values = json.loads(csi_str)
-            else:
-                values = [int(v) for v in csi_str.split(',')]
-        except (ValueError, AttributeError, json.JSONDecodeError):
-            return np.zeros(self.NUM_FEATURES, dtype=np.float32)
-
-        # Extract complex values for valid subcarriers
-        # Data format: pairs of (imag, real) for each subcarrier index
-        amplitudes = []
-        for idx in VALID_SUBCARRIERS:
-            imag_idx = idx * 2
-            real_idx = idx * 2 + 1
-            if real_idx < len(values):
-                imag = values[imag_idx]
-                real = values[real_idx]
-                amplitude = np.sqrt(float(real)**2 + float(imag)**2)
-                amplitudes.append(amplitude)
-            else:
-                amplitudes.append(0.0)
-
-        return np.array(amplitudes, dtype=np.float32)
-
-    def _load_data(self) -> None:
-        """Load HALOC dataset from CSV files."""
-        try:
-            import pandas as pd
-        except ImportError:
-            raise ImportError("pandas is required. Install with: pip install pandas")
-
-        # Determine which files to load based on split
-        if self.split == 'train':
-            files_to_load = self.TRAIN_FILES
-        elif self.split == 'val':
-            files_to_load = [self.VAL_FILE]
-        else:  # test
-            files_to_load = [self.TEST_FILE]
-
-        for filename in files_to_load:
-            filepath = self.data_root / filename
-            if not filepath.exists():
-                print(f"Warning: {filename} not found, skipping")
-                continue
-
-            df = pd.read_csv(filepath)
-
-            for _, row in df.iterrows():
-                # Parse CSI data
-                csi_data = row.get('data', '')
-                amplitudes = self._parse_csi_string(str(csi_data))
-
-                # Get coordinates
-                x = float(row.get('x', 0.0))
-                y = float(row.get('y', 0.0))
-                z = float(row.get('z', 0.0))
-
-                signal = WiFiSignal(rssi_values=amplitudes)
-                location = Location(
-                    coordinate=Coordinate(x=x, y=y, z=z),
-                    floor=0,
-                    building_id=filename.replace('.csv', '')
-                )
-
-                self._signals.append(signal)
-                self._locations.append(location)
-
-        print(f"Loaded {len(self._signals)} samples from HALOC (split={self.split})")
-
-
-def HALOC(data_root=None, split=None, download=False, **kwargs):
-    """
-    Convenience function for loading HALOC dataset.
-
-    Returns:
-        - If split is None: Returns tuple (train_dataset, test_dataset)
-        - If split is 'all': Returns merged train+val+test dataset
-        - Otherwise: Returns single dataset for specified split ('train', 'val', 'test')
-    """
-    if split is None:
-        train = HALOCDataset(data_root=data_root, split='train', download=download, **kwargs)
-        test = HALOCDataset(data_root=data_root, split='test', download=download, **kwargs)
-        return train, test
-    elif split == 'all':
-        from torch.utils.data import ConcatDataset
-        train = HALOCDataset(data_root=data_root, split='train', download=download, **kwargs)
-        val = HALOCDataset(data_root=data_root, split='val', download=download, **kwargs)
-        test = HALOCDataset(data_root=data_root, split='test', download=download, **kwargs)
-        return ConcatDataset([train, val, test])
-    else:
-        return HALOCDataset(data_root=data_root, split=split, download=download, **kwargs)
+    def _parse(self, path, split):
+        pairs, indices = SUBCARRIERS[self.subcarriers]
+        seqs = [q for q in _SPLITS[split] if q in self.sequences]
+        X, pos, trajectory, time, ids = [], [], [], [], []
+        with zipfile.ZipFile(path) as archive:
+            members = {PurePosixPath(m).name: m for m in archive.namelist()}
+            for seq in seqs:
+                if f"{seq}.csv" not in members:
+                    raise ValueError(f"{path}: no {seq}.csv in the archive")
+                with archive.open(members[f"{seq}.csv"]) as raw:
+                    reader = csv.reader(io.TextIOWrapper(raw, encoding="ascii", newline=""))
+                    col = {name: i for i, name in enumerate(next(reader))}
+                    rows = list(reader)
+                for key, expected in _FORMAT.items():
+                    if any(r[col[key]] != expected for r in rows):
+                        raise ValueError(f"{seq}.csv: a packet has {key} != {expected}; the subcarrier positions "
+                                         "of this loader hold only for HT20 packets with the secondary channel below")
+                X.append(np.stack([parse_esp32_csi(r[col["data"]], pairs) for r in rows]))
+                pos.append(np.array([[r[col["x"]], r[col["y"]], r[col["z"]]] for r in rows], dtype=np.float64))
+                clock = np.array([int(r[col["local_timestamp"]]) for r in rows], dtype=np.int64) & 0xFFFFFFFF
+                step = np.diff(clock)
+                step[step < 0] += 1 << 32  # the microsecond counter is 32 bits wide
+                time.append(np.concatenate([[0.0], np.cumsum(step) / 1e6]))
+                trajectory.append(np.full(len(rows), seq, dtype=np.int64))
+                ids += [f"seq{seq}-{i:05d}" for i in range(len(rows))]
+        X = np.concatenate(X)[:, None, None, :]
+        return SampleTable(X, np.concatenate(pos), ids=np.array(ids),
+                           groups={"trajectory": np.concatenate(trajectory), "time": np.concatenate(time)},
+                           meta={"subcarriers": indices.copy(), "training_field": self.subcarriers,
+                                 "carrier_hz": 2.462e9, "subcarrier_offsets_hz": indices * _SUBCARRIER_SPACING_HZ,
+                                 "sequences": tuple(seqs)})

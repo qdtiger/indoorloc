@@ -1,147 +1,87 @@
-#!/usr/bin/env python
-"""
-IndoorLoc Quick Start Example
+"""IndoorLoc in one screen: load a public dataset, fit a pipeline, evaluate it, save and reload it.
 
-This example demonstrates basic usage of the IndoorLoc framework.
+    python examples/quickstart.py                                # UJIIndoorLoc, downloaded once
+    python examples/quickstart.py --dataset synthetic_office     # simulated, no download
+
+Five layers exchange plain numpy arrays:
+
+    L1  load_dataset("ujiindoorloc")        -> (train, test) SampleTables, sha256-checked files
+    L2  FillMissing(-104)                    "not heard" (NaN) -> -104 dBm
+    L3  create_model("wknn", k=5, ...)       sklearn-style fit / predict / localize
+    L4  model.evaluate(test)                 mean / median / P90 error, floor and building hit rates
+        model.save(path), load_model(path)   JSON + npz, no pickle
+
+The last part shows the two core types with your own arrays: any ``(N, F)`` feature array
+and ``(N, D)`` positions make a ``SampleTable``; every localizer returns a ``Prediction``;
+L4 scores plain arrays. UJIIndoorLoc positions are EPSG:3857 (Web Mercator) metres, the
+unit of published UJIIndoorLoc results; ``scale=meta["ground_scale"]`` (0.766) converts
+errors to ground metres. All numbers are printed; every step is deterministic (the one random
+split is seeded), so a re-run prints the same values.
 """
+from __future__ import annotations
+
+import argparse
+import tempfile
+from pathlib import Path
+
 import numpy as np
+
 import indoorloc as iloc
 
 
-def main():
-    print("=" * 60)
-    print("IndoorLoc Quick Start Example")
-    print("=" * 60)
+def main(dataset: str = "ujiindoorloc", *, download: bool = True, workdir: Path | str | None = None,
+         verbose: bool = True) -> dict:
+    """Run the walkthrough; return the printed numbers."""
+    say = print if verbose else (lambda *a, **k: None)
 
-    # =========================================================
-    # 1. Create synthetic training data
-    # =========================================================
-    print("\n1. Creating synthetic training data...")
+    # L1 -- a public dataset as two SampleTables (arrays + labels + provenance)
+    train, test = iloc.load_dataset(dataset, download=download)
+    digest = train.meta.get("sha256")
+    say(f"{train.meta.get('citation', dataset)}: train {train.X.shape}, test {test.X.shape}, "
+        f"crs {train.meta.get('crs')}, " + (f"sha256 {digest[:12]}..." if digest else "generated from a seed"))
 
-    np.random.seed(42)
-    num_train = 500
-    num_test = 100
-    num_aps = 520  # UJIndoorLoc has 520 APs
+    # L2 + L3 -- preprocessing and localizer in one estimator
+    model = iloc.create_model("wknn", k=5, preprocess=iloc.FillMissing(-104.0))
+    model.fit(train)
 
-    # Generate random WiFi fingerprints
-    # In real scenario, these would be RSSI values from WiFi scans
-    def generate_signal():
-        rssi = np.random.uniform(-100, -30, num_aps).astype(np.float32)
-        # Set some APs as not detected (100 in UJIndoorLoc)
-        not_detected = np.random.choice(num_aps, size=int(num_aps * 0.8), replace=False)
-        rssi[not_detected] = 100
-        return iloc.WiFiSignal(rssi_values=rssi)
+    # L4 -- held-out scores (dataset units; ground metres where the frame is not metric)
+    native = model.evaluate(test)
+    scale = float(train.meta.get("ground_scale", 1.0))
+    ground = model.evaluate(test, scale=scale)
+    say(f"WKNN (k=5), {train.meta.get('pos_units', 'm')}: {native}")
+    if scale != 1.0:
+        say(f"WKNN (k=5), ground metres (x {scale:.4f}): {ground}")
 
-    def generate_location():
-        return iloc.Location.from_coordinates(
-            x=np.random.uniform(0, 300),
-            y=np.random.uniform(0, 300),
-            floor=np.random.randint(0, 5),
-            building_id=str(np.random.randint(0, 3))
-        )
+    # save / load: config.json + arrays.npz, no pickle; the reloaded model predicts identically
+    with tempfile.TemporaryDirectory() as tmp:
+        path = model.save(Path(workdir or tmp) / "wknn_model", info={"dataset": dataset})
+        loaded = iloc.load_model(path)
+        same = bool(np.array_equal(loaded.predict(test), model.predict(test)))
+        size_kb = sum(f.stat().st_size for f in Path(path).iterdir()) / 1024
+    say(f"saved to {path.name}/ ({size_kb:.0f} kB: config.json + arrays.npz); reloaded predictions identical: {same}")
 
-    train_signals = [generate_signal() for _ in range(num_train)]
-    train_locations = [generate_location() for _ in range(num_train)]
-
-    test_signals = [generate_signal() for _ in range(num_test)]
-    test_locations = [generate_location() for _ in range(num_test)]
-
-    print(f"   Training samples: {num_train}")
-    print(f"   Test samples: {num_test}")
-    print(f"   Number of APs: {num_aps}")
-
-    # =========================================================
-    # 2. Create and train a k-NN localizer
-    # =========================================================
-    print("\n2. Creating and training k-NN localizer...")
-
-    # Method 1: Direct creation
-    model = iloc.create_model('KNNLocalizer', k=5, weights='distance')
-    print(f"   Created model: {model}")
-
-    # Train the model
-    model.fit(train_signals, train_locations)
-    print(f"   Model trained: {model.is_trained}")
-
-    # =========================================================
-    # 3. Make predictions
-    # =========================================================
-    print("\n3. Making predictions...")
-
-    # Single prediction
-    result = model.predict(test_signals[0])
-    print(f"   Single prediction:")
-    print(f"     Position: ({result.x:.2f}, {result.y:.2f})")
-    print(f"     Floor: {result.floor}")
-    print(f"     Building: {result.building}")
-    print(f"     Confidence: {result.confidence:.3f}")
-    print(f"     Uncertainty: {result.location.position_uncertainty:.2f}m")
-
-    # Timed prediction
-    result_timed = model.predict_timed(test_signals[0])
-    print(f"     Latency: {result_timed.latency_ms:.2f}ms")
-
-    # =========================================================
-    # 4. Batch prediction
-    # =========================================================
-    print("\n4. Batch prediction...")
-
-    results = model.predict_batch(test_signals)
-    print(f"   Predicted {len(results)} locations")
-
-    # Calculate simple error statistics
-    position_errors = []
-    floor_correct = 0
-    building_correct = 0
-
-    for pred, gt in zip(results, test_locations):
-        error = pred.location.distance_to(gt)
-        position_errors.append(error)
-
-        if pred.floor == gt.floor:
-            floor_correct += 1
-        if pred.building == gt.building_id:
-            building_correct += 1
-
-    print(f"\n   Evaluation Results:")
-    print(f"     Mean Position Error: {np.mean(position_errors):.2f}m")
-    print(f"     Median Position Error: {np.median(position_errors):.2f}m")
-    print(f"     75th Percentile Error: {np.percentile(position_errors, 75):.2f}m")
-    print(f"     Floor Accuracy: {floor_correct / len(results) * 100:.1f}%")
-    print(f"     Building Accuracy: {building_correct / len(results) * 100:.1f}%")
-
-    # =========================================================
-    # 5. Save and load model
-    # =========================================================
-    print("\n5. Saving and loading model...")
-
-    model.save('knn_model.pkl')
-    print("   Model saved to knn_model.pkl")
-
-    loaded_model = iloc.create_model('KNNLocalizer')
-    loaded_model.load('knn_model.pkl')
-    print(f"   Model loaded: {loaded_model.is_trained}")
-
-    # Verify loaded model works
-    result_loaded = loaded_model.predict(test_signals[0])
-    print(f"   Loaded model prediction: ({result_loaded.x:.2f}, {result_loaded.y:.2f})")
-
-    # =========================================================
-    # 6. List available models
-    # =========================================================
-    print("\n6. Available models:")
-    for model_name in iloc.list_models():
-        print(f"   - {model_name}")
-
-    print("\n" + "=" * 60)
-    print("Quick Start completed successfully!")
-    print("=" * 60)
-
-    # Cleanup
-    import os
-    if os.path.exists('knn_model.pkl'):
-        os.remove('knn_model.pkl')
+    # The core types with your own arrays: one building's scans as a new table
+    rows = train.building == train.building.min() if train.building is not None else slice(None)
+    X, pos = train.X[rows], train.pos[rows]                    # plain numpy arrays (read-only views)
+    mine = iloc.SampleTable(X, pos, floor=None if train.floor is None else train.floor[rows])
+    fit_rows, test_rows = iloc.evaluation.random_split(len(mine), 0.3, random_state=0)  # L4: index arrays
+    filled = np.nan_to_num(mine.X, nan=-104.0)
+    knn = iloc.KNNLocalizer(k=3).fit(filled[fit_rows], mine.pos[fit_rows])  # sklearn style on arrays
+    pred = knn.localize(filled[test_rows])                           # Prediction(pos, floor, building, spread)
+    scores = iloc.evaluate(mine.pos[test_rows], pred.pos, scale=scale)  # L4 on plain arrays
+    say(f"own arrays: SampleTable {mine.X.shape} -> Prediction pos {pred.pos.shape}, spread[:3] "
+        f"{np.round(pred.spread[:3] * scale, 2).tolist()}; 3-NN, random 70/30 split of these scans: "
+        f"mean {scores.mean_error:.2f} m, median {scores.median_error:.2f} m (scans of the same reference points "
+        "land on both sides of a random split, so it is optimistic next to a held-out test set)")
+    return {"mean_error": native.mean_error, "median_error": native.median_error,
+            "floor_accuracy": native.floor_accuracy, "building_accuracy": native.building_accuracy,
+            "mean_error_ground": ground.mean_error, "reload_identical": same,
+            "own_arrays_mean_error": scores.mean_error}
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    parser.add_argument("--dataset", default="ujiindoorloc", help="a dataset with train and test splits")
+    parser.add_argument("--no-download", action="store_true", help="fail instead of downloading")
+    args = parser.parse_args()
+    main(args.dataset, download=not args.no_download)

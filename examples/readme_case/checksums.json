@@ -1,0 +1,11 @@
+{
+  "samples.npz": "4da7c0f0946346a7735606ed27039c4c63306804971a87317fcac14fa19453c5",
+  "protocol.json": "ac3d6231b3fd772d318c580887f82bdb38d16d49cb3ac0704bc4c169b549cbea",
+  "results.json": "11ddbf98c631128fb05f8cc4852be3014b4a663338b1364b56949c1ff9fdf29a",
+  "predictions.npz": "5dda22109ed4d45bbf9546fa4256d338fa3326cba0b21a383b0a75257e4120e5",
+  "knn/config.json": "e5459ac507b62c73795ecbc917e568812be5cf6fdf1c0947f64904ff6f664fb3",
+  "knn/arrays.npz": "f1bf6fb763bd212dae4249e12ca0f1b32bb54ab628a75d661f56cb6e8c38e76b",
+  "wknn/config.json": "a977c4e7c5b20818e0a08d3aa602978bed4ddb10bdedee9afa5ed3a786565082",
+  "wknn/arrays.npz": "f1bf6fb763bd212dae4249e12ca0f1b32bb54ab628a75d661f56cb6e8c38e76b",
+  "apps_ilc2020.json": "e137ee7854816742e038481d29253d3d9880909dcb1d6eb354f663a280d31f8d"
+}

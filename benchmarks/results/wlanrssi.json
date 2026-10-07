@@ -1,0 +1,2566 @@
+{
+ "format": "indoorloc-benchmark-matrix",
+ "format_version": 1,
+ "dataset": "wlanrssi",
+ "updated": "2026-09-29T01:00:32+00:00",
+ "harness": {
+  "runner": "benchmarks/run.py",
+  "hardware": {
+   "cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+   "logical_cpus": 32,
+   "memory_gb": 39.2,
+   "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "python": "3.14.4"
+  },
+  "cgroup": {
+   "memory_high_mb": 4096.0,
+   "memory_max_mb": 6144.0,
+   "swap_max_mb": 4096.0
+  },
+  "thread_env": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8",
+   "PYTHONHASHSEED": "0"
+  },
+  "timeout_s": 1800,
+  "max_rss_mb": 2500,
+  "code": {
+   "frozen": true,
+   "taken": "2026-09-29T01:00:05+00:00",
+   "from": "/mnt/e/code/indoorloc",
+   "git": {
+    "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+    "branch": "refactor/five-layer-architecture",
+    "dirty": true,
+    "changed_files_under_indoorloc": 138
+   },
+   "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0"
+  },
+  "code_history": [
+   {
+    "taken": "2026-09-28T10:04:34+00:00",
+    "from": "/mnt/e/code/indoorloc",
+    "git": {
+     "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+     "branch": "refactor/five-layer-architecture",
+     "dirty": true,
+     "changed_files_under_indoorloc": 138
+    },
+    "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+   }
+  ]
+ },
+ "environment": {
+  "indoorloc": "0.2.0.dev0",
+  "python": "3.14.4",
+  "implementation": "CPython",
+  "numpy": "2.4.5",
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "cpu_count": 32,
+  "blas": {
+   "blas": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   }
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": "8",
+   "OPENBLAS_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "packages": {
+   "pandas": "3.0.3",
+   "scipy": "1.17.1",
+   "sklearn": "1.8.0",
+   "torch": "2.11.0+cu128"
+  }
+ },
+ "source_sha256": [
+  "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+  "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+ ],
+ "tables": [
+  {
+   "id": "stratified-5-fold",
+   "title": {
+    "en": "UCI Wireless Indoor Localization: room accuracy, stratified 5-fold cross-validation, seed 0",
+    "zh": "UCI Wireless Indoor Localization：房间准确率，分层 5 折交叉验证，种子 0"
+   },
+   "runner": "labels",
+   "protocol_spec": "stratified-kfold-5",
+   "options": {},
+   "dataset": {
+    "name": "wlanrssi",
+    "class": "indoorloc.datasets.wlanrssi:WLANRSSI",
+    "options": {},
+    "splits": [
+     "all"
+    ],
+    "n_samples": {
+     "all": 2000
+    },
+    "n_pooled": 2000,
+    "sha256": {
+     "all": "2ae62faa28071e47b875d6bb64175238574a8d1366d1b64ab355bc1c87220294"
+    },
+    "modality": "wifi_rssi",
+    "task": "room_classification",
+    "citation": "Bhatt, Wireless Indoor Localization, UCI Machine Learning Repository, 2017, doi:10.24432/C51880",
+    "doi": "10.24432/C51880",
+    "license": "CC BY 4.0",
+    "url": "https://archive.ics.uci.edu/dataset/422/wireless+indoor+localization"
+   },
+   "protocol": {
+    "name": "stratified-kfold-5",
+    "summary": "5 folds stratified by groups['room'] (seeded); every row tested once",
+    "folds": [
+     {
+      "name": "fold=0",
+      "n_train": 1600,
+      "n_test": 400,
+      "train_sha256": "1bdd41a7f97fb937ea4815adb09cd01290de2be3c35f7a11fceb4a5aa2988dc6",
+      "test_sha256": "04cc5d46a4814903ae36fb66bfba14d26b01e0d6c33640f29aa844ecffcbaea8",
+      "n_unused": 0
+     },
+     {
+      "name": "fold=1",
+      "n_train": 1600,
+      "n_test": 400,
+      "train_sha256": "fde69ab026a5607b8772558626a12acd1cf690dafbee7ea113b562a1de78a064",
+      "test_sha256": "efb1897776fe880a7bb3de84ee07a4ca441b5a74b95705aebd9c5925013da320",
+      "n_unused": 0
+     },
+     {
+      "name": "fold=2",
+      "n_train": 1600,
+      "n_test": 400,
+      "train_sha256": "776e035cf26849e8d07e5d506b7b4861b92fbd91b093f5f4d1583f3f1b627ecf",
+      "test_sha256": "39c92ada749c80217983fe54f879468a92fe5fc9b5f716b4359a2334bc226047",
+      "n_unused": 0
+     },
+     {
+      "name": "fold=3",
+      "n_train": 1600,
+      "n_test": 400,
+      "train_sha256": "5305949edc019abeb200ed4b826c2b5c34b90493d478f6148f0de13f659afa29",
+      "test_sha256": "ecef341bb559f5ce5047743a901a7a3a165dcdb7bb27cf475283a11cb3f0130b",
+      "n_unused": 0
+     },
+     {
+      "name": "fold=4",
+      "n_train": 1600,
+      "n_test": 400,
+      "train_sha256": "5d46e97b5514c4f5c06a8f9126abbe99243455757e17e2ada4af0d31cd2b00bd",
+      "test_sha256": "0b41f1fdbba9a40726713fc2cab4d0b30cdb214b2a3daa9597c9d81a569161d4",
+      "n_unused": 0
+     }
+    ]
+   },
+   "units": "% of rows with the right label",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "gp_radiomap",
+     "en": "the dataset has no coordinates: a radio map over position cannot be fitted",
+     "zh": "数据集没有坐标，无法拟合基于位置的无线电地图"
+    },
+    {
+     "method": "pathloss, centroid",
+     "en": "model-based: the dataset does not publish the access-point positions",
+     "zh": "基于模型的方法：数据集未公开 AP 位置"
+    }
+   ],
+   "notes": [
+    {
+     "en": "Only room labels (1-4) exist. Each localizer gets the room as its floor label and a constant placeholder position (never scored); the table reports room accuracy. The file has no missing readings, so 'fill' changes nothing, and Horus gets the same input with and without it.",
+     "zh": "数据只有房间标签（1-4）。每个定位器把房间当作楼层标签，并使用恒定占位位置（不计分）；表格报告房间准确率。文件无缺失读数，'fill' 不改变数据，Horus 填充与否输入相同。"
+    }
+   ],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.67,
+     "peak_rss_mb": 43.8,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:27+00:00",
+     "fit_s": 0.0006,
+     "predict_s": 0.0002,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 25.0,
+      "per_class_accuracy": {
+       "1": 100.0,
+       "2": 0.0,
+       "3": 0.0,
+       "4": 0.0
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        500,
+        0,
+        0,
+        0
+       ],
+       [
+        500,
+        0,
+        0,
+        0
+       ],
+       [
+        500,
+        0,
+        0,
+        0
+       ],
+       [
+        500,
+        0,
+        0,
+        0
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0002,
+       "predict_s": 0.0001,
+       "metrics": {
+        "n": 400,
+        "accuracy": 25.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0001,
+       "predict_s": 0.0,
+       "metrics": {
+        "n": 400,
+        "accuracy": 25.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0001,
+       "predict_s": 0.0,
+       "metrics": {
+        "n": 400,
+        "accuracy": 25.0
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0001,
+       "predict_s": 0.0,
+       "metrics": {
+        "n": 400,
+        "accuracy": 25.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0001,
+       "predict_s": 0.0,
+       "metrics": {
+        "n": 400,
+        "accuracy": 25.0
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.88,
+     "peak_rss_mb": 48.4,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:28+00:00",
+     "fit_s": 0.0007,
+     "predict_s": 0.0357,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.55000000000001,
+      "per_class_accuracy": {
+       "1": 99.2,
+       "2": 97.8,
+       "3": 98.4,
+       "4": 98.8
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        496,
+        0,
+        1,
+        3
+       ],
+       [
+        0,
+        489,
+        11,
+        0
+       ],
+       [
+        3,
+        4,
+        492,
+        1
+       ],
+       [
+        4,
+        0,
+        2,
+        494
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0001,
+       "predict_s": 0.0078,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0001,
+       "predict_s": 0.0072,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0001,
+       "predict_s": 0.0061,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0001,
+       "predict_s": 0.0074,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0002,
+       "predict_s": 0.0072,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.25
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method knn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.95,
+     "peak_rss_mb": 48.8,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:28+00:00",
+     "fit_s": 0.0008,
+     "predict_s": 0.0407,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.2,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.0,
+       "3": 98.2,
+       "4": 98.8
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        480,
+        20,
+        0
+       ],
+       [
+        5,
+        1,
+        491,
+        3
+       ],
+       [
+        3,
+        0,
+        3,
+        494
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0002,
+       "predict_s": 0.0104,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0001,
+       "predict_s": 0.0077,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0002,
+       "predict_s": 0.01,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0001,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.5
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0001,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.98,
+     "peak_rss_mb": 49.0,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:28+00:00",
+     "fit_s": 0.0009,
+     "predict_s": 0.0414,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.4,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.2,
+       "3": 98.4,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        481,
+        19,
+        0
+       ],
+       [
+        4,
+        1,
+        492,
+        3
+       ],
+       [
+        3,
+        0,
+        1,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0001,
+       "predict_s": 0.0102,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0002,
+       "predict_s": 0.0061,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0001,
+       "predict_s": 0.008,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0002,
+       "predict_s": 0.0104,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0002,
+       "predict_s": 0.0068,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.76,
+     "peak_rss_mb": 43.8,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:28+00:00",
+     "fit_s": 0.0038,
+     "predict_s": 0.0337,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 97.75,
+      "per_class_accuracy": {
+       "1": 99.0,
+       "2": 94.0,
+       "3": 98.8,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        495,
+        0,
+        5,
+        0
+       ],
+       [
+        0,
+        470,
+        30,
+        0
+       ],
+       [
+        2,
+        1,
+        494,
+        3
+       ],
+       [
+        2,
+        0,
+        2,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0009,
+       "predict_s": 0.0055,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0006,
+       "predict_s": 0.0082,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0009,
+       "predict_s": 0.0072,
+       "metrics": {
+        "n": 400,
+        "accuracy": 96.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0008,
+       "predict_s": 0.0085,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.5
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0006,
+       "predict_s": 0.0043,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.802,
+     "cpu_time_s": 3.3,
+     "peak_rss_mb": 199.6,
+     "load_avg_1min": [
+      6.92,
+      6.53
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:30+00:00",
+     "fit_s": 1.5226,
+     "predict_s": 0.0122,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.45,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.8,
+       "3": 98.0,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        484,
+        16,
+        0
+       ],
+       [
+        2,
+        6,
+        490,
+        2
+       ],
+       [
+        3,
+        0,
+        1,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.6773,
+       "predict_s": 0.0025,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.2107,
+       "predict_s": 0.0024,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.2143,
+       "predict_s": 0.0025,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.2111,
+       "predict_s": 0.0024,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.2091,
+       "predict_s": 0.0024,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.25
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.602,
+     "cpu_time_s": 2.89,
+     "peak_rss_mb": 203.8,
+     "load_avg_1min": [
+      6.53,
+      6.53
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:31+00:00",
+     "fit_s": 1.2067,
+     "predict_s": 0.017,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.55000000000001,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 97.0,
+       "3": 98.0,
+       "4": 99.4
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        485,
+        15,
+        0
+       ],
+       [
+        3,
+        5,
+        490,
+        2
+       ],
+       [
+        2,
+        0,
+        1,
+        497
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.622,
+       "predict_s": 0.0034,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.1466,
+       "predict_s": 0.0034,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.1442,
+       "predict_s": 0.0035,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.145,
+       "predict_s": 0.0034,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.1488,
+       "predict_s": 0.0034,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.602,
+     "cpu_time_s": 5.97,
+     "peak_rss_mb": 200.5,
+     "load_avg_1min": [
+      6.53,
+      6.53
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:33+00:00",
+     "fit_s": 1.0758,
+     "predict_s": 0.0869,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.45,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.0,
+       "3": 98.8,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        480,
+        20,
+        0
+       ],
+       [
+        2,
+        1,
+        494,
+        3
+       ],
+       [
+        3,
+        0,
+        1,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.5893,
+       "predict_s": 0.0227,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.1135,
+       "predict_s": 0.0131,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.1156,
+       "predict_s": 0.0171,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.1354,
+       "predict_s": 0.0193,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.122,
+       "predict_s": 0.0148,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method mlp --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 10.012,
+     "cpu_time_s": 68.05,
+     "peak_rss_mb": 819.1,
+     "load_avg_1min": [
+      6.53,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:43+00:00",
+     "fit_s": 9.4904,
+     "predict_s": 0.0043,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.6,
+      "per_class_accuracy": {
+       "1": 99.6,
+       "2": 97.8,
+       "3": 97.8,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        498,
+        0,
+        1,
+        1
+       ],
+       [
+        0,
+        489,
+        11,
+        0
+       ],
+       [
+        1,
+        8,
+        489,
+        2
+       ],
+       [
+        2,
+        0,
+        2,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 3.4168,
+       "predict_s": 0.0009,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.9363,
+       "predict_s": 0.0009,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 2.1619,
+       "predict_s": 0.0011,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 2.3124,
+       "predict_s": 0.0007,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.6629,
+       "predict_s": 0.0007,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess fill --method svm --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.801,
+     "cpu_time_s": 1.94,
+     "peak_rss_mb": 191.6,
+     "load_avg_1min": [
+      6.47,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:44+00:00",
+     "fit_s": 0.4643,
+     "predict_s": 0.0076,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.3,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.0,
+       "3": 98.2,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        480,
+        20,
+        0
+       ],
+       [
+        3,
+        3,
+        491,
+        3
+       ],
+       [
+        2,
+        0,
+        2,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.4479,
+       "predict_s": 0.0016,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.5
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.004,
+       "predict_s": 0.0015,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0041,
+       "predict_s": 0.0015,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0041,
+       "predict_s": 0.0015,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0042,
+       "predict_s": 0.0016,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.98,
+     "peak_rss_mb": 48.9,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:44+00:00",
+     "fit_s": 0.0011,
+     "predict_s": 0.0428,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.55000000000001,
+      "per_class_accuracy": {
+       "1": 99.2,
+       "2": 97.8,
+       "3": 98.4,
+       "4": 98.8
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        496,
+        0,
+        1,
+        3
+       ],
+       [
+        0,
+        489,
+        11,
+        0
+       ],
+       [
+        3,
+        4,
+        492,
+        1
+       ],
+       [
+        4,
+        0,
+        2,
+        494
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0002,
+       "predict_s": 0.0088,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0003,
+       "predict_s": 0.0079,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0002,
+       "predict_s": 0.0079,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0002,
+       "predict_s": 0.0104,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0001,
+       "predict_s": 0.0079,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.25
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess positive --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.93,
+     "peak_rss_mb": 48.7,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:45+00:00",
+     "fit_s": 0.0007,
+     "predict_s": 0.0335,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.4,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 96.2,
+       "3": 98.4,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        1,
+        0
+       ],
+       [
+        0,
+        481,
+        19,
+        0
+       ],
+       [
+        4,
+        1,
+        492,
+        3
+       ],
+       [
+        3,
+        0,
+        1,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0002,
+       "predict_s": 0.0088,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0002,
+       "predict_s": 0.0057,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0001,
+       "predict_s": 0.0065,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0001,
+       "predict_s": 0.0061,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0001,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess exponential --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.95,
+     "peak_rss_mb": 48.7,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:45+00:00",
+     "fit_s": 0.001,
+     "predict_s": 0.0335,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.1,
+      "per_class_accuracy": {
+       "1": 99.6,
+       "2": 95.8,
+       "3": 98.0,
+       "4": 99.0
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        498,
+        0,
+        1,
+        1
+       ],
+       [
+        0,
+        479,
+        21,
+        0
+       ],
+       [
+        3,
+        5,
+        490,
+        2
+       ],
+       [
+        3,
+        0,
+        2,
+        495
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0003,
+       "predict_s": 0.0078,
+       "metrics": {
+        "n": 400,
+        "accuracy": 99.0
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0002,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0002,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0002,
+       "predict_s": 0.0064,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.0
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0002,
+       "predict_s": 0.0067,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.75
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess powed --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.02,
+     "peak_rss_mb": 48.7,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:45+00:00",
+     "fit_s": 0.002,
+     "predict_s": 0.0436,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 98.0,
+      "per_class_accuracy": {
+       "1": 99.8,
+       "2": 95.6,
+       "3": 97.8,
+       "4": 98.8
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        499,
+        0,
+        0,
+        1
+       ],
+       [
+        0,
+        478,
+        22,
+        0
+       ],
+       [
+        3,
+        6,
+        489,
+        2
+       ],
+       [
+        3,
+        0,
+        3,
+        494
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0003,
+       "predict_s": 0.009,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.5
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0005,
+       "predict_s": 0.01,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0005,
+       "predict_s": 0.0079,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0005,
+       "predict_s": 0.0093,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.25
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0003,
+       "predict_s": 0.0075,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "python -m benchmarks.labels --dataset wlanrssi --label room --preprocess none --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.76,
+     "peak_rss_mb": 42.6,
+     "load_avg_1min": [
+      1.07,
+      1.07
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:31+00:00",
+     "fit_s": 0.0039,
+     "predict_s": 0.0256,
+     "pooled": {
+      "n": 2000,
+      "accuracy": 97.75,
+      "per_class_accuracy": {
+       "1": 99.0,
+       "2": 94.0,
+       "3": 98.8,
+       "4": 99.2
+      },
+      "classes": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "confusion": [
+       [
+        495,
+        0,
+        5,
+        0
+       ],
+       [
+        0,
+        470,
+        30,
+        0
+       ],
+       [
+        2,
+        1,
+        494,
+        3
+       ],
+       [
+        2,
+        0,
+        2,
+        496
+       ]
+      ]
+     },
+     "folds": [
+      {
+       "fold": "fold=0",
+       "fit_s": 0.0012,
+       "predict_s": 0.0049,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      },
+      {
+       "fold": "fold=1",
+       "fit_s": 0.0009,
+       "predict_s": 0.008,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.0
+       }
+      },
+      {
+       "fold": "fold=2",
+       "fit_s": 0.0006,
+       "predict_s": 0.0043,
+       "metrics": {
+        "n": 400,
+        "accuracy": 96.75
+       }
+      },
+      {
+       "fold": "fold=3",
+       "fit_s": 0.0006,
+       "predict_s": 0.0043,
+       "metrics": {
+        "n": 400,
+        "accuracy": 97.5
+       }
+      },
+      {
+       "fold": "fold=4",
+       "fit_s": 0.0006,
+       "predict_s": 0.0041,
+       "metrics": {
+        "n": 400,
+        "accuracy": 98.25
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "b11f85ea6a4764dfd6abe8df0c4de176dc8e9e0562003675f70f23c42b5505a7",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  }
+ ],
+ "literature": {
+  "available": true,
+  "display_name": "Wireless Indoor Localization (UCI)",
+  "metrics": {
+   "accuracy": {
+    "definition": "room classification accuracy (4 rooms), as reported",
+    "unit": "%"
+   }
+  },
+  "entries": [],
+  "hidden": 4,
+  "checks_all": {
+   "literature/unidentified": 1,
+   "indoorloc-0.1/not-literature": 3
+  },
+  "rule": "shown: literature entries checked 'verified', 'corrected' or 'unchecked'; hidden: 'unidentified', 'missing' and numbers IndoorLoc 0.1 produced itself"
+ }
+}

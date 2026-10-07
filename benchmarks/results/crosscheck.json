@@ -1,0 +1,128 @@
+{
+ "format": "indoorloc-benchmark-crosscheck",
+ "format_version": 1,
+ "created": "2026-09-28T14:50:16+00:00",
+ "command": "python -m benchmarks.crosscheck",
+ "versions": {
+  "numpy": "2.4.5",
+  "python": "3.14.4",
+  "sklearn": "1.8.0"
+ },
+ "cells": [
+  {
+   "dataset": "ujiindoorloc",
+   "table": "official",
+   "preprocess": "fill",
+   "method": "knn",
+   "options": {},
+   "k": 5,
+   "weights": "uniform",
+   "n_train": 19937,
+   "n_test": 1111,
+   "sha256": {
+    "train": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168",
+    "test": "5f90c536648cd657b2c516d20c4e0968d4003279ea6bd5d5d5322d3f1e8905c0"
+   },
+   "numpy_mean_error": 8.808422949721733,
+   "mode": "exact-gemm",
+   "grid_bits": 0,
+   "ties_at_k": 19,
+   "near_ties": null,
+   "sklearn_mean_error": 8.831355520721434
+  },
+  {
+   "dataset": "ujiindoorloc",
+   "table": "official",
+   "preprocess": "fill",
+   "method": "wknn",
+   "options": {},
+   "k": 5,
+   "weights": "distance",
+   "n_train": 19937,
+   "n_test": 1111,
+   "sha256": {
+    "train": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168",
+    "test": "5f90c536648cd657b2c516d20c4e0968d4003279ea6bd5d5d5322d3f1e8905c0"
+   },
+   "numpy_mean_error": 8.793663569441243,
+   "mode": "exact-gemm",
+   "grid_bits": 0,
+   "ties_at_k": 19,
+   "near_ties": null,
+   "sklearn_mean_error": 8.81663558177359
+  },
+  {
+   "dataset": "tuji1",
+   "table": "official",
+   "preprocess": "positive",
+   "method": "knn(k=1)",
+   "options": {},
+   "k": 1,
+   "weights": "uniform",
+   "n_train": 6752,
+   "n_test": 2147,
+   "sha256": {
+    "train": {
+     "RSS_training.csv": "dbdcb88699cb767a65fe17b859042b0b3b2be1095674f977cafb6c981aabd6d5",
+     "Coordinates_training.csv": "6bee8b88c923eaff2e6af6744f5bc69e689629bd67bbc23b4ce6e1d67750fb8e",
+     "Device_labels.csv": "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30"
+    },
+    "test": {
+     "RSS_testing.csv": "a81a514d76d6aae796bf78a12582dd18e760333773395402fe0ca0daa6986260",
+     "Coordinates_testing.csv": "67e63a53e57fba461f7db2af51218bf4716f942b3ffdbe0de2bdfd37697724f3",
+     "Device_labels.csv": "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30"
+    }
+   },
+   "numpy_mean_error": 3.342953736634786,
+   "mode": "exact-gemm",
+   "grid_bits": 0,
+   "ties_at_k": 10,
+   "near_ties": null,
+   "sklearn_mean_error": 3.342953736634786
+  },
+  {
+   "dataset": "haloc",
+   "table": "official",
+   "preprocess": "CSIAmplitude",
+   "method": "wknn",
+   "options": {},
+   "k": 5,
+   "weights": "distance",
+   "n_train": 96491,
+   "n_test": 14277,
+   "sha256": {
+    "train": "51183ac2d1ca5126095a583906da843145b779ae47baec9121d987590439b1dc",
+    "test": "51183ac2d1ca5126095a583906da843145b779ae47baec9121d987590439b1dc"
+   },
+   "numpy_mean_error": 3.6685154506031163,
+   "mode": "float",
+   "grid_bits": null,
+   "ties_at_k": 0,
+   "near_ties": 0,
+   "sklearn_mean_error": 3.6685154506031146
+  },
+  {
+   "dataset": "ble_indoor",
+   "table": "official-office",
+   "preprocess": "fill(value=-110)",
+   "method": "wknn",
+   "options": {
+    "room": "office"
+   },
+   "k": 5,
+   "weights": "distance",
+   "n_train": 22237,
+   "n_test": 5110,
+   "sha256": {
+    "train": "32fd58a9403013162cb0d44d30a854802773f188d37be491a2f21f100befd173",
+    "test": "32fd58a9403013162cb0d44d30a854802773f188d37be491a2f21f100befd173"
+   },
+   "numpy_mean_error": 3.5188855724793737,
+   "mode": "exact-diff",
+   "grid_bits": 18,
+   "ties_at_k": 34,
+   "near_ties": null,
+   "sklearn_mean_error": 3.518348216332578
+  }
+ ]
+}

@@ -1,372 +1,108 @@
-"""
-IMU (Inertial Measurement Unit) Signal Implementation
+"""Inertial (IMU) helpers for one time series: magnitude, smoothing, gravity removal.
 
-Provides IMU signal representations for indoor localization, including
-accelerometer, gyroscope, and magnetometer data.
+Input is one trajectory ``(T, C)`` (rows = time steps, CONTRACTS.md ``imu`` layout) or
+``(T,)``; for a table with several trajectories apply them per ``groups["trajectory"]``.
+Step detection, heading and PDR are L5 (``apps``); these are the signal-level pieces.
 """
-from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Any, Tuple
+from __future__ import annotations
+
 import numpy as np
 
-from .base import BaseSignal
-from ..registry import SIGNALS
+GRAVITY = 9.80665  # m/s^2, standard gravity (CGPM 1901)
 
 
-@dataclass
-class IMUReading:
-    """Single IMU reading at a point in time.
+def _float(x) -> np.ndarray:
+    x = np.asarray(x)
+    if x.dtype.kind == "c":
+        raise ValueError("IMU data are real-valued")
+    return x.astype(x.dtype if x.dtype.kind == "f" else np.float64, copy=True)
 
-    Attributes:
-        timestamp: Unix timestamp in seconds.
-        accelerometer: (ax, ay, az) in m/s².
-        gyroscope: (gx, gy, gz) in rad/s.
-        magnetometer: (mx, my, mz) in μT (optional).
-        orientation: (roll, pitch, yaw) in radians (optional, computed).
+
+def magnitude(x, axis: int = -1) -> np.ndarray:
+    """Euclidean norm along ``axis``, e.g. ``(T, 3)`` accelerometer -> ``(T,)`` in m/s^2.
+    Orientation-free, hence the usual input of step detectors."""
+    return np.linalg.norm(_float(x), axis=axis)
+
+
+def moving_average(x, window: int, axis: int = 0, centered: bool = True) -> np.ndarray:
+    """Mean over ``window`` samples along ``axis``; NaN ignored, windows truncated at the edges.
+
+    ``centered=True`` averages ``window // 2`` samples on each side (zero phase, needs an
+    odd ``window``); ``centered=False`` averages the current and ``window - 1`` previous
+    samples (causal, usable on a stream).
     """
-    timestamp: float
-    accelerometer: Tuple[float, float, float] = (0.0, 0.0, 0.0)
-    gyroscope: Tuple[float, float, float] = (0.0, 0.0, 0.0)
-    magnetometer: Optional[Tuple[float, float, float]] = None
-    orientation: Optional[Tuple[float, float, float]] = None
-
-    def to_array(self, include_mag: bool = True, include_orient: bool = False) -> np.ndarray:
-        """Convert reading to numpy array.
-
-        Args:
-            include_mag: Include magnetometer data.
-            include_orient: Include orientation data.
-
-        Returns:
-            Numpy array of IMU values.
-        """
-        values = list(self.accelerometer) + list(self.gyroscope)
-
-        if include_mag and self.magnetometer is not None:
-            values.extend(self.magnetometer)
-
-        if include_orient and self.orientation is not None:
-            values.extend(self.orientation)
-
-        return np.array(values, dtype=np.float32)
+    w = int(window)
+    if w < 1 or (centered and w % 2 == 0):
+        raise ValueError(f"window must be a positive{' odd' if centered else ''} integer, got {window}")
+    x = _float(x)
+    moved = np.moveaxis(x, axis, 0).astype(np.float64)
+    ok = ~np.isnan(moved)
+    zeros = np.zeros((1, *moved.shape[1:]))
+    csum = np.concatenate([zeros, np.cumsum(np.where(ok, moved, 0.0), axis=0)])
+    ccnt = np.concatenate([zeros, np.cumsum(ok, axis=0)])
+    n = len(moved)
+    t = np.arange(n)
+    lo = np.clip(t - (w // 2 if centered else w - 1), 0, n)
+    hi = np.clip(t + (w // 2 if centered else 0) + 1, 0, n)
+    total, count = csum[hi] - csum[lo], ccnt[hi] - ccnt[lo]
+    out = np.divide(total, count, out=np.full(total.shape, np.nan), where=count > 0)
+    return np.moveaxis(out, 0, axis).astype(x.dtype)
 
 
-@SIGNALS.register_module()
-class IMUSignal(BaseSignal):
-    """IMU signal for Pedestrian Dead Reckoning (PDR) and motion-based localization.
+def smoothing_factor(cutoff_hz: float, rate_hz: float) -> float:
+    """The ``alpha`` of a first-order RC low-pass: ``dt / (RC + dt)``, ``RC = 1 / (2 pi f_c)``."""
+    dt = 1.0 / float(rate_hz)
+    rc = 1.0 / (2.0 * np.pi * float(cutoff_hz))
+    return dt / (rc + dt)
 
-    Stores a sequence of IMU readings over time for trajectory estimation.
 
-    Args:
-        readings: List of IMUReading objects.
-        accelerometer: Array of shape (N, 3) for accelerometer data.
-        gyroscope: Array of shape (N, 3) for gyroscope data.
-        magnetometer: Array of shape (N, 3) for magnetometer data (optional).
-        timestamps: Array of timestamps for each reading.
-        sampling_rate: IMU sampling rate in Hz.
+def low_pass(x, alpha: float | None = None, *, cutoff_hz: float | None = None, rate_hz: float | None = None,
+             axis: int = 0) -> np.ndarray:
+    """First-order IIR low-pass (exponential smoothing) along ``axis``:
+    ``y[0] = x[0]``, ``y[t] = y[t-1] + alpha * (x[t] - y[t-1])``.
 
-    Example:
-        >>> # From arrays
-        >>> accel = np.random.randn(100, 3)  # 100 samples, 3 axes
-        >>> gyro = np.random.randn(100, 3)
-        >>> signal = IMUSignal(accelerometer=accel, gyroscope=gyro, sampling_rate=100)
-
-        >>> # From readings
-        >>> readings = [IMUReading(timestamp=i/100, accelerometer=(0,0,9.8)) for i in range(100)]
-        >>> signal = IMUSignal(readings=readings)
+    Give ``alpha`` in (0, 1] or ``cutoff_hz`` and ``rate_hz`` (see ``smoothing_factor``).
+    Causal, so usable sample by sample. A NaN sample holds the previous output (the
+    filter starts at the first non-NaN sample).
     """
+    if alpha is None:
+        if cutoff_hz is None or rate_hz is None:
+            raise ValueError("give alpha, or cutoff_hz and rate_hz")
+        alpha = smoothing_factor(cutoff_hz, rate_hz)
+    a = float(alpha)
+    if not 0.0 < a <= 1.0:
+        raise ValueError(f"alpha must be in (0, 1], got {alpha}")
+    x = _float(x)
+    moved = np.moveaxis(x, axis, 0).astype(np.float64)
+    if len(moved) == 0:
+        return x
+    flat = moved.reshape(len(moved), -1)
+    out = np.empty_like(flat)
+    y = flat[0].copy()
+    out[0] = y
+    for t in range(1, len(flat)):
+        xt = flat[t]
+        y = np.where(np.isnan(xt), y, np.where(np.isnan(y), xt, y + a * (xt - y)))
+        out[t] = y
+    out = out.reshape(moved.shape)
+    return np.moveaxis(out, 0, axis).astype(x.dtype)
 
-    # Gravity constant
-    GRAVITY = 9.81
 
-    def __init__(
-        self,
-        readings: Optional[List[IMUReading]] = None,
-        accelerometer: Optional[np.ndarray] = None,
-        gyroscope: Optional[np.ndarray] = None,
-        magnetometer: Optional[np.ndarray] = None,
-        timestamps: Optional[np.ndarray] = None,
-        sampling_rate: Optional[float] = None,
-        **kwargs
-    ):
-        # Initialize readings first so we can extract data for base class
-        self.readings = readings or []
-        self.sampling_rate = sampling_rate
+def remove_gravity(acc, alpha: float | None = 0.2, *, cutoff_hz: float | None = None,
+                   rate_hz: float | None = None):
+    """Split accelerometer data ``(T, 3)`` into linear acceleration and gravity.
 
-        # Store raw arrays
-        if accelerometer is not None:
-            self.accelerometer = np.asarray(accelerometer, dtype=np.float32)
-        else:
-            self.accelerometer = None
+    Gravity is the low-pass part of the specific force (``low_pass`` with ``alpha``, or a
+    cutoff frequency); the linear acceleration is the rest. Returns ``(linear, gravity)``.
+    The default ``alpha = 0.2`` is the Android example's ``0.8`` weight on the previous
+    gravity estimate (``gravity = 0.8 * gravity + 0.2 * acc``).
 
-        if gyroscope is not None:
-            self.gyroscope = np.asarray(gyroscope, dtype=np.float32)
-        else:
-            self.gyroscope = None
-
-        if magnetometer is not None:
-            self.magnetometer = np.asarray(magnetometer, dtype=np.float32)
-        else:
-            self.magnetometer = None
-
-        if timestamps is not None:
-            self.timestamps = np.asarray(timestamps, dtype=np.float64)
-        else:
-            self.timestamps = None
-
-        # If readings provided, extract arrays
-        if self.readings and self.accelerometer is None:
-            self._extract_from_readings()
-
-        # Build data for base class
-        data = {}
-        if self.accelerometer is not None:
-            data['accelerometer'] = self.accelerometer
-        if self.gyroscope is not None:
-            data['gyroscope'] = self.gyroscope
-        if self.magnetometer is not None:
-            data['magnetometer'] = self.magnetometer
-        super().__init__(data, kwargs.get('metadata'))
-
-    def _extract_from_readings(self) -> None:
-        """Extract arrays from readings list."""
-        n = len(self.readings)
-
-        self.timestamps = np.array([r.timestamp for r in self.readings], dtype=np.float64)
-        self.accelerometer = np.array([r.accelerometer for r in self.readings], dtype=np.float32)
-        self.gyroscope = np.array([r.gyroscope for r in self.readings], dtype=np.float32)
-
-        if self.readings[0].magnetometer is not None:
-            self.magnetometer = np.array([r.magnetometer for r in self.readings], dtype=np.float32)
-
-        # Estimate sampling rate
-        if n > 1:
-            dt = np.diff(self.timestamps)
-            self.sampling_rate = 1.0 / np.mean(dt)
-
-    @property
-    def signal_type(self) -> str:
-        return 'imu'
-
-    @property
-    def num_samples(self) -> int:
-        """Return number of samples in the signal."""
-        if self.accelerometer is not None:
-            return len(self.accelerometer)
-        return len(self.readings)
-
-    @property
-    def duration(self) -> float:
-        """Return signal duration in seconds."""
-        if self.timestamps is not None and len(self.timestamps) > 1:
-            return self.timestamps[-1] - self.timestamps[0]
-        elif self.sampling_rate is not None and self.num_samples > 0:
-            return self.num_samples / self.sampling_rate
-        return 0.0
-
-    @property
-    def has_magnetometer(self) -> bool:
-        """Check if magnetometer data is available."""
-        return self.magnetometer is not None
-
-    def to_tensor(self, device: str = 'cpu'):
-        """Convert to PyTorch tensor.
-
-        Args:
-            device: Target device.
-
-        Returns:
-            torch.Tensor of shape (N, C) where C is number of channels.
-        """
-        import torch
-
-        # Stack available sensor data
-        arrays = [self.accelerometer, self.gyroscope]
-        if self.has_magnetometer:
-            arrays.append(self.magnetometer)
-
-        data = np.concatenate(arrays, axis=1)
-        return torch.tensor(data, dtype=torch.float32, device=device)
-
-    def normalize(self, method: str = 'standard') -> 'IMUSignal':
-        """Normalize IMU data.
-
-        Args:
-            method: Normalization method ('standard', 'minmax', 'gravity').
-
-        Returns:
-            New IMUSignal with normalized values.
-        """
-        accel = self.accelerometer.copy() if self.accelerometer is not None else None
-        gyro = self.gyroscope.copy() if self.gyroscope is not None else None
-        mag = self.magnetometer.copy() if self.magnetometer is not None else None
-
-        if method == 'standard':
-            # Z-score normalization
-            if accel is not None:
-                accel = (accel - accel.mean(axis=0)) / (accel.std(axis=0) + 1e-8)
-            if gyro is not None:
-                gyro = (gyro - gyro.mean(axis=0)) / (gyro.std(axis=0) + 1e-8)
-            if mag is not None:
-                mag = (mag - mag.mean(axis=0)) / (mag.std(axis=0) + 1e-8)
-
-        elif method == 'minmax':
-            # Scale to [0, 1]
-            def minmax(arr):
-                min_val = arr.min(axis=0)
-                max_val = arr.max(axis=0)
-                return (arr - min_val) / (max_val - min_val + 1e-8)
-
-            if accel is not None:
-                accel = minmax(accel)
-            if gyro is not None:
-                gyro = minmax(gyro)
-            if mag is not None:
-                mag = minmax(mag)
-
-        elif method == 'gravity':
-            # Normalize accelerometer by gravity
-            if accel is not None:
-                accel = accel / self.GRAVITY
-
-        return IMUSignal(
-            accelerometer=accel,
-            gyroscope=gyro,
-            magnetometer=mag,
-            timestamps=self.timestamps.copy() if self.timestamps is not None else None,
-            sampling_rate=self.sampling_rate
-        )
-
-    def get_window(self, start_idx: int, window_size: int) -> 'IMUSignal':
-        """Extract a window of IMU data.
-
-        Args:
-            start_idx: Starting index.
-            window_size: Number of samples in window.
-
-        Returns:
-            New IMUSignal containing the window.
-        """
-        end_idx = start_idx + window_size
-
-        return IMUSignal(
-            accelerometer=self.accelerometer[start_idx:end_idx] if self.accelerometer is not None else None,
-            gyroscope=self.gyroscope[start_idx:end_idx] if self.gyroscope is not None else None,
-            magnetometer=self.magnetometer[start_idx:end_idx] if self.magnetometer is not None else None,
-            timestamps=self.timestamps[start_idx:end_idx] if self.timestamps is not None else None,
-            sampling_rate=self.sampling_rate
-        )
-
-    def detect_steps(self, threshold: float = 1.0) -> List[int]:
-        """Detect steps using accelerometer magnitude peaks.
-
-        Simple peak detection for step counting.
-
-        Args:
-            threshold: Minimum peak prominence for step detection.
-
-        Returns:
-            List of step indices.
-        """
-        if self.accelerometer is None:
-            return []
-
-        # Compute acceleration magnitude
-        mag = np.linalg.norm(self.accelerometer, axis=1)
-
-        # Simple peak detection
-        steps = []
-        for i in range(1, len(mag) - 1):
-            if mag[i] > mag[i-1] and mag[i] > mag[i+1]:
-                if mag[i] - min(mag[i-1], mag[i+1]) > threshold:
-                    steps.append(i)
-
-        return steps
-
-    def compute_heading(self) -> Optional[np.ndarray]:
-        """Compute heading from magnetometer data.
-
-        Returns:
-            Array of heading angles in radians, or None if no magnetometer.
-        """
-        if not self.has_magnetometer:
-            return None
-
-        # Simple heading from horizontal magnetometer components
-        heading = np.arctan2(self.magnetometer[:, 1], self.magnetometer[:, 0])
-        return heading
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary representation."""
-        result = {
-            'signal_type': self.signal_type,
-            'num_samples': self.num_samples,
-            'duration': self.duration,
-            'sampling_rate': self.sampling_rate,
-            'has_magnetometer': self.has_magnetometer,
-        }
-
-        if self.accelerometer is not None:
-            result['accelerometer'] = self.accelerometer.tolist()
-        if self.gyroscope is not None:
-            result['gyroscope'] = self.gyroscope.tolist()
-        if self.magnetometer is not None:
-            result['magnetometer'] = self.magnetometer.tolist()
-        if self.timestamps is not None:
-            result['timestamps'] = self.timestamps.tolist()
-
-        return result
-
-    @property
-    def feature_dim(self) -> int:
-        """Return feature dimensionality of the IMU signal."""
-        dim = 0
-        if self.accelerometer is not None:
-            dim += 3
-        if self.gyroscope is not None:
-            dim += 3
-        if self.magnetometer is not None:
-            dim += 3
-        return dim
-
-    def to_numpy(self) -> np.ndarray:
-        """Convert to numpy array.
-
-        Returns:
-            Array of shape (N, C) where C is number of channels.
-        """
-        arrays = []
-        if self.accelerometer is not None:
-            arrays.append(self.accelerometer)
-        if self.gyroscope is not None:
-            arrays.append(self.gyroscope)
-        if self.magnetometer is not None:
-            arrays.append(self.magnetometer)
-
-        if not arrays:
-            return np.array([])
-
-        return np.concatenate(arrays, axis=1)
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'IMUSignal':
-        """Create IMUSignal from dictionary representation."""
-        accel = np.array(data['accelerometer'], dtype=np.float32) if 'accelerometer' in data else None
-        gyro = np.array(data['gyroscope'], dtype=np.float32) if 'gyroscope' in data else None
-        mag = np.array(data['magnetometer'], dtype=np.float32) if 'magnetometer' in data else None
-        timestamps = np.array(data['timestamps'], dtype=np.float64) if 'timestamps' in data else None
-        sampling_rate = data.get('sampling_rate')
-
-        return cls(
-            accelerometer=accel,
-            gyroscope=gyro,
-            magnetometer=mag,
-            timestamps=timestamps,
-            sampling_rate=sampling_rate
-        )
-
-    def __repr__(self) -> str:
-        return (
-            f"IMUSignal(samples={self.num_samples}, "
-            f"duration={self.duration:.2f}s, "
-            f"rate={self.sampling_rate}Hz)"
-        )
+    References
+        Android Developers, "Motion sensors: use the accelerometer" (high-pass by subtracting a
+        low-pass gravity estimate). https://developer.android.com/develop/sensors-and-location/sensors/sensors_motion
+    """
+    acc = _float(acc)
+    if cutoff_hz is not None:
+        alpha = None
+    gravity = low_pass(acc, alpha, cutoff_hz=cutoff_hz, rate_hz=rate_hz, axis=0)
+    return acc - gravity, gravity

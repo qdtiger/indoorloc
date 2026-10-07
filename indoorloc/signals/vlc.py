@@ -1,335 +1,216 @@
-"""
-VLC (Visible Light Communication) Signal Implementation
+"""Visible light positioning: the Lambertian line-of-sight channel, its inversion and receiver noise.
 
-Provides VLC signal representations for indoor localization based on
-LED-based visible light positioning systems.
+Pure numpy functions (no transform: received power is already the measurement).
+
+    emitter        ``lambertian_order``, ``half_power_angle``
+    receiver       ``concentrator_gain``
+    channel        ``channel_gain``, ``received_power`` (any LED and receiver orientation)
+    inversion      ``power_to_distance``, ``distance_to_power`` (LED facing down, receiver facing up)
+    noise          ``noise_variance`` (shot + thermal noise of a PIN photodiode receiver)
+
+The line-of-sight DC gain of an LED with Lambertian order ``m`` seen by a photodiode of area
+``A`` at distance ``d`` is (Kahn & Barry 1997; Komine & Nakagawa 2004)::
+
+    H = (m + 1) A / (2 pi d^2) cos^m(phi) Ts g(psi) cos(psi)    for 0 <= psi <= FOV, else 0
+
+with ``phi`` the irradiance angle (from the LED axis), ``psi`` the incidence angle (from the
+receiver axis), ``Ts`` the optical filter gain, ``g`` the concentrator gain (``n^2 / sin^2 FOV``
+for an ideal non-imaging concentrator of refractive index ``n``) and
+``m = -ln 2 / ln cos(Phi_1/2)`` for a half-power semi-angle ``Phi_1/2`` (60 degrees gives
+``m = 1``). The received optical power is ``P_r = P_t H``. Only the line-of-sight path is
+modelled: wall reflections add power, most near walls and corners, and bias RSS ranging
+there (Gu et al. 2016). Units: metres, radians, watts, square metres.
+
+For an LED facing straight down at height ``h`` above a receiver facing straight up,
+``cos phi = cos psi = h / d``, so ``P_r = C h^(m+1) / d^(m+3)`` with
+``C = P_t (m + 1) A Ts g / (2 pi)``: the received power fixes the distance,
+``d = (C h^(m+1) / P_r)^(1 / (m + 3))`` (the RSS ranging of VLP systems, Zhuang et al. 2018).
+
+References
+    J. M. Kahn, J. R. Barry, "Wireless infrared communications", Proceedings of the IEEE 85(2):265-298,
+    1997. https://doi.org/10.1109/5.554222
+    T. Komine, M. Nakagawa, "Fundamental analysis for visible-light communication system using LED
+    lights", IEEE Transactions on Consumer Electronics 50(1):100-107, 2004.
+    https://doi.org/10.1109/TCE.2004.1277847
+    Y. Zhuang, L. Hua, L. Qi, J. Yang, P. Cao, Y. Cao, Y. Wu, J. Thompson, H. Haas, "A survey of
+    positioning systems using visible LED lights", IEEE Communications Surveys & Tutorials
+    20(3):1963-1988, 2018. https://doi.org/10.1109/COMST.2018.2806558
+    W. Gu, M. Aminikashani, P. Deng, M. Kavehrad, "Impact of multipath reflections on the performance
+    of indoor visible light positioning systems", Journal of Lightwave Technology 34(10):2578-2587,
+    2016. https://doi.org/10.1109/JLT.2016.2541659
 """
-from dataclasses import dataclass
-from typing import Optional, List, Dict, Any, Tuple
+from __future__ import annotations
+
 import numpy as np
-import torch
 
-from .base import BaseSignal, SignalMetadata
-from ..registry import SIGNALS
+ELEMENTARY_CHARGE = 1.602176634e-19  # C, exact (SI 2019)
+BOLTZMANN = 1.380649e-23             # J/K, exact (SI 2019)
 
 
-@dataclass
-class LEDTransmitter:
-    """Represents a single LED transmitter measurement.
+def lambertian_order(half_power_angle) -> np.ndarray:
+    """``m = -ln 2 / ln cos(Phi_1/2)`` for a half-power semi-angle in radians, ``0 < Phi < pi/2``."""
+    phi = np.asarray(half_power_angle, dtype=np.float64)
+    if np.any(~(phi > 0) | ~(phi < np.pi / 2)):
+        raise ValueError(f"the half-power angle must be in (0, pi/2) radians, got {half_power_angle}")
+    return -np.log(2.0) / np.log(np.cos(phi))
 
-    Attributes:
-        led_id: Unique identifier for the LED transmitter.
-        position: 3D position (x, y, z) in meters.
-        received_power: Received optical power (arbitrary units or lux).
-        phase_difference: Phase difference measurement (for angle estimation).
-        angle_of_arrival: Estimated angle of arrival in radians.
-        tx_power: Transmitted optical power.
-        timestamp: Measurement timestamp.
+
+def half_power_angle(order) -> np.ndarray:
+    """Inverse of ``lambertian_order``: ``arccos(2^(-1/m))`` radians."""
+    m = np.asarray(order, dtype=np.float64)
+    if np.any(~(m > 0)):
+        raise ValueError(f"the Lambertian order must be positive, got {order}")
+    return np.arccos(np.power(2.0, -1.0 / m))
+
+
+def concentrator_gain(refractive_index: float, fov: float) -> float:
+    """Gain ``n^2 / sin^2(FOV)`` of an ideal non-imaging concentrator (Kahn & Barry 1997)."""
+    n, f = float(refractive_index), float(fov)
+    if not n > 0 or not 0 < f <= np.pi / 2:
+        raise ValueError(f"need refractive_index > 0 and 0 < fov <= pi/2, got {refractive_index}, {fov}")
+    return n * n / np.sin(f) ** 2
+
+
+def _unit(v, n: int, name: str) -> np.ndarray:
+    a = np.asarray(v, dtype=np.float64)
+    a = np.broadcast_to(a, (n, 3)) if a.ndim == 1 else a
+    if a.shape != (n, 3):
+        raise ValueError(f"{name} must be (3,) or ({n}, 3), got shape {np.shape(v)}")
+    norm = np.linalg.norm(a, axis=1, keepdims=True)
+    if not np.all(norm > 0):
+        raise ValueError(f"{name} must be non-zero vectors")
+    return a / norm
+
+
+def _points(x, name: str) -> np.ndarray:
+    a = np.atleast_2d(np.asarray(x, dtype=np.float64))
+    if a.ndim != 2 or a.shape[1] != 3:
+        raise ValueError(f"{name} must be (N, 3) positions in metres, got shape {np.shape(x)}")
+    return a
+
+
+def channel_gain(positions, leds, *, order=1.0, area: float = 1e-4, fov: float = np.pi / 2,
+                 led_normals=(0.0, 0.0, -1.0), receiver_normals=(0.0, 0.0, 1.0), filter_gain: float = 1.0,
+                 concentrator_gain: float = 1.0) -> np.ndarray:
+    """Line-of-sight DC gain ``H`` ``(N, A)`` from ``A`` LEDs to receivers at ``positions`` ``(N, 3)``.
+
+    ``leds`` ``(A, 3)``; ``order`` scalar or ``(A,)``; ``led_normals`` ``(3,)`` or ``(A, 3)``
+    (emission axes, default straight down); ``receiver_normals`` ``(3,)`` or ``(N, 3)``
+    (default straight up); ``area`` in m^2, ``fov`` the receiver's field-of-view semi-angle
+    in radians. ``H = 0`` behind the LED (``phi >= 90 deg``), behind the receiver and outside
+    its field of view (``psi > fov``). See the module docstring for the formula.
     """
-    led_id: str
-    position: Optional[Tuple[float, float, float]] = None
-    received_power: float = 0.0
-    phase_difference: Optional[float] = None
-    angle_of_arrival: Optional[float] = None
-    tx_power: Optional[float] = None
-    timestamp: Optional[float] = None
+    p, a = _points(positions, "positions"), _points(leds, "leds")
+    nt = _unit(led_normals, len(a), "led_normals")
+    nr = _unit(receiver_normals, len(p), "receiver_normals")
+    m = np.broadcast_to(np.asarray(order, dtype=np.float64), (len(a),))
+    if np.any(~(m >= 0)):
+        raise ValueError(f"the Lambertian order must be non-negative, got {order}")
+    v = p[:, None, :] - a[None]                                   # LED -> receiver
+    d = np.sqrt(np.sum(v * v, axis=2))
+    with np.errstate(invalid="ignore", divide="ignore"):
+        cos_phi = np.einsum("nad,ad->na", v, nt) / d
+        cos_psi = -np.einsum("nad,nd->na", v, nr) / d
+    seen = (d > 0) & (cos_phi > 0) & (cos_psi > 0) & (cos_psi >= np.cos(float(fov)) - 1e-15)
+    cp, cs = np.where(seen, cos_phi, 1.0), np.where(seen, cos_psi, 0.0)
+    dd = np.where(seen, d, 1.0)
+    H = (m + 1.0) * float(area) / (2.0 * np.pi * dd * dd) * cp ** m * float(filter_gain) * float(concentrator_gain) * cs
+    return np.where(seen, H, 0.0)
 
 
-@SIGNALS.register_module()
-class VLCSignal(BaseSignal):
-    """VLC signal for indoor localization.
+def received_power(positions, leds, tx_power=1.0, **channel) -> np.ndarray:
+    """Received optical power ``P_t H`` ``(N, A)`` in watts; ``tx_power`` scalar or ``(A,)``;
+    ``channel`` = the keyword arguments of ``channel_gain``."""
+    return np.asarray(tx_power, dtype=np.float64) * channel_gain(positions, leds, **channel)
 
-    Represents optical signals from LED transmitters for visible light
-    positioning (VLP) systems.
 
-    Args:
-        led_ids: List of LED transmitter identifiers.
-        received_power: Array of received optical power values.
-        led_positions: Dictionary mapping LED IDs to (x, y, z) positions.
-        phase_difference: Phase difference measurements (optional).
-        aoa_measurements: Angle-of-Arrival measurements (optional).
-        leds: List of LEDTransmitter objects (alternative to arrays).
-        timestamps: Timestamps for each measurement.
-        metadata: Signal metadata.
+def _vertical_constant(tx_power, order, area, filter_gain, concentrator_gain):
+    m = np.asarray(order, dtype=np.float64)
+    if np.any(~(m >= 0)) or not float(area) > 0:
+        raise ValueError("need order >= 0 and area > 0")
+    return m, np.asarray(tx_power, dtype=np.float64) * (m + 1.0) * float(area) * float(filter_gain) \
+        * float(concentrator_gain) / (2.0 * np.pi)
 
-    Example:
-        >>> # Received signal strength from 4 LEDs
-        >>> led_ids = ['LED1', 'LED2', 'LED3', 'LED4']
-        >>> received_power = np.array([0.8, 0.5, 0.3, 0.6])  # Normalized
-        >>> led_pos = {
-        ...     'LED1': (0.0, 0.0, 3.0),
-        ...     'LED2': (5.0, 0.0, 3.0),
-        ...     'LED3': (5.0, 5.0, 3.0),
-        ...     'LED4': (0.0, 5.0, 3.0),
-        ... }
-        >>> signal = VLCSignal(
-        ...     led_ids=led_ids,
-        ...     received_power=received_power,
-        ...     led_positions=led_pos
-        ... )
+
+def distance_to_power(distance, height, *, tx_power=1.0, order=1.0, area: float = 1e-4, filter_gain: float = 1.0,
+                      concentrator_gain: float = 1.0) -> np.ndarray:
+    """``P_r = C h^(m+1) / d^(m+3)`` for an LED facing down ``height`` metres above a receiver
+    facing up, at 3-D ``distance`` ``d >= h`` (inside the field of view; the FOV cut-off is
+    the caller's concern)."""
+    m, C = _vertical_constant(tx_power, order, area, filter_gain, concentrator_gain)
+    d = np.asarray(distance, dtype=np.float64)
+    h = np.asarray(height, dtype=np.float64)
+    return C * h ** (m + 1.0) / d ** (m + 3.0)
+
+
+def power_to_distance(power, height, *, tx_power=1.0, order=1.0, area: float = 1e-4, filter_gain: float = 1.0,
+                      concentrator_gain: float = 1.0, horizontal: bool = False) -> np.ndarray:
+    """Distance from received power for an LED facing down ``height`` metres above a receiver
+    facing up: ``d = (C h^(m+1) / P_r)^(1/(m+3))``, ``C = P_t (m+1) A Ts g / (2 pi)``.
+
+    ``horizontal=True`` returns ``sqrt(d^2 - h^2)`` instead (0 when noise pushes ``d`` below
+    ``h``), the radius used by 2-D trilateration with a known receiver height. ``power`` in
+    watts, broadcast against ``height``, ``tx_power`` and ``order`` (e.g. ``(N, A)`` powers
+    with ``(A,)`` heights); ``power <= 0`` gives inf, NaN stays NaN. Tilting the receiver or
+    the LED breaks the ``cos phi = cos psi = h / d`` identity this inversion relies on;
+    ``methods.vlc.LambertianLocalizer`` fits the full model instead.
+
+    References
+        W. Zhang, M. I. S. Chowdhury, M. Kavehrad, "Asynchronous indoor positioning system based on
+        visible light communications", Optical Engineering 53(4):045105, 2014.
+        https://doi.org/10.1117/1.OE.53.4.045105
     """
+    m, C = _vertical_constant(tx_power, order, area, filter_gain, concentrator_gain)
+    P = np.asarray(power, dtype=np.float64)
+    h = np.asarray(height, dtype=np.float64)
+    if np.any(h <= 0):
+        raise ValueError("the LED must be above the receiver (height > 0)")
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d = np.where(P > 0, (C * h ** (m + 1.0) / np.where(P > 0, P, 1.0)) ** (1.0 / (m + 3.0)),
+                     np.where(np.isnan(P), np.nan, np.inf))
+    if horizontal:
+        with np.errstate(invalid="ignore"):
+            return np.sqrt(np.maximum(d * d - h * h, 0.0))
+    return d
 
-    # Typical range for normalized received power
-    MIN_POWER = 0.0
-    MAX_POWER = 1.0
 
-    def __init__(
-        self,
-        led_ids: Optional[List[str]] = None,
-        received_power: Optional[np.ndarray] = None,
-        led_positions: Optional[Dict[str, Tuple[float, float, float]]] = None,
-        phase_difference: Optional[np.ndarray] = None,
-        aoa_measurements: Optional[np.ndarray] = None,
-        leds: Optional[List[LEDTransmitter]] = None,
-        timestamps: Optional[np.ndarray] = None,
-        metadata: Optional[SignalMetadata] = None,
-        **kwargs
-    ):
-        # Store LED information
-        self.led_positions = led_positions or {}
-        self.timestamps = timestamps
-        self.phase_difference = phase_difference
-        self.aoa_measurements = aoa_measurements
+def noise_variance(power, *, responsivity: float = 0.54, bandwidth: float = 100e6,
+                   background_current: float = 5100e-6, area: float = 1e-4, temperature: float = 295.0,
+                   open_loop_gain: float = 10.0, capacitance_per_area: float = 1.12e-6,
+                   channel_noise_factor: float = 1.5, transconductance: float = 30e-3,
+                   noise_bandwidth_factors=(0.562, 0.0868)) -> np.ndarray:
+    """Receiver noise variance (A^2) at received optical ``power`` (W): shot plus thermal noise.
 
-        # Initialize from either arrays or LED list
-        if leds is not None:
-            self.leds = leds
-            self.led_ids = [led.led_id for led in leds]
-            self.received_power = np.array(
-                [led.received_power for led in leds],
-                dtype=np.float32
-            )
-            if led_positions is None and any(led.position for led in leds):
-                self.led_positions = {
-                    led.led_id: led.position
-                    for led in leds if led.position
-                }
-        elif led_ids is not None and received_power is not None:
-            self.led_ids = led_ids
-            self.received_power = np.array(received_power, dtype=np.float32)
-            self.leds = [
-                LEDTransmitter(
-                    led_id=led_id,
-                    received_power=power,
-                    position=self.led_positions.get(led_id)
-                )
-                for led_id, power in zip(led_ids, received_power)
-            ]
-        else:
-            self.led_ids = []
-            self.received_power = np.array([], dtype=np.float32)
-            self.leds = []
+    Komine & Nakagawa (2004) for a PIN photodiode with a FET preamplifier::
 
-        # Pass data to parent class
-        super().__init__(self.received_power, metadata)
+        shot    = 2 q R P B + 2 q I_bg I2 B
+        thermal = 8 pi k T eta A I2 B^2 / G + 16 pi^2 k T Gamma eta^2 A^2 I3 B^3 / g_m
 
-    @property
-    def signal_type(self) -> str:
-        """Return the signal type identifier."""
-        return 'vlc'
+    (``R`` responsivity A/W, ``B`` noise bandwidth Hz, ``I_bg`` background photocurrent A,
+    ``eta`` capacitance per area F/m^2, ``G`` open-loop voltage gain, ``Gamma`` FET channel
+    noise factor, ``g_m`` FET transconductance S, ``I2``/``I3`` noise-bandwidth factors).
+    The photocurrent is ``R P``, so a reading of optical power has standard deviation
+    ``sqrt(noise_variance(P)) / R`` watts. The defaults are the receiver parameters usually
+    quoted from Komine & Nakagawa's Table I (1 cm^2 detector, 100 MHz bandwidth,
+    5100 uA background current from direct sunlight, 112 pF/cm^2); indoor ambient light
+    gives a much smaller background current. Positioning receivers average over many
+    samples, which lowers the effective bandwidth ``B``.
 
-    @property
-    def feature_dim(self) -> int:
-        """Return the feature dimension."""
-        dim = len(self.received_power)
+    References
+        T. Komine, M. Nakagawa, "Fundamental analysis for visible-light communication system using
+        LED lights", IEEE Transactions on Consumer Electronics 50(1):100-107, 2004.
+        https://doi.org/10.1109/TCE.2004.1277847
+    """
+    P = np.maximum(np.asarray(power, dtype=np.float64), 0.0)
+    q, k = ELEMENTARY_CHARGE, BOLTZMANN
+    B, T, eta = float(bandwidth), float(temperature), float(capacitance_per_area)
+    i2, i3 = (float(v) for v in noise_bandwidth_factors)
+    shot = 2.0 * q * float(responsivity) * P * B + 2.0 * q * float(background_current) * i2 * B
+    thermal = (8.0 * np.pi * k * T * eta * float(area) * i2 * B ** 2 / float(open_loop_gain)
+               + 16.0 * np.pi ** 2 * k * T * float(channel_noise_factor) * eta ** 2 * float(area) ** 2 * i3 * B ** 3
+               / float(transconductance))
+    return shot + thermal
 
-        # Add phase difference and AOA if available
-        if self.phase_difference is not None:
-            dim += len(self.phase_difference)
-        if self.aoa_measurements is not None:
-            dim += len(self.aoa_measurements)
 
-        return dim
-
-    @property
-    def num_leds(self) -> int:
-        """Return the number of LED transmitters."""
-        return len(self.led_ids)
-
-    def estimate_distance(
-        self,
-        led_id: str,
-        lambertian_order: int = 1
-    ) -> Optional[float]:
-        """Estimate distance to LED based on received power using simplified Lambertian model.
-
-        Args:
-            led_id: LED transmitter identifier.
-            lambertian_order: Lambertian order (1 for Lambertian, higher for directional).
-
-        Returns:
-            Estimated distance in meters, or None if LED not found.
-
-        Note:
-            This is a simplified model. Real VLP systems require calibration.
-        """
-        try:
-            idx = self.led_ids.index(led_id)
-        except ValueError:
-            return None
-
-        power = self.received_power[idx]
-
-        # Simplified inverse-square law with Lambertian model
-        # P_r = P_t * (m+1) * A / (2π * d²) * cos^m(φ) * cos(ψ)
-        # Assuming normal incidence: φ = ψ = 0, cos(0) = 1
-        # P_r ∝ 1/d²  =>  d = sqrt(k / P_r)
-
-        # Use empirical constant (requires calibration in practice)
-        k = 1.0  # Calibration constant
-        if power > 0:
-            distance = np.sqrt(k / power)
-            return float(distance)
-
-        return None
-
-    def to_tensor(self, device: str = 'cpu') -> torch.Tensor:
-        """Convert signal to PyTorch tensor.
-
-        Args:
-            device: Device to place tensor on ('cpu' or 'cuda').
-
-        Returns:
-            Received power measurements as tensor.
-        """
-        features = [self.received_power]
-
-        if self.phase_difference is not None:
-            features.append(self.phase_difference)
-
-        if self.aoa_measurements is not None:
-            features.append(self.aoa_measurements)
-
-        # Concatenate all features
-        data = np.concatenate(features)
-        return torch.from_numpy(data.astype(np.float32)).to(device)
-
-    def to_numpy(self) -> np.ndarray:
-        """Convert signal to NumPy array.
-
-        Returns:
-            Received power measurements as NumPy array.
-        """
-        features = [self.received_power]
-
-        if self.phase_difference is not None:
-            features.append(self.phase_difference)
-
-        if self.aoa_measurements is not None:
-            features.append(self.aoa_measurements)
-
-        return np.concatenate(features).astype(np.float32)
-
-    def normalize(self, method: str = 'minmax') -> 'VLCSignal':
-        """Normalize received power measurements.
-
-        Args:
-            method: Normalization method ('minmax', 'standard').
-
-        Returns:
-            New VLCSignal with normalized power values.
-        """
-        data = self.received_power
-
-        if method == 'minmax':
-            # Normalize to [0, 1]
-            data_min = data.min()
-            data_max = data.max()
-            if data_max > data_min:
-                normalized = (data - data_min) / (data_max - data_min)
-            else:
-                normalized = data
-
-        elif method == 'standard':
-            # Z-score normalization
-            mean = data.mean()
-            std = data.std()
-            if std > 0:
-                normalized = (data - mean) / std
-            else:
-                normalized = data
-
-        else:
-            raise ValueError(f"Unknown normalization method: {method}")
-
-        return VLCSignal(
-            led_ids=self.led_ids,
-            received_power=normalized,
-            led_positions=self.led_positions,
-            phase_difference=self.phase_difference,
-            aoa_measurements=self.aoa_measurements,
-            timestamps=self.timestamps,
-            metadata=self.metadata
-        )
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> 'VLCSignal':
-        """Create VLCSignal from dictionary.
-
-        Args:
-            d: Dictionary containing signal data.
-
-        Returns:
-            VLCSignal instance.
-        """
-        led_ids = d.get('led_ids')
-        received_power = d.get('received_power')
-        led_positions = d.get('led_positions')
-
-        if received_power is not None and isinstance(received_power, list):
-            received_power = np.array(received_power, dtype=np.float32)
-
-        phase_diff = d.get('phase_difference')
-        if phase_diff is not None and isinstance(phase_diff, list):
-            phase_diff = np.array(phase_diff, dtype=np.float32)
-
-        aoa = d.get('aoa_measurements')
-        if aoa is not None and isinstance(aoa, list):
-            aoa = np.array(aoa, dtype=np.float32)
-
-        timestamps = d.get('timestamps')
-        if timestamps is not None and isinstance(timestamps, list):
-            timestamps = np.array(timestamps, dtype=np.float32)
-
-        return cls(
-            led_ids=led_ids,
-            received_power=received_power,
-            led_positions=led_positions,
-            phase_difference=phase_diff,
-            aoa_measurements=aoa,
-            timestamps=timestamps
-        )
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert VLCSignal to dictionary.
-
-        Returns:
-            Dictionary representation of signal.
-        """
-        result = {
-            'signal_type': self.signal_type,
-            'led_ids': self.led_ids,
-            'received_power': self.received_power.tolist(),
-            'num_leds': self.num_leds
-        }
-
-        if self.led_positions:
-            result['led_positions'] = self.led_positions
-
-        if self.phase_difference is not None:
-            result['phase_difference'] = self.phase_difference.tolist()
-
-        if self.aoa_measurements is not None:
-            result['aoa_measurements'] = self.aoa_measurements.tolist()
-
-        if self.timestamps is not None:
-            result['timestamps'] = self.timestamps.tolist()
-
-        return result
-
-    def __repr__(self) -> str:
-        """String representation."""
-        return (
-            f"VLCSignal(num_leds={self.num_leds}, "
-            f"power_range=[{self.received_power.min():.2f}, {self.received_power.max():.2f}])"
-        )
+__all__ = ["BOLTZMANN", "ELEMENTARY_CHARGE", "channel_gain", "concentrator_gain", "distance_to_power",
+           "half_power_angle", "lambertian_order", "noise_variance", "power_to_distance", "received_power"]

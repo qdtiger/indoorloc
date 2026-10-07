@@ -1,0 +1,2493 @@
+{
+ "format": "indoorloc-benchmark-matrix",
+ "format_version": 1,
+ "dataset": "ujiindoorloc",
+ "updated": "2026-09-29T01:00:07+00:00",
+ "harness": {
+  "runner": "benchmarks/run.py",
+  "hardware": {
+   "cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+   "logical_cpus": 32,
+   "memory_gb": 39.2,
+   "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "python": "3.14.4"
+  },
+  "cgroup": {
+   "memory_high_mb": 4096.0,
+   "memory_max_mb": 6144.0,
+   "swap_max_mb": 4096.0
+  },
+  "thread_env": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8",
+   "PYTHONHASHSEED": "0"
+  },
+  "timeout_s": 1800,
+  "max_rss_mb": 2500,
+  "code": {
+   "frozen": true,
+   "taken": "2026-09-29T01:00:05+00:00",
+   "from": "/mnt/e/code/indoorloc",
+   "git": {
+    "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+    "branch": "refactor/five-layer-architecture",
+    "dirty": true,
+    "changed_files_under_indoorloc": 138
+   },
+   "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0"
+  },
+  "code_history": [
+   {
+    "taken": "2026-09-28T10:04:34+00:00",
+    "from": "/mnt/e/code/indoorloc",
+    "git": {
+     "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+     "branch": "refactor/five-layer-architecture",
+     "dirty": true,
+     "changed_files_under_indoorloc": 138
+    },
+    "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+   }
+  ]
+ },
+ "environment": {
+  "indoorloc": "0.2.0.dev0",
+  "python": "3.14.4",
+  "implementation": "CPython",
+  "numpy": "2.4.5",
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "cpu_count": 32,
+  "blas": {
+   "blas": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   }
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": "8",
+   "OPENBLAS_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "packages": {
+   "pandas": "3.0.3",
+   "scipy": "1.17.1",
+   "sklearn": "1.8.0",
+   "torch": "2.11.0+cu128"
+  }
+ },
+ "source_sha256": [
+  "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+  "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+ ],
+ "tables": [
+  {
+   "id": "official",
+   "title": {
+    "en": "UJIIndoorLoc, official split (19,937 train / 1,111 validation scans)",
+    "zh": "UJIIndoorLoc，官方划分（训练 19,937 / 验证 1,111 条）"
+   },
+   "runner": "cli",
+   "protocol_spec": "official",
+   "options": {},
+   "dataset": {
+    "name": "ujiindoorloc",
+    "class": "indoorloc.datasets.ujiindoorloc:UJIIndoorLoc",
+    "options": {},
+    "splits": [
+     "train",
+     "test"
+    ],
+    "n_samples": {
+     "train": 19937,
+     "test": 1111
+    },
+    "n_pooled": 21048,
+    "sha256": {
+     "train": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168",
+     "test": "5f90c536648cd657b2c516d20c4e0968d4003279ea6bd5d5d5322d3f1e8905c0"
+    },
+    "modality": "wifi_rssi",
+    "crs": "EPSG:3857",
+    "pos_units": "m (Web Mercator, not ground metres)",
+    "citation": "Torres-Sospedra et al., UJIIndoorLoc, IPIN 2014",
+    "doi": "10.24432/C5MS59",
+    "license": "CC BY 4.0"
+   },
+   "protocol": {
+    "name": "official",
+    "summary": "the dataset's own train/test files (the setting of most published numbers)",
+    "folds": [
+     {
+      "name": "official",
+      "n_train": 19937,
+      "n_test": 1111,
+      "train_sha256": "65f83485f7d9017139f05109e179714da48ed1cef66712e649d6582bc9ffbf4e",
+      "test_sha256": "a8d5852e51e14c0bc1017bf223a44517d1652a2f0220574ebc4cf04a8832f323",
+      "n_unused": 0
+     }
+    ]
+   },
+   "units": "m (Web Mercator, not ground metres)",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "model-based: the dataset does not publish the access-point positions",
+     "zh": "基于模型的方法：数据集未公开 AP 位置"
+    }
+   ],
+   "notes": [
+    {
+     "en": "Errors are in EPSG:3857 (Web Mercator) metres, the dataset's own coordinates, in which UJIIndoorLoc results are usually reported; multiply by meta['ground_scale'] = 0.7661 (cos 39.99 deg) for ground metres (e.g. WKNN 8.794 -> 6.737 m). The IPIN score adds 15 m per floor and 50 m for a wrong building (75th percentile).",
+     "zh": "误差单位为 EPSG:3857（Web Mercator）米，即数据集自身的坐标，UJIIndoorLoc 的结果通常以此报告；乘以 meta['ground_scale'] = 0.7661（cos 39.99°）得到地面米（例如 WKNN 8.794 → 6.737 m）。IPIN 分数：每错一层加 15 m、楼栋错加 50 m 后的第 75 百分位。"
+    }
+   ],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.601,
+     "cpu_time_s": 1.2,
+     "peak_rss_mb": 237.0,
+     "load_avg_1min": [
+      6.14,
+      6.14
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:19+00:00",
+     "fit_s": 0.021,
+     "predict_s": 0.0009,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 143.3299938221838,
+      "median_error": 166.96848859391284,
+      "p75_error": 195.12640770199403,
+      "p90_error": 218.86020112527098,
+      "p95_error": 226.3757673230109,
+      "rmse": 156.68218801934745,
+      "max_error": 239.53881576444692,
+      "floor_accuracy": 15.48154815481548,
+      "building_accuracy": 24.122412241224122,
+      "n_failed": 0,
+      "ipin_score": 267.0701061897653,
+      "mean_penalized_error": 187.2633871615177,
+      "p75_penalized_error": 250.0950987241785,
+      "mean_error_ci95": [
+       139.69909772448102,
+       146.76360765642536
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 0.0,
+       "<=10": 0.18001800180018002,
+       "<=20": 0.54005400540054
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.021,
+       "predict_s": 0.0009,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 143.3299938221838,
+        "median_error": 166.96848859391284,
+        "p75_error": 195.12640770199403,
+        "p90_error": 218.86020112527098,
+        "floor_accuracy": 15.48154815481548,
+        "building_accuracy": 24.122412241224122,
+        "n_failed": 0,
+        "ipin_score": 267.0701061897653
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:35+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.002,
+     "cpu_time_s": 3.67,
+     "peak_rss_mb": 348.8,
+     "load_avg_1min": [
+      6.14,
+      6.14
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:20+00:00",
+     "fit_s": 0.0476,
+     "predict_s": 0.2728,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 9.750117701693608,
+      "median_error": 5.954526475142764,
+      "p75_error": 11.812452870085028,
+      "p90_error": 20.60992952600591,
+      "p95_error": 27.574675738982833,
+      "rmse": 20.96210755408064,
+      "max_error": 368.7310626102081,
+      "floor_accuracy": 90.00900090009,
+      "building_accuracy": 99.54995499549955,
+      "n_failed": 0,
+      "ipin_score": 15.03181994032682,
+      "mean_penalized_error": 10.435986288552295,
+      "p75_penalized_error": 12.788790554743805,
+      "mean_error_ci95": [
+       8.728550588366561,
+       10.92538197883374
+      ],
+      "cdf": {
+       "<=1": 15.751575157515752,
+       "<=2": 26.01260126012601,
+       "<=5": 44.1044104410441,
+       "<=10": 69.03690369036903,
+       "<=20": 89.01890189018901
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0476,
+       "predict_s": 0.2728,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 9.750117701693608,
+        "median_error": 5.954526475142764,
+        "p75_error": 11.812452870085028,
+        "p90_error": 20.60992952600591,
+        "floor_accuracy": 90.00900090009,
+        "building_accuracy": 99.54995499549955,
+        "n_failed": 0,
+        "ipin_score": 15.03181994032682
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:36+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method knn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 3.39,
+     "peak_rss_mb": 348.0,
+     "load_avg_1min": [
+      6.14,
+      5.81
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:21+00:00",
+     "fit_s": 0.0369,
+     "predict_s": 0.2416,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 8.808422949721733,
+      "median_error": 5.357844658023697,
+      "p75_error": 10.353950469738116,
+      "p90_error": 19.119515750160613,
+      "p95_error": 28.16159898609,
+      "rmse": 15.889674675297341,
+      "max_error": 206.48923711732184,
+      "floor_accuracy": 90.27902790279028,
+      "building_accuracy": 99.72997299729973,
+      "n_failed": 0,
+      "ipin_score": 12.222622073143249,
+      "mean_penalized_error": 9.397081815608322,
+      "p75_penalized_error": 11.269530692831701,
+      "mean_error_ci95": [
+       8.05622102256113,
+       9.652622733733825
+      ],
+      "cdf": {
+       "<=1": 9.72097209720972,
+       "<=2": 20.792079207920793,
+       "<=5": 47.61476147614761,
+       "<=10": 73.71737173717372,
+       "<=20": 90.9090909090909
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0369,
+       "predict_s": 0.2416,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 8.808422949721733,
+        "median_error": 5.357844658023697,
+        "p75_error": 10.353950469738116,
+        "p90_error": 19.119515750160613,
+        "floor_accuracy": 90.27902790279028,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0,
+        "ipin_score": 12.222622073143249
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:37+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 3.41,
+     "peak_rss_mb": 349.4,
+     "load_avg_1min": [
+      5.81,
+      5.81
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:22+00:00",
+     "fit_s": 0.0352,
+     "predict_s": 0.2388,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 8.793663569441243,
+      "median_error": 5.35463687920703,
+      "p75_error": 10.329045060926006,
+      "p90_error": 19.153668128097966,
+      "p95_error": 28.15533530229436,
+      "rmse": 15.856093844238329,
+      "max_error": 206.48923711795786,
+      "floor_accuracy": 90.45904590459047,
+      "building_accuracy": 99.72997299729973,
+      "n_failed": 0,
+      "ipin_score": 12.201095592941137,
+      "mean_penalized_error": 9.371521355219823,
+      "p75_penalized_error": 11.1971883095006,
+      "mean_error_ci95": [
+       8.046480483086189,
+       9.638174460440716
+      ],
+      "cdf": {
+       "<=1": 9.630963096309632,
+       "<=2": 20.882088208820882,
+       "<=5": 47.61476147614761,
+       "<=10": 73.62736273627362,
+       "<=20": 90.81908190819082
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0352,
+       "predict_s": 0.2388,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 8.793663569441243,
+        "median_error": 5.35463687920703,
+        "p75_error": 10.329045060926006,
+        "p90_error": 19.153668128097966,
+        "floor_accuracy": 90.45904590459047,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0,
+        "ipin_score": 12.201095592941137
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:38+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 8.01,
+     "cpu_time_s": 8.5,
+     "peak_rss_mb": 588.8,
+     "load_avg_1min": [
+      5.81,
+      5.66
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:30+00:00",
+     "fit_s": 0.3492,
+     "predict_s": 6.9795,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 9.725632028521986,
+      "median_error": 5.998146780965388,
+      "p75_error": 12.470057060180093,
+      "p90_error": 21.658607794555078,
+      "p95_error": 30.55414077499247,
+      "rmse": 15.98680869328984,
+      "max_error": 176.34173043183856,
+      "floor_accuracy": 87.21872187218722,
+      "building_accuracy": 99.9099909990999,
+      "n_failed": 0,
+      "ipin_score": 16.767546395662208,
+      "mean_penalized_error": 10.343093774696602,
+      "p75_penalized_error": 13.696906485240929,
+      "mean_error_ci95": [
+       9.015214675118347,
+       10.492219213955938
+      ],
+      "cdf": {
+       "<=1": 13.321332133213321,
+       "<=2": 24.752475247524753,
+       "<=5": 44.1044104410441,
+       "<=10": 67.95679567956796,
+       "<=20": 87.12871287128714
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.3492,
+       "predict_s": 6.9795,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 9.725632028521986,
+        "median_error": 5.998146780965388,
+        "p75_error": 12.470057060180093,
+        "p90_error": 21.658607794555078,
+        "floor_accuracy": 87.21872187218722,
+        "building_accuracy": 99.9099909990999,
+        "n_failed": 0,
+        "ipin_score": 16.767546395662208
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:45+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 2.403,
+     "cpu_time_s": 10.42,
+     "peak_rss_mb": 493.5,
+     "load_avg_1min": [
+      5.66,
+      5.29
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:32+00:00",
+     "fit_s": 1.6466,
+     "predict_s": 0.0378,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 10.695328872918749,
+      "median_error": 7.981935956539407,
+      "p75_error": 14.210594786034173,
+      "p90_error": 22.295691669511857,
+      "p95_error": 28.747443451236933,
+      "rmse": 14.355278317286102,
+      "max_error": 93.35930121268883,
+      "floor_accuracy": 90.999099909991,
+      "building_accuracy": 99.9099909990999,
+      "n_failed": 0,
+      "ipin_score": 16.025340980385693,
+      "mean_penalized_error": 11.13637297732919,
+      "p75_penalized_error": 14.871506116595999,
+      "mean_error_ci95": [
+       10.149528319637408,
+       11.237319336743264
+      ],
+      "cdf": {
+       "<=1": 3.0603060306030603,
+       "<=2": 8.46084608460846,
+       "<=5": 29.702970297029704,
+       "<=10": 59.945994599459944,
+       "<=20": 87.30873087308731
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 1.6466,
+       "predict_s": 0.0378,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 10.695328872918749,
+        "median_error": 7.981935956539407,
+        "p75_error": 14.210594786034173,
+        "p90_error": 22.295691669511857,
+        "floor_accuracy": 90.999099909991,
+        "building_accuracy": 99.9099909990999,
+        "n_failed": 0,
+        "ipin_score": 16.025340980385693
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:47+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 2.804,
+     "cpu_time_s": 12.43,
+     "peak_rss_mb": 589.5,
+     "load_avg_1min": [
+      5.29,
+      5.29
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:35+00:00",
+     "fit_s": 1.8922,
+     "predict_s": 0.0437,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 10.280817423367987,
+      "median_error": 7.627464783944667,
+      "p75_error": 13.842301691969876,
+      "p90_error": 21.48586914587854,
+      "p95_error": 27.15946872147243,
+      "rmse": 13.6510185509461,
+      "max_error": 78.49321719215399,
+      "floor_accuracy": 90.63906390639063,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 15.504282758663802,
+      "mean_penalized_error": 10.687658107436393,
+      "p75_penalized_error": 14.24147188260783,
+      "mean_error_ci95": [
+       9.76506627970676,
+       10.782225673038576
+      ],
+      "cdf": {
+       "<=1": 2.34023402340234,
+       "<=2": 8.28082808280828,
+       "<=5": 30.243024302430243,
+       "<=10": 63.0963096309631,
+       "<=20": 87.21872187218722
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 1.8922,
+       "predict_s": 0.0437,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 10.280817423367987,
+        "median_error": 7.627464783944667,
+        "p75_error": 13.842301691969876,
+        "p90_error": 21.48586914587854,
+        "floor_accuracy": 90.63906390639063,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 15.504282758663802
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:04:50+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 15.819,
+     "cpu_time_s": 19.02,
+     "peak_rss_mb": 975.8,
+     "load_avg_1min": [
+      5.29,
+      4.15
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:14:50+00:00",
+     "fit_s": 8.3646,
+     "predict_s": 6.5955,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 8.331469832637673,
+      "median_error": 5.45523685952779,
+      "p75_error": 10.78430430432892,
+      "p90_error": 18.834009934472146,
+      "p95_error": 24.487053125080394,
+      "rmse": 13.110858961080707,
+      "max_error": 176.34173043183856,
+      "floor_accuracy": 90.45904590459047,
+      "building_accuracy": 99.9099909990999,
+      "n_failed": 0,
+      "ipin_score": 12.645268336327156,
+      "mean_penalized_error": 8.826519337588168,
+      "p75_penalized_error": 11.669590899640202,
+      "mean_error_ci95": [
+       7.738982723957664,
+       8.966744471600627
+      ],
+      "cdf": {
+       "<=1": 9.990999099909992,
+       "<=2": 20.97209720972097,
+       "<=5": 47.07470747074707,
+       "<=10": 72.997299729973,
+       "<=20": 91.26912691269126
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 8.3646,
+       "predict_s": 6.5955,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 8.331469832637673,
+        "median_error": 5.45523685952779,
+        "p75_error": 10.78430430432892,
+        "p90_error": 18.834009934472146,
+        "floor_accuracy": 90.45904590459047,
+        "building_accuracy": 99.9099909990999,
+        "n_failed": 0,
+        "ipin_score": 12.645268336327156
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:05:06+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method mlp --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 19.023,
+     "cpu_time_s": 137.06,
+     "peak_rss_mb": 919.7,
+     "load_avg_1min": [
+      4.15,
+      5.3
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:15:09+00:00",
+     "fit_s": 17.8907,
+     "predict_s": 0.0037,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 11.293737496171481,
+      "median_error": 8.946481209242647,
+      "p75_error": 13.88630517826899,
+      "p90_error": 19.778900871281273,
+      "p95_error": 28.292551093456858,
+      "rmse": 14.770809833435738,
+      "max_error": 93.57945805021947,
+      "floor_accuracy": 93.6993699369937,
+      "building_accuracy": 99.45994599459947,
+      "n_failed": 0,
+      "ipin_score": 14.549453237122844,
+      "mean_penalized_error": 11.85179330175204,
+      "p75_penalized_error": 14.04357542969857,
+      "mean_error_ci95": [
+       10.77075695094524,
+       11.852539933145803
+      ],
+      "cdf": {
+       "<=1": 0.8100810081008101,
+       "<=2": 3.3303330333033303,
+       "<=5": 19.621962196219624,
+       "<=10": 56.165616561656165,
+       "<=20": 90.1890189018902
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 17.8907,
+       "predict_s": 0.0037,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 11.293737496171481,
+        "median_error": 8.946481209242647,
+        "p75_error": 13.88630517826899,
+        "p90_error": 19.778900871281273,
+        "floor_accuracy": 93.6993699369937,
+        "building_accuracy": 99.45994599459947,
+        "n_failed": 0,
+        "ipin_score": 14.549453237122844
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:05:25+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method svm --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 238.294,
+     "cpu_time_s": 239.53,
+     "peak_rss_mb": 955.9,
+     "load_avg_1min": [
+      5.3,
+      1.4
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:08+00:00",
+     "fit_s": 229.8041,
+     "predict_s": 7.7865,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 19.70358284620561,
+      "median_error": 12.894695176213883,
+      "p75_error": 26.031774355654523,
+      "p90_error": 45.68110491960215,
+      "p95_error": 60.59858363251966,
+      "rmse": 27.790885035561246,
+      "max_error": 129.31490075661029,
+      "floor_accuracy": 92.34923492349235,
+      "building_accuracy": 99.81998199819982,
+      "n_failed": 0,
+      "ipin_score": 28.92272335128377,
+      "mean_penalized_error": 20.128425330454036,
+      "p75_penalized_error": 26.31302827587371,
+      "mean_error_ci95": [
+       18.58310801369947,
+       20.93764908495491
+      ],
+      "cdf": {
+       "<=1": 1.3501350135013501,
+       "<=2": 3.7803780378037803,
+       "<=5": 16.381638163816383,
+       "<=10": 39.333933393339336,
+       "<=20": 66.6066606660666
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 229.8041,
+       "predict_s": 7.7865,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 19.70358284620561,
+        "median_error": 12.894695176213883,
+        "p75_error": 26.031774355654523,
+        "p90_error": 45.68110491960215,
+        "floor_accuracy": 92.34923492349235,
+        "building_accuracy": 99.81998199819982,
+        "n_failed": 0,
+        "ipin_score": 28.92272335128377
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:25+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "hierarchical(position_model=gp_radiomap)",
+     "display": [
+      "GP radio map, per floor",
+      "GP 无线电地图（逐楼层）"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess fill --method 'hierarchical(position_model=gp_radiomap)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.802,
+     "cpu_time_s": 5.92,
+     "peak_rss_mb": 444.9,
+     "load_avg_1min": [
+      1.4,
+      1.4
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:10+00:00",
+     "fit_s": 0.6686,
+     "predict_s": 0.4096,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 10.403497566778274,
+      "median_error": 6.74959435895822,
+      "p75_error": 13.637835678078424,
+      "p90_error": 22.37602804121965,
+      "p95_error": 31.530194020064187,
+      "rmse": 18.230053378541058,
+      "max_error": 230.72959620199416,
+      "floor_accuracy": 90.1890189018902,
+      "building_accuracy": 99.72997299729973,
+      "n_failed": 0,
+      "ipin_score": 16.21802884930927,
+      "mean_penalized_error": 10.99935715273687,
+      "p75_penalized_error": 14.554402913521074,
+      "mean_error_ci95": [
+       9.634267352772454,
+       11.265496519396137
+      ],
+      "cdf": {
+       "<=1": 13.681368136813681,
+       "<=2": 24.032403240324033,
+       "<=5": 39.24392439243925,
+       "<=10": 64.35643564356435,
+       "<=20": 87.21872187218722
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.6686,
+       "predict_s": 0.4096,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 10.403497566778274,
+        "median_error": 6.74959435895822,
+        "p75_error": 13.637835678078424,
+        "p90_error": 22.37602804121965,
+        "floor_accuracy": 90.1890189018902,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0,
+        "ipin_score": 16.21802884930927
+       }
+      }
+     ],
+     "params": {
+      "position_model": "gp_radiomap"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.hierarchical:HierarchicalLocalizer",
+        "params": {
+         "building_model": "knn",
+         "floor_model": "knn",
+         "position_model": "gp_radiomap"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:29+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.002,
+     "cpu_time_s": 3.41,
+     "peak_rss_mb": 347.6,
+     "load_avg_1min": [
+      1.4,
+      1.93
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:11+00:00",
+     "fit_s": 0.0432,
+     "predict_s": 0.2346,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 9.849855765473912,
+      "median_error": 6.003236083777512,
+      "p75_error": 11.865107079415228,
+      "p90_error": 20.812977076478298,
+      "p95_error": 28.102373817190262,
+      "rmse": 21.04934862798013,
+      "max_error": 368.7310626102081,
+      "floor_accuracy": 89.73897389738974,
+      "building_accuracy": 99.54995499549955,
+      "n_failed": 0,
+      "ipin_score": 15.282241605053041,
+      "mean_penalized_error": 10.546525432440609,
+      "p75_penalized_error": 12.992094855481092,
+      "mean_error_ci95": [
+       8.817442247937288,
+       11.046784271117604
+      ],
+      "cdf": {
+       "<=1": 15.391539153915392,
+       "<=2": 25.742574257425744,
+       "<=5": 43.65436543654366,
+       "<=10": 68.94689468946895,
+       "<=20": 88.74887488748875
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0432,
+       "predict_s": 0.2346,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 9.849855765473912,
+        "median_error": 6.003236083777512,
+        "p75_error": 11.865107079415228,
+        "p90_error": 20.812977076478298,
+        "floor_accuracy": 89.73897389738974,
+        "building_accuracy": 99.54995499549955,
+        "n_failed": 0,
+        "ipin_score": 15.282241605053041
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:30+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess positive --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 3.3,
+     "peak_rss_mb": 347.8,
+     "load_avg_1min": [
+      1.93,
+      1.93
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:12+00:00",
+     "fit_s": 0.043,
+     "predict_s": 0.2205,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 8.85787230641235,
+      "median_error": 5.354636879304171,
+      "p75_error": 10.313497939543023,
+      "p90_error": 19.243915853270504,
+      "p95_error": 28.217833583650787,
+      "rmse": 15.906049525125352,
+      "max_error": 206.48923711795786,
+      "floor_accuracy": 90.0990099009901,
+      "building_accuracy": 99.72997299729973,
+      "n_failed": 0,
+      "ipin_score": 12.296793964631163,
+      "mean_penalized_error": 9.453731892370946,
+      "p75_penalized_error": 11.34467984387114,
+      "mean_error_ci95": [
+       8.107150681533993,
+       9.713186865958944
+      ],
+      "cdf": {
+       "<=1": 9.270927092709272,
+       "<=2": 20.61206120612061,
+       "<=5": 47.07470747074707,
+       "<=10": 73.8973897389739,
+       "<=20": 90.54905490549055
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.043,
+       "predict_s": 0.2205,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 8.85787230641235,
+        "median_error": 5.354636879304171,
+        "p75_error": 10.313497939543023,
+        "p90_error": 19.243915853270504,
+        "floor_accuracy": 90.0990099009901,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0,
+        "ipin_score": 12.296793964631163
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:31+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess exponential --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.002,
+     "cpu_time_s": 3.32,
+     "peak_rss_mb": 350.6,
+     "load_avg_1min": [
+      1.93,
+      1.93
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:13+00:00",
+     "fit_s": 0.1002,
+     "predict_s": 0.2252,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 7.988077119907982,
+      "median_error": 4.679983897142822,
+      "p75_error": 9.029382117451169,
+      "p90_error": 15.99675548383733,
+      "p95_error": 24.286529157721077,
+      "rmse": 16.400686955086957,
+      "max_error": 206.4892371179572,
+      "floor_accuracy": 92.43924392439244,
+      "building_accuracy": 99.54995499549955,
+      "n_failed": 0,
+      "ipin_score": 10.134754576422232,
+      "mean_penalized_error": 8.558734185614552,
+      "p75_penalized_error": 9.530620897298876,
+      "mean_error_ci95": [
+       7.191735778819394,
+       8.869254715500343
+      ],
+      "cdf": {
+       "<=1": 12.691269126912692,
+       "<=2": 25.29252925292529,
+       "<=5": 52.20522052205221,
+       "<=10": 77.49774977497749,
+       "<=20": 93.06930693069307
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.1002,
+       "predict_s": 0.2252,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 7.988077119907982,
+        "median_error": 4.679983897142822,
+        "p75_error": 9.029382117451169,
+        "p90_error": 15.99675548383733,
+        "floor_accuracy": 92.43924392439244,
+        "building_accuracy": 99.54995499549955,
+        "n_failed": 0,
+        "ipin_score": 10.134754576422232
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:31+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess powed --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 3.29,
+     "peak_rss_mb": 349.2,
+     "load_avg_1min": [
+      1.93,
+      1.93
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:19:14+00:00",
+     "fit_s": 0.1188,
+     "predict_s": 0.2215,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 8.250173452048633,
+      "median_error": 4.840456637080669,
+      "p75_error": 9.894686467124128,
+      "p90_error": 18.088849127147103,
+      "p95_error": 23.402692289557557,
+      "rmse": 15.777669750530618,
+      "max_error": 206.48923711732115,
+      "floor_accuracy": 93.51935193519351,
+      "building_accuracy": 99.72997299729973,
+      "n_failed": 0,
+      "ipin_score": 10.807957404570349,
+      "mean_penalized_error": 8.676816116315061,
+      "p75_penalized_error": 10.228715651491619,
+      "mean_error_ci95": [
+       7.519596438276568,
+       9.1008123730594
+      ],
+      "cdf": {
+       "<=1": 10.261026102610261,
+       "<=2": 25.022502250225024,
+       "<=5": 50.85508550855086,
+       "<=10": 75.15751575157516,
+       "<=20": 91.44914491449146
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.1188,
+       "predict_s": 0.2215,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 8.250173452048633,
+        "median_error": 4.840456637080669,
+        "p75_error": 9.894686467124128,
+        "p90_error": 18.088849127147103,
+        "floor_accuracy": 93.51935193519351,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0,
+        "ipin_score": 10.807957404570349
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:09:32+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 30,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ujiindoorloc --protocol official --preprocess none --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.202,
+     "cpu_time_s": 1.72,
+     "peak_rss_mb": 549.9,
+     "load_avg_1min": [
+      1.02,
+      1.02
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:06+00:00",
+     "fit_s": 0.3228,
+     "predict_s": 0.2282,
+     "pooled": {
+      "n": 1111,
+      "mean_error": 7.9937363250666,
+      "median_error": 4.743385521389908,
+      "p75_error": 10.181089368982104,
+      "p90_error": 18.155693365135217,
+      "p95_error": 25.44141946707594,
+      "rmse": 13.213625360998806,
+      "max_error": 89.88563138255834,
+      "floor_accuracy": 92.16921692169217,
+      "building_accuracy": 99.9099909990999,
+      "n_failed": 0,
+      "ipin_score": 11.408691692626554,
+      "mean_penalized_error": 8.405977549189013,
+      "p75_penalized_error": 10.746782748169371,
+      "mean_error_ci95": [
+       7.411165509779953,
+       8.616050188973913
+      ],
+      "cdf": {
+       "<=1": 17.191719171917192,
+       "<=2": 30.153015301530154,
+       "<=5": 51.215121512151214,
+       "<=10": 74.43744374437443,
+       "<=20": 91.44914491449146
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.3228,
+       "predict_s": 0.2282,
+       "metrics": {
+        "n": 1111,
+        "mean_error": 7.9937363250666,
+        "median_error": 4.743385521389908,
+        "p75_error": 10.181089368982104,
+        "p90_error": 18.155693365135217,
+        "floor_accuracy": 92.16921692169217,
+        "building_accuracy": 99.9099909990999,
+        "n_failed": 0,
+        "ipin_score": 11.408691692626554
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "84b4506f3fc59cf90fdb0a011c7884e39ee6ab2956d1ef8cac606398f73589cf",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  }
+ ],
+ "literature": {
+  "available": true,
+  "display_name": "UJIIndoorLoc",
+  "metrics": {
+   "mean_error": {
+    "definition": "mean 2-D Euclidean error, as reported by each paper; the dataset's own coordinates are EPSG:3857 (Web Mercator) metres, 0.766 ground metres each",
+    "unit": "m"
+   },
+   "floor_accuracy": {
+    "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+    "unit": "%"
+   },
+   "building_accuracy": {
+    "definition": "percentage of test samples whose building is estimated correctly",
+    "unit": "%"
+   },
+   "std_error": {
+    "definition": "standard deviation of the 2-D error, as reported",
+    "unit": "m"
+   },
+   "mean_penalized_error": {
+    "definition": "mean of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   },
+   "p25_penalized_error": {
+    "definition": "25th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   },
+   "median_penalized_error": {
+    "definition": "median of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   },
+   "p75_penalized_error": {
+    "definition": "75th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   },
+   "p95_penalized_error": {
+    "definition": "95th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   },
+   "max_penalized_error": {
+    "definition": "maximum of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+    "unit": "m"
+   }
+  },
+  "entries": [
+   {
+    "method": "GBDT + sample differences",
+    "values": {
+     "mean_error": 2.45,
+     "floor_accuracy": 99.14
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "X. Cao, Y. Zhuang, X. Yang, X. Sun, X. Wang",
+     "title": "A universal Wi-Fi fingerprint localization method based on machine learning and sample differences",
+     "venue": "Satellite Navigation 2:27",
+     "year": 2021,
+     "doi": "10.1186/s43020-021-00058-8",
+     "url": null
+    }
+   },
+   {
+    "method": "XGBoost + sample differences",
+    "values": {
+     "mean_error": 3.42,
+     "floor_accuracy": 99.4
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "X. Cao, Y. Zhuang, X. Yang, X. Sun, X. Wang",
+     "title": "A universal Wi-Fi fingerprint localization method based on machine learning and sample differences",
+     "venue": "Satellite Navigation 2:27",
+     "year": 2021,
+     "doi": "10.1186/s43020-021-00058-8",
+     "url": null
+    }
+   },
+   {
+    "method": "P-MIMO LSTM",
+    "values": {
+     "mean_error": 4.2,
+     "std_error": 3.2
+    },
+    "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+    "check": "verified",
+    "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+    "source": {
+     "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+     "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+     "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+     "year": 2019,
+     "doi": "10.1109/JIOT.2019.2940368",
+     "url": "https://arxiv.org/abs/1903.11703"
+    }
+   },
+   {
+    "method": "WKNN (k=3)",
+    "values": {
+     "mean_error": 7.3,
+     "floor_accuracy": 92.5
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "J. Torres-Sospedra, R. Montoliu, A. Martinez-Uso, J. P. Avariento, T. J. Arnau, M. Benedito-Bordonau, J. Huerta",
+     "title": "UJIIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems",
+     "venue": "2014 International Conference on Indoor Positioning and Indoor Navigation (IPIN), pp. 261-270",
+     "year": 2014,
+     "doi": "10.1109/IPIN.2014.7275492",
+     "url": null
+    }
+   },
+   {
+    "method": "MLNN (as re-implemented by Hoang et al.)",
+    "values": {
+     "mean_error": 7.5,
+     "std_error": 3.8
+    },
+    "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+    "check": "verified",
+    "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+    "source": {
+     "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+     "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+     "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+     "year": 2019,
+     "doi": "10.1109/JIOT.2019.2940368",
+     "url": "https://arxiv.org/abs/1903.11703"
+    }
+   },
+   {
+    "method": "DNN-WKNN hybrid",
+    "values": {
+     "mean_error": 7.82,
+     "floor_accuracy": 95.0
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "D. Mao, H. Lin, X. Lou",
+     "title": "Fingerprinting Indoor Positioning Based on Improved Sequential Deep Learning",
+     "venue": "Algorithms 18(1):17",
+     "year": 2025,
+     "doi": "10.3390/a18010017",
+     "url": null
+    }
+   },
+   {
+    "method": "k-NN (k=1), dataset baseline",
+    "values": {
+     "mean_error": 7.9,
+     "floor_accuracy": 91.6,
+     "building_accuracy": 99.2
+    },
+    "protocol": "official",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "J. Torres-Sospedra, R. Montoliu, A. Martinez-Uso, J. P. Avariento, T. J. Arnau, M. Benedito-Bordonau, J. Huerta",
+     "title": "UJIIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems",
+     "venue": "2014 International Conference on Indoor Positioning and Indoor Navigation (IPIN), pp. 261-270",
+     "year": 2014,
+     "doi": "10.1109/IPIN.2014.7275492",
+     "url": null
+    }
+   },
+   {
+    "method": "RADAR k-NN (as re-implemented by Hoang et al.)",
+    "values": {
+     "mean_error": 8.1,
+     "std_error": 4.9
+    },
+    "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+    "check": "verified",
+    "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+    "source": {
+     "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+     "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+     "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+     "year": 2019,
+     "doi": "10.1109/JIOT.2019.2940368",
+     "url": "https://arxiv.org/abs/1903.11703"
+    }
+   },
+   {
+    "method": "Scalable DNN (hierarchical)",
+    "values": {
+     "mean_error": 9.29,
+     "floor_accuracy": 91.27,
+     "building_accuracy": 99.82
+    },
+    "protocol": "official (inferred: the rates are multiples of 1/1111, the size of the validation file)",
+    "check": "corrected",
+    "location": "Table 3 (kappa=8, sigma=0.2, weighted centroid) and the text below it (arXiv:1712.01990)",
+    "source": {
+     "authors": "K. S. Kim, S. Lee, K. Huang",
+     "title": "A scalable deep neural network architecture for multi-building and multi-floor indoor localization based on Wi-Fi fingerprinting",
+     "venue": "Big Data Analytics 3:4",
+     "year": 2018,
+     "doi": "10.1186/s41044-018-0031-2",
+     "url": "https://arxiv.org/abs/1712.01990"
+    }
+   },
+   {
+    "method": "CNN (lightweight)",
+    "values": {
+     "mean_error": 9.5,
+     "floor_accuracy": 90.0,
+     "building_accuracy": 99.0
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "R. S. Sinha, S.-H. Hwang",
+     "title": "Comparison of CNN Applications for RSSI-Based Fingerprint Indoor Localization",
+     "venue": "Electronics 8(9):989",
+     "year": 2019,
+     "doi": "10.3390/electronics8090989",
+     "url": null
+    }
+   },
+   {
+    "method": "CNNLoc",
+    "values": {
+     "mean_error": 11.78,
+     "floor_accuracy": 91.35,
+     "building_accuracy": 99.91
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "X. Song, X. Fan, X. He, C. Xiang, Q. Ye, X. Huang, G. Fang, L. L. Chen, J. Qin, Z. Wang",
+     "title": "CNNLoc: Deep-Learning Based Indoor Localization with WiFi Fingerprinting",
+     "venue": "2019 IEEE SmartWorld/UIC/ATC/SCALCOM/IOP/SCI, pp. 589-595",
+     "year": 2019,
+     "doi": "10.1109/SmartWorld-UIC-ATC-SCALCOM-IOP-SCI.2019.00139",
+     "url": null
+    }
+   },
+   {
+    "method": "CCpos (CDAE-CNN)",
+    "values": {
+     "mean_error": 12.4,
+     "floor_accuracy": 95.3,
+     "building_accuracy": 99.6
+    },
+    "protocol": "unspecified",
+    "check": "verified",
+    "location": "Section 4.3 (text) and the abstract",
+    "source": {
+     "authors": "F. Qin, T. Zuo, X. Wang",
+     "title": "CCpos: WiFi Fingerprint Indoor Positioning System Based on CDAE-CNN",
+     "venue": "Sensors 21(4):1114",
+     "year": 2021,
+     "doi": "10.3390/s21041114",
+     "url": null
+    }
+   },
+   {
+    "method": "1-NN baseline (positive representation, Manhattan distance)",
+    "values": {
+     "mean_penalized_error": 8.46,
+     "p25_penalized_error": 3.39,
+     "median_penalized_error": 6.5,
+     "p75_penalized_error": 11.72,
+     "p95_penalized_error": 21.41,
+     "max_penalized_error": 73.3,
+     "building_accuracy": 100.0,
+     "floor_accuracy": 85.34
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 2",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   },
+   {
+    "method": "Ensemble of the competitors",
+    "values": {
+     "mean_penalized_error": 6.1,
+     "p25_penalized_error": 2.51,
+     "median_penalized_error": 4.56,
+     "p75_penalized_error": 8.24,
+     "p95_penalized_error": 15.41,
+     "max_penalized_error": 52.27,
+     "building_accuracy": 100.0,
+     "floor_accuracy": 96.43
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 3",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   },
+   {
+    "method": "HFTS",
+    "values": {
+     "mean_penalized_error": 8.49,
+     "p25_penalized_error": 3.69,
+     "median_penalized_error": 6.99,
+     "p75_penalized_error": 11.6,
+     "p95_penalized_error": 19.93,
+     "max_penalized_error": 40.7,
+     "building_accuracy": 100.0,
+     "floor_accuracy": 96.25
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 3",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   },
+   {
+    "method": "ICSL",
+    "values": {
+     "mean_penalized_error": 7.67,
+     "p25_penalized_error": 3.1,
+     "median_penalized_error": 5.88,
+     "p75_penalized_error": 10.87,
+     "p95_penalized_error": 19.68,
+     "max_penalized_error": 39.14,
+     "building_accuracy": 100.0,
+     "floor_accuracy": 86.93
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 3",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   },
+   {
+    "method": "MOSAIC",
+    "values": {
+     "mean_penalized_error": 11.64,
+     "p25_penalized_error": 3.26,
+     "median_penalized_error": 6.72,
+     "p75_penalized_error": 12.12,
+     "p95_penalized_error": 21.54,
+     "max_penalized_error": 313.33,
+     "building_accuracy": 98.65,
+     "floor_accuracy": 93.86
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 3",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   },
+   {
+    "method": "RTLS@UM",
+    "values": {
+     "mean_penalized_error": 6.2,
+     "p25_penalized_error": 2.51,
+     "median_penalized_error": 4.57,
+     "p75_penalized_error": 8.34,
+     "p95_penalized_error": 15.81,
+     "max_penalized_error": 52.27,
+     "building_accuracy": 100.0,
+     "floor_accuracy": 93.74
+    },
+    "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+    "check": "verified",
+    "location": "Table 3",
+    "source": {
+     "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+     "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+     "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+     "year": 2017,
+     "doi": "10.3233/AIS-170421",
+     "url": null
+    }
+   }
+  ],
+  "hidden": 2,
+  "checks_all": {
+   "literature/unchecked": 7,
+   "literature/unidentified": 2,
+   "literature/verified": 10,
+   "literature/corrected": 1
+  },
+  "rule": "shown: literature entries checked 'verified', 'corrected' or 'unchecked'; hidden: 'unidentified', 'missing' and numbers IndoorLoc 0.1 produced itself"
+ }
+}

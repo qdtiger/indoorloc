@@ -1,0 +1,2196 @@
+{
+ "format": "indoorloc-benchmark-matrix",
+ "format_version": 1,
+ "dataset": "ble_rssi_uci",
+ "updated": "2026-09-29T01:00:31+00:00",
+ "harness": {
+  "runner": "benchmarks/run.py",
+  "hardware": {
+   "cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+   "logical_cpus": 32,
+   "memory_gb": 39.2,
+   "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "python": "3.14.4"
+  },
+  "cgroup": {
+   "memory_high_mb": 4096.0,
+   "memory_max_mb": 6144.0,
+   "swap_max_mb": 4096.0
+  },
+  "thread_env": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8",
+   "PYTHONHASHSEED": "0"
+  },
+  "timeout_s": 1800,
+  "max_rss_mb": 2500,
+  "code": {
+   "frozen": true,
+   "taken": "2026-09-29T01:00:05+00:00",
+   "from": "/mnt/e/code/indoorloc",
+   "git": {
+    "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+    "branch": "refactor/five-layer-architecture",
+    "dirty": true,
+    "changed_files_under_indoorloc": 138
+   },
+   "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0"
+  },
+  "code_history": [
+   {
+    "taken": "2026-09-28T10:04:34+00:00",
+    "from": "/mnt/e/code/indoorloc",
+    "git": {
+     "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+     "branch": "refactor/five-layer-architecture",
+     "dirty": true,
+     "changed_files_under_indoorloc": 138
+    },
+    "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+   }
+  ]
+ },
+ "environment": {
+  "indoorloc": "0.2.0.dev0",
+  "python": "3.14.4",
+  "implementation": "CPython",
+  "numpy": "2.4.5",
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "cpu_count": 32,
+  "blas": {
+   "blas": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   }
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": "8",
+   "OPENBLAS_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "packages": {
+   "pandas": "3.0.3",
+   "scipy": "1.17.1",
+   "sklearn": "1.8.0",
+   "torch": "2.11.0+cu128"
+  }
+ },
+ "source_sha256": [
+  "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+  "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+ ],
+ "tables": [
+  {
+   "id": "random-80-20",
+   "title": {
+    "en": "UCI BLE RSSI (Waldo library), random 80/20 split of the 1,420 labelled scans, seed 0; grid cells",
+    "zh": "UCI BLE RSSI（Waldo 图书馆），1,420 条有标签样本随机 80/20 划分，种子 0；单位为网格"
+   },
+   "runner": "cli",
+   "protocol_spec": "random-80-20",
+   "options": {},
+   "dataset": {
+    "name": "ble_rssi_uci",
+    "class": "indoorloc.datasets.ble_rssi_uci:BLERSSIUCI",
+    "options": {},
+    "splits": [
+     "unlabeled",
+     "all"
+    ],
+    "n_samples": {
+     "unlabeled": 5191,
+     "all": 1420
+    },
+    "n_pooled": 1420,
+    "unlabelled_rows_left_out": {
+     "unlabeled": 5191
+    },
+    "sha256": {
+     "all": "2be36c37b2dd34e1eb59420d358a7cc4078718f6b5d49cbf4598753a2b4fecc9"
+    },
+    "modality": "ble_rssi",
+    "crs": "local",
+    "pos_units": "grid cells of the source map (column letter A=1, row number counted downward); cell size not stated",
+    "citation": "Mohammadi, Al-Fuqaha, Guizani, Oh, Semisupervised Deep Reinforcement Learning in Support of IoT and Smart City Services, IEEE Internet of Things Journal 5(2), 2018",
+    "doi": "10.24432/C54G80",
+    "license": "CC BY 4.0",
+    "url": "https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation"
+   },
+   "protocol": {
+    "name": "random-80-20",
+    "summary": "uniformly random 80 % train / 20 % test rows (seeded; optimistic for fingerprinting)",
+    "folds": [
+     {
+      "name": "random-80-20",
+      "n_train": 1136,
+      "n_test": 284,
+      "train_sha256": "7d333673eb8149494eb57cd8c039fd2cd574c369b3f0c9f10c446c74389e4ef7",
+      "test_sha256": "80599683c1c91281325bc1f587fe9407e06f571f24273c4cf922e321dc732748",
+      "n_unused": 0
+     }
+    ]
+   },
+   "units": "grid cells of the source map (column letter A=1, row number counted downward); cell size not stated",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "the beacon positions are given only as a map image, not as coordinates",
+     "zh": "信标位置只以地图图片给出，没有坐标"
+    }
+   ],
+   "notes": [
+    {
+     "en": "Errors are in grid cells of the map shipped with the data (the cell size is not stated). Consecutive scans at one cell are near duplicates, so a random split is optimistic. The 5,191 unlabelled scans are not used.",
+     "zh": "误差单位为数据附带地图的网格（未给出网格尺寸）。同一网格的连续扫描几乎重复，随机划分偏乐观。未使用 5,191 条无标签样本。"
+    }
+   ],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.77,
+     "peak_rss_mb": 45.5,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:19+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0001,
+     "pooled": {
+      "n": 284,
+      "mean_error": 4.907443112089203,
+      "median_error": 4.370525800435761,
+      "p75_error": 6.03425692162693,
+      "p90_error": 8.454073015445633,
+      "p95_error": 11.63129234267157,
+      "rmse": 5.680276244309281,
+      "max_error": 13.773042607323992,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 6.03425692162693,
+      "mean_penalized_error": 4.907443112089203,
+      "p75_penalized_error": 6.03425692162693,
+      "mean_error_ci95": [
+       4.579336444966535,
+       5.243233993643089
+      ],
+      "cdf": {
+       "<=1": 1.7605633802816902,
+       "<=2": 13.028169014084508,
+       "<=5": 61.971830985915496,
+       "<=10": 92.25352112676056,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0004,
+       "predict_s": 0.0001,
+       "metrics": {
+        "n": 284,
+        "mean_error": 4.907443112089203,
+        "median_error": 4.370525800435761,
+        "p75_error": 6.03425692162693,
+        "p90_error": 8.454073015445633,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 6.03425692162693
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.89,
+     "peak_rss_mb": 48.3,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:19+00:00",
+     "fit_s": 0.0002,
+     "predict_s": 0.0063,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.672528844827678,
+      "median_error": 1.0,
+      "p75_error": 2.871320343559643,
+      "p90_error": 4.242640687119285,
+      "p95_error": 5.0,
+      "rmse": 2.4147434471373885,
+      "max_error": 7.810249675906654,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.871320343559643,
+      "mean_penalized_error": 1.672528844827678,
+      "p75_penalized_error": 2.871320343559643,
+      "mean_error_ci95": [
+       1.4601141823978852,
+       1.8849700934189375
+      ],
+      "cdf": {
+       "<=1": 50.352112676056336,
+       "<=2": 64.78873239436619,
+       "<=5": 96.12676056338029,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0002,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.672528844827678,
+        "median_error": 1.0,
+        "p75_error": 2.871320343559643,
+        "p90_error": 4.242640687119285,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.871320343559643
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method knn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.09,
+     "peak_rss_mb": 48.2,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:20+00:00",
+     "fit_s": 0.0002,
+     "predict_s": 0.0125,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5673780173123062,
+      "median_error": 1.2082762530298217,
+      "p75_error": 2.24273640807408,
+      "p90_error": 3.2193053420364786,
+      "p95_error": 3.676138765365114,
+      "rmse": 2.0180174345622444,
+      "max_error": 8.736131867136622,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.24273640807408,
+      "mean_penalized_error": 1.5673780173123062,
+      "p75_penalized_error": 2.24273640807408,
+      "mean_error_ci95": [
+       1.415284654519756,
+       1.712171690944286
+      ],
+      "cdf": {
+       "<=1": 41.54929577464789,
+       "<=2": 70.4225352112676,
+       "<=5": 98.94366197183099,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0002,
+       "predict_s": 0.0125,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5673780173123062,
+        "median_error": 1.2082762530298217,
+        "p75_error": 2.24273640807408,
+        "p90_error": 3.2193053420364786,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.24273640807408
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.86,
+     "peak_rss_mb": 48.1,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:20+00:00",
+     "fit_s": 0.0002,
+     "predict_s": 0.0063,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.548970500702003,
+      "median_error": 1.211234676163516,
+      "p75_error": 2.4083189157584592,
+      "p90_error": 3.307534101746837,
+      "p95_error": 4.105389313610031,
+      "rmse": 2.049186234762531,
+      "max_error": 8.209750300709517,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.4083189157584592,
+      "mean_penalized_error": 1.548970500702003,
+      "p75_penalized_error": 2.4083189157584592,
+      "mean_error_ci95": [
+       1.381748518871379,
+       1.7074919978415888
+      ],
+      "cdf": {
+       "<=1": 43.309859154929576,
+       "<=2": 69.36619718309859,
+       "<=5": 98.59154929577464,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0002,
+       "predict_s": 0.0063,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.548970500702003,
+        "median_error": 1.211234676163516,
+        "p75_error": 2.4083189157584592,
+        "p90_error": 3.307534101746837,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.4083189157584592
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.78,
+     "peak_rss_mb": 45.8,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:20+00:00",
+     "fit_s": 0.0011,
+     "predict_s": 0.0077,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.729898034658546,
+      "median_error": 1.4426412936134139,
+      "p75_error": 2.354557101413541,
+      "p90_error": 3.59581142103412,
+      "p95_error": 4.0242192879494,
+      "rmse": 2.2377617665610527,
+      "max_error": 9.965529639684268,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.354557101413541,
+      "mean_penalized_error": 1.729898034658546,
+      "p75_penalized_error": 2.354557101413541,
+      "mean_error_ci95": [
+       1.5630868533578295,
+       1.8873032354951762
+      ],
+      "cdf": {
+       "<=1": 36.61971830985915,
+       "<=2": 64.43661971830986,
+       "<=5": 97.1830985915493,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0011,
+       "predict_s": 0.0077,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.729898034658546,
+        "median_error": 1.4426412936134139,
+        "p75_error": 2.354557101413541,
+        "p90_error": 3.59581142103412,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.354557101413541
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.801,
+     "cpu_time_s": 2.11,
+     "peak_rss_mb": 203.7,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:21+00:00",
+     "fit_s": 0.5349,
+     "predict_s": 0.0032,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5389766749871951,
+      "median_error": 1.2819035280888227,
+      "p75_error": 2.3603093703991864,
+      "p90_error": 3.313560623141444,
+      "p95_error": 3.847879852306639,
+      "rmse": 1.9829447641853177,
+      "max_error": 8.171292285438794,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.3603093703991864,
+      "mean_penalized_error": 1.5389766749871951,
+      "p75_penalized_error": 2.3603093703991864,
+      "mean_error_ci95": [
+       1.3863343086677828,
+       1.6888971000269546
+      ],
+      "cdf": {
+       "<=1": 41.901408450704224,
+       "<=2": 70.77464788732394,
+       "<=5": 99.29577464788733,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.5349,
+       "predict_s": 0.0032,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5389766749871951,
+        "median_error": 1.2819035280888227,
+        "p75_error": 2.3603093703991864,
+        "p90_error": 3.313560623141444,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.3603093703991864
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.801,
+     "cpu_time_s": 2.09,
+     "peak_rss_mb": 205.4,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:21+00:00",
+     "fit_s": 0.5288,
+     "predict_s": 0.0036,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.4735489418898224,
+      "median_error": 1.1693402024696085,
+      "p75_error": 2.3359773379587367,
+      "p90_error": 3.185942810456107,
+      "p95_error": 3.788892379464633,
+      "rmse": 1.9673354145790138,
+      "max_error": 8.209750300709493,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.3359773379587367,
+      "mean_penalized_error": 1.4735489418898224,
+      "p75_penalized_error": 2.3359773379587367,
+      "mean_error_ci95": [
+       1.3183417133749664,
+       1.6318293354209032
+      ],
+      "cdf": {
+       "<=1": 44.014084507042256,
+       "<=2": 69.71830985915493,
+       "<=5": 98.94366197183099,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.5288,
+       "predict_s": 0.0036,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.4735489418898224,
+        "median_error": 1.1693402024696085,
+        "p75_error": 2.3359773379587367,
+        "p90_error": 3.185942810456107,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.3359773379587367
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.69,
+     "peak_rss_mb": 204.5,
+     "load_avg_1min": [
+      7.35,
+      7.35
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:22+00:00",
+     "fit_s": 0.5307,
+     "predict_s": 0.0159,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.519713825727602,
+      "median_error": 1.2443832091987805,
+      "p75_error": 2.3757135983066986,
+      "p90_error": 3.2541321051911325,
+      "p95_error": 3.801398429649055,
+      "rmse": 1.9842295963160617,
+      "max_error": 8.225501154225084,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.3757135983066986,
+      "mean_penalized_error": 1.519713825727602,
+      "p75_penalized_error": 2.3757135983066986,
+      "mean_error_ci95": [
+       1.3568705497857212,
+       1.672589631800771
+      ],
+      "cdf": {
+       "<=1": 42.605633802816904,
+       "<=2": 70.77464788732394,
+       "<=5": 98.94366197183099,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.5307,
+       "predict_s": 0.0159,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.519713825727602,
+        "median_error": 1.2443832091987805,
+        "p75_error": 2.3757135983066986,
+        "p90_error": 3.2541321051911325,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.3757135983066986
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method mlp --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 2.803,
+     "cpu_time_s": 11.5,
+     "peak_rss_mb": 811.3,
+     "load_avg_1min": [
+      7.35,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:25+00:00",
+     "fit_s": 2.1783,
+     "predict_s": 0.0006,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5495928633501166,
+      "median_error": 1.3652573969108424,
+      "p75_error": 2.1431730863055423,
+      "p90_error": 2.791917525868274,
+      "p95_error": 3.395109225339738,
+      "rmse": 1.9200264133554446,
+      "max_error": 9.291525565564726,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.1431730863055423,
+      "mean_penalized_error": 1.5495928633501166,
+      "p75_penalized_error": 2.1431730863055423,
+      "mean_error_ci95": [
+       1.4250688710919328,
+       1.683783333408088
+      ],
+      "cdf": {
+       "<=1": 37.67605633802817,
+       "<=2": 71.47887323943662,
+       "<=5": 98.94366197183099,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 2.1783,
+       "predict_s": 0.0006,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5495928633501166,
+        "median_error": 1.3652573969108424,
+        "p75_error": 2.1431730863055423,
+        "p90_error": 2.791917525868274,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.1431730863055423
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method svm --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.801,
+     "cpu_time_s": 2.01,
+     "peak_rss_mb": 193.4,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:26+00:00",
+     "fit_s": 0.5049,
+     "predict_s": 0.0097,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5866931463200349,
+      "median_error": 1.2163905685156111,
+      "p75_error": 2.206397013183781,
+      "p90_error": 3.150250473916358,
+      "p95_error": 3.5944004867281034,
+      "rmse": 2.036836481522305,
+      "max_error": 9.89220312781136,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.206397013183781,
+      "mean_penalized_error": 1.5866931463200349,
+      "p75_penalized_error": 2.206397013183781,
+      "mean_error_ci95": [
+       1.4403646596015616,
+       1.7312309047671128
+      ],
+      "cdf": {
+       "<=1": 39.436619718309856,
+       "<=2": 67.95774647887323,
+       "<=5": 98.94366197183099,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.5049,
+       "predict_s": 0.0097,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5866931463200349,
+        "median_error": 1.2163905685156111,
+        "p75_error": 2.206397013183781,
+        "p90_error": 3.150250473916358,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.206397013183781
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "gp_radiomap",
+     "display": [
+      "GP radio map",
+      "GP 无线电地图"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess fill --method gp_radiomap --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.13,
+     "peak_rss_mb": 55.4,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:26+00:00",
+     "fit_s": 0.0317,
+     "predict_s": 0.0057,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.9087755300685703,
+      "median_error": 1.4142135623730951,
+      "p75_error": 2.8284271247461903,
+      "p90_error": 4.206780168668799,
+      "p95_error": 5.0,
+      "rmse": 2.532187163498369,
+      "max_error": 10.0,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.8284271247461903,
+      "mean_penalized_error": 1.9087755300685703,
+      "p75_penalized_error": 2.8284271247461903,
+      "mean_error_ci95": [
+       1.6995011180887478,
+       2.0913917234132113
+      ],
+      "cdf": {
+       "<=1": 41.901408450704224,
+       "<=2": 63.028169014084504,
+       "<=5": 96.83098591549296,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0317,
+       "predict_s": 0.0057,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.9087755300685703,
+        "median_error": 1.4142135623730951,
+        "p75_error": 2.8284271247461903,
+        "p90_error": 4.206780168668799,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.8284271247461903
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.gaussian_process:GPRadioMapLocalizer",
+        "params": {
+         "candidates": null,
+         "length_scales": null,
+         "n_candidates": 1,
+         "noise_ratios": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.89,
+     "peak_rss_mb": 48.2,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:27+00:00",
+     "fit_s": 0.0003,
+     "predict_s": 0.0062,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.6302753237009173,
+      "median_error": 1.0,
+      "p75_error": 2.8284271247461903,
+      "p90_error": 4.242640687119285,
+      "p95_error": 5.0,
+      "rmse": 2.379489825779029,
+      "max_error": 7.810249675906654,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.8284271247461903,
+      "mean_penalized_error": 1.6302753237009173,
+      "p75_penalized_error": 2.8284271247461903,
+      "mean_error_ci95": [
+       1.4112337326433184,
+       1.8443983895004883
+      ],
+      "cdf": {
+       "<=1": 51.40845070422535,
+       "<=2": 65.84507042253522,
+       "<=5": 96.12676056338029,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0003,
+       "predict_s": 0.0062,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.6302753237009173,
+        "median_error": 1.0,
+        "p75_error": 2.8284271247461903,
+        "p90_error": 4.242640687119285,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.8284271247461903
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess positive --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.82,
+     "peak_rss_mb": 48.2,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:27+00:00",
+     "fit_s": 0.0003,
+     "predict_s": 0.0059,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.521156771208046,
+      "median_error": 1.1617228916738487,
+      "p75_error": 2.408318915758459,
+      "p90_error": 3.293012318357293,
+      "p95_error": 4.105389313610031,
+      "rmse": 2.024829332247158,
+      "max_error": 8.209750300709517,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.408318915758459,
+      "mean_penalized_error": 1.521156771208046,
+      "p75_penalized_error": 2.408318915758459,
+      "mean_error_ci95": [
+       1.3580370926321583,
+       1.6768635974545791
+      ],
+      "cdf": {
+       "<=1": 44.36619718309859,
+       "<=2": 70.07042253521126,
+       "<=5": 98.59154929577464,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0003,
+       "predict_s": 0.0059,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.521156771208046,
+        "median_error": 1.1617228916738487,
+        "p75_error": 2.408318915758459,
+        "p90_error": 3.293012318357293,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.408318915758459
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess exponential --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.9,
+     "peak_rss_mb": 48.5,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:27+00:00",
+     "fit_s": 0.0006,
+     "predict_s": 0.0059,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.514869246334565,
+      "median_error": 1.1421121838594779,
+      "p75_error": 2.365821158166821,
+      "p90_error": 3.293012318357293,
+      "p95_error": 4.105389313610031,
+      "rmse": 2.02206904181209,
+      "max_error": 8.209750300709517,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.365821158166821,
+      "mean_penalized_error": 1.514869246334565,
+      "p75_penalized_error": 2.365821158166821,
+      "mean_error_ci95": [
+       1.3517280835525067,
+       1.6733299026538362
+      ],
+      "cdf": {
+       "<=1": 45.42253521126761,
+       "<=2": 70.07042253521126,
+       "<=5": 98.59154929577464,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0006,
+       "predict_s": 0.0059,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.514869246334565,
+        "median_error": 1.1421121838594779,
+        "p75_error": 2.365821158166821,
+        "p90_error": 3.293012318357293,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.365821158166821
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess powed --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.9,
+     "peak_rss_mb": 48.4,
+     "load_avg_1min": [
+      6.92,
+      6.92
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:36:27+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0059,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5988997294288176,
+      "median_error": 1.2877830810285782,
+      "p75_error": 2.4145154398486666,
+      "p90_error": 3.4039179939482533,
+      "p95_error": 4.4255751231501765,
+      "rmse": 2.1327427326818555,
+      "max_error": 9.325830976916748,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.4145154398486666,
+      "mean_penalized_error": 1.5988997294288176,
+      "p75_penalized_error": 2.4145154398486666,
+      "mean_error_ci95": [
+       1.4365481640566846,
+       1.7599114650917733
+      ],
+      "cdf": {
+       "<=1": 42.95774647887324,
+       "<=2": 68.30985915492958,
+       "<=5": 98.2394366197183,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0004,
+       "predict_s": 0.0059,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5988997294288176,
+        "median_error": 1.2877830810285782,
+        "p75_error": 2.4145154398486666,
+        "p90_error": 3.4039179939482533,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.4145154398486666
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ble_rssi_uci --protocol random-80-20 --preprocess none --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.76,
+     "peak_rss_mb": 46.1,
+     "load_avg_1min": [
+      1.07,
+      1.07
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:31+00:00",
+     "fit_s": 0.0009,
+     "predict_s": 0.003,
+     "pooled": {
+      "n": 284,
+      "mean_error": 1.5697967291992676,
+      "median_error": 1.2006004902442131,
+      "p75_error": 2.2229812266985287,
+      "p90_error": 3.2666204281499556,
+      "p95_error": 4.006010807141245,
+      "rmse": 2.104853427487055,
+      "max_error": 10.417143899075198,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.2229812266985287,
+      "mean_penalized_error": 1.5697967291992676,
+      "p75_penalized_error": 2.2229812266985287,
+      "mean_error_ci95": [
+       1.4063102783620725,
+       1.73669706705033
+      ],
+      "cdf": {
+       "<=1": 43.66197183098591,
+       "<=2": 70.07042253521126,
+       "<=5": 97.88732394366197,
+       "<=10": 99.64788732394366,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "random-80-20",
+       "fit_s": 0.0009,
+       "predict_s": 0.003,
+       "metrics": {
+        "n": 284,
+        "mean_error": 1.5697967291992676,
+        "median_error": 1.2006004902442131,
+        "p75_error": 2.2229812266985287,
+        "p90_error": 3.2666204281499556,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.2229812266985287
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "67a4a175bfe22816d1327ed9e524e28408f725a4014739920c929ab8a64a89b2",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  }
+ ],
+ "literature": {
+  "available": true,
+  "display_name": "BLE RSSI (UCI, Western Michigan University library)",
+  "metrics": {
+   "accuracy": {
+    "definition": "percentage of correctly classified test samples, as reported",
+    "unit": "%"
+   },
+   "mean_error": {
+    "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+    "unit": "m"
+   }
+  },
+  "entries": [
+   {
+    "method": "ANN",
+    "values": {
+     "accuracy": 81.27
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "ANN with dropout",
+    "values": {
+     "accuracy": 80.21
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "CNN",
+    "values": {
+     "accuracy": 91.35
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "DNN",
+    "values": {
+     "accuracy": 81.1
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "DNN with dropout",
+    "values": {
+     "accuracy": 80.47
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "Decision tree",
+    "values": {
+     "accuracy": 83.95
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "Logistic regression",
+    "values": {
+     "accuracy": 86.32
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "MLP",
+    "values": {
+     "accuracy": 90.85
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "Optimised CNN (improved PSO)",
+    "values": {
+     "accuracy": 97.92
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "SVM",
+    "values": {
+     "accuracy": 88.67
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "k-NN",
+    "values": {
+     "accuracy": 75.78
+    },
+    "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+    "check": "verified",
+    "location": "Table 2 ('Average Accuracy')",
+    "source": {
+     "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+     "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+     "venue": "Sensors 21(6):1995",
+     "year": 2021,
+     "doi": "10.3390/s21061995",
+     "url": "https://europepmc.org/article/PMC/PMC8000105"
+    }
+   },
+   {
+    "method": "k-NN",
+    "values": {
+     "accuracy": 85.0
+    },
+    "protocol": "unspecified",
+    "check": "unchecked",
+    "location": null,
+    "source": {
+     "authors": "M. W. P. Maduranga, V. Tilwari, R. Abeysekera",
+     "title": "Improved RSSI Indoor Localization in IoT Systems with Machine Learning Algorithms",
+     "venue": "Signals 4(4):651-668",
+     "year": 2023,
+     "doi": "10.3390/signals4040036",
+     "url": null
+    }
+   }
+  ],
+  "hidden": 2,
+  "checks_all": {
+   "literature/verified": 11,
+   "literature/unchecked": 1,
+   "indoorloc-0.1/not-literature": 2
+  },
+  "rule": "shown: literature entries checked 'verified', 'corrected' or 'unchecked'; hidden: 'unidentified', 'missing' and numbers IndoorLoc 0.1 produced itself"
+ }
+}

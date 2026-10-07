@@ -1,0 +1,93 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "ble_indoor",
+ "aliases": [
+  "bleindoor",
+  "bbil"
+ ],
+ "display_name": "BLE Indoor (BBIL)",
+ "dataset_citation": {
+  "authors": "M. Kennedy, P. Spachos, G. W. Taylor",
+  "title": "BLE beacon indoor localization dataset",
+  "venue": "Borealis",
+  "year": 2019,
+  "doi": "10.5683/SP2/UTZTFT",
+  "url": "https://github.com/co60ca/BBIL"
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/bleindoor.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "Fingerprinting",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "B. Kennedy, G. W. Taylor, P. Spachos",
+    "title": "BLE Beacon Based Patient Tracking in Smart Care Facilities",
+    "venue": "2018 IEEE International Conference on Pervasive Computing and Communications Workshops (PerCom Workshops), pp. 439-441",
+    "year": 2018,
+    "doi": "10.1109/PERCOMW.2018.8480315",
+    "url": null
+   },
+   "ported": {
+    "citation": "Kennedy et al., BLE beacon based patient tracking in smart care facilities, IEEE PerCom Workshops, 2018",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "TODO: fill in results from paper",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "Smart museum system",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null. 0.1 cited the arXiv version (2001.07686); Crossref lists IEEE Systems Journal 2020.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "P. Spachos, K. N. Plataniotis",
+    "title": "BLE Beacons for Indoor Positioning at an Interactive IoT-Based Smart Museum",
+    "venue": "IEEE Systems Journal 14(3):3483-3493",
+    "year": 2020,
+    "doi": "10.1109/JSYST.2020.2969088",
+    "url": "https://arxiv.org/abs/2001.07686"
+   },
+   "ported": {
+    "citation": "Spachos & Plataniotis, BLE Beacons for Indoor Positioning at an Interactive IoT-Based Smart Museum, arXiv:2001.07686, 2020",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "TODO: fill in results",
+    "is_sota": false,
+    "method": "Smart Museum System"
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

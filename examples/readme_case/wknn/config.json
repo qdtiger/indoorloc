@@ -1,0 +1,93 @@
+{
+ "format": "indoorloc-estimator",
+ "format_version": 1,
+ "library_version": "0.2.0.dev0",
+ "numpy_version": "2.4.5",
+ "info": {
+  "__dict__": {
+   "dataset": "ujiindoorloc",
+   "split": "train",
+   "sha256": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168"
+  }
+ },
+ "object": {
+  "__estimator__": "indoorloc.methods.pipeline:LocalizerPipeline",
+  "params": {
+   "localizer": {
+    "__estimator__": "indoorloc.methods.neighbors:WKNNLocalizer",
+    "params": {
+     "chunk_size": 256,
+     "k": 5,
+     "weights": "distance"
+    },
+    "state": {}
+   },
+   "preprocess": {
+    "__estimator__": "indoorloc.signals.transforms:FillMissing",
+    "params": {
+     "missing": {
+      "__float__": "nan"
+     },
+     "value": -104.0
+    },
+    "state": {}
+   }
+  },
+  "state": {
+   "preprocess_": {
+    "__estimator__": "indoorloc.signals.transforms:FillMissing",
+    "params": {
+     "missing": {
+      "__float__": "nan"
+     },
+     "value": -104.0
+    },
+    "state": {
+     "n_features_in_": 520
+    }
+   },
+   "localizer_": {
+    "__estimator__": "indoorloc.methods.neighbors:WKNNLocalizer",
+    "params": {
+     "chunk_size": 256,
+     "k": 5,
+     "weights": "distance"
+    },
+    "state": {
+     "X_fit_": {
+      "__array__": "obj.localizer_.X_fit_"
+     },
+     "fit_sq_": {
+      "__array__": "obj.localizer_.fit_sq_"
+     },
+     "pos_": {
+      "__array__": "obj.localizer_.pos_"
+     },
+     "floor_": {
+      "__array__": "obj.localizer_.floor_"
+     },
+     "building_": {
+      "__array__": "obj.localizer_.building_"
+     },
+     "n_features_in_": 520,
+     "input_shape_": {
+      "__tuple__": [
+       520
+      ]
+     },
+     "target_ndim_": 2,
+     "train_info_": {
+      "__dict__": {
+       "name": "ujiindoorloc",
+       "split": "train",
+       "sha256": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168",
+       "crs": "EPSG:3857"
+      }
+     }
+    }
+   },
+   "n_features_in_": 520,
+   "target_ndim_": 2
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "processor": "",
+    "cpu_threads": 2,
+    "packages": {
+      "numpy": "2.4.5",
+      "scikit-learn": "1.8.0",
+      "joblib": "1.5.3",
+      "torch": "2.11.0+cu128"
+    }
+  },
+  "timing": "Wall time on this CPU run; fit and predict_batch measured separately",
+  "methods": {
+    "knn": {
+      "metrics": {
+        "mean_error": 8.889091885956587,
+        "median_error": 5.453888975155195,
+        "std_error": 13.706180372827625,
+        "min_error": 0.005253564700611158,
+        "max_error": 206.45875249361757,
+        "rms_error": 16.336319505000642,
+        "p75_error": 10.424967413784149,
+        "p90_error": 19.222366819203863,
+        "p95_error": 28.233529331423036,
+        "floor_accuracy": 90.27902790279028,
+        "building_accuracy": 99.72997299729973
+      },
+      "fit_seconds": 0.06765084085054696,
+      "predict_seconds": 0.9397505009546876,
+      "evaluation_samples": 1111
+    },
+    "wknn": {
+      "metrics": {
+        "mean_error": 8.859248088918953,
+        "median_error": 5.385150900584594,
+        "std_error": 13.655772664981656,
+        "min_error": 0.005253565631509898,
+        "max_error": 206.39076726404343,
+        "rms_error": 16.277788663656814,
+        "p75_error": 10.350156658765693,
+        "p90_error": 19.248958558388413,
+        "p95_error": 28.171049431621924,
+        "floor_accuracy": 90.36903690369037,
+        "building_accuracy": 99.72997299729973
+      },
+      "fit_seconds": 0.04453458683565259,
+      "predict_seconds": 0.9327373539563268,
+      "evaluation_samples": 1111
+    }
+  }
+}

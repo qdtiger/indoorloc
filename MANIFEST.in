@@ -1,0 +1,7 @@
+# The source distribution ships the package only: the test suite needs the repository layout
+# (tests/conftest.py, tests/<layer>/, cached datasets), so it is run from a clone, not from an sdist.
+prune tests
+prune benchmarks
+prune examples
+prune docs
+prune assets

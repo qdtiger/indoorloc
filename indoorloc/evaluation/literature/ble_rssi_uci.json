@@ -1,0 +1,345 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "ble_rssi_uci",
+ "aliases": [
+  "blerssiuci"
+ ],
+ "display_name": "BLE RSSI (UCI, Western Michigan University library)",
+ "dataset_citation": {
+  "authors": "M. Mohammadi, A. Al-Fuqaha",
+  "title": "BLE RSSI Dataset for Indoor localization and Navigation",
+  "venue": "UCI Machine Learning Repository",
+  "year": 2017,
+  "doi": "10.24432/C54G80",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/ble_rssi_uci.py",
+ "protocols": {},
+ "metrics": {
+  "accuracy": {
+   "definition": "percentage of correctly classified test samples, as reported",
+   "unit": "%"
+  },
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  }
+ },
+ "entries": [
+  {
+   "method": "Decision tree",
+   "values": {
+    "accuracy": 83.95
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper (0.1 cited it as 'PMC8000105'). Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": {
+    "citation": "PMC8000105, Optimized CNNs to Indoor Localization through BLE Sensors, 2021",
+    "values": {
+     "accuracy": 83.95
+    },
+    "notes": "16.05% error rate",
+    "is_sota": false,
+    "method": "Decision Tree"
+   }
+  },
+  {
+   "method": "k-NN",
+   "values": {
+    "accuracy": 75.78
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "Logistic regression",
+   "values": {
+    "accuracy": 86.32
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper (0.1 cited it as 'PMC8000105'). Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": {
+    "citation": "PMC8000105, Optimized CNNs to Indoor Localization through BLE Sensors, 2021",
+    "values": {
+     "accuracy": 86.32
+    },
+    "notes": "13.68% error rate",
+    "is_sota": false,
+    "method": "Logistic Regression"
+   }
+  },
+  {
+   "method": "SVM",
+   "values": {
+    "accuracy": 88.67
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper (0.1 cited it as 'PMC8000105'). Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": {
+    "citation": "PMC8000105, Optimized CNNs to Indoor Localization through BLE Sensors, 2021",
+    "values": {
+     "accuracy": 88.67
+    },
+    "notes": "11.33% error rate",
+    "is_sota": false,
+    "method": "SVM"
+   }
+  },
+  {
+   "method": "ANN",
+   "values": {
+    "accuracy": 81.27
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "ANN with dropout",
+   "values": {
+    "accuracy": 80.21
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "DNN",
+   "values": {
+    "accuracy": 81.1
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "DNN with dropout",
+   "values": {
+    "accuracy": 80.47
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "MLP",
+   "values": {
+    "accuracy": 90.85
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "CNN",
+   "values": {
+    "accuracy": 91.35
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "Optimised CNN (improved PSO)",
+   "values": {
+    "accuracy": 97.92
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the same table. Dataset identity inferred from the thirteen iBeacons; accuracy of a classification task, not a position error.",
+   "location": "Table 2 ('Average Accuracy')",
+   "protocol": "unspecified (the paper classifies 'thirteen target classes'; not the dataset's location labels)",
+   "source": {
+    "authors": "D. Sun, E. Wei, Z. Ma, C. Wu, S. Xu",
+    "title": "Optimized CNNs to Indoor Localization through BLE Sensors Using Improved PSO",
+    "venue": "Sensors 21(6):1995",
+    "year": 2021,
+    "doi": "10.3390/s21061995",
+    "url": "https://europepmc.org/article/PMC/PMC8000105"
+   },
+   "ported": null
+  },
+  {
+   "method": "k-NN",
+   "values": {
+    "accuracy": 85.0
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "0.1 cited 'MDPI Telecom 2023, Improved RSSI Indoor Localization'; the closest Crossref match is this paper in MDPI Signals. Neither the number nor the use of this dataset was checked.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "M. W. P. Maduranga, V. Tilwari, R. Abeysekera",
+    "title": "Improved RSSI Indoor Localization in IoT Systems with Machine Learning Algorithms",
+    "venue": "Signals 4(4):651-668",
+    "year": 2023,
+    "doi": "10.3390/signals4040036",
+    "url": null
+   },
+   "ported": {
+    "citation": "MDPI Telecom 2023, Improved RSSI Indoor Localization",
+    "values": {
+     "accuracy": 85.0
+    },
+    "notes": "",
+    "is_sota": false,
+    "method": "KNN"
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "mean_error": 1.8
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 1.8
+    },
+    "notes": "Grid coordinates (1m spacing); 993 train / 427 test",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=3)",
+   "values": {
+    "mean_error": 1.82
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 1.82
+    },
+    "notes": "",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

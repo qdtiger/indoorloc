@@ -1,104 +1,67 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+# 77: SPDX `license` string and `license-files` (the TOML-table form is deprecated, unsupported from 2027-02)
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "indoorloc"
-version = "0.1.3"
-description = "A unified framework for indoor localization"
+dynamic = ["version"]
+description = "Wireless indoor localization in five layers: datasets, signals, methods, evaluation, applications"
 readme = "README.md"
-license = {text = "Apache-2.0"}
-authors = [
-    {name = "IndoorLoc Team"}
-]
-maintainers = [
-    {name = "IndoorLoc Team"}
-]
-requires-python = ">=3.8"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{name = "IndoorLoc Team"}]
+maintainers = [{name = "IndoorLoc Team"}]
+requires-python = ">=3.10"
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
-keywords = [
-    "indoor localization",
-    "WiFi fingerprinting",
-    "positioning",
-    "deep learning",
-    "machine learning",
-    "location",
-    "RSSI",
-]
-
-dependencies = [
-    "torch>=1.10.0",
-    "numpy>=1.20.0",
-    "pandas>=1.3.0",
-    "scikit-learn>=1.0.0",
-    "pyyaml>=6.0",
-    "tqdm>=4.60.0",
-]
+keywords = ["indoor localization", "wireless positioning", "WiFi fingerprinting", "RSSI", "CSI", "BLE",
+            "UWB", "trilateration", "pedestrian dead reckoning", "tracking", "benchmark"]
+# L1-L5 run on numpy alone; every heavier stack is an opt-in extra.
+# numpy 2.0 is the floor: the library uses numpy-2 semantics (`copy=None` in `__array__`, NEP 50
+# promotion) and numpy 1.23-1.26 fail tests. The extras' floors are the first releases whose wheels
+# import next to numpy 2 (older ones fail with "numpy.dtype size changed" / "_ARRAY_API not found").
+# Checked 2026-09-29 on Python 3.10 with every floor below pinned (scikit-learn at the dev floor 1.6;
+# skada left out, it needs pandas 2.3): no test fails because of a version. CI's py3.10 core job
+# keeps testing numpy 2.0.
+dependencies = ["numpy>=2.0"]
 
 [project.optional-dependencies]
-datasets = [
-    "h5py>=3.0.0",
-    "scipy>=1.7.0",
-    "requests>=2.25.0",
-]
-vision = [
-    "torchvision>=0.11.0",
-    "opencv-python>=4.5.0",
-]
-deep = [
-    "timm>=0.9.0",  # 500+ pretrained models (ResNet, EfficientNet, ViT, etc.)
-]
-deepmimo = [
-    "DeepMIMO>=4.0.0b5; python_version >= '3.10'",
-]
-full = [
-    "torchvision>=0.11.0",
-    "opencv-python>=4.5.0",
-    "matplotlib>=3.4.0",
-    "seaborn>=0.11.0",
-    "scipy>=1.7.0",
-    "h5py>=3.0.0",
-    "requests>=2.25.0",
-    "timm>=0.9.0",
-]
-dev = [
-    "pytest>=7.0.0",
-    "pytest-cov>=3.0.0",
-    "black>=22.0.0",
-    "flake8>=4.0.0",
-    "isort>=5.10.0",
-    "mypy>=0.950",
-]
-docs = [
-    "sphinx>=4.0.0",
-    "sphinx-rtd-theme>=1.0.0",
-    "myst-parser>=0.18.0",
-]
+sklearn = ["scikit-learn>=1.4.2"]          # SVM/RF/GBDT localizers, Pipeline/GridSearchCV interop
+pandas = ["pandas>=2.2.2"]                 # SampleTable.to_dataframe
+torch = ["torch>=2.3"]                     # datasets.torch_adapter, SampleTable.to_torch
+deep = ["torch>=2.3", "timm>=0.9"]         # MLP / CNN1D / timm-backbone localizers
+transfer = ["scikit-learn>=1.5", "skada>=0.6"]  # CORAL/TCA are numpy; the skada adapter needs skada
+plot = ["matplotlib>=3.8.4", "plotly>=5"]  # evaluation.plot, datasets.plot (plotly: interactive HTML)
+datasets = ["h5py>=3.11", "scipy>=1.13"]   # the CSI loaders that read .mat / .h5 files
+sim = ["DeepMIMO>=4.0; python_version >= '3.11'"]  # DeepMIMO ray-traced scenarios (needs Python 3.11+)
+full = ["scikit-learn>=1.4.2", "pandas>=2.2.2", "torch>=2.3", "timm>=0.9", "matplotlib>=3.8.4", "plotly>=5",
+        "h5py>=3.11", "scipy>=1.13"]  # every extra above except transfer and sim
+dev = ["pytest>=8", "threadpoolctl>=3", "scikit-learn>=1.6", "import-linter>=2.1", "ruff>=0.6"]  # tests (check_estimator(on_fail=) is new in 1.6), lint
 
 [project.scripts]
-indoorloc-train = "indoorloc.tools.train:main"
-indoorloc-test = "indoorloc.tools.test:main"
-indoorloc-benchmark = "indoorloc.tools.benchmark:main"
+indoorloc = "indoorloc.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/indoorloc/indoorloc"
-Documentation = "https://indoorloc.readthedocs.io"
-Repository = "https://github.com/indoorloc/indoorloc"
-Issues = "https://github.com/indoorloc/indoorloc/issues"
+Homepage = "https://github.com/qdtiger/indoorloc"
+Documentation = "https://github.com/qdtiger/indoorloc/blob/main/docs/guide/index.md"
+Repository = "https://github.com/qdtiger/indoorloc"
+Issues = "https://github.com/qdtiger/indoorloc/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "indoorloc._version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -106,42 +69,64 @@ include = ["indoorloc*"]
 exclude = ["tests*", "docs*", "examples*"]
 
 [tool.setuptools.package-data]
-indoorloc = [
-    "configs/**/*.yaml",
-    "configs/**/*.yml",
-]
-
-[tool.black]
-line-length = 88
-target-version = ['py38', 'py39', 'py310', 'py311']
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-)/
-'''
-
-[tool.isort]
-profile = "black"
-line_length = 88
-known_first_party = ["indoorloc"]
+indoorloc = ["evaluation/literature/*.json"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+pythonpath = [".", "tests"]
+testpaths = ["tests", "benchmarks/tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "-v --cov=indoorloc --cov-report=term-missing"
 
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-ignore_missing_imports = true
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# What CI enforces (`ruff check` at the repository root): syntax errors, invalid comparisons,
+# misplaced statements, undefined names.
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.importlinter]
+root_package = "indoorloc"
+include_external_packages = true
+exclude_type_checking_imports = true
+
+[[tool.importlinter.contracts]]
+id = "layers"
+name = "_version, then core; L1, L2, L4 independent; L3 above them; L5, CLI and the 0.1 shim on top; python -m last"
+type = "layers"
+containers = ["indoorloc"]
+exhaustive = true  # a new top-level module must be placed in a layer before it can be merged
+exhaustive_ignores = ["version"]
+layers = [
+  "__main__",
+  "(apps) | (_legacy) | (cli)",
+  "methods",
+  "datasets | signals | evaluation",
+  "core",
+  "_version",
+]
+
+[[tool.importlinter.contracts]]
+id = "data-enters-as-tables"
+name = "L3 and L5 never import L1 (data arrives as arrays or a SampleTable from core)"
+type = "forbidden"
+source_modules = ["indoorloc.methods", "indoorloc.apps"]
+forbidden_modules = ["indoorloc.datasets"]
+
+[[tool.importlinter.contracts]]
+id = "light-layers"
+name = "numpy is the only third-party import at module level, except in the declared bridges"
+type = "forbidden"
+source_modules = ["indoorloc.core", "indoorloc.datasets", "indoorloc.signals", "indoorloc.methods",
+                  "indoorloc.evaluation", "indoorloc.apps", "indoorloc._legacy"]
+forbidden_modules = ["torch", "sklearn", "scipy", "pandas", "timm", "skada", "matplotlib", "plotly", "h5py",
+                     "requests", "urllib3", "yaml", "joblib", "tqdm", "IPython", "torchvision", "cv2",
+                     "seaborn", "deepmimo"]
+allow_indirect_imports = true
+ignore_imports = [
+  # Declared bridges: importable only by user code or lazily through registry strings.
+  # Everything else (sklearn, timm, scipy, h5py, matplotlib, deepmimo, skada) is imported inside functions.
+  "indoorloc.datasets.torch_adapter -> torch",
+  "indoorloc.methods.deep.* -> torch",
+]

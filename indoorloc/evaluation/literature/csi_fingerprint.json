@@ -1,0 +1,93 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "csi_fingerprint",
+ "aliases": [
+  "csifingerprint",
+  "csifp"
+ ],
+ "display_name": "CSI fingerprint (lab and meeting room)",
+ "dataset_citation": {
+  "authors": "X. Zhu, W. Qu, X. Zhou, L. Zhao, Z. Ning, T. Qiu",
+  "title": "Intelligent Fingerprint-Based Localization Scheme Using CSI Images for Internet of Things",
+  "venue": "IEEE Transactions on Network Science and Engineering 9(4):2378-2391",
+  "year": 2022,
+  "doi": "10.1109/TNSE.2022.3163358",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/csifingerprint.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "BLS-Location",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "X. Zhu, T. Qiu, W. Qu, X. Zhou, M. Atiquzzaman, D. O. Wu",
+    "title": "BLS-Location: A Wireless Fingerprint Localization Algorithm Based on Broad Learning",
+    "venue": "IEEE Transactions on Mobile Computing 22(1):115-128",
+    "year": 2023,
+    "doi": "10.1109/TMC.2021.3073005",
+    "url": null
+   },
+   "ported": {
+    "citation": "Zhu et al., BLS-Location: A Wireless Fingerprint Localization Algorithm Based on Broad Learning, IEEE TMC, 2023",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "DOI: 10.1109/TMC.2021.3073005; TODO: fill in results from paper",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "CSI image + CNN",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "X. Zhu, W. Qu, X. Zhou, L. Zhao, Z. Ning, T. Qiu",
+    "title": "Intelligent Fingerprint-Based Localization Scheme Using CSI Images for Internet of Things",
+    "venue": "IEEE Transactions on Network Science and Engineering 9(4):2378-2391",
+    "year": 2022,
+    "doi": "10.1109/TNSE.2022.3163358",
+    "url": null
+   },
+   "ported": {
+    "citation": "Zhu et al., Intelligent Fingerprint-Based Localization Scheme Using CSI Images, IEEE TNSE, 2022",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "DOI: 10.1109/TNSE.2022.3163358; TODO: fill in results from paper",
+    "is_sota": false,
+    "method": "CSI Image + CNN"
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}
