@@ -1,0 +1,110 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "wlanrssi",
+ "aliases": [
+  "wireless_indoor_localization"
+ ],
+ "display_name": "Wireless Indoor Localization (UCI)",
+ "dataset_citation": {
+  "authors": "R. Bhatt",
+  "title": "Wireless Indoor Localization",
+  "venue": "UCI Machine Learning Repository",
+  "year": 2017,
+  "doi": "10.24432/C51880",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/wlanrssi.py",
+ "protocols": {},
+ "metrics": {
+  "accuracy": {
+   "definition": "room classification accuracy (4 rooms), as reported",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "Logistic regression",
+   "values": {
+    "accuracy": 97.2
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source is an online tutorial ('Subhash Karthik, WiFi Indoor Localization Tutorial'), not a citable publication.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Subhash Karthik, WiFi Indoor Localization Tutorial",
+    "values": {
+     "accuracy": 97.2
+    },
+    "notes": "Multi-class logistic regression",
+    "is_sota": false,
+    "method": "Logistic Regression"
+   }
+  },
+  {
+   "method": "KNN (k=1)",
+   "values": {
+    "accuracy": 98.3
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "accuracy": 98.3
+    },
+    "notes": "1400 train / 600 test (70/30 split)",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=3)",
+   "values": {
+    "accuracy": 98.2
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "accuracy": 98.2
+    },
+    "notes": "",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "accuracy": 98.3
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "accuracy": 98.3
+    },
+    "notes": "",
+    "is_sota": true
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

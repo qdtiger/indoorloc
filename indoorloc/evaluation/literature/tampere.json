@@ -1,0 +1,211 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "tampere",
+ "aliases": [],
+ "display_name": "Tampere (Wi-Fi crowdsourced fingerprints)",
+ "dataset_citation": {
+  "authors": "E. S. Lohan, J. Torres-Sospedra, H. Leppäkoski, P. Richter, Z. Peng, J. Huerta",
+  "title": "Wi-Fi Crowdsourced Fingerprinting Dataset for Indoor Positioning",
+  "venue": "Data 2(4):32",
+  "year": 2017,
+  "doi": "10.3390/data2040032",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/tampere.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "DNN (3-layer)",
+   "values": {
+    "mean_error": 3.45,
+    "floor_accuracy": 96.7
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Tampere Dataset Paper') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol. 0.1 described it as from the dataset paper (Lohan et al. 2017); not checked.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Tampere Dataset Paper",
+    "values": {
+     "mean_error": 3.45,
+     "floor_accuracy": 0.967
+    },
+    "notes": "Baseline DNN from dataset paper",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "CNN-1D",
+   "values": {
+    "mean_error": 2.89,
+    "floor_accuracy": 98.1
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('1D Conv Study') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "1D Conv Study",
+    "values": {
+     "mean_error": 2.89,
+     "floor_accuracy": 0.981
+    },
+    "notes": "1D convolution over AP dimension",
+    "is_sota": true
+   }
+  },
+  {
+   "method": "ResNet-18",
+   "values": {
+    "mean_error": 3.12,
+    "floor_accuracy": 97.4
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Transfer Learning Study') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Transfer Learning Study",
+    "values": {
+     "mean_error": 3.12,
+     "floor_accuracy": 0.974
+    },
+    "notes": "Pretrained on ImageNet",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=1)",
+   "values": {
+    "mean_error": 5.21,
+    "floor_accuracy": 91.2
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Baseline') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Baseline",
+    "values": {
+     "mean_error": 5.21,
+     "floor_accuracy": 0.912
+    },
+    "notes": "Simple nearest neighbor",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "WKNN (k=3)",
+   "values": {
+    "mean_error": 4.56,
+    "floor_accuracy": 93.4
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Baseline') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Baseline",
+    "values": {
+     "mean_error": 4.56,
+     "floor_accuracy": 0.934
+    },
+    "notes": "Weighted KNN",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "mean_error": 4.32,
+    "floor_accuracy": 94.1
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Baseline') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Baseline",
+    "values": {
+     "mean_error": 4.32,
+     "floor_accuracy": 0.941
+    },
+    "notes": "Weighted KNN with k=5",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "Random Forest",
+   "values": {
+    "mean_error": 4.78,
+    "floor_accuracy": 92.3
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('Ensemble Study') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Ensemble Study",
+    "values": {
+     "mean_error": 4.78,
+     "floor_accuracy": 0.923
+    },
+    "notes": "100 trees ensemble",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "Gaussian Process",
+   "values": {
+    "mean_error": 3.89,
+    "floor_accuracy": 95.6
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source ('GP Localization') names no paper; the number could not be traced to a publication. The 0.1 table does not state the protocol.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "GP Localization",
+    "values": {
+     "mean_error": 3.89,
+     "floor_accuracy": 0.956
+    },
+    "notes": "GP regression with RBF kernel",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

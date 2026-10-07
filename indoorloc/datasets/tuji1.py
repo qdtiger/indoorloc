@@ -1,307 +1,91 @@
-"""
-TUJI1 (TUT Indoor) WiFi Dataset Implementation
+"""TUJI1: multi-device WiFi RSSI fingerprints on a dense grid of one office floor (Klus et al., 2024)."""
+from __future__ import annotations
 
-Multi-device WiFi fingerprinting dataset collected at Tampere University
-with high measurement density using 5 different commercial devices.
+import csv
 
-Reference:
-    Klus, L., Klus, R., Lohan, E.S., et al. (2024). TUJI1 Dataset: Multi-device
-    dataset for indoor localization with high measurement density.
-    Data in Brief, 110356. DOI: 10.1016/j.dib.2024.110356
-
-Dataset URL: https://zenodo.org/record/7641701
-"""
-import zipfile
-from pathlib import Path
-from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
-from .base import WiFiDataset
-from ..signals.wifi import WiFiSignal
-from ..locations.location import Location
-from ..locations.coordinate import Coordinate
-from ..registry import DATASETS
-from ..utils.download import download_url
+from ..core import SampleTable
+from ._base import Dataset
 
 
-@DATASETS.register_module()
-class TUJI1Dataset(WiFiDataset):
-    """TUJI1 (TUT Indoor) WiFi Fingerprinting Dataset.
+class TUJI1(Dataset):
+    """TUJI1 (Klus et al., Data in Brief 2024): five devices, one floor, official train/test.
 
-    Multi-device WiFi dataset with high measurement density, collected using
-    5 different commercial devices (Samsung S20, S7, POCO, Tab S7, A12).
-    Contains over 300 distinct APs with fine-grained spatial coverage.
+    Collected on the top (fifth) floor of the Espaitec 2 building, Universitat Jaume I,
+    Castellón, Spain, with five Android devices (Galaxy S20, Galaxy S7, POCO X3, Galaxy Tab
+    S7, Galaxy A12) at the corners and at the centres of the floor's 60 x 60 cm tiles (two
+    interleaved grids, 0.42 m between neighbours). 8899 scans of 310 MAC addresses: 6752
+    training and 2147 test scans; the test positions are a random half of the positions of
+    the test campaign (split by the authors' ``CreateDataset.m`` with ``rng(2)``).
 
-    Args:
-        data_root: Root directory containing the dataset files. If None,
-            uses the default cache directory (~/.cache/indoorloc/datasets/tuji1).
-        split: Dataset split ('train' or 'test').
-        download: Whether to download the dataset if not found.
-        transform: Optional transform to apply to signals.
-        normalize: Whether to normalize RSSI values.
-        normalize_method: Normalization method ('minmax', 'positive', 'standard').
+    ``X`` is (N, 310) float32 RSSI in dBm; the files' "missing" value +100 becomes NaN. The RSS
+    files have no header: columns are identified by position (``WAP001`` .. ``WAP310``, AP1 ..
+    AP310 in the paper). ``pos`` is (x, y) in metres in the site's local frame, unchanged. The
+    coordinates files have six columns: x, y, z, floor, building, device label. Every scan is on
+    the same floor, and the z, floor and building columns are constant zeros (checked by the
+    loader), so ``floor`` and ``building`` are None and 2-D errors equal the paper's 3-D errors.
+    Group ``device``: the device name from ``Device_labels.csv`` (read by column name).
 
-    Example:
-        >>> import indoorloc as iloc
-        >>> # Download from Zenodo
-        >>> dataset = iloc.TUJI1(download=True, split='train')
-
-    Dataset structure (after extraction):
-        data_root/
-        ├── RSS_training.csv
-        ├── RSS_testing.csv
-        ├── Coordinates_training.csv
-        └── Coordinates_testing.csv
+    References
+    ----------
+    Klus, L., Klus, R., Lohan, E.S., Nurmi, J., Granell, C., Valkama, M., Talvitie, J.,
+    Casteleyn, S., Torres-Sospedra, J., "TUJI1 Dataset: Multi-device dataset for indoor
+    localization with high measurement density", Data in Brief 54, 110356, 2024.
+    https://doi.org/10.1016/j.dib.2024.110356. Data: https://doi.org/10.5281/zenodo.7641701
     """
 
-    # Zenodo download URL
-    ZENODO_URL = "https://zenodo.org/api/records/7641701/files/DATASET.zip/content"
-    ZIP_FILENAME = "DATASET.zip"
-
-    # Dataset constants
-    NOT_DETECTED_VALUE = 100
-
-    # File mapping
-    FILE_MAPPING = {
-        'train': {
-            'rss': 'RSS_training.csv',
-            'coords': 'Coordinates_training.csv',
-        },
-        'test': {
-            'rss': 'RSS_testing.csv',
-            'coords': 'Coordinates_testing.csv',
-        },
+    name = "tuji1"
+    urls = ("https://zenodo.org/api/records/7641701/files/DATASET.zip/content",
+            "https://zenodo.org/records/7641701/files/DATASET.zip?download=1")
+    files = {  # sha256 of the DATASET/*.csv members of DATASET.zip (Zenodo md5 27e80f4a98387f2417d2e0760af2671f)
+        "train": (("RSS_training.csv", "dbdcb88699cb767a65fe17b859042b0b3b2be1095674f977cafb6c981aabd6d5"),
+                  ("Coordinates_training.csv", "6bee8b88c923eaff2e6af6744f5bc69e689629bd67bbc23b4ce6e1d67750fb8e"),
+                  ("Device_labels.csv", "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30")),
+        "test": (("RSS_testing.csv", "a81a514d76d6aae796bf78a12582dd18e760333773395402fe0ca0daa6986260"),
+                 ("Coordinates_testing.csv", "67e63a53e57fba461f7db2af51218bf4716f942b3ffdbe0de2bdfd37697724f3"),
+                 ("Device_labels.csv", "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30")),
     }
+    # No 'validation' alias: the source has no validation file (carve one from train, e.g. kfold on groups).
+    meta = {
+        "modality": "wifi_rssi",
+        "units": "dBm",
+        "raw_missing_value": 100,
+        "crs": "local",
+        "pos_names": ("x", "y"),
+        "pos_units": "m",
+        "floors": (),  # single floor, unlabelled
+        "license": "CC BY 4.0",
+        "doi": "10.5281/zenodo.7641701",
+        "citation": "Klus et al., TUJI1 Dataset: Multi-device dataset for indoor localization with high "
+                    "measurement density, Data in Brief 54:110356, 2024, doi:10.1016/j.dib.2024.110356",
+        "url": "https://zenodo.org/records/7641701",
+    }
+    n_aps = 310
 
-    def __init__(
-        self,
-        data_root: Optional[str] = None,
-        split: str = 'train',
-        download: bool = False,
-        floor: Union[int, List[int], str] = 'all',
-        transform: Optional[Any] = None,
-        normalize: bool = True,
-        normalize_method: str = 'minmax',
-        **kwargs
-    ):
-        self._num_aps = None  # Will be determined from data
-        self._ap_list = None  # List of all seen BSSIDs
-        self._floor_param = floor
-        self._available_floors: List[int] = []
-
-        super().__init__(
-            data_root=data_root,
-            split=split,
-            download=download,
-            transform=transform,
-            normalize=normalize,
-            normalize_method=normalize_method,
-            **kwargs
-        )
-
-    @property
-    def dataset_name(self) -> str:
-        return 'TUJI1'
-
-    @property
-    def num_aps(self) -> int:
-        if self._num_aps is None:
-            return 0
-        return self._num_aps
-
-    @classmethod
-    def list_floors(cls, data_root: Optional[str] = None) -> List[int]:
-        """List all available floors in the dataset.
-
-        Note: TUJI1 is a single-floor dataset (floor 0).
-        """
-        return [0]
-
-    def _check_exists(self) -> bool:
-        """Check if dataset files exist."""
-        files = self.FILE_MAPPING.get(self.split)
-        if files is None:
-            return False
-        rss_file = self.data_root / files['rss']
-        coords_file = self.data_root / files['coords']
-        return rss_file.exists() and coords_file.exists()
-
-    def _download(self) -> None:
-        """Download TUJI1 dataset from Zenodo."""
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
-            return
-
-        self.data_root.mkdir(parents=True, exist_ok=True)
-        zip_path = self.data_root / self.ZIP_FILENAME
-
-        # Download zip file
-        if not zip_path.exists():
-            print("Downloading TUJI1 dataset from Zenodo...")
-            try:
-                download_url(
-                    url=self.ZENODO_URL,
-                    root=self.data_root,
-                    filename=self.ZIP_FILENAME,
-                )
-            except Exception as e:
-                raise RuntimeError(
-                    f"Failed to download TUJI1 dataset: {e}\n"
-                    f"Please download manually from: https://zenodo.org/record/7641701"
-                )
-
-        # Extract required CSV files from zip
-        print("Extracting dataset files...")
-        try:
-            with zipfile.ZipFile(zip_path, 'r') as zf:
-                for split_files in self.FILE_MAPPING.values():
-                    for filename in split_files.values():
-                        zip_member = f"DATASET/{filename}"
-                        if zip_member in zf.namelist():
-                            with zf.open(zip_member) as src:
-                                target_path = self.data_root / filename
-                                with open(target_path, 'wb') as dst:
-                                    dst.write(src.read())
-                            print(f"  Extracted: {filename}")
-        except Exception as e:
-            raise RuntimeError(f"Failed to extract dataset: {e}")
-
-    def _load_data(self) -> None:
-        """Load TUJI1 dataset from separate RSS and coordinate CSV files."""
-        files = self.FILE_MAPPING[self.split]
-        rss_file = self.data_root / files['rss']
-        coords_file = self.data_root / files['coords']
-
-        if not rss_file.exists():
-            raise FileNotFoundError(f"RSS file not found: {rss_file}")
-        if not coords_file.exists():
-            raise FileNotFoundError(f"Coordinates file not found: {coords_file}")
-
-        # Load RSS data (no header, comma-separated RSSI values)
-        rssi_data = np.loadtxt(rss_file, delimiter=',', dtype=np.float32)
-
-        # Load coordinates (no header: x, y, floor, ?, ?, device_label)
-        coords_data = np.loadtxt(coords_file, delimiter=',', dtype=np.float32)
-
-        if len(rssi_data) != len(coords_data):
-            raise ValueError(
-                f"RSS and coordinate files have different lengths: "
-                f"{len(rssi_data)} vs {len(coords_data)}"
-            )
-
-        # Store number of APs
-        self._num_aps = rssi_data.shape[1]
-        self._available_floors = [0]  # Single floor dataset
-
-        # Filter by floor parameter (TUJI1 only has floor 0)
-        if self._floor_param != 'all':
-            if isinstance(self._floor_param, int):
-                if self._floor_param != 0:
-                    raise ValueError(f"TUJI1 only has floor 0, requested: {self._floor_param}")
-            elif 0 not in self._floor_param:
-                raise ValueError(f"TUJI1 only has floor 0, requested: {self._floor_param}")
-
-        # Process each sample
-        for i in range(len(rssi_data)):
-            # Create WiFi signal
-            signal = WiFiSignal(rssi_values=rssi_data[i])
-
-            # Parse coordinates (x, y, floor from columns 0, 1, 2)
-            x_val = float(coords_data[i, 0])
-            y_val = float(coords_data[i, 1])
-            floor_val = int(coords_data[i, 2]) if coords_data.shape[1] > 2 else 0
-
-            # Create location
-            location = Location(
-                coordinate=Coordinate(x=x_val, y=y_val),
-                floor=floor_val,
-                building_id='0'
-            )
-
-            self._signals.append(signal)
-            self._locations.append(location)
-
-        print(f"Loaded {len(self._signals)} samples from TUJI1 dataset ({self._num_aps} APs)")
-
-
-
-def TUJI1(data_root=None, split=None, download=False, floor='all', **kwargs):
-    """
-    Convenience function for loading TUJI1 dataset.
-
-    Args:
-        data_root: Root directory for dataset storage
-        split: Dataset split ('train', 'test', 'all', or None for tuple)
-        download: Whether to download if not found
-        floor: Floor(s) to load. Can be:
-            - 'all': Load all floors (default)
-            - Single floor: 0, 1, 2, etc.
-            - List of floors: [0, 1, 2]
-        **kwargs: Additional arguments passed to TUJI1Dataset
-
-    Returns:
-        - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset
-        - If split is None: Returns tuple (train_dataset, test_dataset)
-
-    Examples:
-        >>> # Load train and test separately (tuple unpacking)
-        >>> train, test = TUJI1(download=True)
-
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = TUJI1(split='all', download=True)
-
-        >>> # Load specific floor(s)
-        >>> train = TUJI1(floor=[0, 1], split='train')
-
-        >>> # List available floors
-        >>> TUJI1.list_floors()
-    """
-    if split is None:
-        # Return both train and test as tuple
-        train_dataset = TUJI1Dataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            floor=floor,
-            **kwargs
-        )
-        test_dataset = TUJI1Dataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            floor=floor,
-            **kwargs
-        )
-        return train_dataset, test_dataset
-    elif split == 'all':
-        # Return merged train + test dataset
-        from torch.utils.data import ConcatDataset
-        train_dataset = TUJI1Dataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            floor=floor,
-            **kwargs
-        )
-        test_dataset = TUJI1Dataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            floor=floor,
-            **kwargs
-        )
-        return ConcatDataset([train_dataset, test_dataset])
-    else:
-        # Return single split
-        return TUJI1Dataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            floor=floor,
-            **kwargs
-        )
-
-
-# Attach class method to convenience function
-TUJI1.list_floors = TUJI1Dataset.list_floors
+    def _parse(self, paths, split):
+        rss_path, crd_path, labels_path = paths
+        rssi = np.loadtxt(rss_path, delimiter=",", ndmin=2).astype(np.float32)
+        crd = np.loadtxt(crd_path, delimiter=",", ndmin=2)
+        if rssi.shape[1] != self.n_aps or crd.shape[1] != 6 or len(crd) != len(rssi):
+            raise ValueError(f"{split}: expected {self.n_aps} RSS columns, 6 coordinate columns and equal row "
+                             f"counts; got RSS {rssi.shape}, coordinates {crd.shape}")
+        if np.any(crd[:, 2:5] != 0):
+            raise ValueError(f"{crd_path.name}: the z/floor/building columns hold values; they were declared unused")
+        with open(labels_path, newline="", encoding="utf-8-sig") as fh:
+            reader = csv.DictReader(fh)
+            if not {"Label", "Device"} <= set(reader.fieldnames or ()):
+                raise ValueError(f"{labels_path.name}: expected columns 'Device' and 'Label', got {reader.fieldnames}")
+            names = {int(row["Label"]): row["Device"].strip() for row in reader}
+        codes = crd[:, 5].astype(np.int64)
+        if not set(np.unique(codes)) <= set(names):
+            raise ValueError(f"{crd_path.name}: device labels {sorted(set(np.unique(codes)) - set(names))} "
+                             f"are not in {labels_path.name}")
+        rssi[rssi == self.meta["raw_missing_value"]] = np.nan
+        if np.any(rssi >= 0):
+            raise ValueError(f"{rss_path.name}: non-negative RSSI other than the +100 'missing' marker")
+        device = np.array([names[c] for c in codes])
+        ids = np.array([f"{split}-{i:05d}" for i in range(len(rssi))])
+        return SampleTable(rssi, crd[:, :2], None, None, {"device": device}, ids,
+                           meta={"feature_names": tuple(f"WAP{j:03d}" for j in range(1, self.n_aps + 1)),
+                                 "device_names": tuple(names[k] for k in sorted(names))})

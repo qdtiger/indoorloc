@@ -1,0 +1,129 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "tuji1",
+ "aliases": [],
+ "display_name": "TUJI1",
+ "dataset_citation": {
+  "authors": "L. Klus, R. Klus, E. S. Lohan, J. Nurmi, C. Granell, M. Valkama, J. Talvitie, S. Casteleyn, J. Torres-Sospedra",
+  "title": "TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density",
+  "venue": "Data in Brief 54:110356",
+  "year": 2024,
+  "doi": "10.1016/j.dib.2024.110356",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/tuji1.py",
+ "protocols": {
+  "official": "the train/test split distributed with the dataset"
+ },
+ "metrics": {
+  "mean_error_3d": {
+   "definition": "mean 3-D Euclidean positioning error, as reported",
+   "unit": "m"
+  },
+  "mean_error": {
+   "definition": "mean 2-D Euclidean positioning error",
+   "unit": "m"
+  }
+ },
+ "entries": [
+  {
+   "method": "k-NN, tuned (exponential representation, Sørensen distance, k=7)",
+   "values": {
+    "mean_error_3d": 2.27
+   },
+   "kind": "literature",
+   "check": "corrected",
+   "check_note": "0.1 stored 1.8 m as a mean (2-D) error; the paper's Table 3 reports a 2.27 m mean 3-D error. Protocol: the split distributed with the dataset (the benchmark section does not restate it).",
+   "location": "Table 3 ('Best Coef.')",
+   "protocol": "official",
+   "source": {
+    "authors": "L. Klus, R. Klus, E. S. Lohan, J. Nurmi, C. Granell, M. Valkama, J. Talvitie, S. Casteleyn, J. Torres-Sospedra",
+    "title": "TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density",
+    "venue": "Data in Brief 54:110356",
+    "year": 2024,
+    "doi": "10.1016/j.dib.2024.110356",
+    "url": null
+   },
+   "ported": {
+    "citation": "Klus et al., TUJI1 Dataset: Multi-device dataset for indoor localization, Data in Brief, 2024",
+    "values": {
+     "mean_error": 1.8
+    },
+    "notes": "DOI: 10.1016/j.dib.2024.110356; Best coefficient benchmark with tuned parameters",
+    "is_sota": true,
+    "method": "kNN (Best Tuned)"
+   }
+  },
+  {
+   "method": "1-NN (positive representation, Euclidean distance)",
+   "values": {
+    "mean_error_3d": 3.34
+   },
+   "kind": "literature",
+   "check": "corrected",
+   "check_note": "0.1 stored 2.5 m as a mean (2-D) error; the paper's Table 3 reports a 3.34 m mean 3-D error.",
+   "location": "Table 3 ('1 NN')",
+   "protocol": "official",
+   "source": {
+    "authors": "L. Klus, R. Klus, E. S. Lohan, J. Nurmi, C. Granell, M. Valkama, J. Talvitie, S. Casteleyn, J. Torres-Sospedra",
+    "title": "TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density",
+    "venue": "Data in Brief 54:110356",
+    "year": 2024,
+    "doi": "10.1016/j.dib.2024.110356",
+    "url": null
+   },
+   "ported": {
+    "citation": "Klus et al., Data in Brief, 2024",
+    "values": {
+     "mean_error": 2.5
+    },
+    "notes": "DOI: 10.1016/j.dib.2024.110356; Untuned baseline benchmark",
+    "is_sota": false,
+    "method": "1NN (Baseline)"
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "mean_error": 2.73
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 2.73
+    },
+    "notes": "Distance-weighted KNN baseline from IndoorLoc testing",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=3)",
+   "values": {
+    "mean_error": 2.9
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 2.9
+    },
+    "notes": "Simple KNN baseline",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

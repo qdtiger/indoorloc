@@ -1,0 +1,68 @@
+{
+  "dataset": "UJIIndoorLoc",
+  "source": "https://archive.ics.uci.edu/dataset/310/ujiindoorloc",
+  "loader": "indoorloc.load_dataset('ujiindoorloc')",
+  "dataset_doi": "10.24432/C5MS59",
+  "dataset_license": "CC BY 4.0",
+  "dataset_attribution": "Torres-Sospedra, J., Montoliu, R., Martínez-Usó, A., Arnau, T., and Avariento, J. (2014). UJIIndoorLoc. UCI Machine Learning Repository.",
+  "split": {
+    "train": "trainingData.csv",
+    "evaluation": "validationData.csv",
+    "train_samples": 19937,
+    "evaluation_samples": 1111
+  },
+  "source_sha256": {
+    "trainingData.csv": "45ca0128bd12019c976bb4793e407c979c82995d7a5940ab7288620247905168",
+    "validationData.csv": "5f90c536648cd657b2c516d20c4e0968d4003279ea6bd5d5d5322d3f1e8905c0"
+  },
+  "input": {
+    "signal": "WiFi RSSI",
+    "unit": "dBm",
+    "shape": [
+      "N",
+      520
+    ],
+    "ap_order": "WAP001..WAP520",
+    "missing": "the file's 100 ('not detected') is loaded as NaN",
+    "preprocessing": "FillMissing(-104): NaN -> -104 dBm; no fitted statistics"
+  },
+  "target": {
+    "columns": [
+      "LONGITUDE",
+      "LATITUDE"
+    ],
+    "crs": "EPSG:3857 (Web Mercator metres)",
+    "ground_scale": 0.7661271545776605,
+    "note": "errors are reported in EPSG:3857 metres, as in the literature; multiply by ground_scale for ground metres",
+    "floor_labels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "building_labels": [
+      0,
+      1,
+      2
+    ]
+  },
+  "models": {
+    "knn": {
+      "k": 5,
+      "weights": "uniform"
+    },
+    "wknn": {
+      "k": 5,
+      "weights": "distance (1/d)"
+    }
+  },
+  "neighbour_search": "exact Euclidean; ties broken by training index, independent of BLAS/OpenMP threads",
+  "selection": "k=5 fixed in advance; no hyperparameter search on the evaluation file",
+  "metrics": {
+    "position": "2D Euclidean distance over all 1111 samples",
+    "classification": "floor and building accuracy in percent, reported separately",
+    "percentiles": "numpy.percentile, linear interpolation",
+    "floor_penalty": "none"
+  }
+}

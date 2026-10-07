@@ -1,0 +1,641 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "ujiindoorloc",
+ "aliases": [
+  "uji",
+  "ujindoorloc"
+ ],
+ "display_name": "UJIIndoorLoc",
+ "dataset_citation": {
+  "authors": "J. Torres-Sospedra, R. Montoliu, A. Martinez-Uso, J. P. Avariento, T. J. Arnau, M. Benedito-Bordonau, J. Huerta",
+  "title": "UJIIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems",
+  "venue": "2014 International Conference on Indoor Positioning and Indoor Navigation (IPIN), pp. 261-270",
+  "year": 2014,
+  "doi": "10.1109/IPIN.2014.7275492",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/ujindoorloc.py",
+ "protocols": {
+  "official": "train on trainingData.csv (19,937 scans), test on validationData.csv (1,111 scans)"
+ },
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean error, as reported by each paper; the dataset's own coordinates are EPSG:3857 (Web Mercator) metres, 0.766 ground metres each",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  },
+  "std_error": {
+   "definition": "standard deviation of the 2-D error, as reported",
+   "unit": "m"
+  },
+  "mean_penalized_error": {
+   "definition": "mean of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  },
+  "p25_penalized_error": {
+   "definition": "25th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  },
+  "median_penalized_error": {
+   "definition": "median of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  },
+  "p75_penalized_error": {
+   "definition": "75th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  },
+  "p95_penalized_error": {
+   "definition": "95th percentile of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  },
+  "max_penalized_error": {
+   "definition": "maximum of the error with 4 m per wrong floor and 50 m for a wrong building (EvAAL-ETRI 2015 rules; indoorloc.evaluation.scoring.penalized_errors)",
+   "unit": "m"
+  }
+ },
+ "entries": [
+  {
+   "method": "GBDT + sample differences",
+   "values": {
+    "mean_error": 2.45,
+    "floor_accuracy": 99.14
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "0.1 attributed this to 'Li et al.'; Crossref lists Cao, Zhuang, Yang, Sun and Wang. Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "X. Cao, Y. Zhuang, X. Yang, X. Sun, X. Wang",
+    "title": "A universal Wi-Fi fingerprint localization method based on machine learning and sample differences",
+    "venue": "Satellite Navigation 2:27",
+    "year": 2021,
+    "doi": "10.1186/s43020-021-00058-8",
+    "url": null
+   },
+   "ported": {
+    "citation": "Li et al., A universal Wi-Fi fingerprint localization method, Satellite Navigation, 2021",
+    "values": {
+     "mean_error": 2.45,
+     "floor_accuracy": 0.9914
+    },
+    "notes": "DOI: 10.1186/s43020-021-00058-8",
+    "is_sota": true,
+    "method": "GBDT + Sample Diff"
+   }
+  },
+  {
+   "method": "XGBoost + sample differences",
+   "values": {
+    "mean_error": 3.42,
+    "floor_accuracy": 99.4
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "0.1 attributed this to 'Li et al.'; see the entry above. Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "X. Cao, Y. Zhuang, X. Yang, X. Sun, X. Wang",
+    "title": "A universal Wi-Fi fingerprint localization method based on machine learning and sample differences",
+    "venue": "Satellite Navigation 2:27",
+    "year": 2021,
+    "doi": "10.1186/s43020-021-00058-8",
+    "url": null
+   },
+   "ported": {
+    "citation": "Li et al., Satellite Navigation, 2021",
+    "values": {
+     "mean_error": 3.42,
+     "floor_accuracy": 0.994
+    },
+    "notes": "DOI: 10.1186/s43020-021-00058-8",
+    "is_sota": false,
+    "method": "XGBoost + Sample Diff"
+   }
+  },
+  {
+   "method": "FasterKAN",
+   "values": {
+    "mean_error": 3.56,
+    "floor_accuracy": 99.0,
+    "building_accuracy": 99.0
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "No publication with the 0.1 title was found (Crossref title search). The same three numbers appear in the 0.1 SODIndoorLoc table attributed to Feng et al., Engineered Science 2024 (DOI 10.30919/es1289), so the attribution to UJIIndoorLoc is doubtful.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Kolmogorov-Arnold Networks for Indoor Localization, 2024",
+    "values": {
+     "mean_error": 3.56,
+     "floor_accuracy": 0.99,
+     "building_accuracy": 0.99
+    },
+    "notes": "KAN-based architecture",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "P-MIMO LSTM",
+   "values": {
+    "mean_error": 4.2,
+    "std_error": 3.2
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper. Evaluated on a subset of UJIIndoorLoc with trajectory input, so it is not comparable with numbers on the official validation split.",
+   "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+   "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+   "source": {
+    "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+    "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+    "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+    "year": 2019,
+    "doi": "10.1109/JIOT.2019.2940368",
+    "url": "https://arxiv.org/abs/1903.11703"
+   },
+   "ported": {
+    "citation": "Hoang et al., Recurrent Neural Networks For Accurate RSSI Indoor Localization, IEEE IoT Journal, 2019",
+    "values": {
+     "mean_error": 4.2
+    },
+    "notes": "std=3.2m",
+    "is_sota": false,
+    "method": "LSTM"
+   }
+  },
+  {
+   "method": "DNN-WKNN hybrid",
+   "values": {
+    "mean_error": 7.82,
+    "floor_accuracy": 95.0
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned HTTP 403)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "D. Mao, H. Lin, X. Lou",
+    "title": "Fingerprinting Indoor Positioning Based on Improved Sequential Deep Learning",
+    "venue": "Algorithms 18(1):17",
+    "year": 2025,
+    "doi": "10.3390/a18010017",
+    "url": null
+   },
+   "ported": {
+    "citation": "Fingerprinting Indoor Positioning Based on Improved Sequential Deep Learning, MDPI Algorithms, 2025",
+    "values": {
+     "mean_error": 7.82,
+     "floor_accuracy": 0.95
+    },
+    "notes": "DOI: 10.3390/a18010017",
+    "is_sota": false,
+    "method": "DNN-WKNN Hybrid"
+   }
+  },
+  {
+   "method": "MLNN (as re-implemented by Hoang et al.)",
+   "values": {
+    "mean_error": 7.5,
+    "std_error": 3.8
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper; a baseline run by Hoang et al. on their UJIIndoorLoc subset.",
+   "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+   "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+   "source": {
+    "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+    "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+    "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+    "year": 2019,
+    "doi": "10.1109/JIOT.2019.2940368",
+    "url": "https://arxiv.org/abs/1903.11703"
+   },
+   "ported": {
+    "citation": "Hoang et al., IEEE IoT Journal, 2019",
+    "values": {
+     "mean_error": 7.5
+    },
+    "notes": "Multi-layer feed-forward NN, std=3.8m",
+    "is_sota": false,
+    "method": "MLNN"
+   }
+  },
+  {
+   "method": "CNN (lightweight)",
+   "values": {
+    "mean_error": 9.5,
+    "floor_accuracy": 90.0,
+    "building_accuracy": 99.0
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned HTTP 403)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "R. S. Sinha, S.-H. Hwang",
+    "title": "Comparison of CNN Applications for RSSI-Based Fingerprint Indoor Localization",
+    "venue": "Electronics 8(9):989",
+    "year": 2019,
+    "doi": "10.3390/electronics8090989",
+    "url": null
+   },
+   "ported": {
+    "citation": "Comparison of CNN Applications for RSSI-Based Fingerprint Indoor Localization, MDPI Electronics, 2019",
+    "values": {
+     "mean_error": 9.5,
+     "floor_accuracy": 0.9,
+     "building_accuracy": 0.99
+    },
+    "notes": "DOI: 10.3390/electronics8090989",
+    "is_sota": false,
+    "method": "CNN (Lightweight)"
+   }
+  },
+  {
+   "method": "CNNLoc",
+   "values": {
+    "mean_error": 11.78,
+    "floor_accuracy": 91.35,
+    "building_accuracy": 99.91
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "0.1 cited 'IEEE CCNC, 2019'; Crossref places the paper in the 2019 IEEE SmartWorld congress. Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "X. Song, X. Fan, X. He, C. Xiang, Q. Ye, X. Huang, G. Fang, L. L. Chen, J. Qin, Z. Wang",
+    "title": "CNNLoc: Deep-Learning Based Indoor Localization with WiFi Fingerprinting",
+    "venue": "2019 IEEE SmartWorld/UIC/ATC/SCALCOM/IOP/SCI, pp. 589-595",
+    "year": 2019,
+    "doi": "10.1109/SmartWorld-UIC-ATC-SCALCOM-IOP-SCI.2019.00139",
+    "url": null
+   },
+   "ported": {
+    "citation": "Song et al., CNNLoc: Deep-Learning Based Indoor Localization with WiFi Fingerprinting, IEEE CCNC, 2019",
+    "values": {
+     "mean_error": 11.78,
+     "floor_accuracy": 0.9135,
+     "building_accuracy": 0.9991
+    },
+    "notes": "",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "CCpos (CDAE-CNN)",
+   "values": {
+    "mean_error": 12.4,
+    "floor_accuracy": 95.3,
+    "building_accuracy": 99.6
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "The numbers match CCpos (Qin, Zuo, Wang, Sensors 2021); 0.1 cited 'CDAELoc: Convolutional Denoising Autoencoder for Indoor Localization, 2020', which was not found.",
+   "location": "Section 4.3 (text) and the abstract",
+   "protocol": "unspecified",
+   "source": {
+    "authors": "F. Qin, T. Zuo, X. Wang",
+    "title": "CCpos: WiFi Fingerprint Indoor Positioning System Based on CDAE-CNN",
+    "venue": "Sensors 21(4):1114",
+    "year": 2021,
+    "doi": "10.3390/s21041114",
+    "url": null
+   },
+   "ported": {
+    "citation": "CDAELoc: Convolutional Denoising Autoencoder for Indoor Localization, 2020",
+    "values": {
+     "mean_error": 12.4,
+     "floor_accuracy": 0.953,
+     "building_accuracy": 0.996
+    },
+    "notes": "",
+    "is_sota": false,
+    "method": "CCPos (CDAE-CNN)"
+   }
+  },
+  {
+   "method": "RADAR k-NN (as re-implemented by Hoang et al.)",
+   "values": {
+    "mean_error": 8.1,
+    "std_error": 4.9
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Matches the paper; a baseline run by Hoang et al. on their UJIIndoorLoc subset.",
+   "location": "Table VI, 'All buildings' row (arXiv:1903.11703)",
+   "protocol": "subset: phones 13 and 14 in buildings 0 and 1, sequential input from a user's past positions; not the official split",
+   "source": {
+    "authors": "M. T. Hoang, B. Yuen, X. Dong, T. Lu, R. Westendorp, K. Reddy",
+    "title": "Recurrent Neural Networks for Accurate RSSI Indoor Localization",
+    "venue": "IEEE Internet of Things Journal 6(6):10639-10651",
+    "year": 2019,
+    "doi": "10.1109/JIOT.2019.2940368",
+    "url": "https://arxiv.org/abs/1903.11703"
+   },
+   "ported": {
+    "citation": "Hoang et al., IEEE IoT Journal, 2019",
+    "values": {
+     "mean_error": 8.1
+    },
+    "notes": "Classic RADAR algorithm baseline, std=4.9m",
+    "is_sota": false,
+    "method": "RADAR (KNN)"
+   }
+  },
+  {
+   "method": "k-NN (k=1), dataset baseline",
+   "values": {
+    "mean_error": 7.9,
+    "floor_accuracy": 91.6,
+    "building_accuracy": 99.2
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "The 7.9 m mean error is quoted from this paper by Kim et al. 2018 and Hoang et al. 2019 (secondary sources, checked); the floor and building rates were not checked (IEEE full text not retrieved). Kim et al. quote an 89.92 % success rate (building and floor both correct) for the same baseline.",
+   "location": null,
+   "protocol": "official",
+   "source": {
+    "authors": "J. Torres-Sospedra, R. Montoliu, A. Martinez-Uso, J. P. Avariento, T. J. Arnau, M. Benedito-Bordonau, J. Huerta",
+    "title": "UJIIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems",
+    "venue": "2014 International Conference on Indoor Positioning and Indoor Navigation (IPIN), pp. 261-270",
+    "year": 2014,
+    "doi": "10.1109/IPIN.2014.7275492",
+    "url": null
+   },
+   "ported": {
+    "citation": "Torres-Sospedra et al., UJIndoorLoc: A new multi-building database, IPIN 2014",
+    "values": {
+     "mean_error": 7.9,
+     "floor_accuracy": 0.916,
+     "building_accuracy": 0.992
+    },
+    "notes": "DOI: 10.1109/IPIN.2014.7275492 (Original paper baseline)",
+    "is_sota": false,
+    "method": "KNN (k=1)"
+   }
+  },
+  {
+   "method": "WKNN (k=3)",
+   "values": {
+    "mean_error": 7.3,
+    "floor_accuracy": 92.5
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). The secondary sources above quote only the 1-NN baseline of this paper.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Torres-Sospedra, R. Montoliu, A. Martinez-Uso, J. P. Avariento, T. J. Arnau, M. Benedito-Bordonau, J. Huerta",
+    "title": "UJIIndoorLoc: A new multi-building and multi-floor database for WLAN fingerprint-based indoor localization problems",
+    "venue": "2014 International Conference on Indoor Positioning and Indoor Navigation (IPIN), pp. 261-270",
+    "year": 2014,
+    "doi": "10.1109/IPIN.2014.7275492",
+    "url": null
+   },
+   "ported": {
+    "citation": "Torres-Sospedra et al., IPIN 2014",
+    "values": {
+     "mean_error": 7.3,
+     "floor_accuracy": 0.925
+    },
+    "notes": "Weighted KNN from original paper",
+    "is_sota": false,
+    "method": "WKNN (k=3)"
+   }
+  },
+  {
+   "method": "Scalable DNN (hierarchical)",
+   "values": {
+    "mean_error": 9.29,
+    "floor_accuracy": 91.27,
+    "building_accuracy": 99.82
+   },
+   "kind": "literature",
+   "check": "corrected",
+   "check_note": "0.1 stored floor accuracy 92.4 % and no building accuracy; the paper reports 91.27 % floor and 99.82 % building hit rates with the 9.29 m error.",
+   "location": "Table 3 (kappa=8, sigma=0.2, weighted centroid) and the text below it (arXiv:1712.01990)",
+   "protocol": "official (inferred: the rates are multiples of 1/1111, the size of the validation file)",
+   "source": {
+    "authors": "K. S. Kim, S. Lee, K. Huang",
+    "title": "A scalable deep neural network architecture for multi-building and multi-floor indoor localization based on Wi-Fi fingerprinting",
+    "venue": "Big Data Analytics 3:4",
+    "year": 2018,
+    "doi": "10.1186/s41044-018-0031-2",
+    "url": "https://arxiv.org/abs/1712.01990"
+   },
+   "ported": {
+    "citation": "Kim et al., A Scalable Deep Neural Network Architecture for Multi-Building Indoor Localization, Big Data Analytics, 2018",
+    "values": {
+     "mean_error": 9.29,
+     "floor_accuracy": 0.924
+    },
+    "notes": "DOI: 10.1186/s41044-018-0031-2",
+    "is_sota": false,
+    "method": "Hierarchical DNN"
+   }
+  },
+  {
+   "method": "Random Forest",
+   "values": {
+    "mean_error": 10.8,
+    "floor_accuracy": 89.0
+   },
+   "kind": "literature",
+   "check": "unidentified",
+   "check_note": "The 0.1 source 'Ensemble Methods for WiFi Indoor Localization, 2017' names no authors or venue and was not found.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "Ensemble Methods for WiFi Indoor Localization, 2017",
+    "values": {
+     "mean_error": 10.8,
+     "floor_accuracy": 0.89
+    },
+    "notes": "100 trees, standard parameters",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "1-NN baseline (positive representation, Manhattan distance)",
+   "values": {
+    "mean_penalized_error": 8.46,
+    "p25_penalized_error": 3.39,
+    "median_penalized_error": 6.5,
+    "p75_penalized_error": 11.72,
+    "p95_penalized_error": 21.41,
+    "max_penalized_error": 73.3,
+    "building_accuracy": 100.0,
+    "floor_accuracy": 85.34
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 2",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  },
+  {
+   "method": "HFTS",
+   "values": {
+    "mean_penalized_error": 8.49,
+    "p25_penalized_error": 3.69,
+    "median_penalized_error": 6.99,
+    "p75_penalized_error": 11.6,
+    "p95_penalized_error": 19.93,
+    "max_penalized_error": 40.7,
+    "building_accuracy": 100.0,
+    "floor_accuracy": 96.25
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 3",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  },
+  {
+   "method": "MOSAIC",
+   "values": {
+    "mean_penalized_error": 11.64,
+    "p25_penalized_error": 3.26,
+    "median_penalized_error": 6.72,
+    "p75_penalized_error": 12.12,
+    "p95_penalized_error": 21.54,
+    "max_penalized_error": 313.33,
+    "building_accuracy": 98.65,
+    "floor_accuracy": 93.86
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 3",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  },
+  {
+   "method": "RTLS@UM",
+   "values": {
+    "mean_penalized_error": 6.2,
+    "p25_penalized_error": 2.51,
+    "median_penalized_error": 4.57,
+    "p75_penalized_error": 8.34,
+    "p95_penalized_error": 15.81,
+    "max_penalized_error": 52.27,
+    "building_accuracy": 100.0,
+    "floor_accuracy": 93.74
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 3",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  },
+  {
+   "method": "ICSL",
+   "values": {
+    "mean_penalized_error": 7.67,
+    "p25_penalized_error": 3.1,
+    "median_penalized_error": 5.88,
+    "p75_penalized_error": 10.87,
+    "p95_penalized_error": 19.68,
+    "max_penalized_error": 39.14,
+    "building_accuracy": 100.0,
+    "floor_accuracy": 86.93
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 3",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  },
+  {
+   "method": "Ensemble of the competitors",
+   "values": {
+    "mean_penalized_error": 6.1,
+    "p25_penalized_error": 2.51,
+    "median_penalized_error": 4.56,
+    "p75_penalized_error": 8.24,
+    "p95_penalized_error": 15.41,
+    "max_penalized_error": 52.27,
+    "building_accuracy": 100.0,
+    "floor_accuracy": 96.43
+   },
+   "kind": "literature",
+   "check": "verified",
+   "check_note": "Added in 0.2 from the author preprint (repositorium.uminho.pt); the errors are penalised (see protocol).",
+   "location": "Table 3",
+   "protocol": "EvAAL-ETRI 2015 off-site track: trained on the public UJIIndoorLoc training and validation files, tested on a private test set; errors include 4 m per wrong floor and 50 m for a wrong building",
+   "source": {
+    "authors": "J. Torres-Sospedra, A. Moreira, S. Knauth, R. Berkvens, R. Montoliu, O. Belmonte, S. Trilles, M. J. Nicolau, F. Meneses, A. Costa, A. Koukofikis, M. Weyn, H. Peremans",
+    "title": "A realistic evaluation of indoor positioning systems based on Wi-Fi fingerprinting: The 2015 EvAAL-ETRI competition",
+    "venue": "Journal of Ambient Intelligence and Smart Environments 9(2):263-279",
+    "year": 2017,
+    "doi": "10.3233/AIS-170421",
+    "url": null
+   },
+   "ported": null
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

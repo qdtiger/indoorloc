@@ -1,0 +1,47 @@
+{
+  "environment": {
+    "python": "3.14.4",
+    "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "indoorloc": "0.2.0.dev0",
+    "numpy": "2.4.5"
+  },
+  "timing": "wall time of fit and localize on this CPU",
+  "methods": {
+    "knn": {
+      "metrics": {
+        "n": 1111,
+        "mean_error": 8.808422949721733,
+        "median_error": 5.357844658023697,
+        "p75_error": 10.353950469738116,
+        "p90_error": 19.119515750160613,
+        "p95_error": 28.16159898609,
+        "rmse": 15.889674675297341,
+        "max_error": 206.48923711732184,
+        "floor_accuracy": 90.27902790279028,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0
+      },
+      "fit_seconds": 0.03914684400660917,
+      "localize_seconds": 0.22582960297586396,
+      "evaluation_samples": 1111
+    },
+    "wknn": {
+      "metrics": {
+        "n": 1111,
+        "mean_error": 8.793663569441243,
+        "median_error": 5.35463687920703,
+        "p75_error": 10.329045060926006,
+        "p90_error": 19.153668128097966,
+        "p95_error": 28.15533530229436,
+        "rmse": 15.856093844238329,
+        "max_error": 206.48923711795786,
+        "floor_accuracy": 90.45904590459047,
+        "building_accuracy": 99.72997299729973,
+        "n_failed": 0
+      },
+      "fit_seconds": 0.03295746899675578,
+      "localize_seconds": 0.22912915298365988,
+      "evaluation_samples": 1111
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "ibeacon_rssi",
+ "aliases": [
+  "ibeaconrssi",
+  "ibeacon"
+ ],
+ "display_name": "iBeacon RSSI (UJI BLE RSS database)",
+ "dataset_citation": {
+  "authors": "G. M. Mendoza-Silva, M. Matey-Sanz, J. Torres-Sospedra, J. Huerta",
+  "title": "BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning",
+  "venue": "Data 4(1):12",
+  "year": 2019,
+  "doi": "10.3390/data4010012",
+  "url": "https://zenodo.org/record/1618692"
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/ibeaconrssi.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "k-NN",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "G. M. Mendoza-Silva, M. Matey-Sanz, J. Torres-Sospedra, J. Huerta",
+    "title": "BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning",
+    "venue": "Data 4(1):12",
+    "year": 2019,
+    "doi": "10.3390/data4010012",
+    "url": "https://zenodo.org/record/1618692"
+   },
+   "ported": {
+    "citation": "Mendoza-Silva et al., BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning, Data 2019",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "DOI: 10.3390/data4010012; TODO: fill in results from paper",
+    "is_sota": false,
+    "method": "KNN"
+   }
+  },
+  {
+   "method": "CNN-based",
+   "values": {
+    "mean_error": null
+   },
+   "kind": "literature",
+   "check": "missing",
+   "check_note": "0.1 listed this source with no number (TODO); kept as a pointer to the literature, value null.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "A. Koutris, T. Siozos, Y. Kopsinis, A. Pikrakis, T. Merk, M. Mahlig, S. Papaharalabos, P. Karlsson",
+    "title": "Deep Learning-Based Indoor Localization Using Multi-View BLE Signal",
+    "venue": "Sensors 22(7):2759",
+    "year": 2022,
+    "doi": "10.3390/s22072759",
+    "url": null
+   },
+   "ported": {
+    "citation": "Deep Learning-Based Indoor Localization Using Multi-View BLE Signal, MDPI Sensors, 2022",
+    "values": {
+     "mean_error": null
+    },
+    "notes": "DOI: 10.3390/s22072759; TODO: fill in results",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

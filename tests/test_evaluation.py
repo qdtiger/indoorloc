@@ -1,165 +1,42 @@
-"""Tests for evaluation metrics."""
+from __future__ import annotations
+
 import pytest
-import numpy as np
+
+from indoorloc.core import Prediction, SampleTable
+from indoorloc.evaluation import evaluate
 
 
-class TestMetrics:
-    """Tests for evaluation metrics."""
-
-    def setup_method(self):
-        """Setup test fixtures."""
-        from indoorloc.locations import Location
-
-        # Create mock predictions and ground truths
-        self.predictions = [
-            Location.from_coordinates(x=10, y=10, floor=0, building_id='0'),
-            Location.from_coordinates(x=25, y=25, floor=1, building_id='0'),
-            Location.from_coordinates(x=55, y=55, floor=2, building_id='1'),
-            Location.from_coordinates(x=80, y=80, floor=3, building_id='1'),
-        ]
-
-        self.ground_truths = [
-            Location.from_coordinates(x=12, y=12, floor=0, building_id='0'),
-            Location.from_coordinates(x=20, y=20, floor=1, building_id='0'),
-            Location.from_coordinates(x=50, y=50, floor=2, building_id='0'),  # Wrong building
-            Location.from_coordinates(x=75, y=75, floor=2, building_id='1'),  # Wrong floor
-        ]
-
-    def test_mean_position_error(self):
-        """Test MeanPositionError metric."""
-        from indoorloc.evaluation import MeanPositionError
-
-        metric = MeanPositionError()
-        result = metric.compute(self.predictions, self.ground_truths)
-
-        assert isinstance(result, float)
-        assert result > 0
-
-    def test_median_position_error(self):
-        """Test MedianPositionError metric."""
-        from indoorloc.evaluation import MedianPositionError
-
-        metric = MedianPositionError()
-        result = metric.compute(self.predictions, self.ground_truths)
-
-        assert isinstance(result, float)
-        assert result > 0
-
-    def test_percentile_error(self):
-        """Test PercentileError metric."""
-        from indoorloc.evaluation import PercentileError
-
-        metric_75 = PercentileError(percentile=75)
-        metric_95 = PercentileError(percentile=95)
-
-        result_75 = metric_75.compute(self.predictions, self.ground_truths)
-        result_95 = metric_95.compute(self.predictions, self.ground_truths)
-
-        assert result_75 <= result_95  # 95th percentile should be >= 75th
-
-    def test_floor_accuracy(self):
-        """Test FloorAccuracy metric."""
-        from indoorloc.evaluation import FloorAccuracy
-
-        metric = FloorAccuracy()
-        result = metric.compute(self.predictions, self.ground_truths)
-
-        # 3 out of 4 correct floors
-        assert result == pytest.approx(75.0)
-
-    def test_building_accuracy(self):
-        """Test BuildingAccuracy metric."""
-        from indoorloc.evaluation import BuildingAccuracy
-
-        metric = BuildingAccuracy()
-        result = metric.compute(self.predictions, self.ground_truths)
-
-        # 3 out of 4 correct buildings
-        assert result == pytest.approx(75.0)
-
-    def test_cdf_analysis(self):
-        """Test CDFAnalysis metric."""
-        from indoorloc.evaluation import CDFAnalysis
-
-        metric = CDFAnalysis(error_thresholds=[1, 5, 10, 20])
-        result = metric.compute(self.predictions, self.ground_truths)
-
-        assert isinstance(result, dict)
-        assert 'within_1m' in result
-        assert 'within_5m' in result
-        assert 'within_10m' in result
-        assert 'within_20m' in result
-
-        # Higher thresholds should have higher percentages
-        assert result['within_1m'] <= result['within_5m']
-        assert result['within_5m'] <= result['within_10m']
-        assert result['within_10m'] <= result['within_20m']
+def test_evaluate_plain_arrays():
+    r = evaluate([[0, 0], [3, 4], [1, 1]], [[0, 1], [0, 0], [1, 1]],
+                 floor_true=[1, 2, 3], floor_pred=[1, 2, 0])
+    assert r.errors.tolist() == [1.0, 5.0, 0.0] and (r.mean_error, r.median_error) == (2.0, 1.0)
+    assert r.floor_accuracy == pytest.approx(200 / 3) and r.building_accuracy is None
+    xs, ps = r.cdf()
+    assert xs.tolist() == [0.0, 1.0, 5.0] and ps.tolist() == pytest.approx([1 / 3, 2 / 3, 1.0])
+    assert r.cdf([0.5, 1.0, 10.0]).tolist() == pytest.approx([1 / 3, 2 / 3, 1.0])
 
 
-class TestEvaluator:
-    """Tests for Evaluator class."""
-
-    def test_evaluator_default_metrics(self):
-        """Test Evaluator with default metrics."""
-        from indoorloc.evaluation import Evaluator
-        from indoorloc.locations import Location
-
-        predictions = [
-            Location.from_coordinates(x=10, y=10, floor=0),
-            Location.from_coordinates(x=20, y=20, floor=1),
-        ]
-        ground_truths = [
-            Location.from_coordinates(x=12, y=12, floor=0),
-            Location.from_coordinates(x=25, y=25, floor=1),
-        ]
-
-        evaluator = Evaluator()
-        results = evaluator.evaluate(predictions, ground_truths)
-
-        assert 'Mean Position Error (m)' in results
-        assert 'Median Position Error (m)' in results
-        assert 'Floor Accuracy (%)' in results
-
-    def test_evaluator_custom_metrics(self):
-        """Test Evaluator with custom metrics."""
-        from indoorloc.evaluation import Evaluator, MeanPositionError, FloorAccuracy
-        from indoorloc.locations import Location
-
-        predictions = [
-            Location.from_coordinates(x=10, y=10, floor=0),
-        ]
-        ground_truths = [
-            Location.from_coordinates(x=10, y=10, floor=0),
-        ]
-
-        evaluator = Evaluator([MeanPositionError(), FloorAccuracy()])
-        results = evaluator.evaluate(predictions, ground_truths)
-
-        assert 'Mean Position Error (m)' in results
-        assert 'Floor Accuracy (%)' in results
-        assert len(results) == 2
-
-    def test_evaluator_from_config(self):
-        """Test building metrics from config dict."""
-        from indoorloc.evaluation import Evaluator
-        from indoorloc.locations import Location
-
-        predictions = [
-            Location.from_coordinates(x=10, y=10, floor=0),
-        ]
-        ground_truths = [
-            Location.from_coordinates(x=12, y=12, floor=0),
-        ]
-
-        evaluator = Evaluator([
-            {'type': 'MeanPositionError'},
-            {'type': 'PercentileError', 'percentile': 90},
-        ])
-
-        results = evaluator.evaluate(predictions, ground_truths)
-        assert 'Mean Position Error (m)' in results
-        assert '90th Percentile Error (m)' in results
+def test_every_axis_counts_and_negative_floors_are_real_floors():
+    assert evaluate([0.0, 1.0], [1.0, 3.0]).mean_error == 1.5  # 1-D corridor
+    assert evaluate([[0, 0, 0], [0, 0, 0]], [[0, 0, 3], [0, 0, 4]]).errors.tolist() == [3.0, 4.0]
+    assert evaluate([[0, 0]] * 4, [[0, 0]] * 4, floor_true=[-1, -1, 0, 1], floor_pred=[0, 0, 0, 1]).floor_accuracy == 50.0
+    assert evaluate([[0, 0]], [[3, 4]], scale=0.5).mean_error == 2.5
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+def test_labels_come_from_core_types_and_explicit_arguments_win():
+    table = SampleTable([[0.0], [0.0]], [[0, 0], [0, 2]], floor=[0, 1])
+    r = evaluate(table, Prediction([[0, 0], [0, 0]], floor=[0, 0]))
+    assert r.mean_error == 1.0 and r.floor_accuracy == 50.0
+    assert evaluate(table, Prediction([[0, 0], [0, 0]], floor=[0, 0]), floor_true=[0, 0]).floor_accuracy == 100.0
+
+
+def test_shape_mismatch_is_an_error():
+    with pytest.raises(ValueError, match="differ in shape"):
+        evaluate([[0, 0]], [[0, 0, 0]])
+
+
+def test_rows_are_matched_by_id_when_both_sides_carry_ids():
+    table = SampleTable([[0.0], [0.0]], [[0, 0], [0, 2]], ids=["a", "b"])
+    assert evaluate(table, Prediction([[0, 0], [0, 2]], ids=["a", "b"])).mean_error == 0.0
+    with pytest.raises(ValueError, match="different ids"):
+        evaluate(table, Prediction([[0, 2], [0, 0]], ids=["b", "a"]))  # reordered: would score 2.0

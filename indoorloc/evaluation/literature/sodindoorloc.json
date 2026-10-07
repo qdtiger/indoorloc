@@ -1,0 +1,236 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "sodindoorloc",
+ "aliases": [
+  "sod"
+ ],
+ "display_name": "SODIndoorLoc",
+ "dataset_citation": {
+  "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+  "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+  "venue": "Satellite Navigation 3:25",
+  "year": 2022,
+  "doi": "10.1186/s43020-022-00086-y",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/sodindoorloc.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "entries": [
+  {
+   "method": "MLP regression",
+   "values": {
+    "mean_error": 2.3
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Supplementary open dataset for WiFi indoor localization, Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 2.3
+    },
+    "notes": "DOI: 10.1186/s43020-022-00086-y; Best result from original paper",
+    "is_sota": true,
+    "method": "MLP Regression"
+   }
+  },
+  {
+   "method": "k-NN regression",
+   "values": {
+    "mean_error": 2.8
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 2.8
+    },
+    "notes": "DOI: 10.1186/s43020-022-00086-y",
+    "is_sota": false,
+    "method": "KNN Regression"
+   }
+  },
+  {
+   "method": "Random forest regression",
+   "values": {
+    "mean_error": 3.1
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 3.1
+    },
+    "notes": "DOI: 10.1186/s43020-022-00086-y",
+    "is_sota": false,
+    "method": "Random Forest Regression"
+   }
+  },
+  {
+   "method": "SVM regression",
+   "values": {
+    "mean_error": 3.5
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 3.5
+    },
+    "notes": "DOI: 10.1186/s43020-022-00086-y",
+    "is_sota": false,
+    "method": "SVM Regression"
+   }
+  },
+  {
+   "method": "FasterKAN",
+   "values": {
+    "mean_error": 3.56,
+    "floor_accuracy": 99.0,
+    "building_accuracy": 99.0
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). The same numbers also appear, without a traceable source, in the 0.1 UJIIndoorLoc table. 0.1 notes a space-ID accuracy of 71 %.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "Y. Feng, Y. Wang, B. Zhao, J. Bi, Y. Luo",
+    "title": "Machine Learning-Based WiFi Indoor Localization with FasterKAN: Optimizing Communication and Signal Accuracy",
+    "venue": "Engineered Science",
+    "year": 2024,
+    "doi": "10.30919/es1289",
+    "url": null
+   },
+   "ported": {
+    "citation": "Feng et al., Machine Learning-Based WiFi Indoor Localization with FasterKAN, Engineered Science, 2024",
+    "values": {
+     "mean_error": 3.56,
+     "floor_accuracy": 0.99,
+     "building_accuracy": 0.99
+    },
+    "notes": "DOI: 10.30919/es1289; KAN-based architecture; Space ID accuracy: 71%",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "mean_error": 4.2
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 4.2
+    },
+    "notes": "Weighted KNN baseline",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "k-NN (k=1)",
+   "values": {
+    "mean_error": 5.1
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved). (publisher returned a bot-check page)",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "J. Bi, Y. Wang, B. Yu, H. Cao, T. Shi, L. Huang",
+    "title": "Supplementary open dataset for WiFi indoor localization based on received signal strength",
+    "venue": "Satellite Navigation 3:25",
+    "year": 2022,
+    "doi": "10.1186/s43020-022-00086-y",
+    "url": null
+   },
+   "ported": {
+    "citation": "Bi et al., Satellite Navigation, 2022",
+    "values": {
+     "mean_error": 5.1
+    },
+    "notes": "Simple nearest neighbor baseline",
+    "is_sota": false,
+    "method": "KNN (k=1)"
+   }
+  }
+ ],
+ "notes": "0.1: results vary with the building subset (CETC331, HCXY, SYL); the entries do not state which.",
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}

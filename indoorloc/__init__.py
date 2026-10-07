@@ -1,478 +1,145 @@
+"""IndoorLoc: wireless indoor localization in five layers that exchange plain arrays.
+
+    L1 datasets    WiFi / BLE / CSI / IMU datasets and simulators   -> SampleTable
+    L2 signals     preprocessing and signal representations         SampleTable -> SampleTable
+    L3 methods     fingerprinting, model-based, deep, transfer      fit(X, y) / localize(X) -> Prediction
+    L4 evaluation  metrics, protocols, bounds, literature            evaluate(y_true, y_pred)
+    L5 apps        tracking, PDR, fusion, streaming, navigation      built on L2-L4
+
+Your own data and code plug in at each layer: ``SampleTable(X, pos, ...)`` or a ``Dataset``
+subclass for ``register_dataset`` (L1), a ``Transform`` subclass (L2), a ``BaseLocalizer``
+subclass for ``register_model`` (L3), a ``Protocol`` whose split returns ``Fold``s for
+``register_protocol`` (L4); see docs/guide/extending.md.
+
+``import indoorloc`` runs only this file. Every name below is imported on first access
+(PEP 562), so using one layer never loads the others, and nothing here imports numpy,
+torch or scikit-learn.
 """
-IndoorLoc: A Unified Framework for Indoor Localization
+from __future__ import annotations
 
-A comprehensive library for indoor positioning supporting multiple algorithms,
-datasets, and sensor modalities.
+import importlib
+import sys
+import warnings
+from typing import TYPE_CHECKING
 
-Example:
-    >>> import indoorloc as iloc
-    >>> model = iloc.create_model('knn', k=5)
-    >>> model.fit(train_signals, train_locations)
-    >>> result = model.predict(test_signal)
-    >>> print(f"Position: ({result.x:.2f}, {result.y:.2f})")
-"""
-from .version import __version__, __version_info__
+from ._version import __version__
 
-from .registry import (
-    Registry,
-    SIGNALS,
-    DATASETS,
-    TRANSFORMS,
-    LOCALIZERS,
-    FUSIONS,
-    METRICS,
-    BACKBONES,
-    HEADS,
-    TRAINERS,
-    VISUALIZERS,
-)
-
-from .signals import (
-    BaseSignal,
-    SignalMetadata,
-    WiFiSignal,
-    APInfo,
-    BLESignal,
-    BLEBeacon,
-    IMUSignal,
-    IMUReading,
-)
-
-from .locations import (
-    Coordinate,
-    Location,
-    LocalizationResult,
-)
-
-from .localizers import (
-    BaseLocalizer,
-    TraditionalLocalizer,
-    KNNLocalizer,
-    WKNNLocalizer,
-    SVMLocalizer,
-    RandomForestLocalizer,
-    EnsembleLocalizer,
-    StackingLocalizer,
-    # Transfer Learning
-    TransferLocalizer,
-)
-
-from .models import (
-    # Backbones
-    BaseBackbone,
-    InputAdapter,
-    TimmBackbone,
-    MLPBackbone,
-    CNN1DBackbone,
-    # Heads
-    BaseHead,
-    RegressionHead,
-    MultiScaleRegressionHead,
-    ClassificationHead,
-    FloorHead,
-    BuildingHead,
-    HybridHead,
-    HierarchicalHead,
-    # Localizers
-    DeepLocalizer,
-)
-
-from .datasets.transforms import (
-    BaseTransform,
-    Compose,
-    Identity,
-    RSSINormalize,
-    APFilter,
-    APSelect,
-    GaussianNoise,
-)
-
-from .utils import (
-    Config,
-    load_config,
-    merge_configs,
-    get_data_home,
-    print_config_help,
-    get_default_config,
-    explain_model,
-    explain_dataset,
-    explain_config,
-)
-
-from .datasets import (
-    # HuggingFace-style API (top-level convenience)
-    load_dataset,
-    list_datasets as list_available_datasets,
-    dataset_info,
-    # Base classes
-    BaseDataset,
-    WiFiDataset,
-    BLEDataset,
-    UWBDataset,
-    HybridDataset,
-    MagneticDataset,
-    # WiFi RSSI datasets
-    UJIndoorLocDataset,
-    UJIndoorLoc,
-    SODIndoorLocDataset,
-    SODIndoorLoc,
-    LongTermWiFiDataset,
-    LongTermWiFi,
-    TampereDataset,
-    Tampere,
-    WLANRSSIDataset,
-    WLANRSSI,
-    TUJI1Dataset,
-    TUJI1,
-    # BLE datasets
-    iBeaconRSSIDataset,
-    iBeaconRSSI,
-    BLEIndoorDataset,
-    BLEIndoor,
-    BLERSSIUCIDataset,
-    BLERSSIU_UCI,
-    # CSI datasets
-    CSIFingerprintDataset,
-    CSIFingerprint,
-    HWILDDataset,
-    HWILD,
-    HALOCDataset,
-    HALOC,
-)
-
-
-# Known traditional model aliases
-_TRADITIONAL_MODELS = {
-    'knn': 'KNNLocalizer',
-    'wknn': 'WKNNLocalizer',
-    # Future: 'svm', 'rf', 'gp', etc.
+_SUBMODULES = {
+    "core": "core", "datasets": "datasets", "signals": "signals", "methods": "methods",
+    "evaluation": "evaluation", "apps": "apps", "transforms": "signals.transforms",
 }
+_EXPORTS = {
+    # core
+    "SampleTable": "core", "Prediction": "core", "load_model": "core", "clone": "core",
+    # L1
+    "load_dataset": "datasets", "list_datasets": "datasets", "dataset_info": "datasets", "Dataset": "datasets",
+    "register_dataset": "datasets",
+    # L2
+    "Transform": "signals", "Compose": "signals", "FillMissing": "signals", "RSSINormalize": "signals",
+    "APFilter": "signals", "APSelect": "signals", "APDropout": "signals", "GaussianNoise": "signals",
+    "DeviceCalibration": "signals",
+    "PositiveRepresentation": "signals", "ExponentialRepresentation": "signals", "PowedRepresentation": "signals",
+    "CSIAmplitude": "signals", "CSIPhaseSanitize": "signals", "HampelFilter": "signals", "SubcarrierSelect": "signals",
+    "BLESignal": "signals", "MagneticFeatures": "signals", "MagnetometerCalibration": "signals",
+    # L3 (the localizers also have a registry name for create_model; RadioMapInterpolator, CORAL, TCA do not)
+    "create_model": "methods", "list_models": "methods", "register_model": "methods", "BaseLocalizer": "methods",
+    "LocalizerPipeline": "methods", "KNNLocalizer": "methods.neighbors", "WKNNLocalizer": "methods.neighbors",
+    "SVMLocalizer": "methods.sklearn_wrap", "RandomForestLocalizer": "methods.sklearn_wrap",
+    "ExtraTreesLocalizer": "methods.sklearn_wrap", "GradientBoostingLocalizer": "methods.sklearn_wrap",
+    "HorusLocalizer": "methods.probabilistic", "GPRadioMapLocalizer": "methods.gaussian_process",
+    "EnsembleLocalizer": "methods.ensemble", "StackingLocalizer": "methods.ensemble",
+    "HierarchicalLocalizer": "methods.hierarchical", "RadioMapInterpolator": "methods.interpolation",
+    "TrilaterationLocalizer": "methods.geometric", "TDOALocalizer": "methods.geometric",
+    "WeightedCentroidLocalizer": "methods.geometric", "PathLossLocalizer": "methods.pathloss",
+    "AoALocalizer": "methods.aoa", "LambertianLocalizer": "methods.vlc",
+    "MagneticDTWLocalizer": "methods.magnetic",
+    "MLPLocalizer": "methods.deep", "CNN1DLocalizer": "methods.deep", "DeepLocalizer": "methods.deep",
+    "CORAL": "methods.transfer", "TCA": "methods.transfer",
+    # L4
+    "evaluate": "evaluation", "EvaluationResults": "evaluation", "ipin_score": "evaluation",
+    "get_protocol": "evaluation", "list_protocols": "evaluation", "register_protocol": "evaluation",
+    "Protocol": "evaluation", "Fold": "evaluation",
+    # L5
+    "KalmanTracker": "apps", "ExtendedKalmanTracker": "apps", "ParticleFilter": "apps", "FloorMap": "apps",
+    "StepDetector": "apps", "PDR": "apps", "PDRFusion": "apps", "OnlineLocalizer": "apps", "Navigator": "apps",
+}
+# 0.1 names: still importable in 0.2.x (FutureWarning where the behaviour changed), removed in 0.3.
+_LEGACY = {
+    "WiFiSignal": ("_legacy", "WiFiSignal", None),  # accepts rssi= (0.2) and rssi_values= (0.1, warns)
+    "Location": ("_legacy", "Location", "indoorloc._legacy.Location (0.1 value type)"),
+    "Coordinate": ("_legacy", "Coordinate", "indoorloc._legacy.Coordinate (0.1 value type)"),
+    "LocalizationResult": ("_legacy", "LocalizationResult", "Prediction"),
+    "list_available_datasets": ("datasets", "list_datasets", "list_datasets"),
+}
+__all__ = sorted([*_SUBMODULES, *_EXPORTS, "WiFiSignal", "__version__"])
 
 
-def _is_timm_model(name: str) -> bool:
-    """Check if a name corresponds to a timm model."""
-    # Common model name patterns
-    common_patterns = [
-        'resnet', 'efficientnet', 'mobilenet', 'convnext',
-        'vit_', 'swin', 'deit', 'beit', 'densenet', 'inception',
-        'regnet', 'resnext', 'wide_resnet', 'vgg', 'alexnet',
-        'nfnet', 'efficientformer', 'poolformer', 'pvt',
-        'maxvit', 'coatnet', 'mixer', 'mlp_mixer', 'crossvit',
-    ]
-    name_lower = name.lower()
-
-    # First check pattern match (works whether timm is installed or not)
-    if any(name_lower.startswith(p) or p in name_lower for p in common_patterns):
-        return True
-
-    # If timm is installed, also check exact match
-    try:
-        import timm
-        return name in timm.list_models()
-    except ImportError:
-        return False
+def __getattr__(name: str):
+    if name in _SUBMODULES:
+        value = importlib.import_module(f"{__name__}.{_SUBMODULES[name]}")
+    elif name in _EXPORTS:
+        value = getattr(importlib.import_module(f"{__name__}.{_EXPORTS[name]}"), name)
+    elif name in _LEGACY:
+        module, attr, replacement = _LEGACY[name]
+        if replacement:
+            warnings.warn(f"indoorloc.{name} is deprecated and will be removed in 0.3; use {replacement}",
+                          FutureWarning, stacklevel=2)
+        return getattr(importlib.import_module(f"{__name__}.{module}"), attr)  # not cached: warn every time
+    else:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}{_where(name)}")
+    globals()[name] = value  # later lookups skip __getattr__
+    return value
 
 
-# Convenience functions
-def create_model(
-    model_type: str = None,
-    dataset: 'BaseDataset' = None,
-    config: str = None,
-    input_dim: int = None,
-    num_coords: int = 2,
-    num_floors: int = None,
-    num_buildings: int = None,
-    pretrained: bool = True,
-    **kwargs
-) -> BaseLocalizer:
-    """
-    Create a localization model.
+def _where(name: str) -> str:
+    """Point a public name that is not re-exported here to its layer. Only layers that are
+    already imported are searched, so a failed lookup (``hasattr``, IDE probes) imports nothing."""
+    import difflib
 
-    Supports three modes:
-    1. **Auto mode**: `create_model('auto', dataset=train)` - automatically selects
-       model type based on dataset size and configures dimensions.
-    2. **Explicit mode**: `create_model('knn')` or `create_model('resnet18')`
-    3. **Config mode**: `create_model(config='configs/wifi/knn.yaml')`
-
-    Args:
-        model_type: Model type name
-            - 'auto': Automatically select based on dataset (requires dataset param)
-            - Traditional: 'knn', 'wknn'
-            - Deep learning (timm): 'resnet18', 'efficientnet_b0', 'mobilenetv3_small', etc.
-        dataset: Dataset for auto-configuration. When provided:
-            - input_dim is extracted from dataset.input_dim
-            - num_floors/num_buildings from dataset.output_dim
-            - For 'auto' mode: selects traditional (≤5000 samples) or deep learning
-        config: Path to configuration file
-        input_dim: Input dimension (auto-inferred from dataset if provided)
-        num_coords: Number of coordinate outputs (default: 2 for x, y)
-        num_floors: Number of floors for classification (None to skip)
-        num_buildings: Number of buildings for classification (None to skip)
-        pretrained: Whether to use pretrained weights for deep learning models
-        **kwargs: Model-specific arguments
-
-    Returns:
-        Localizer instance (BaseLocalizer or DeepLocalizer)
-
-    Example:
-        >>> import indoorloc as iloc
-        >>> train, test = iloc.load_dataset("ujindoorloc")
-        >>>
-        >>> # Auto mode (recommended for beginners)
-        >>> model = iloc.create_model('auto', dataset=train)
-        >>>
-        >>> # Traditional ML
-        >>> model = iloc.create_model('knn', k=5)
-        >>> model = iloc.create_model('wknn', dataset=train)  # auto-configure dims
-        >>>
-        >>> # Deep Learning
-        >>> model = iloc.create_model('resnet18', dataset=train)
-        >>> model = iloc.create_model('efficientnet_b0', pretrained=True)
-        >>>
-        >>> # With config file
-        >>> model = iloc.create_model(config='configs/wifi/knn.yaml')
-    """
-    # Config file takes precedence
-    if config is not None:
-        cfg = load_config(config)
-        model_cfg = cfg.get('model', cfg.to_dict())
-        return LOCALIZERS.build(model_cfg)
-
-    # Extract configuration from dataset if provided
-    if dataset is not None:
-        # Get input dimension
-        if input_dim is None:
-            ds_input_dim = dataset.input_dim
-            input_dim = ds_input_dim[0] if len(ds_input_dim) == 1 else ds_input_dim
-
-        # Get output dimensions
-        ds_output_dim = dataset.output_dim
-        if num_floors is None and ds_output_dim.get('num_floors', 1) > 1:
-            num_floors = ds_output_dim['num_floors']
-        if num_buildings is None and ds_output_dim.get('num_buildings', 1) > 1:
-            num_buildings = ds_output_dim['num_buildings']
-        if 'num_coords' in ds_output_dim:
-            num_coords = ds_output_dim['num_coords']
-
-    if model_type is None:
-        raise ValueError("Must specify either model_type or config")
-
-    model_type_lower = model_type.lower()
-
-    # Handle 'auto' mode
-    if model_type_lower == 'auto':
-        if dataset is None:
-            raise ValueError(
-                "model_type='auto' requires dataset parameter.\n"
-                "Usage: create_model('auto', dataset=train_dataset)"
-            )
-        # Select model based on dataset size
-        # Traditional ML for small datasets, deep learning for large
-        if len(dataset) <= 5000:
-            model_type_lower = 'wknn'  # Default traditional model
-        else:
-            model_type_lower = 'resnet18'  # Default deep learning model
-
-    # Check if it's a traditional ML model
-    if model_type_lower in _TRADITIONAL_MODELS:
-        registered_name = _TRADITIONAL_MODELS[model_type_lower]
-        return LOCALIZERS.build({'type': registered_name, **kwargs})
-
-    # Check if it's a registered localizer (e.g., 'KNNLocalizer')
-    if model_type_lower in [m.lower() for m in LOCALIZERS.list_modules()]:
-        # Find exact case match
-        for registered in LOCALIZERS.list_modules():
-            if registered.lower() == model_type_lower:
-                return LOCALIZERS.build({'type': registered, **kwargs})
-
-    # Check if it's a deep learning model (timm)
-    if _is_timm_model(model_type_lower) or _is_timm_model(model_type):
-        actual_model_name = model_type_lower if _is_timm_model(model_type_lower) else model_type
-
-        # Build head configuration
-        head_config = {
-            'type': 'HybridHead' if (num_floors or num_buildings) else 'RegressionHead',
-            'num_coords': num_coords,
-        }
-        if num_floors:
-            head_config['num_floors'] = num_floors
-        if num_buildings:
-            head_config['num_buildings'] = num_buildings
-
-        # Build backbone configuration
-        backbone_config = {
-            'type': 'TimmBackbone',
-            'model_name': actual_model_name,
-            'pretrained': pretrained,
-            'input_type': '1d',  # Default for RSSI fingerprints
-        }
-        if input_dim is not None:
-            backbone_config['input_size'] = input_dim
-
-        return DeepLocalizer(
-            backbone=backbone_config,
-            head=head_config,
-            **kwargs
-        )
-
-    raise ValueError(
-        f"Unknown model type: '{model_type}'\n"
-        f"Available options:\n"
-        f"  - 'auto': Auto-select based on dataset (requires dataset param)\n"
-        f"  - Traditional: {list(_TRADITIONAL_MODELS.keys())}\n"
-        f"  - Deep learning: timm model names (e.g., 'resnet18', 'efficientnet_b0')"
-    )
+    if name.startswith("_"):
+        return ""
+    for layer in ("core", "datasets", "signals", "methods", "evaluation", "apps"):
+        module = sys.modules.get(f"{__name__}.{layer}")
+        if module is not None and name in getattr(module, "__all__", ()):
+            return f"; it is in indoorloc.{layer}: from indoorloc.{layer} import {name}"
+    if difflib.get_close_matches(name, __all__, n=1):
+        return ""  # a typo of an exported name: Python (3.12+) adds "Did you mean ...?" itself
+    return ("; names not re-exported here live in the layer packages indoorloc.core, .datasets, "
+            ".signals, .methods, .evaluation and .apps")
 
 
-def build_model(cfg: dict) -> BaseLocalizer:
-    """
-    Build a model from configuration dictionary.
-
-    Args:
-        cfg: Model configuration dict with 'type' key
-
-    Returns:
-        Localizer instance
-
-    Example:
-        >>> model = iloc.build_model({'type': 'KNNLocalizer', 'k': 5})
-    """
-    return LOCALIZERS.build(cfg)
+def __dir__() -> list[str]:
+    return __all__
 
 
-def list_models() -> list:
-    """
-    List all available model types.
-
-    Returns:
-        List of model type names
-    """
-    return LOCALIZERS.list_modules()
-
-
-def list_datasets() -> list:
-    """
-    List all available dataset types.
-
-    Returns:
-        List of dataset type names
-    """
-    return DATASETS.list_modules()
-
-
-__all__ = [
-    # Version
-    '__version__',
-    '__version_info__',
-
-    # ===== HuggingFace-style API (Recommended) =====
-    'load_dataset',           # load_dataset("ujindoorloc") → (train, test)
-    'list_available_datasets',  # list available dataset names
-    'dataset_info',           # get dataset metadata
-    'create_model',           # create_model('auto', dataset=train)
-    'build_model',            # build from config dict
-    'list_models',            # list available model types
-    'list_datasets',          # list registered dataset classes (old API)
-
-    # Registry
-    'Registry',
-    'SIGNALS',
-    'DATASETS',
-    'TRANSFORMS',
-    'LOCALIZERS',
-    'FUSIONS',
-    'METRICS',
-    'BACKBONES',
-    'HEADS',
-    'TRAINERS',
-    'VISUALIZERS',
-
-    # Signals
-    'BaseSignal',
-    'SignalMetadata',
-    'WiFiSignal',
-    'APInfo',
-    'BLESignal',
-    'BLEBeacon',
-    'IMUSignal',
-    'IMUReading',
-
-    # Locations
-    'Coordinate',
-    'Location',
-    'LocalizationResult',
-
-    # Localizers
-    'BaseLocalizer',
-    'TraditionalLocalizer',
-    'KNNLocalizer',
-    'WKNNLocalizer',
-    'SVMLocalizer',
-    'RandomForestLocalizer',
-    'EnsembleLocalizer',
-    'StackingLocalizer',
-    # Transfer Learning
-    'TransferLocalizer',
-
-    # Models - Backbones
-    'BaseBackbone',
-    'InputAdapter',
-    'TimmBackbone',
-
-    # Models - Heads
-    'BaseHead',
-    'RegressionHead',
-    'MultiScaleRegressionHead',
-    'ClassificationHead',
-    'FloorHead',
-    'BuildingHead',
-    'HybridHead',
-    'HierarchicalHead',
-
-    # Models - Deep Localizers
-    'DeepLocalizer',
-
-    # Utils
-    'Config',
-    'load_config',
-    'merge_configs',
-    'get_data_home',
-    'explain_model',
-    'explain_dataset',
-    'explain_config',
-
-    # Datasets
-    'BaseDataset',
-    'WiFiDataset',
-    'BLEDataset',
-    'UWBDataset',
-    'HybridDataset',
-    'MagneticDataset',
-    # WiFi RSSI datasets
-    'UJIndoorLocDataset',
-    'UJIndoorLoc',
-    'SODIndoorLocDataset',
-    'SODIndoorLoc',
-    'LongTermWiFiDataset',
-    'LongTermWiFi',
-    'TampereDataset',
-    'Tampere',
-    'WLANRSSIDataset',
-    'WLANRSSI',
-    'TUJI1Dataset',
-    'TUJI1',
-    # BLE datasets
-    'iBeaconRSSIDataset',
-    'iBeaconRSSI',
-    'BLEIndoorDataset',
-    'BLEIndoor',
-    'BLERSSIUCIDataset',
-    'BLERSSIU_UCI',
-    # CSI datasets
-    'CSIFingerprintDataset',
-    'CSIFingerprint',
-    'HWILDDataset',
-    'HWILD',
-    'HALOCDataset',
-    'HALOC',
-]
+if TYPE_CHECKING:  # static analysers and IDEs see the real names
+    from . import apps, core, datasets, evaluation, methods, signals  # noqa: F401
+    from ._legacy import WiFiSignal  # noqa: F401
+    from .core import Prediction, SampleTable, clone, load_model  # noqa: F401
+    from .datasets import Dataset, dataset_info, list_datasets, load_dataset, register_dataset  # noqa: F401
+    from .apps import (PDR, ExtendedKalmanTracker, FloorMap, KalmanTracker, Navigator,  # noqa: F401
+                       OnlineLocalizer, ParticleFilter, PDRFusion, StepDetector)
+    from .evaluation import (EvaluationResults, Fold, Protocol, evaluate, get_protocol,  # noqa: F401
+                             ipin_score, list_protocols, register_protocol)
+    from .methods import BaseLocalizer, LocalizerPipeline, create_model, list_models, register_model  # noqa: F401
+    from .methods.aoa import AoALocalizer  # noqa: F401
+    from .methods.magnetic import MagneticDTWLocalizer  # noqa: F401
+    from .methods.vlc import LambertianLocalizer  # noqa: F401
+    from .methods.deep import CNN1DLocalizer, DeepLocalizer, MLPLocalizer  # noqa: F401
+    from .methods.ensemble import EnsembleLocalizer, StackingLocalizer  # noqa: F401
+    from .methods.gaussian_process import GPRadioMapLocalizer  # noqa: F401
+    from .methods.geometric import TDOALocalizer, TrilaterationLocalizer, WeightedCentroidLocalizer  # noqa: F401
+    from .methods.hierarchical import HierarchicalLocalizer  # noqa: F401
+    from .methods.interpolation import RadioMapInterpolator  # noqa: F401
+    from .methods.neighbors import KNNLocalizer, WKNNLocalizer  # noqa: F401
+    from .methods.pathloss import PathLossLocalizer  # noqa: F401
+    from .methods.probabilistic import HorusLocalizer  # noqa: F401
+    from .methods.sklearn_wrap import (ExtraTreesLocalizer, GradientBoostingLocalizer,  # noqa: F401
+                                       RandomForestLocalizer, SVMLocalizer)
+    from .methods.transfer import CORAL, TCA  # noqa: F401
+    from .signals import (APDropout, APFilter, APSelect, BLESignal, Compose, CSIAmplitude,  # noqa: F401
+                          CSIPhaseSanitize, DeviceCalibration, ExponentialRepresentation, FillMissing,
+                          GaussianNoise, HampelFilter, MagneticFeatures, MagnetometerCalibration,
+                          PositiveRepresentation, PowedRepresentation, RSSINormalize, SubcarrierSelect,
+                          Transform)
+    from .signals import transforms  # noqa: F401

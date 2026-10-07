@@ -1,593 +1,202 @@
-"""
-UJI BLE RSS Database (UJI_BLE_DB) Dataset Implementation
+"""UJI BLE RSS database: iBeacon fingerprints in a library and an office lab of Universitat Jaume I."""
+from __future__ import annotations
 
-The UJI BLE RSS database is distributed on Zenodo as a single zip file
-(UJI_BLE_DB.zip, record 1618692).
+import csv
 
-After extracting the zip, it contains:
-    rss/, dep/, obs/
-
-Each folder contains (per zone: lib, geo):
-- {zone}_rss.csv: RSS matrix (rows=fingerprints, cols=beacons), non-detection=100
-- {zone}_crd.csv: 2D coordinates + facing direction
-- {zone}_tms.csv: timestamps
-- {zone}_ids.csv: beacon identifiers (column order for RSS matrix)
-
-This loader maps 100 -> -100 to match BLESignal.NOT_DETECTED_VALUE.
-
-Reference:
-    Mendoza-Silva, G.M.; Matey-Sanz, M.; Torres-Sospedra, J.; Huerta, J.
-    BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning.
-    Data 2019, 4, 12. https://doi.org/10.3390/data4010012
-
-Dataset URL: https://zenodo.org/record/1618692
-"""
-import shutil
-import zipfile
-from pathlib import Path
-from typing import Optional, Any, Dict, List, Union
 import numpy as np
 
-from .base import BLEDataset
-from ..signals.ble import BLESignal
-from ..locations.location import Location
-from ..locations.coordinate import Coordinate
-from ..registry import DATASETS
-from ..utils.download import download_from_zenodo
+from ..core import SampleTable
+from ._base import Dataset
+
+# Reference-point lists of the authors' train/test configurations (ips/splitTrnTst.m, UJI_BLE_DB.zip).
+_LIB_REDUCED_TRAIN_DROP = (2, 8, 14, 20, 29, 35, 41, 47)
+_LIB_OUTER_TEST_DROP = (1, 17, 18, 34, 35, 51, 52, 68)
+_GEO_FULL_LIMITS = (1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 24, 25, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+                    44, 45, 49, 50, 54, 55, 59, 60, 64, 65, 66, 67, 68)
+_GEO_ALL_HORIZ_INNER_MIDDLE = (7, 12, 17, 22, 27, 42, 47, 52, 57, 62)
+_GEO_REDUCED_HORIZ_INNER_MIDDLE = (12, 22, 47, 57)
+_GEO_LIMITS_REMOVE = (2, 3, 10, 14, 20, 24, 25, 29, 31, 33, 36, 38, 40, 44, 45, 49, 55, 59, 66, 67)
+_GEO_TRIANGLES = (1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 36, 38, 40, 42, 44, 46, 48, 50, 52,
+                  54, 56, 58, 60, 62, 64, 66, 68)
 
 
-@DATASETS.register_module()
-class iBeaconRSSIDataset(BLEDataset):
-    """UJI BLE RSS database (UJI_BLE_DB.zip).
+def _without(points, drop) -> tuple[int, ...]:
+    return tuple(p for p in points if p not in drop)
 
-    Args:
-        data_root: Root directory containing the dataset files. If None,
-            uses the default cache directory (~/.cache/indoorloc/datasets/ibeacon_rssi).
-        split: Dataset split ('train' or 'test').
-        download: Whether to download the dataset if not found.
-        zone: Which zone(s) to load: 'lib', 'geo', or 'all' (default).
-        db_type: Which folder inside the extracted zip to load from:
-            'rss', 'dep', or 'obs' (default: 'rss').
-        train_ratio: Train ratio for the shuffled 70/30 split (default: 0.7).
-        seed: RNG seed used when shuffle=True (default: 42).
-        shuffle: Whether to shuffle before splitting (default: True).
-        transform: Optional transform to apply to signals.
-        normalize: Whether to normalize RSSI values.
-        normalize_method: Normalization method ('minmax', 'positive', 'standard').
 
-    Notes:
-        Raw RSS matrices use 100 for non-detection; this loader maps 100 -> -100
-        to match BLESignal.NOT_DETECTED_VALUE for dense BLESignal normalization.
+def _rest(train, n: int = 68) -> tuple[int, ...]:
+    return _without(range(1, n + 1), train)
+
+
+# name -> (train campaign, train points, test campaign, test points); campaign codes as in the ids
+PROTOCOLS = {
+    "lib": {
+        "full_train_full_test": (2, tuple(range(1, 49)), 3, tuple(range(1, 69))),
+        "reduced_train_full_test": (2, _without(range(1, 49), _LIB_REDUCED_TRAIN_DROP), 3, tuple(range(1, 69))),
+        "full_train_no_outer_test": (2, tuple(range(1, 49)), 3, _without(range(1, 69), _LIB_OUTER_TEST_DROP)),
+        "reduced_train_no_outer_test": (2, _without(range(1, 49), _LIB_REDUCED_TRAIN_DROP),
+                                        3, _without(range(1, 69), _LIB_OUTER_TEST_DROP)),
+    },
+    "geo": {
+        "full_limits": (1, tuple(sorted(_GEO_FULL_LIMITS + _GEO_ALL_HORIZ_INNER_MIDDLE)),
+                        1, _rest(_GEO_FULL_LIMITS + _GEO_ALL_HORIZ_INNER_MIDDLE)),
+        "reduced_limits": (1, _without(sorted(_GEO_FULL_LIMITS + _GEO_REDUCED_HORIZ_INNER_MIDDLE), _GEO_LIMITS_REMOVE),
+                           1, _rest(_without(_GEO_FULL_LIMITS + _GEO_REDUCED_HORIZ_INNER_MIDDLE, _GEO_LIMITS_REMOVE))),
+        "triangles": (1, _GEO_TRIANGLES, 1, _rest(_GEO_TRIANGLES)),
+    },
+}
+DEFAULT_PROTOCOL = {"lib": "full_train_no_outer_test", "geo": "full_limits"}  # the authors' f7_basicPos.m
+
+
+class IBeaconRSSI(Dataset):
+    """UJI BLE RSS database (Mendoza-Silva et al., Data 2019): iBeacon fingerprints in two zones.
+
+    Accent Systems iBKS 105 beacons were measured by smartphones in two zones of Universitat
+    Jaume I, each with its own beacons and its own local frame:
+
+    ========= ======= ================================================ ===================
+    building  zone    phones, transmit power, campaigns                fingerprints
+    ========= ======= ================================================ ===================
+    1         geo     Galaxy A5 2017; -4, -12, -20 dBm; campaign 1     2,652 (22 beacons)
+    2         lib     Galaxy A5 2017, BQ Aquaris X5 Plus, Galaxy S6;   2,100 (24 beacons)
+                      -12 dBm; campaigns 2 (48 points) and 3 (68)
+    ========= ======= ================================================ ===================
+
+    ``building`` holds the authors' zone code (geo = 1, the Geotec lab; lib = 2, the library;
+    ``meta["building_names"]``). Positions of the two zones are in different frames.
+
+    ``X``      (N, n_beacons) float32 RSS in dBm, one column per beacon of the selected zones
+               (``meta["feature_names"]``, the ids of ``data/dep/<zone>.csv``); the file's "not
+               detected" value 100 becomes NaN, as does the other zone's beacons. 236 lib and 353 geo
+               fingerprints heard no beacon at all (all-NaN rows); they are kept.
+    ``pos``    (x, y) metres in the zone's local frame.
+    ``groups`` ``point``: the reference position, zone and coordinates as in the file
+               (``"lib/29.22,12.91"``), for splits by position. ``device`` (phone: "A5", "BQ", "S6"),
+               ``power`` (beacon transmit power, dBm), ``campaign`` and ``point_number``: the authors'
+               codes, decoded from the 8-digit fingerprint id (phone, power, campaign, point (3 digits),
+               sample (2 digits)). **A point number is not a position:** in every zone and campaign
+               the numbers k and n + 1 - k (n = 48 or 68 points) name the same position, measured
+               twice, so the 4,752 fingerprints hold 92 positions (geo 34, lib 24 + 34). Splitting by
+               ``point_number`` would test at training positions; split by ``point``. Lib campaigns
+               2 and 3 share no position. The file repeats 12 fingerprint ids (the BQ phone measured
+               lib points 17 and 31 twice), so sample ids are the file rows (``"lib-0792"``).
+    ``meta``   ``anchors`` (n_beacons, 2) beacon positions, each in its zone's frame.
+
+    Splits
+    ------
+    ``"all"``: every fingerprint. ``"train"`` / ``"test"``: the authors' configurations of
+    ``ips/splitTrnTst.m`` (``PROTOCOLS``), by default the ones of their example script
+    ``f7_basicPos.m``: lib trains on campaign 2 and tests on campaign 3 without its 8 outer points
+    (``"full_train_no_outer_test"``); geo trains on the boundary and middle-row points and tests on
+    the rest (``"full_limits"``). Both keep every phone and power level: select a device or power
+    through ``groups`` to reproduce a single set as in the paper. Every configuration keeps both
+    numbers of a position on the same side, so train and test positions are disjoint.
+
+    Parameters
+    ----------
+    zone : "all" (default), "lib", "geo", or a sequence of these.
+    protocol : dict zone -> configuration name for ``"train"`` / ``"test"``; defaults to
+        ``DEFAULT_PROTOCOL``.
+
+    References
+    ----------
+    Mendoza-Silva, G. M., Matey-Sanz, M., Torres-Sospedra, J., Huerta, J., "BLE RSS Measurements
+    Dataset for Research on Accurate Indoor Positioning", Data 4(1), 12, 2019.
+    https://doi.org/10.3390/data4010012
+
+    Mendoza-Silva, G. M., Matey-Sanz, M., Torres-Sospedra, J., Huerta, J., "BLE RSS measurements
+    database and supporting materials", Zenodo, 2018. https://doi.org/10.5281/zenodo.1618692
     """
 
-    ZENODO_RECORD_ID = '1618692'
-    ZIP_FILENAME = 'UJI_BLE_DB.zip'
-
-    AVAILABLE_ZONES = ('lib', 'geo')
-    AVAILABLE_DB_TYPES = ('rss', 'dep', 'obs')
-
-    RAW_NOT_DETECTED_VALUE = 100
-    NOT_DETECTED_VALUE = -100.0
-
-    def __init__(
-        self,
-        data_root: Optional[str] = None,
-        split: str = 'train',
-        download: bool = False,
-        zone: Union[str, List[str]] = 'all',
-        db_type: str = 'rss',
-        train_ratio: float = 0.7,
-        seed: int = 42,
-        shuffle: bool = True,
-        transform: Optional[Any] = None,
-        normalize: bool = True,
-        normalize_method: str = 'minmax',
-        **kwargs
-    ):
-        db_type = str(db_type).lower().strip()
-        if db_type not in self.AVAILABLE_DB_TYPES:
-            raise ValueError(
-                f"Invalid db_type='{db_type}'. Expected one of {list(self.AVAILABLE_DB_TYPES)}"
-            )
-        if not (0.0 < float(train_ratio) < 1.0):
-            raise ValueError("train_ratio must be in (0, 1)")
-
-        self.db_type = db_type
-        self.train_ratio = float(train_ratio)
-        self.seed = int(seed)
-        self.shuffle = bool(shuffle)
-
-        self._zones = self._normalize_zones(zone)
-        self._num_beacons = None
-
-        super().__init__(
-            data_root=data_root,
-            split=split,
-            download=download,
-            transform=transform,
-            normalize=normalize,
-            normalize_method=normalize_method,
-            **kwargs
-        )
-
-    @property
-    def dataset_name(self) -> str:
-        return 'ibeacon_rssi'
-
-    @property
-    def num_beacons(self) -> int:
-        if self._num_beacons is None:
-            return 0
-        return self._num_beacons
-
-    @classmethod
-    def list_zones(cls) -> List[str]:
-        """List supported deployment zones."""
-        return list(cls.AVAILABLE_ZONES)
-
-    @classmethod
-    def list_db_types(cls) -> List[str]:
-        """List available folder types inside the extracted zip."""
-        return list(cls.AVAILABLE_DB_TYPES)
-
-    @classmethod
-    def _normalize_zones(cls, zone: Union[str, List[str]]) -> List[str]:
-        if isinstance(zone, str):
-            zone = zone.strip().lower()
-            if zone == 'all':
-                zones = list(cls.AVAILABLE_ZONES)
-            else:
-                zones = [zone]
-        else:
-            zones = [str(z).strip().lower() for z in zone]
-
-        invalid = [z for z in zones if z not in cls.AVAILABLE_ZONES]
-        if invalid:
-            raise ValueError(
-                f"Invalid zone(s) {invalid}. Expected one of {list(cls.AVAILABLE_ZONES)} or 'all'"
-            )
-        return zones
-
-    def _zone_files(self, base_dir: Path, zone: str) -> Dict[str, Path]:
-        folder = base_dir / self.db_type
-        return {
-            'rss': folder / f"{zone}_rss.csv",
-            'crd': folder / f"{zone}_crd.csv",
-            'tms': folder / f"{zone}_tms.csv",
-            'ids': folder / f"{zone}_ids.csv",
-        }
-
-    def _find_extracted_root(self) -> Optional[Path]:
-        """Find the extracted dataset root (handles extra top-level folder in zip).
-
-        The UJI BLE RSS database extracts to a structure like:
-            data_root/data/rss/{zone}_rss.csv
-        We need to return the directory containing the {db_type}/ folder.
-        """
-        if not self.data_root.exists():
-            return None
-
-        candidates: List[Path] = [self.data_root]
-        try:
-            # Add immediate subdirectories
-            for p in self.data_root.iterdir():
-                if p.is_dir():
-                    candidates.append(p)
-                    # Also add one level deeper (e.g., data_root/data/)
-                    for sub in p.iterdir():
-                        if sub.is_dir():
-                            candidates.append(sub)
-        except Exception:
-            return None
-
-        for cand in candidates:
-            if (cand / self.db_type).is_dir():
-                return cand
-
-        return None
-
-    def _has_extracted_files(self) -> bool:
-        base_dir = self._find_extracted_root()
-        if base_dir is None:
-            return False
-        for zone in self._zones:
-            files = self._zone_files(base_dir, zone)
-            if not all(p.exists() for p in files.values()):
-                return False
-        return True
-
-    @staticmethod
-    def _extract_zip(zip_path: Path, dst_root: Path) -> None:
-        """Safely extract zip into dst_root (prevents path traversal)."""
-        dst_root = Path(dst_root)
-        dst_root.mkdir(parents=True, exist_ok=True)
-        root_resolved = dst_root.resolve()
-
-        with zipfile.ZipFile(zip_path, 'r') as zf:
-            for member in zf.infolist():
-                if member.is_dir():
-                    continue
-                member_path = Path(member.filename)
-                target_path = (dst_root / member_path).resolve()
-
-                if root_resolved != target_path and root_resolved not in target_path.parents:
-                    raise RuntimeError(f"Unsafe path in zip: {member.filename}")
-
-                target_path.parent.mkdir(parents=True, exist_ok=True)
-                with zf.open(member, 'r') as src, open(target_path, 'wb') as dst:
-                    shutil.copyfileobj(src, dst)
-
-    def _ensure_extracted(self) -> Path:
-        base_dir = self._find_extracted_root()
-        if base_dir is not None:
-            return base_dir
-
-        zip_path = self.data_root / self.ZIP_FILENAME
-        if zip_path.exists():
-            self._extract_zip(zip_path, self.data_root)
-            base_dir = self._find_extracted_root()
-            if base_dir is not None:
-                return base_dir
-
-        raise FileNotFoundError(
-            f"UJI BLE RSS database not found under {self.data_root}.\n"
-            f"Use download=True or place {self.ZIP_FILENAME} in that directory."
-        )
-
-    @staticmethod
-    def _read_numeric_csv(path: Path) -> np.ndarray:
-        """Read a numeric CSV that may or may not contain a header."""
-        try:
-            import pandas as pd
-        except ImportError as e:
-            raise ImportError(
-                "pandas is required to load UJI BLE RSS database CSV files.\n"
-                "Install with: pip install pandas"
-            ) from e
-
-        df = pd.read_csv(path, header=None)
-        first_row = pd.to_numeric(df.iloc[0], errors='coerce')
-        if first_row.isna().any():
-            df = pd.read_csv(path, header=0)
-
-        return df.to_numpy(dtype=np.float32)
-
-    @staticmethod
-    def _dedupe_ids(ids: List[str]) -> List[str]:
-        seen: Dict[str, int] = {}
-        out: List[str] = []
-        for bid in ids:
-            if bid in seen:
-                seen[bid] += 1
-                out.append(f"{bid}#{seen[bid]}")
-            else:
-                seen[bid] = 0
-                out.append(bid)
-        return out
-
-    @classmethod
-    def _read_beacon_ids(cls, path: Path, expected_len: int) -> List[str]:
-        """Parse beacon identifiers from {zone}_ids.csv."""
-        try:
-            import pandas as pd
-        except ImportError as e:
-            raise ImportError(
-                "pandas is required to load UJI BLE RSS database CSV files.\n"
-                "Install with: pip install pandas"
-            ) from e
-
-        def clean(v: object) -> Optional[str]:
-            if v is None:
-                return None
-            s = str(v).strip()
-            if not s or s.lower() == 'nan':
-                return None
-            return s
-
-        df = pd.read_csv(path, header=None, dtype=str)
-
-        ids: List[str] = []
-        if df.shape[0] == 1:
-            ids = [clean(v) for v in df.iloc[0].tolist()]
-            ids = [v for v in ids if v]
-        elif df.shape[1] == 1:
-            ids = [clean(v) for v in df.iloc[:, 0].tolist()]
-            ids = [v for v in ids if v]
-        else:
-            for _, row in df.iterrows():
-                parts = [clean(v) for v in row.tolist()]
-                parts = [p for p in parts if p]
-                if parts:
-                    ids.append(':'.join(parts))
-
-        if len(ids) != expected_len:
-            flat = [clean(v) for v in df.values.ravel().tolist()]
-            flat = [v for v in flat if v]
-            if len(flat) == expected_len:
-                ids = flat
-
-        if len(ids) != expected_len:
-            ids = [f"beacon_{i}" for i in range(expected_len)]
-
-        return cls._dedupe_ids(ids)
-
-    def _load_zone(self, base_dir: Path, zone: str) -> Dict[str, Any]:
-        files = self._zone_files(base_dir, zone)
-        for key, path in files.items():
-            if not path.exists():
-                raise FileNotFoundError(f"Missing {key} file for zone='{zone}': {path}")
-
-        rss = self._read_numeric_csv(files['rss']).astype(np.float32)
-        crd = self._read_numeric_csv(files['crd']).astype(np.float32)
-        # tms has same shape as rss (one timestamp per beacon per sample)
-        # Use max timestamp per row as the sample timestamp (latest beacon detection)
-        tms_raw = self._read_numeric_csv(files['tms']).astype(np.float64)
-        tms = np.max(tms_raw, axis=1)  # shape: (n_samples,)
-
-        if rss.ndim != 2:
-            raise ValueError(f"Expected a 2D RSS matrix in {files['rss']}, got shape {rss.shape}")
-        if crd.ndim != 2 or crd.shape[1] < 2:
-            raise ValueError(f"Expected coordinates with at least 2 columns in {files['crd']}, got shape {crd.shape}")
-        if rss.shape[0] != crd.shape[0]:
-            raise ValueError(f"Row mismatch for zone='{zone}': rss has {rss.shape[0]} rows but crd has {crd.shape[0]}")
-        if tms.shape[0] != rss.shape[0]:
-            raise ValueError(f"Row mismatch for zone='{zone}': rss has {rss.shape[0]} rows but tms has {tms.shape[0]}")
-
-        beacon_ids = self._read_beacon_ids(files['ids'], expected_len=rss.shape[1])
-        coords_xy = crd[:, :2]
-        direction = crd[:, 2] if crd.shape[1] >= 3 else None
-
-        return {
-            'zone': zone,
-            'rss': rss,
-            'coords_xy': coords_xy,
-            'direction': direction,
-            'timestamps': tms,
-            'beacon_ids': beacon_ids,
-        }
-
-    def _check_exists(self) -> bool:
-        """Check if either extracted files exist or the zip is present."""
-        if self._has_extracted_files():
-            return True
-        return (self.data_root / self.ZIP_FILENAME).exists()
-
-    def _download(self) -> None:
-        """Download UJI_BLE_DB.zip from Zenodo and extract it."""
-        if self._has_extracted_files():
-            print(f"Dataset already exists at {self.data_root}")
-            return
-
-        self.data_root.mkdir(parents=True, exist_ok=True)
-        zip_path = self.data_root / self.ZIP_FILENAME
-
-        if not zip_path.exists():
-            print("Downloading UJI BLE RSS database from Zenodo...")
-            try:
-                download_from_zenodo(
-                    record_id=self.ZENODO_RECORD_ID,
-                    root=self.data_root,
-                    filenames=[self.ZIP_FILENAME],
-                )
-            except Exception as e:
-                raise RuntimeError(
-                    f"Failed to download UJI BLE RSS database: {e}\n"
-                    f"Please download manually from: https://zenodo.org/record/{self.ZENODO_RECORD_ID}"
-                )
-
-        print("Extracting UJI_BLE_DB.zip...")
-        self._extract_zip(zip_path, self.data_root)
-        if not self._has_extracted_files():
-            raise RuntimeError(
-                "Downloaded/extracted the zip, but expected CSV files were not found. "
-                "Please verify the archive layout under data_root."
-            )
-
-    def _load_data(self) -> None:
-        base_dir = self._ensure_extracted()
-        zones_data = [self._load_zone(base_dir, z) for z in self._zones]
-
-        beacon_ids: List[str] = []
-        seen = set()
-        for zd in zones_data:
-            for bid in zd['beacon_ids']:
-                if bid not in seen:
-                    seen.add(bid)
-                    beacon_ids.append(bid)
-        beacon_pos = {bid: i for i, bid in enumerate(beacon_ids)}
-
-        rssi_blocks = []
-        coords_blocks = []
-        dir_blocks = []
-        ts_blocks = []
-        zone_blocks = []
-
-        for zd in zones_data:
-            rss = zd['rss'].astype(np.float32)
-            # Handle NaN and raw non-detection value
-            rss = np.where(np.isnan(rss), self.NOT_DETECTED_VALUE, rss)
-            rss[rss == self.RAW_NOT_DETECTED_VALUE] = self.NOT_DETECTED_VALUE
-            # Clip to valid RSSI range
-            rss = np.clip(rss, self.NOT_DETECTED_VALUE, 0.0)
-
-            if zd['beacon_ids'] != beacon_ids:
-                aligned = np.full(
-                    (rss.shape[0], len(beacon_ids)),
-                    self.NOT_DETECTED_VALUE,
-                    dtype=np.float32,
-                )
-                for j, bid in enumerate(zd['beacon_ids']):
-                    aligned[:, beacon_pos[bid]] = rss[:, j]
-                rss = aligned
-
-            rssi_blocks.append(rss)
-            coords_blocks.append(zd['coords_xy'])
-            ts_blocks.append(zd['timestamps'])
-            zone_blocks.append(np.array([zd['zone']] * rss.shape[0], dtype=object))
-            if zd['direction'] is None:
-                dir_blocks.append(np.full(rss.shape[0], np.nan, dtype=np.float32))
-            else:
-                dir_blocks.append(zd['direction'].astype(np.float32))
-
-        rssi_all = np.vstack(rssi_blocks)
-        coords_all = np.vstack(coords_blocks)
-        ts_all = np.concatenate(ts_blocks)
-        zones_all = np.concatenate(zone_blocks)
-        dir_all = np.concatenate(dir_blocks)
-
-        self._num_beacons = len(beacon_ids)
-
-        num_samples = int(rssi_all.shape[0])
-        indices = np.arange(num_samples)
-        if self.shuffle:
-            rng = np.random.RandomState(self.seed)
-            rng.shuffle(indices)
-
-        num_train = int(num_samples * self.train_ratio)
-        if num_train <= 0 or num_train >= num_samples:
-            raise ValueError(
-                f"Invalid split: train_ratio={self.train_ratio} yields num_train={num_train} for num_samples={num_samples}"
-            )
-
-        if self.split == 'train':
-            selected = indices[:num_train]
-        elif self.split == 'test':
-            selected = indices[num_train:]
-        else:
-            raise ValueError(f"Unsupported split: {self.split!r} (expected 'train' or 'test')")
-
-        # Map zones to numeric building IDs for compatibility
-        zone_to_building = {'lib': '0', 'geo': '1'}
-
-        for idx in selected:
-            x, y = coords_all[idx]
-            ts = float(ts_all[idx])
-            direction = dir_all[idx]
-            zone = str(zones_all[idx])
-
-            signal = BLESignal(
-                rssi_values=rssi_all[idx].copy(),  # Use copy to avoid aliasing
-                beacon_ids=beacon_ids,
-                timestamp=ts,
-            )
-
-            # Store zone and direction in metadata
-            meta: Dict[str, Any] = {'zone': zone, 'db_type': self.db_type, 'timestamp': ts}
-            if not np.isnan(direction):
-                meta['direction'] = float(direction)
-
-            location = Location(
-                coordinate=Coordinate(x=float(x), y=float(y)),
-                floor=0,
-                building_id=zone_to_building.get(zone, '0'),
-            )
-
-            self._signals.append(signal)
-            self._locations.append(location)
-            self._metadata.append(meta)
-
-        zones_info = ','.join(self._zones)
-        print(
-            f"Loaded {len(self._signals)} samples from UJI BLE RSS DB "
-            f"(zones={zones_info}, db_type={self.db_type}, split={self.split})"
-        )
-        print(f"Total beacons: {self._num_beacons}")
-
-
-
-def iBeaconRSSI(
-    data_root=None,
-    split=None,
-    download=False,
-    zone='all',
-    db_type='rss',
-    train_ratio=0.7,
-    seed=42,
-    shuffle=True,
-    **kwargs,
-):
-    """
-    Convenience function for loading the UJI BLE RSS database.
-
-    Args:
-        data_root: Root directory for dataset storage
-        split: Dataset split ('train', 'test', 'all', or None for tuple)
-        download: Whether to download if not found
-        zone: 'lib', 'geo', or 'all'
-        db_type: 'rss', 'dep', or 'obs'
-        train_ratio: Train ratio for a shuffled split
-        seed: RNG seed (used when shuffle=True)
-        shuffle: Whether to shuffle before splitting
-        **kwargs: Additional arguments passed to iBeaconRSSIDataset
-
-    Returns:
-        - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset
-        - If split is None: Returns tuple (train_dataset, test_dataset)
-    """
-    if split is None:
-        train_dataset = iBeaconRSSIDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            zone=zone,
-            db_type=db_type,
-            train_ratio=train_ratio,
-            seed=seed,
-            shuffle=shuffle,
-            **kwargs
-        )
-        test_dataset = iBeaconRSSIDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            zone=zone,
-            db_type=db_type,
-            train_ratio=train_ratio,
-            seed=seed,
-            shuffle=shuffle,
-            **kwargs
-        )
-        return train_dataset, test_dataset
-    elif split == 'all':
-        from torch.utils.data import ConcatDataset
-        train_dataset = iBeaconRSSIDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            zone=zone,
-            db_type=db_type,
-            train_ratio=train_ratio,
-            seed=seed,
-            shuffle=shuffle,
-            **kwargs
-        )
-        test_dataset = iBeaconRSSIDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            zone=zone,
-            db_type=db_type,
-            train_ratio=train_ratio,
-            seed=seed,
-            shuffle=shuffle,
-            **kwargs
-        )
-        return ConcatDataset([train_dataset, test_dataset])
-    else:
-        return iBeaconRSSIDataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            zone=zone,
-            db_type=db_type,
-            train_ratio=train_ratio,
-            seed=seed,
-            shuffle=shuffle,
-            **kwargs
-        )
-
-
-# Attach class methods to convenience function
-iBeaconRSSI.list_zones = iBeaconRSSIDataset.list_zones
-iBeaconRSSI.list_db_types = iBeaconRSSIDataset.list_db_types
+    name = "ibeacon_rssi"
+    urls = ("https://zenodo.org/records/1618692/files/UJI_BLE_DB.zip?download=1",)
+    _zone_files = {
+        "geo": (("data/rss/geo_rss.csv", "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe"),
+                ("data/rss/geo_crd.csv", "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e"),
+                ("data/rss/geo_ids.csv", "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd"),
+                ("data/dep/geo.csv", "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38")),
+        "lib": (("data/rss/lib_rss.csv", "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707"),
+                ("data/rss/lib_crd.csv", "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e"),
+                ("data/rss/lib_ids.csv", "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035"),
+                ("data/dep/lib.csv", "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff")),
+    }
+    files = dict.fromkeys(("all", "train", "test"), _zone_files["geo"] + _zone_files["lib"])
+    meta = {
+        "modality": "ble_rssi",
+        "units": "dBm",
+        "raw_missing_value": 100,
+        "crs": "local (one frame per zone; see building)",
+        "pos_names": ("x", "y"),
+        "pos_units": "m",
+        "buildings": (1, 2),
+        "license": "CC BY 4.0 (data), MIT (scripts)",
+        "doi": "10.5281/zenodo.1618692",
+        "citation": "Mendoza-Silva, Matey-Sanz, Torres-Sospedra, Huerta, BLE RSS Measurements Dataset for "
+                    "Research on Accurate Indoor Positioning, Data 4(1), 12, 2019",
+        "url": "https://zenodo.org/records/1618692",
+    }
+    zones = {"geo": (1, "geotec"), "lib": (2, "library")}  # zone -> (authors' code, name)
+    phones = {1: "A5", 2: "BQ", 3: "S6"}  # Galaxy A5 2017, BQ Aquaris X5 Plus, Galaxy S6 (getFilterDefs.m)
+    powers = {1: -4, 2: -12, 3: -20}  # power code -> dBm
+
+    def __init__(self, root=None, *, download: bool = False, verify: bool = True, zone="all", protocol=None):
+        super().__init__(root, download=download, verify=verify)
+        wanted = [zone] if isinstance(zone, str) else list(zone)
+        wanted = list(self.zones) if "all" in wanted else [str(z).lower() for z in wanted]
+        if not wanted or set(wanted) - set(self.zones):
+            raise ValueError(f"unknown zone {zone!r}; choose from {sorted(self.zones)} or 'all'")
+        self.zone = tuple(z for z in self.zones if z in wanted)
+        self.protocol = {**DEFAULT_PROTOCOL, **(protocol or {})}
+        for z, name in self.protocol.items():
+            if z not in PROTOCOLS or name not in PROTOCOLS[z]:
+                raise ValueError(f"unknown protocol {z!r}: {name!r}; available: "
+                                 f"{ {k: sorted(v) for k, v in PROTOCOLS.items()} }")
+        entries = tuple(e for z in self.zone for e in self._zone_files[z])
+        self.files = dict.fromkeys(type(self).files, entries)  # check and fetch only the selected zones
+
+    def _parse(self, paths, split):
+        path_of = {rel: p for (rel, _), p in zip(self._entries(split), paths)}
+        parts = [self._read_zone(path_of, z, split) for z in self.zone]
+        offsets = np.cumsum([0, *(len(p["beacons"]) for p in parts)])
+        X = np.full((sum(len(p["pos"]) for p in parts), offsets[-1]), np.nan, dtype=np.float32)
+        start = 0
+        for k, part in enumerate(parts):
+            X[start:start + len(part["pos"]), offsets[k]:offsets[k + 1]] = part["X"]
+            start += len(part["pos"])
+        cat = lambda key: np.concatenate([p[key] for p in parts])  # noqa: E731
+        meta = {"feature_names": tuple(b for p in parts for b in p["beacons"]),
+                "anchors": np.concatenate([p["anchors"] for p in parts]),
+                "buildings": tuple(self.zones[z][0] for z in self.zone),
+                "building_names": {self.zones[z][0]: self.zones[z][1] for z in self.zone}}
+        if split != "all":
+            meta["protocol"] = {z: self.protocol[z] for z in self.zone}
+        return SampleTable(X, cat("pos"), building=cat("building"), ids=cat("ids"), meta=meta,
+                           groups={key: cat(key) for key in ("point", "device", "power", "campaign", "point_number")})
+
+    def _read_zone(self, path_of: dict, zone: str, split: str) -> dict:
+        rss = np.loadtxt(path_of[f"data/rss/{zone}_rss.csv"], delimiter=",", ndmin=2)
+        crd_text = np.loadtxt(path_of[f"data/rss/{zone}_crd.csv"], delimiter=",", ndmin=2, dtype=str)
+        crd = crd_text.astype(np.float64)
+        fid = np.loadtxt(path_of[f"data/rss/{zone}_ids.csv"], dtype=np.int64, ndmin=1)
+        with open(path_of[f"data/dep/{zone}.csv"], newline="", encoding="ascii") as fh:
+            deployment = list(csv.DictReader(fh))
+        if not len(rss) == len(crd) == len(fid) or rss.shape[1] != len(deployment):
+            raise ValueError(f"{zone}: {rss.shape} RSS, {len(crd)} coordinates, {len(fid)} ids, "
+                             f"{len(deployment)} beacons do not match")
+        phone, power, campaign = fid // 10**7, fid // 10**6 % 10, fid // 10**5 % 10
+        point = fid // 10**2 % 1000
+        rows = np.arange(len(fid))
+        if split != "all":
+            train_c, train_p, test_c, test_p = PROTOCOLS[zone][self.protocol[zone]]
+            c, p = (train_c, train_p) if split == "train" else (test_c, test_p)
+            rows = np.flatnonzero((campaign == c) & np.isin(point, p))
+        X = rss[rows].astype(np.float32)
+        X[X == self.meta["raw_missing_value"]] = np.nan
+        return {"X": X, "pos": crd[rows, :2], "beacons": [d["id"] for d in deployment],
+                "anchors": np.array([[float(d["x"]), float(d["y"])] for d in deployment]),
+                "building": np.full(len(rows), self.zones[zone][0], dtype=np.int64),
+                "ids": np.array([f"{zone}-{r:04d}" for r in rows]),  # row of the file: the file's ids repeat
+                "device": np.array([self.phones[int(v)] for v in phone[rows]]),
+                "power": np.array([self.powers[int(v)] for v in power[rows]], dtype=np.int64),
+                "point": np.array([f"{zone}/{x},{y}" for x, y in crd_text[rows, :2]]),
+                "campaign": campaign[rows], "point_number": point[rows]}

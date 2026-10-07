@@ -1,0 +1,160 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "longtermwifi",
+ "aliases": [],
+ "display_name": "Long-Term WiFi (UJI library)",
+ "dataset_citation": {
+  "authors": "G. M. Mendoza-Silva, P. Richter, J. Torres-Sospedra, E. S. Lohan, J. Huerta",
+  "title": "Long-Term WiFi Fingerprinting Dataset for Research on Robust Indoor Positioning",
+  "venue": "Data 3(1):3",
+  "year": 2018,
+  "doi": "10.3390/data3010003",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/longtermwifi.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "notes": "0.1: results vary with the month selection; train on some months and test on later ones for robustness.",
+ "entries": [
+  {
+   "method": "KD-3D CNN (student)",
+   "values": {
+    "mean_error": 0.84
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "0.1 cited 'Monash University, 2025'; matched by title to the IEEE Access paper (Crossref). Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "M. Rizwan, Y. H. Ng, H.-Y. Wong, C. K. Tan",
+    "title": "Knowledge Distillation-Driven 3D Convolutional Neural Networks for Efficient and Robust Indoor Localization",
+    "venue": "IEEE Access 13:157764-157779",
+    "year": 2025,
+    "doi": "10.1109/ACCESS.2025.3602462",
+    "url": null
+   },
+   "ported": {
+    "citation": "Rizwan et al., Knowledge Distillation-Driven 3D CNNs for Indoor Localization, Monash University, 2025",
+    "values": {
+     "mean_error": 0.84
+    },
+    "notes": "Knowledge distillation from teacher model; APE improved from 1.07m to 0.84m",
+    "is_sota": true,
+    "method": "KD-3D CNN (Student)"
+   }
+  },
+  {
+   "method": "3D separable CNN",
+   "values": {
+    "mean_error": 1.04
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "M. Rizwan, Y. H. Ng, H.-Y. Wong, C. K. Tan",
+    "title": "Enhancing Indoor Localization With Temporally-Aware Separable Group Shuffled CNNs and Skip Connections",
+    "venue": "IEEE Access 13:30274-30286",
+    "year": 2025,
+    "doi": "10.1109/ACCESS.2025.3535948",
+    "url": null
+   },
+   "ported": {
+    "citation": "Rizwan et al., Enhancing Indoor Localization With Temporally-Aware Separable Group Shuffled CNNs, IEEE Access, 2025",
+    "values": {
+     "mean_error": 1.04
+    },
+    "notes": "DOI: 10.1109/ACCESS.2025.3535948",
+    "is_sota": false,
+    "method": "3D-Separable CNN"
+   }
+  },
+  {
+   "method": "2D-CNN with knowledge distillation",
+   "values": {
+    "mean_error": 1.33
+   },
+   "kind": "literature",
+   "check": "unchecked",
+   "check_note": "Matched by title (Crossref). Source resolved (Crossref); the number was not compared with the paper (full text not retrieved).",
+   "location": null,
+   "protocol": "unspecified",
+   "source": {
+    "authors": "M. Rizwan, Y. H. Ng, H.-Y. Wong, C. K. Tan, T. A. Kurniawan",
+    "title": "Precise indoor localization using a lightweight 2D-CNN with adaptive temperature guided iterative self-knowledge distillation",
+    "venue": "Scientific Reports 15:39078",
+    "year": 2025,
+    "doi": "10.1038/s41598-025-25589-x",
+    "url": null
+   },
+   "ported": {
+    "citation": "Rizwan et al., Precise indoor localization using lightweight 2D-CNN with adaptive temperature guided KD, Scientific Reports, 2025",
+    "values": {
+     "mean_error": 1.33
+    },
+    "notes": "2D Average Positioning Error",
+    "is_sota": false,
+    "method": "2D-CNN + KD"
+   }
+  },
+  {
+   "method": "WKNN (k=5)",
+   "values": {
+    "mean_error": 2.29
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 2.29
+    },
+    "notes": "Train: month 1-25, Test: month 1-25, floor 3&5; 23,034 train / 81,120 test",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=3)",
+   "values": {
+    "mean_error": 2.37
+   },
+   "kind": "indoorloc-0.1",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 itself (source 'IndoorLoc Library Baseline'); not a published number and not reproduced by this version. Kept for traceability; excluded from comparisons by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline",
+    "values": {
+     "mean_error": 2.37
+    },
+    "notes": "Train: month 1-25, Test: month 1-25, floor 3&5",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}
