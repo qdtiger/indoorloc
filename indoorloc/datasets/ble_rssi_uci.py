@@ -1,298 +1,113 @@
-"""
-BLE RSSI Indoor Localization Dataset (UCI) Implementation
+"""BLE RSSI Dataset for Indoor Localization and Navigation (UCI 435): 13 iBeacons in Waldo Library."""
+from __future__ import annotations
 
-BLE-based indoor localization dataset from UCI Machine Learning Repository
-with RSSI measurements from 13 iBeacon transmitters.
+import calendar
+import csv
 
-Reference:
-    Mohammadi, M. & Al-Fuqaha, A. (2017). BLE RSSI Dataset for Indoor
-    localization and Navigation. UCI Machine Learning Repository.
-    DOI: 10.24432/C57G7S
-
-Dataset URL: https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation
-"""
-import zipfile
-from pathlib import Path
-from typing import Optional, Any, List
 import numpy as np
 
-from .base import BLEDataset
-from ..signals.ble import BLESignal, BLEBeacon
-from ..locations.location import Location
-from ..locations.coordinate import Coordinate
-from ..registry import DATASETS
-from ..utils.download import download_url
+from ..core import SampleTable
+from ._base import Dataset
 
 
-@DATASETS.register_module()
-class BLERSSIUCIDataset(BLEDataset):
-    """BLE RSSI Indoor Localization Dataset from UCI.
+def cell_to_grid(label: str) -> tuple[float, float]:
+    """``"K04"`` -> ``(11.0, 4.0)``: the column letter (A = 1) and the row number of the source's map grid."""
+    letter, row = label[:1].upper(), label[1:]
+    if not ("A" <= letter <= "Z") or not row.isdigit():
+        raise ValueError(f"not a grid cell label: {label!r} (expected a letter and a row number, e.g. 'K04')")
+    return float(ord(letter) - ord("A") + 1), float(row)
 
-    Systematic BLE RSSI fingerprinting dataset with multiple beacon
-    measurements for indoor positioning research.
 
-    Args:
-        data_root: Root directory containing the dataset files. If None,
-            uses the default cache directory (~/.cache/indoorloc/datasets/ble_rssi_uci).
-        split: Dataset split ('train' or 'test').
-        download: Whether to download the dataset if not found.
-        transform: Optional transform to apply to signals.
-        normalize: Whether to normalize RSSI values.
-        normalize_method: Normalization method ('minmax', 'positive', 'standard').
-        train_ratio: Ratio for train/test split (default: 0.7).
+def _wall_clock_seconds(stamp: str) -> float:
+    """``"10-18-2016 11:15:21"`` (month-day-year, 24 h) -> seconds since 1970-01-01 of that wall-clock time."""
+    date, clock = stamp.split()
+    month, day, year = (int(v) for v in date.split("-"))
+    hour, minute, second = (int(v) for v in clock.split(":"))
+    return float(calendar.timegm((year, month, day, hour, minute, second, 0, 0, 0)))
 
-    Example:
-        >>> import indoorloc as iloc
-        >>> # Download from UCI repository
-        >>> train, test = iloc.BLERSSIU_UCI(download=True)
 
-    Dataset structure:
-        data_root/
-        └── iBeacon_RSSI_Labeled.csv
+class BLERSSIUCI(Dataset):
+    """BLE RSSI of 13 iBeacons on the first floor of Waldo Library, Western Michigan University (UCI, 2018).
 
-    CSV format:
-        - Columns: date, location, b3001_rssi, b3002_rssi, ..., b3013_rssi
-        - 13 iBeacon transmitters
-        - RSSI values in dBm
-        - Location labels as room identifiers
+    An iPhone 6S recorded the RSSI of 13 iBeacons (b3001..b3013) during the library's opening
+    hours in 2016: 1,420 scans labelled with the map cell where they were taken (105 cells), and
+    5,191 unlabelled scans collected for semi-supervised learning (Mohammadi et al., 2018).
+
+    ``X``      (N, 13) float32 RSSI in dBm; the file's "out of range" value -200 becomes NaN, and so
+               do 15 readings of -198/-199 in the labelled file (the same sentinel off by one or
+               two: every other reading in that file is between -88 and -55 dBm).
+    ``pos``    **grid cells, not metres.** The label ``"K04"`` is column K, row 4 of the map shipped
+               with the data (``iBeacon_Layout.jpg``) and becomes ``(11, 4)`` (A = 1). On that map the
+               columns A-U run left to right and the rows 1-18 run **top to bottom**, so the frame is
+               the map's image frame (y down). The source does not state the cell size, so errors are
+               in cells (``meta["pos_units"]``). Use ``cell_to_grid`` to convert labels.
+    ``groups`` ``time``: the file's wall-clock timestamp (local time of the library, US Eastern)
+               as seconds since 1970-01-01 read as if it were UTC (sortable; not true unix time).
+               ``point``: the cell label (``"K04"``), the reference point of the scan (for cell
+               classification or splits by position).
+    ``floor``/``building``: None (one floor of one building).
+
+    Splits: ``"all"`` (the labelled file) and ``"unlabeled"`` (the unlabelled file: ``pos`` is
+    all NaN and ``point`` is listed in ``meta["unknown_groups"]``). There is no official
+    train/test split. The literature mostly reports cell-classification accuracy on random
+    splits; consecutive scans (every 1-2 s at the same cell) are near duplicates, so a random
+    split flatters any method. A split by recording day (``groups["time"] // 86400``) or by
+    cell (``groups["point"]``, positions never seen in training) measures generalisation.
+
+    The timestamps are month-day-year (``10-18-2016``), not day-month-year as the UCI page says.
+
+    References
+    ----------
+    Mohammadi, M., Al-Fuqaha, A., "BLE RSSI Dataset for Indoor localization and Navigation",
+    UCI Machine Learning Repository, 2018. https://doi.org/10.24432/C54G80
+
+    Mohammadi, M., Al-Fuqaha, A., Guizani, M., Oh, J.-S., "Semisupervised Deep Reinforcement
+    Learning in Support of IoT and Smart City Services", IEEE Internet of Things Journal 5(2),
+    624-635, 2018. https://doi.org/10.1109/JIOT.2017.2712560
     """
 
-    # UCI download URL (new format)
-    UCI_URL = "https://archive.ics.uci.edu/static/public/435/ble+rssi+dataset+for+indoor+localization+and+navigation.zip"
-    ZIP_FILENAME = "ble_rssi_uci.zip"
+    name = "ble_rssi_uci"
+    urls = ("https://archive.ics.uci.edu/static/public/435/"
+            "ble+rssi+dataset+for+indoor+localization+and+navigation.zip",)
+    files = {
+        "all": ("iBeacon_RSSI_Labeled.csv", "2be36c37b2dd34e1eb59420d358a7cc4078718f6b5d49cbf4598753a2b4fecc9"),
+        "unlabeled": ("iBeacon_RSSI_Unlabeled.csv", "265439b23f3118c8b68dcf7068404c59e025ee43bb10bd0c7f4248c07f5f1c7c"),
+    }
+    split_aliases = {"labeled": "all", "labelled": "all", "unlabelled": "unlabeled"}
+    meta = {
+        "modality": "ble_rssi",
+        "units": "dBm",
+        "raw_missing_value": -200,
+        "crs": "local",
+        "pos_names": ("column", "row"),
+        "pos_units": "grid cells of the source map (column letter A=1, row number counted downward); "
+                     "cell size not stated",
+        "time_units": "s, local wall clock (US Eastern) read as UTC",
+        "device": "iPhone 6S",
+        "license": "CC BY 4.0",
+        "doi": "10.24432/C54G80",
+        "citation": "Mohammadi, Al-Fuqaha, Guizani, Oh, Semisupervised Deep Reinforcement Learning in Support "
+                    "of IoT and Smart City Services, IEEE Internet of Things Journal 5(2), 2018",
+        "url": "https://archive.ics.uci.edu/dataset/435/ble+rssi+dataset+for+indoor+localization+and+navigation",
+    }
+    feature_names = tuple(f"b{3001 + i}" for i in range(13))
+    _missing_below = -150.0  # no BLE receiver reports below about -110 dBm
 
-    # Dataset constants
-    NOT_DETECTED_VALUE = -100.0
-    NUM_BEACONS = 13  # 13 iBeacons (b3001-b3013)
-
-    # Required files
-    REQUIRED_FILES = ['iBeacon_RSSI_Labeled.csv']
-
-    def __init__(
-        self,
-        data_root: Optional[str] = None,
-        split: str = 'train',
-        download: bool = False,
-        transform: Optional[Any] = None,
-        normalize: bool = True,
-        normalize_method: str = 'minmax',
-        train_ratio: float = 0.7,
-        **kwargs
-    ):
-        self.train_ratio = train_ratio
-
-        super().__init__(
-            data_root=data_root,
-            split=split,
-            download=download,
-            transform=transform,
-            normalize=normalize,
-            normalize_method=normalize_method,
-            **kwargs
-        )
-
-    @property
-    def dataset_name(self) -> str:
-        return 'ble_rssi_uci'
-
-    @property
-    def num_beacons(self) -> int:
-        return self.NUM_BEACONS
-
-    def _check_exists(self) -> bool:
-        """Check if dataset files exist."""
-        return all(
-            (self.data_root / f).exists()
-            for f in self.REQUIRED_FILES
-        )
-
-    def _download(self) -> None:
-        """Download BLE RSSI UCI dataset."""
-        if self._check_exists():
-            print(f"Dataset already exists at {self.data_root}")
-            return
-
-        self.data_root.mkdir(parents=True, exist_ok=True)
-        zip_path = self.data_root / self.ZIP_FILENAME
-
-        # Download zip file
-        if not zip_path.exists():
-            print("Downloading BLE RSSI UCI dataset...")
-            try:
-                download_url(
-                    url=self.UCI_URL,
-                    root=self.data_root,
-                    filename=self.ZIP_FILENAME,
-                )
-            except Exception as e:
-                raise RuntimeError(
-                    f"Failed to download BLE RSSI UCI dataset: {e}\n"
-                    f"Please download manually from: "
-                    f"https://archive.ics.uci.edu/dataset/435/"
-                )
-
-        # Extract CSV files from zip
-        print("Extracting dataset files...")
-        try:
-            with zipfile.ZipFile(zip_path, 'r') as zf:
-                for member in zf.namelist():
-                    if member.endswith('.csv'):
-                        # Extract to data_root (flatten structure)
-                        filename = Path(member).name
-                        with zf.open(member) as src:
-                            target_path = self.data_root / filename
-                            with open(target_path, 'wb') as dst:
-                                dst.write(src.read())
-                        print(f"  Extracted: {filename}")
-        except Exception as e:
-            raise RuntimeError(f"Failed to extract dataset: {e}")
-
-    def _load_data(self) -> None:
-        """Load BLE RSSI UCI dataset from CSV file."""
-        filepath = self.data_root / 'iBeacon_RSSI_Labeled.csv'
-
-        if not filepath.exists():
-            raise FileNotFoundError(f"Data file not found: {filepath}")
-
-        # Load CSV
-        try:
-            import pandas as pd
-            df = pd.read_csv(filepath)
-        except ImportError:
-            raise ImportError(
-                "pandas is required to load BLE RSSI UCI dataset.\n"
-                "Install with: pip install pandas"
-            )
-
-        # Expected columns: date, location, b3001, b3002, ..., b3013
-        # 13 beacons with IDs b3001 through b3013
-
-        # Find RSSI columns (beacons)
-        rssi_cols = [col for col in df.columns if col.startswith('b30')]
-
-        if len(rssi_cols) == 0:
-            raise ValueError("No beacon RSSI columns found in dataset")
-
-        # Parse location labels to grid coordinates
-        # Format: "K04" -> letter=column (A-Z), number=row (01-15)
-        # Assume ~1m grid spacing (typical for BLE)
-        def parse_location(loc_label):
-            if not loc_label or len(loc_label) < 2:
-                return (0.0, 0.0)
-            letter = loc_label[0].upper()
-            try:
-                row = int(loc_label[1:])
-                col = ord(letter) - ord('A')  # A=0, B=1, ...
-                return (float(col), float(row))
-            except ValueError:
-                return (0.0, 0.0)
-
-        # Split data
-        num_train = int(len(df) * self.train_ratio)
-        if self.split == 'train':
-            df_split = df.iloc[:num_train]
-        else:  # test
-            df_split = df.iloc[num_train:]
-
-        # Process each sample
-        for idx, row in df_split.iterrows():
-            # Get location
-            location_label = row['location'] if 'location' in row else 'unknown'
-            x, y = parse_location(location_label)
-
-            # Create beacons
-            beacons = []
-            for beacon_col in rssi_cols:
-                rssi = row[beacon_col]
-
-                if pd.notna(rssi):
-                    # Extract beacon ID from column name (e.g., 'b3001' -> '3001')
-                    beacon_id = beacon_col.replace('b', '')
-
-                    beacon = BLEBeacon(
-                        mac_address=beacon_id,
-                        rssi=float(rssi)
-                    )
-                    beacons.append(beacon)
-
-            # Create BLE signal
-            signal = BLESignal(beacons=beacons)
-
-            # Create location
-            location = Location(
-                coordinate=Coordinate(x=x, y=y),
-                floor=0,
-                building_id='0'
-            )
-
-            self._signals.append(signal)
-            self._locations.append(location)
-
-        print(f"Loaded {len(self._signals)} samples from BLE RSSI UCI dataset ({self.split} split)")
-
-
-
-def BLERSSIU_UCI(data_root=None, split=None, download=False, **kwargs):
-    """
-    Convenience function for loading BLERSSIU_UCI dataset.
-
-    Args:
-        data_root: Root directory for dataset storage
-        split: Dataset split ('train', 'test', 'all', or None for tuple)
-        download: Whether to download if not found
-        **kwargs: Additional arguments passed to BLERSSIUCIDataset
-
-    Returns:
-        - If split is 'train' or 'test': Returns single dataset
-        - If split is 'all': Returns merged train+test dataset
-        - If split is None: Returns tuple (train_dataset, test_dataset)
-
-    Examples:
-        >>> # Load train and test separately (tuple unpacking)
-        >>> train, test = BLERSSIU_UCI(download=True)
-
-        >>> # Load entire dataset (train + test merged)
-        >>> dataset = BLERSSIU_UCI(split='all', download=True)
-
-        >>> # Load only training set
-        >>> train = BLERSSIU_UCI(split='train', download=True)
-    """
-    if split is None:
-        # Return both train and test as tuple
-        train_dataset = BLERSSIUCIDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
-        )
-        test_dataset = BLERSSIUCIDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
-        )
-        return train_dataset, test_dataset
-    elif split == 'all':
-        # Return merged train + test dataset
-        from torch.utils.data import ConcatDataset
-        train_dataset = BLERSSIUCIDataset(
-            data_root=data_root,
-            split='train',
-            download=download,
-            **kwargs
-        )
-        test_dataset = BLERSSIUCIDataset(
-            data_root=data_root,
-            split='test',
-            download=download,
-            **kwargs
-        )
-        return ConcatDataset([train_dataset, test_dataset])
-    else:
-        # Return single split
-        return BLERSSIUCIDataset(
-            data_root=data_root,
-            split=split,
-            download=download,
-            **kwargs
-        )
+    def _parse(self, path, split):
+        with open(path, newline="", encoding="ascii") as fh:
+            header, *rows = list(csv.reader(fh))
+        col = {name.strip(): i for i, name in enumerate(header)}
+        X = np.array([[row[col[b]] for b in self.feature_names] for row in rows], dtype=np.float32)
+        X[X <= self._missing_below] = np.nan  # -200, and a few -198/-199 in the labelled file
+        time = np.array([_wall_clock_seconds(row[col["date"]]) for row in rows])
+        cells = np.array([row[col["location"]].strip() for row in rows])
+        if split == "unlabeled":
+            if np.any(cells != "?"):
+                raise ValueError(f"{path.name}: expected '?' in every location field of the unlabelled file")
+            pos, groups, unknown = np.full((len(rows), 2), np.nan), {"time": time}, ("point",)
+        else:
+            pos = np.array([cell_to_grid(c) for c in cells])
+            groups, unknown = {"time": time, "point": cells}, ()
+        ids = np.array([f"{split}-{i:05d}" for i in range(len(rows))])
+        return SampleTable(X, pos, groups=groups, ids=ids,
+                           meta={"feature_names": self.feature_names, "unknown_groups": unknown})

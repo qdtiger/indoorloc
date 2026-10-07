@@ -1,36 +1,36 @@
-"""
-IndoorLoc Signals Module
+"""L2: signal views, pure functions and fit/transform estimators (numpy only).
 
-Provides signal abstractions for various sensor types used in indoor localization.
-"""
-from .base import BaseSignal, SignalMetadata
-from .wifi import WiFiSignal, APInfo
-from .ble import BLESignal, BLEBeacon
-from .imu import IMUSignal, IMUReading
-from .uwb import UWBSignal, UWBAnchor
-from .magnetometer import MagnetometerSignal
-from .vlc import VLCSignal, LEDTransmitter
-from .ultrasound import UltrasoundSignal, UltrasoundTransmitter
-from .hybrid import HybridSignal
-from .csi import CSISignal, CSIMetadata
+Transforms (sklearn transformer contract; each takes a scan ``(F,)``, a batch
+``(N, ...)``, a SampleTable or a scan view and returns the same kind of object):
 
-__all__ = [
-    'BaseSignal',
-    'SignalMetadata',
-    'WiFiSignal',
-    'APInfo',
-    'BLESignal',
-    'BLEBeacon',
-    'IMUSignal',
-    'IMUReading',
-    'UWBSignal',
-    'UWBAnchor',
-    'MagnetometerSignal',
-    'VLCSignal',
-    'LEDTransmitter',
-    'UltrasoundSignal',
-    'UltrasoundTransmitter',
-    'HybridSignal',
-    'CSISignal',
-    'CSIMetadata',
-]
+    missing / scaling   FillMissing, RSSINormalize, APFilter
+    AP selection        APSelect
+    representations     PositiveRepresentation, ExponentialRepresentation, PowedRepresentation
+    robust filtering    HampelFilter
+    augmentation        GaussianNoise, APDropout             (training data only)
+    device calibration  DeviceCalibration
+    CSI                 CSIAmplitude, CSIPhaseSanitize, SubcarrierSelect
+    magnetometer        MagneticFeatures (imu -> ``magnetic`` table), MagnetometerCalibration
+    composition         Compose
+
+Views: WiFiSignal, BLESignal (one scan). Functions: ``functional`` (RSSI), ``csi``,
+``ranging`` (ToA/RTT/two-way/ultrasound), ``imu``, ``magnetic`` (field components, heading,
+ellipsoid calibration) and ``vlc`` (Lambertian channel, power <-> distance, receiver noise).
+"""
+from __future__ import annotations
+
+from . import csi, functional, imu, magnetic, ranging, vlc
+from .augment import APDropout, Augmentation, GaussianNoise
+from .ble import BLESignal
+from .calibration import DeviceCalibration
+from .csi import CSIAmplitude, CSIPhaseSanitize, SubcarrierSelect
+from .magnetic import MagneticFeatures, MagnetometerCalibration
+from .transforms import (APFilter, APSelect, Compose, ExponentialRepresentation, FillMissing, HampelFilter,
+                         PositiveRepresentation, PowedRepresentation, RSSINormalize, Transform)
+from .wifi import WiFiSignal
+
+__all__ = ["APDropout", "APFilter", "APSelect", "Augmentation", "BLESignal", "CSIAmplitude", "CSIPhaseSanitize",
+           "Compose", "DeviceCalibration", "ExponentialRepresentation", "FillMissing", "GaussianNoise",
+           "HampelFilter", "MagneticFeatures", "MagnetometerCalibration", "PositiveRepresentation",
+           "PowedRepresentation", "RSSINormalize", "SubcarrierSelect", "Transform", "WiFiSignal", "csi", "functional",
+           "imu", "magnetic", "ranging", "vlc"]

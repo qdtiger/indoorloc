@@ -1,0 +1,2136 @@
+{
+ "format": "indoorloc-benchmark-matrix",
+ "format_version": 1,
+ "dataset": "tuji1",
+ "updated": "2026-09-29T01:00:14+00:00",
+ "harness": {
+  "runner": "benchmarks/run.py",
+  "hardware": {
+   "cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+   "logical_cpus": 32,
+   "memory_gb": 39.2,
+   "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "python": "3.14.4"
+  },
+  "cgroup": {
+   "memory_high_mb": 4096.0,
+   "memory_max_mb": 6144.0,
+   "swap_max_mb": 4096.0
+  },
+  "thread_env": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8",
+   "PYTHONHASHSEED": "0"
+  },
+  "timeout_s": 1800,
+  "max_rss_mb": 2500,
+  "code": {
+   "frozen": true,
+   "taken": "2026-09-29T01:00:05+00:00",
+   "from": "/mnt/e/code/indoorloc",
+   "git": {
+    "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+    "branch": "refactor/five-layer-architecture",
+    "dirty": true,
+    "changed_files_under_indoorloc": 138
+   },
+   "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0"
+  },
+  "code_history": [
+   {
+    "taken": "2026-09-28T10:04:34+00:00",
+    "from": "/mnt/e/code/indoorloc",
+    "git": {
+     "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+     "branch": "refactor/five-layer-architecture",
+     "dirty": true,
+     "changed_files_under_indoorloc": 138
+    },
+    "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+   }
+  ]
+ },
+ "environment": {
+  "indoorloc": "0.2.0.dev0",
+  "python": "3.14.4",
+  "implementation": "CPython",
+  "numpy": "2.4.5",
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "cpu_count": 32,
+  "blas": {
+   "blas": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   }
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": "8",
+   "OPENBLAS_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "packages": {
+   "pandas": "3.0.3",
+   "scipy": "1.17.1",
+   "sklearn": "1.8.0",
+   "torch": "2.11.0+cu128"
+  }
+ },
+ "source_sha256": [
+  "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+  "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+ ],
+ "tables": [
+  {
+   "id": "official",
+   "title": {
+    "en": "TUJI1, official split (6,752 train / 2,147 test scans, five devices, one floor)",
+    "zh": "TUJI1，官方划分（训练 6,752 / 测试 2,147 条，五台设备，单层）"
+   },
+   "runner": "cli",
+   "protocol_spec": "official",
+   "options": {},
+   "dataset": {
+    "name": "tuji1",
+    "class": "indoorloc.datasets.tuji1:TUJI1",
+    "options": {},
+    "splits": [
+     "train",
+     "test"
+    ],
+    "n_samples": {
+     "train": 6752,
+     "test": 2147
+    },
+    "n_pooled": 8899,
+    "sha256": {
+     "train": {
+      "RSS_training.csv": "dbdcb88699cb767a65fe17b859042b0b3b2be1095674f977cafb6c981aabd6d5",
+      "Coordinates_training.csv": "6bee8b88c923eaff2e6af6744f5bc69e689629bd67bbc23b4ce6e1d67750fb8e",
+      "Device_labels.csv": "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30"
+     },
+     "test": {
+      "RSS_testing.csv": "a81a514d76d6aae796bf78a12582dd18e760333773395402fe0ca0daa6986260",
+      "Coordinates_testing.csv": "67e63a53e57fba461f7db2af51218bf4716f942b3ffdbe0de2bdfd37697724f3",
+      "Device_labels.csv": "81978cef0e36c5a19525a652d0deab34757086035dd23c619f2f4fe897d8be30"
+     }
+    },
+    "modality": "wifi_rssi",
+    "crs": "local",
+    "pos_units": "m",
+    "citation": "Klus et al., TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density, Data in Brief 54:110356, 2024, doi:10.1016/j.dib.2024.110356",
+    "doi": "10.5281/zenodo.7641701",
+    "license": "CC BY 4.0",
+    "url": "https://zenodo.org/records/7641701"
+   },
+   "protocol": {
+    "name": "official",
+    "summary": "the dataset's own train/test files (the setting of most published numbers)",
+    "folds": [
+     {
+      "name": "official",
+      "n_train": 6752,
+      "n_test": 2147,
+      "train_sha256": "807ed3f6a0ef16427a45b631b9bc4f2a1cdad0c95b8bb7680b3e571028738899",
+      "test_sha256": "17c0045bbeaf3eaad9bdf24dbd36d4e2e85b313ae11953dfc43e9e7e713c0a11",
+      "n_unused": 0
+     }
+    ]
+   },
+   "units": "m",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "model-based: the dataset does not publish the access-point positions",
+     "zh": "基于模型的方法：数据集未公开 AP 位置"
+    }
+   ],
+   "notes": [
+    {
+     "en": "One floor with constant z, so the 2-D errors equal the paper's 3-D errors. The paper's 1-NN baseline (positive representation, Euclidean) is 3.34 m; here 1-NN + positive learns the missing value from the training data only (min - 1 dBm).",
+     "zh": "单层且 z 恒定，二维误差即论文中的三维误差。论文 1-NN 基线（positive 表示、欧氏距离）为 3.34 m；此处 1-NN + positive 仅从训练集学习缺失值（最小值 - 1 dBm）。"
+    }
+   ],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 0.85,
+     "peak_rss_mb": 78.6,
+     "load_avg_1min": [
+      2.91,
+      2.91
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:24:48+00:00",
+     "fit_s": 0.0046,
+     "predict_s": 0.001,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 9.261135194045478,
+      "median_error": 9.371116173154611,
+      "p75_error": 12.296889935832857,
+      "p90_error": 15.047766638748891,
+      "p95_error": 15.907127720212069,
+      "rmse": 10.145260626898379,
+      "max_error": 17.59503023679344,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 12.296889935832857,
+      "mean_penalized_error": 9.261135194045478,
+      "p75_penalized_error": 12.296889935832857,
+      "mean_error_ci95": [
+       9.089743231631221,
+       9.445843943751669
+      ],
+      "cdf": {
+       "<=1": 0.6986492780624126,
+       "<=2": 3.0274802049371217,
+       "<=5": 19.329296693060083,
+       "<=10": 55.659059152305545,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0046,
+       "predict_s": 0.001,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 9.261135194045478,
+        "median_error": 9.371116173154611,
+        "p75_error": 12.296889935832857,
+        "p90_error": 15.047766638748891,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 12.296889935832857
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:14:59+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.15,
+     "peak_rss_mb": 134.1,
+     "load_avg_1min": [
+      2.91,
+      2.91
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:24:48+00:00",
+     "fit_s": 0.0098,
+     "predict_s": 0.1259,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 3.4241177728267056,
+      "median_error": 2.8245466892936992,
+      "p75_error": 4.787436497182467,
+      "p90_error": 6.916378411032619,
+      "p95_error": 8.367805812656982,
+      "rmse": 4.253683414996502,
+      "max_error": 19.431542250938293,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 4.787436497182467,
+      "mean_penalized_error": 3.4241177728267056,
+      "p75_penalized_error": 4.787436497182467,
+      "mean_error_ci95": [
+       3.3184732103706582,
+       3.5423258631989785
+      ],
+      "cdf": {
+       "<=1": 16.115510013972987,
+       "<=2": 34.65300419189567,
+       "<=5": 76.47880763856544,
+       "<=10": 97.81089892873777,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0098,
+       "predict_s": 0.1259,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 3.4241177728267056,
+        "median_error": 2.8245466892936992,
+        "p75_error": 4.787436497182467,
+        "p90_error": 6.916378411032619,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 4.787436497182467
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:14:59+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method knn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.12,
+     "peak_rss_mb": 135.4,
+     "load_avg_1min": [
+      2.91,
+      2.91
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:24:49+00:00",
+     "fit_s": 0.0071,
+     "predict_s": 0.1262,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.7565043505979885,
+      "median_error": 2.379012746918352,
+      "p75_error": 3.6619164197592493,
+      "p90_error": 5.28493846341174,
+      "p95_error": 6.272652948786405,
+      "rmse": 3.2868031232358446,
+      "max_error": 15.166021428179508,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.6619164197592493,
+      "mean_penalized_error": 2.7565043505979885,
+      "p75_penalized_error": 3.6619164197592493,
+      "mean_error_ci95": [
+       2.679791269360919,
+       2.832553316831008
+      ],
+      "cdf": {
+       "<=1": 13.833255705635771,
+       "<=2": 40.521658127619936,
+       "<=5": 88.26269212855146,
+       "<=10": 99.72054028877504,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0071,
+       "predict_s": 0.1262,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.7565043505979885,
+        "median_error": 2.379012746918352,
+        "p75_error": 3.6619164197592493,
+        "p90_error": 5.28493846341174,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.6619164197592493
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:00+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.22,
+     "peak_rss_mb": 134.6,
+     "load_avg_1min": [
+      2.91,
+      2.91
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:24:49+00:00",
+     "fit_s": 0.0078,
+     "predict_s": 0.1314,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.7329311460498094,
+      "median_error": 2.3488772568950123,
+      "p75_error": 3.630119370631175,
+      "p90_error": 5.263993274762577,
+      "p95_error": 6.285742845516981,
+      "rmse": 3.2680529289648126,
+      "max_error": 15.273787562990817,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.630119370631175,
+      "mean_penalized_error": 2.7329311460498094,
+      "p75_penalized_error": 3.630119370631175,
+      "mean_error_ci95": [
+       2.6568795268736825,
+       2.810401261588139
+      ],
+      "cdf": {
+       "<=1": 14.345598509548207,
+       "<=2": 41.499767116907314,
+       "<=5": 88.07638565440149,
+       "<=10": 99.72054028877504,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0078,
+       "predict_s": 0.1314,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.7329311460498094,
+        "median_error": 2.3488772568950123,
+        "p75_error": 3.630119370631175,
+        "p90_error": 5.263993274762577,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.630119370631175
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:00+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 9.812,
+     "cpu_time_s": 10.24,
+     "peak_rss_mb": 187.0,
+     "load_avg_1min": [
+      2.91,
+      2.76
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:24:59+00:00",
+     "fit_s": 0.0558,
+     "predict_s": 9.3437,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.9604810125154843,
+      "median_error": 2.1650039949456596,
+      "p75_error": 3.9339041558988757,
+      "p90_error": 6.136856099362923,
+      "p95_error": 8.178680497416527,
+      "rmse": 3.913679480498524,
+      "max_error": 19.24682598640903,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.9339041558988757,
+      "mean_penalized_error": 2.9604810125154843,
+      "p75_penalized_error": 3.9339041558988757,
+      "mean_error_ci95": [
+       2.8563956487411883,
+       3.0706617644420224
+      ],
+      "cdf": {
+       "<=1": 19.748486259897533,
+       "<=2": 45.50535631113181,
+       "<=5": 84.070796460177,
+       "<=10": 97.76432231020028,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0558,
+       "predict_s": 9.3437,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.9604810125154843,
+        "median_error": 2.1650039949456596,
+        "p75_error": 3.9339041558988757,
+        "p90_error": 6.136856099362923,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.9339041558988757
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:10+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.202,
+     "cpu_time_s": 3.01,
+     "peak_rss_mb": 312.5,
+     "load_avg_1min": [
+      2.76,
+      2.76
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:00+00:00",
+     "fit_s": 0.6351,
+     "predict_s": 0.0272,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.3477650612641168,
+      "median_error": 2.1360407094669323,
+      "p75_error": 3.072501165798011,
+      "p90_error": 4.15418322662214,
+      "p95_error": 4.836790738638871,
+      "rmse": 2.7081501428033388,
+      "max_error": 13.643013044152864,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.072501165798011,
+      "mean_penalized_error": 2.3477650612641168,
+      "p75_penalized_error": 3.072501165798011,
+      "mean_error_ci95": [
+       2.295209011601813,
+       2.407588272024008
+      ],
+      "cdf": {
+       "<=1": 14.578481602235678,
+       "<=2": 45.97112249650675,
+       "<=5": 95.80810433162553,
+       "<=10": 99.9534233814625,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.6351,
+       "predict_s": 0.0272,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.3477650612641168,
+        "median_error": 2.1360407094669323,
+        "p75_error": 3.072501165798011,
+        "p90_error": 4.15418322662214,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.072501165798011
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:11+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.202,
+     "cpu_time_s": 3.25,
+     "peak_rss_mb": 355.2,
+     "load_avg_1min": [
+      2.76,
+      2.62
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:01+00:00",
+     "fit_s": 0.6648,
+     "predict_s": 0.0334,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.451158579900971,
+      "median_error": 2.2150295436234986,
+      "p75_error": 3.2228077731559246,
+      "p90_error": 4.360386740838085,
+      "p95_error": 5.163091388430052,
+      "rmse": 2.8378261877621735,
+      "max_error": 14.0334224468383,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.2228077731559246,
+      "mean_penalized_error": 2.451158579900971,
+      "p75_penalized_error": 3.2228077731559246,
+      "mean_error_ci95": [
+       2.395842782145238,
+       2.5106240572248866
+      ],
+      "cdf": {
+       "<=1": 14.252445272473219,
+       "<=2": 43.36283185840708,
+       "<=5": 94.27107591988822,
+       "<=10": 99.90684676292501,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.6648,
+       "predict_s": 0.0334,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.451158579900971,
+        "median_error": 2.2150295436234986,
+        "p75_error": 3.2228077731559246,
+        "p90_error": 4.360386740838085,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.2228077731559246
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:13+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 11.416,
+     "cpu_time_s": 14.06,
+     "peak_rss_mb": 429.8,
+     "load_avg_1min": [
+      2.62,
+      2.45
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:13+00:00",
+     "fit_s": 1.386,
+     "predict_s": 9.5909,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.304323630929878,
+      "median_error": 1.9769158808498415,
+      "p75_error": 3.0556133288911624,
+      "p90_error": 4.253620601308226,
+      "p95_error": 5.063510250161596,
+      "rmse": 2.7537000369961695,
+      "max_error": 15.331720849587985,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.0556133288911624,
+      "mean_penalized_error": 2.304323630929878,
+      "p75_penalized_error": 3.0556133288911624,
+      "mean_error_ci95": [
+       2.2444367076009972,
+       2.3734486214282997
+      ],
+      "cdf": {
+       "<=1": 18.49091755938519,
+       "<=2": 50.53563111318118,
+       "<=5": 94.82999534233815,
+       "<=10": 99.86027014438751,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 1.386,
+       "predict_s": 9.5909,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.304323630929878,
+        "median_error": 1.9769158808498415,
+        "p75_error": 3.0556133288911624,
+        "p90_error": 4.253620601308226,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.0556133288911624
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:25+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method mlp --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 7.409,
+     "cpu_time_s": 47.3,
+     "peak_rss_mb": 880.3,
+     "load_avg_1min": [
+      2.45,
+      2.98
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:20+00:00",
+     "fit_s": 6.6223,
+     "predict_s": 0.0054,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.155948866149909,
+      "median_error": 1.8209641417811555,
+      "p75_error": 2.8044125222717744,
+      "p90_error": 4.061444147386049,
+      "p95_error": 5.067045804085144,
+      "rmse": 2.6015037151116474,
+      "max_error": 14.74462287795403,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.8044125222717744,
+      "mean_penalized_error": 2.155948866149909,
+      "p75_penalized_error": 2.8044125222717744,
+      "mean_error_ci95": [
+       2.094668908772887,
+       2.2139067317957712
+      ],
+      "cdf": {
+       "<=1": 21.099208197484863,
+       "<=2": 55.37959944108058,
+       "<=5": 94.69026548672566,
+       "<=10": 99.9534233814625,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 6.6223,
+       "predict_s": 0.0054,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.155948866149909,
+        "median_error": 1.8209641417811555,
+        "p75_error": 2.8044125222717744,
+        "p90_error": 4.061444147386049,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.8044125222717744
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:32+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method svm --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 8.81,
+     "cpu_time_s": 9.92,
+     "peak_rss_mb": 419.2,
+     "load_avg_1min": [
+      2.98,
+      2.83
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:29+00:00",
+     "fit_s": 5.6634,
+     "predict_s": 2.6734,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.368275858977451,
+      "median_error": 2.0933432143705875,
+      "p75_error": 3.1336318952344433,
+      "p90_error": 4.280675814566925,
+      "p95_error": 5.264766000588298,
+      "rmse": 2.8190426681880885,
+      "max_error": 12.950420621996818,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.1336318952344433,
+      "mean_penalized_error": 2.368275858977451,
+      "p75_penalized_error": 3.1336318952344433,
+      "mean_error_ci95": [
+       2.3016032952310232,
+       2.4284304008045807
+      ],
+      "cdf": {
+       "<=1": 17.6059618071728,
+       "<=2": 47.741034000931535,
+       "<=5": 94.03819282720075,
+       "<=10": 99.76711690731253,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 5.6634,
+       "predict_s": 2.6734,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.368275858977451,
+        "median_error": 2.0933432143705875,
+        "p75_error": 3.1336318952344433,
+        "p90_error": 4.280675814566925,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.1336318952344433
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:42+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "gp_radiomap",
+     "display": [
+      "GP radio map",
+      "GP 无线电地图"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess fill --method gp_radiomap --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 14.821,
+     "cpu_time_s": 89.25,
+     "peak_rss_mb": 279.3,
+     "load_avg_1min": [
+      2.83,
+      3.56
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:44+00:00",
+     "fit_s": 10.5405,
+     "predict_s": 4.0,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 3.4015366215892677,
+      "median_error": 2.695523140319889,
+      "p75_error": 4.712900768091686,
+      "p90_error": 7.359028812903761,
+      "p95_error": 9.15906619829747,
+      "rmse": 4.347016517444387,
+      "max_error": 17.05748259562354,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 4.712900768091686,
+      "mean_penalized_error": 3.4015366215892677,
+      "p75_penalized_error": 4.712900768091686,
+      "mean_error_ci95": [
+       3.285967201803695,
+       3.5151017051572016
+      ],
+      "cdf": {
+       "<=1": 19.049836981835117,
+       "<=2": 38.19282720074523,
+       "<=5": 77.13088029809036,
+       "<=10": 96.8327899394504,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 10.5405,
+       "predict_s": 4.0,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 3.4015366215892677,
+        "median_error": 2.695523140319889,
+        "p75_error": 4.712900768091686,
+        "p90_error": 7.359028812903761,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 4.712900768091686
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.gaussian_process:GPRadioMapLocalizer",
+        "params": {
+         "candidates": null,
+         "length_scales": null,
+         "n_candidates": 1,
+         "noise_ratios": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:57+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.08,
+     "peak_rss_mb": 142.9,
+     "load_avg_1min": [
+      3.56,
+      3.56
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:44+00:00",
+     "fit_s": 0.0097,
+     "predict_s": 0.1131,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 3.342953736634786,
+      "median_error": 2.697510889690716,
+      "p75_error": 4.556954711254107,
+      "p90_error": 6.793595055893904,
+      "p95_error": 8.28037534947881,
+      "rmse": 4.1682934198683,
+      "max_error": 19.431542250938293,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 4.556954711254107,
+      "mean_penalized_error": 3.342953736634786,
+      "p75_penalized_error": 4.556954711254107,
+      "mean_error_ci95": [
+       3.2394320074962217,
+       3.4559205970224127
+      ],
+      "cdf": {
+       "<=1": 16.441546343735446,
+       "<=2": 35.817419655333026,
+       "<=5": 77.6897997205403,
+       "<=10": 97.99720540288774,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0097,
+       "predict_s": 0.1131,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 3.342953736634786,
+        "median_error": 2.697510889690716,
+        "p75_error": 4.556954711254107,
+        "p90_error": 6.793595055893904,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 4.556954711254107
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:58+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess positive --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.22,
+     "peak_rss_mb": 141.9,
+     "load_avg_1min": [
+      3.56,
+      3.56
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:45+00:00",
+     "fit_s": 0.0095,
+     "predict_s": 0.1343,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.6564806561207948,
+      "median_error": 2.256663431940342,
+      "p75_error": 3.580323274438858,
+      "p90_error": 5.106977157829083,
+      "p95_error": 6.110115512067236,
+      "rmse": 3.1880154811304284,
+      "max_error": 15.246397240279999,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.580323274438858,
+      "mean_penalized_error": 2.6564806561207948,
+      "p75_penalized_error": 3.580323274438858,
+      "mean_error_ci95": [
+       2.577723591141565,
+       2.731676735380026
+      ],
+      "cdf": {
+       "<=1": 16.348393106660456,
+       "<=2": 43.50256171401956,
+       "<=5": 89.19422449930136,
+       "<=10": 99.72054028877504,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0095,
+       "predict_s": 0.1343,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.6564806561207948,
+        "median_error": 2.256663431940342,
+        "p75_error": 3.580323274438858,
+        "p90_error": 5.106977157829083,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.580323274438858
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:58+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess exponential --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.2,
+     "peak_rss_mb": 134.1,
+     "load_avg_1min": [
+      3.56,
+      3.56
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:45+00:00",
+     "fit_s": 0.0208,
+     "predict_s": 0.1263,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.394131335479057,
+      "median_error": 2.0211506227090275,
+      "p75_error": 3.180212878320952,
+      "p90_error": 4.634676533617798,
+      "p95_error": 5.666328540674736,
+      "rmse": 2.9067460923607933,
+      "max_error": 16.59708523827642,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.180212878320952,
+      "mean_penalized_error": 2.394131335479057,
+      "p75_penalized_error": 3.180212878320952,
+      "mean_error_ci95": [
+       2.3259548602987237,
+       2.4651438466287448
+      ],
+      "cdf": {
+       "<=1": 19.142990218910107,
+       "<=2": 49.32463903120633,
+       "<=5": 92.22170470423848,
+       "<=10": 99.86027014438751,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0208,
+       "predict_s": 0.1263,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.394131335479057,
+        "median_error": 2.0211506227090275,
+        "p75_error": 3.180212878320952,
+        "p90_error": 4.634676533617798,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.180212878320952
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:59+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess powed --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 2.22,
+     "peak_rss_mb": 134.3,
+     "load_avg_1min": [
+      3.56,
+      3.56
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T13:25:46+00:00",
+     "fit_s": 0.0212,
+     "predict_s": 0.1346,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.488379904024834,
+      "median_error": 2.1165384526310174,
+      "p75_error": 3.3133207262283366,
+      "p90_error": 4.67508073831624,
+      "p95_error": 5.852372650298086,
+      "rmse": 3.0128684198350957,
+      "max_error": 17.2107064649475,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 3.3133207262283366,
+      "mean_penalized_error": 2.488379904024834,
+      "p75_penalized_error": 3.3133207262283366,
+      "mean_error_ci95": [
+       2.4169229173348823,
+       2.562570448205107
+      ],
+      "cdf": {
+       "<=1": 17.093619003260365,
+       "<=2": 46.76292501164416,
+       "<=5": 91.75593851886353,
+       "<=10": 99.9534233814625,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0212,
+       "predict_s": 0.1346,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.488379904024834,
+        "median_error": 2.1165384526310174,
+        "p75_error": 3.3133207262283366,
+        "p90_error": 4.67508073831624,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 3.3133207262283366
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     },
+     "rerun_check": {
+      "previous_created": "2026-09-28T10:15:59+00:00",
+      "previous_source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+      "numbers_compared": 26,
+      "largest_difference": 0.0,
+      "where": null
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset tuji1 --protocol official --preprocess none --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 1.54,
+     "peak_rss_mb": 178.9,
+     "load_avg_1min": [
+      1.09,
+      1.09
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:14+00:00",
+     "fit_s": 0.0509,
+     "predict_s": 0.651,
+     "pooled": {
+      "n": 2147,
+      "mean_error": 2.125892791671931,
+      "median_error": 1.6138852792655,
+      "p75_error": 2.855934646360776,
+      "p90_error": 4.334107322830698,
+      "p95_error": 5.512645945233188,
+      "rmse": 2.7593767708530366,
+      "max_error": 19.721068341431042,
+      "floor_accuracy": null,
+      "building_accuracy": null,
+      "n_failed": 0,
+      "ipin_score": 2.855934646360776,
+      "mean_penalized_error": 2.125892791671931,
+      "p75_penalized_error": 2.855934646360776,
+      "mean_error_ci95": [
+       2.057817694504599,
+       2.2011856870246014
+      ],
+      "cdf": {
+       "<=1": 28.97065673032138,
+       "<=2": 59.05915230554262,
+       "<=5": 92.78062412668841,
+       "<=10": 99.67396367023754,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0509,
+       "predict_s": 0.651,
+       "metrics": {
+        "n": 2147,
+        "mean_error": 2.125892791671931,
+        "median_error": 1.6138852792655,
+        "p75_error": 2.855934646360776,
+        "p90_error": 4.334107322830698,
+        "floor_accuracy": null,
+        "building_accuracy": null,
+        "n_failed": 0,
+        "ipin_score": 2.855934646360776
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "74b4eb924088acdf6e8ffa4ba99546fc2e50fd999d30fb920476badd81d93328",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  }
+ ],
+ "literature": {
+  "available": true,
+  "display_name": "TUJI1",
+  "metrics": {
+   "mean_error_3d": {
+    "definition": "mean 3-D Euclidean positioning error, as reported",
+    "unit": "m"
+   },
+   "mean_error": {
+    "definition": "mean 2-D Euclidean positioning error",
+    "unit": "m"
+   }
+  },
+  "entries": [
+   {
+    "method": "1-NN (positive representation, Euclidean distance)",
+    "values": {
+     "mean_error_3d": 3.34
+    },
+    "protocol": "official",
+    "check": "corrected",
+    "location": "Table 3 ('1 NN')",
+    "source": {
+     "authors": "L. Klus, R. Klus, E. S. Lohan, J. Nurmi, C. Granell, M. Valkama, J. Talvitie, S. Casteleyn, J. Torres-Sospedra",
+     "title": "TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density",
+     "venue": "Data in Brief 54:110356",
+     "year": 2024,
+     "doi": "10.1016/j.dib.2024.110356",
+     "url": null
+    }
+   },
+   {
+    "method": "k-NN, tuned (exponential representation, Sørensen distance, k=7)",
+    "values": {
+     "mean_error_3d": 2.27
+    },
+    "protocol": "official",
+    "check": "corrected",
+    "location": "Table 3 ('Best Coef.')",
+    "source": {
+     "authors": "L. Klus, R. Klus, E. S. Lohan, J. Nurmi, C. Granell, M. Valkama, J. Talvitie, S. Casteleyn, J. Torres-Sospedra",
+     "title": "TUJI1 Dataset: Multi-device dataset for indoor localization with high measurement density",
+     "venue": "Data in Brief 54:110356",
+     "year": 2024,
+     "doi": "10.1016/j.dib.2024.110356",
+     "url": null
+    }
+   }
+  ],
+  "hidden": 2,
+  "checks_all": {
+   "literature/corrected": 2,
+   "indoorloc-0.1/not-literature": 2
+  },
+  "rule": "shown: literature entries checked 'verified', 'corrected' or 'unchecked'; hidden: 'unidentified', 'missing' and numbers IndoorLoc 0.1 produced itself"
+ }
+}

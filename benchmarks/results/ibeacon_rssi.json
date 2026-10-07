@@ -1,0 +1,5819 @@
+{
+ "format": "indoorloc-benchmark-matrix",
+ "format_version": 1,
+ "dataset": "ibeacon_rssi",
+ "updated": "2026-09-29T01:00:25+00:00",
+ "harness": {
+  "runner": "benchmarks/run.py",
+  "hardware": {
+   "cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+   "logical_cpus": 32,
+   "memory_gb": 39.2,
+   "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "python": "3.14.4"
+  },
+  "cgroup": {
+   "memory_high_mb": 4096.0,
+   "memory_max_mb": 6144.0,
+   "swap_max_mb": 4096.0
+  },
+  "thread_env": {
+   "OPENBLAS_NUM_THREADS": "8",
+   "OMP_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8",
+   "PYTHONHASHSEED": "0"
+  },
+  "timeout_s": 1800,
+  "max_rss_mb": 2500,
+  "code": {
+   "frozen": true,
+   "taken": "2026-09-29T01:00:05+00:00",
+   "from": "/mnt/e/code/indoorloc",
+   "git": {
+    "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+    "branch": "refactor/five-layer-architecture",
+    "dirty": true,
+    "changed_files_under_indoorloc": 138
+   },
+   "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0"
+  },
+  "code_history": [
+   {
+    "taken": "2026-09-28T10:04:34+00:00",
+    "from": "/mnt/e/code/indoorloc",
+    "git": {
+     "commit": "ff90d76a9dd9d9c8175931e525425e2012a68401",
+     "branch": "refactor/five-layer-architecture",
+     "dirty": true,
+     "changed_files_under_indoorloc": 138
+    },
+    "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+   }
+  ]
+ },
+ "environment": {
+  "indoorloc": "0.2.0.dev0",
+  "python": "3.14.4",
+  "implementation": "CPython",
+  "numpy": "2.4.5",
+  "platform": "Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "cpu_count": 32,
+  "blas": {
+   "blas": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   },
+   "lapack": {
+    "name": "scipy-openblas",
+    "version": "0.3.31.188.0"
+   }
+  },
+  "thread_env": {
+   "OMP_NUM_THREADS": "8",
+   "OPENBLAS_NUM_THREADS": "8",
+   "MKL_NUM_THREADS": "8"
+  },
+  "packages": {
+   "pandas": "3.0.3",
+   "scipy": "1.17.1",
+   "sklearn": "1.8.0",
+   "torch": "2.11.0+cu128"
+  }
+ },
+ "source_sha256": [
+  "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+  "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c"
+ ],
+ "tables": [
+  {
+   "id": "official-all",
+   "title": {
+    "en": "UJI iBeacon RSS, both zones, the authors' default train/test configuration",
+    "zh": "UJI iBeacon RSS，两个区域合并，作者默认训练/测试配置"
+   },
+   "runner": "cli",
+   "protocol_spec": "official",
+   "options": {},
+   "dataset": {
+    "name": "ibeacon_rssi",
+    "class": "indoorloc.datasets.ibeacon_rssi:IBeaconRSSI",
+    "options": {},
+    "splits": [
+     "train",
+     "test",
+     "all"
+    ],
+    "n_samples": {
+     "train": 2748,
+     "test": 1860,
+     "all": 4752
+    },
+    "n_pooled": 4752,
+    "duplicate_rows_dropped": {
+     "all": 4608
+    },
+    "sha256": {
+     "train": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38",
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     },
+     "test": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38",
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     },
+     "all": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38",
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     }
+    },
+    "modality": "ble_rssi",
+    "crs": "local (one frame per zone; see building)",
+    "pos_units": "m",
+    "citation": "Mendoza-Silva, Matey-Sanz, Torres-Sospedra, Huerta, BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning, Data 4(1), 12, 2019",
+    "doi": "10.5281/zenodo.1618692",
+    "license": "CC BY 4.0 (data), MIT (scripts)",
+    "url": "https://zenodo.org/records/1618692"
+   },
+   "protocol": {
+    "name": "official",
+    "summary": "the dataset's own train/test files (the setting of most published numbers)",
+    "folds": [
+     {
+      "name": "official",
+      "n_train": 2748,
+      "n_test": 1860,
+      "train_sha256": "ce0613af72ac3668aa25d78ce37fafc72cb93a50f89ba7e97e7155a83cae44c0",
+      "test_sha256": "5b9a1608d8ad83dbb338b449b5dd6a9b7bb948d73fbab26849d3dc60bdb28cc3",
+      "n_unused": 144
+     }
+    ]
+   },
+   "units": "m",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "19-27 % of the test scans hear fewer than 3 beacons (11-12 % hear none): a model-based method cannot place them, and `indoorloc benchmark` requires an estimate for every row",
+     "zh": "19-27% 的测试样本听到的信标少于 3 个（11-12% 一个也没有）：基于模型的方法无法定位，而 `indoorloc benchmark` 要求每条样本都有估计"
+    }
+   ],
+   "notes": [
+    {
+     "en": "The two zones (geo = building 1, lib = 2) have separate frames and beacons; see the per-zone tables. Scans that heard no beacon (fill: all -104 dBm) are kept, as in the dataset.",
+     "zh": "两个区域（geo = 楼栋 1，lib = 2）坐标系与信标各自独立，见逐区域表格。未听到任何信标的样本（填充后全为 -104 dBm）按数据集原样保留。"
+    }
+   ],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.201,
+     "cpu_time_s": 0.81,
+     "peak_rss_mb": 58.0,
+     "load_avg_1min": [
+      7.08,
+      7.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:10+00:00",
+     "fit_s": 0.0005,
+     "predict_s": 0.0002,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 8.699011665285214,
+      "median_error": 8.013770723676615,
+      "p75_error": 12.01446217087241,
+      "p90_error": 14.777770674309615,
+      "p95_error": 16.2614845970161,
+      "rmse": 9.681867691760388,
+      "max_error": 17.130317861400478,
+      "floor_accuracy": null,
+      "building_accuracy": 41.935483870967744,
+      "n_failed": 0,
+      "ipin_score": 62.014462170872406,
+      "mean_penalized_error": 37.73126972980135,
+      "p75_penalized_error": 62.014462170872406,
+      "mean_error_ci95": [
+       8.52054162840971,
+       8.896066252321756
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 4.193548387096774,
+       "<=5": 20.64516129032258,
+       "<=10": 58.70967741935484,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0005,
+       "predict_s": 0.0002,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 8.699011665285214,
+        "median_error": 8.013770723676615,
+        "p75_error": 12.01446217087241,
+        "p90_error": 14.777770674309615,
+        "floor_accuracy": null,
+        "building_accuracy": 41.935483870967744,
+        "n_failed": 0,
+        "ipin_score": 62.014462170872406
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.68,
+     "peak_rss_mb": 63.6,
+     "load_avg_1min": [
+      7.08,
+      7.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:11+00:00",
+     "fit_s": 0.0008,
+     "predict_s": 0.0702,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 4.5905210156829925,
+      "median_error": 3.4609969661934112,
+      "p75_error": 6.590000000000001,
+      "p90_error": 8.744941966645632,
+      "p95_error": 10.656208941269874,
+      "rmse": 5.430186040645523,
+      "max_error": 14.509321589929696,
+      "floor_accuracy": null,
+      "building_accuracy": 93.33333333333333,
+      "n_failed": 0,
+      "ipin_score": 6.828777342980221,
+      "mean_penalized_error": 7.923854349016325,
+      "p75_penalized_error": 6.828777342980221,
+      "mean_error_ci95": [
+       4.452365310882549,
+       4.718144529534819
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 1.6666666666666667,
+       "<=5": 65.86021505376344,
+       "<=10": 92.90322580645162,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0008,
+       "predict_s": 0.0702,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 4.5905210156829925,
+        "median_error": 3.4609969661934112,
+        "p75_error": 6.590000000000001,
+        "p90_error": 8.744941966645632,
+        "floor_accuracy": null,
+        "building_accuracy": 93.33333333333333,
+        "n_failed": 0,
+        "ipin_score": 6.828777342980221
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method knn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.59,
+     "peak_rss_mb": 64.3,
+     "load_avg_1min": [
+      7.08,
+      7.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:11+00:00",
+     "fit_s": 0.0007,
+     "predict_s": 0.051,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.4940021197454314,
+      "median_error": 2.616624543185362,
+      "p75_error": 4.4783585918759465,
+      "p90_error": 7.170987764365084,
+      "p95_error": 9.407049848057786,
+      "rmse": 4.505530215981054,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 92.0967741935484,
+      "n_failed": 0,
+      "ipin_score": 4.575362203536217,
+      "mean_penalized_error": 7.4456150229712375,
+      "p75_penalized_error": 4.575362203536217,
+      "mean_error_ci95": [
+       3.3540729857730605,
+       3.6130773251798654
+      ],
+      "cdf": {
+       "<=1": 12.526881720430108,
+       "<=2": 34.46236559139785,
+       "<=5": 78.9247311827957,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0007,
+       "predict_s": 0.051,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.4940021197454314,
+        "median_error": 2.616624543185362,
+        "p75_error": 4.4783585918759465,
+        "p90_error": 7.170987764365084,
+        "floor_accuracy": null,
+        "building_accuracy": 92.0967741935484,
+        "n_failed": 0,
+        "ipin_score": 4.575362203536217
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.69,
+     "peak_rss_mb": 63.9,
+     "load_avg_1min": [
+      7.08,
+      7.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:11+00:00",
+     "fit_s": 0.0008,
+     "predict_s": 0.073,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.510190788535797,
+      "median_error": 2.63260779707782,
+      "p75_error": 4.612315099193422,
+      "p90_error": 7.241946986826124,
+      "p95_error": 9.402320977290662,
+      "rmse": 4.517302796815655,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 92.63440860215054,
+      "n_failed": 0,
+      "ipin_score": 4.684548395477494,
+      "mean_penalized_error": 7.192986487460528,
+      "p75_penalized_error": 4.684548395477494,
+      "mean_error_ci95": [
+       3.3716155157136276,
+       3.625086563397667
+      ],
+      "cdf": {
+       "<=1": 11.720430107526882,
+       "<=2": 35.053763440860216,
+       "<=5": 78.65591397849462,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0008,
+       "predict_s": 0.073,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.510190788535797,
+        "median_error": 2.63260779707782,
+        "p75_error": 4.612315099193422,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 92.63440860215054,
+        "n_failed": 0,
+        "ipin_score": 4.684548395477494
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 0.85,
+     "peak_rss_mb": 58.0,
+     "load_avg_1min": [
+      7.08,
+      7.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:12+00:00",
+     "fit_s": 0.0032,
+     "predict_s": 0.053,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.99910421739665,
+      "median_error": 2.7654623993878245,
+      "p75_error": 5.186440372184583,
+      "p90_error": 7.773912610431666,
+      "p95_error": 11.077252508292258,
+      "rmse": 5.166777076611197,
+      "max_error": 19.571112704672874,
+      "floor_accuracy": null,
+      "building_accuracy": 95.05376344086022,
+      "n_failed": 0,
+      "ipin_score": 5.186440372184583,
+      "mean_penalized_error": 6.472222496966542,
+      "p75_penalized_error": 5.186440372184583,
+      "mean_error_ci95": [
+       3.847596660706943,
+       4.127016960148034
+      ],
+      "cdf": {
+       "<=1": 4.462365591397849,
+       "<=2": 24.677419354838708,
+       "<=5": 74.13978494623656,
+       "<=10": 93.9247311827957,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0032,
+       "predict_s": 0.053,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.99910421739665,
+        "median_error": 2.7654623993878245,
+        "p75_error": 5.186440372184583,
+        "p90_error": 7.773912610431666,
+        "floor_accuracy": null,
+        "building_accuracy": 95.05376344086022,
+        "n_failed": 0,
+        "ipin_score": 5.186440372184583
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.201,
+     "cpu_time_s": 2.55,
+     "peak_rss_mb": 228.5,
+     "load_avg_1min": [
+      7.08,
+      6.68
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:13+00:00",
+     "fit_s": 0.7065,
+     "predict_s": 0.0224,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.280292157904878,
+      "median_error": 2.3969745301070193,
+      "p75_error": 4.033319632359199,
+      "p90_error": 6.612882591221693,
+      "p95_error": 9.606683603069508,
+      "rmse": 4.362435557565225,
+      "max_error": 17.334136319002294,
+      "floor_accuracy": null,
+      "building_accuracy": 93.27956989247312,
+      "n_failed": 0,
+      "ipin_score": 4.0347169327694665,
+      "mean_penalized_error": 6.64050721166832,
+      "p75_penalized_error": 4.0347169327694665,
+      "mean_error_ci95": [
+       3.14611334287061,
+       3.402035982587349
+      ],
+      "cdf": {
+       "<=1": 12.526881720430108,
+       "<=2": 40.26881720430107,
+       "<=5": 83.17204301075269,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.7065,
+       "predict_s": 0.0224,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.280292157904878,
+        "median_error": 2.3969745301070193,
+        "p75_error": 4.033319632359199,
+        "p90_error": 6.612882591221693,
+        "floor_accuracy": null,
+        "building_accuracy": 93.27956989247312,
+        "n_failed": 0,
+        "ipin_score": 4.0347169327694665
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.49,
+     "peak_rss_mb": 246.7,
+     "load_avg_1min": [
+      6.68,
+      6.68
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:14+00:00",
+     "fit_s": 0.6306,
+     "predict_s": 0.0258,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.3167435511580443,
+      "median_error": 2.440007121897435,
+      "p75_error": 3.890829546255268,
+      "p90_error": 6.810098962217671,
+      "p95_error": 9.689814599950948,
+      "rmse": 4.380808819106187,
+      "max_error": 17.330162824664043,
+      "floor_accuracy": null,
+      "building_accuracy": 93.70967741935485,
+      "n_failed": 0,
+      "ipin_score": 3.890829546255268,
+      "mean_penalized_error": 6.461904841480625,
+      "p75_penalized_error": 3.890829546255268,
+      "mean_error_ci95": [
+       3.1828340665362598,
+       3.4352157592286385
+      ],
+      "cdf": {
+       "<=1": 10.698924731182796,
+       "<=2": 37.795698924731184,
+       "<=5": 83.27956989247312,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.6306,
+       "predict_s": 0.0258,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.3167435511580443,
+        "median_error": 2.440007121897435,
+        "p75_error": 3.890829546255268,
+        "p90_error": 6.810098962217671,
+        "floor_accuracy": null,
+        "building_accuracy": 93.70967741935485,
+        "n_failed": 0,
+        "ipin_score": 3.890829546255268
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.402,
+     "cpu_time_s": 3.63,
+     "peak_rss_mb": 237.8,
+     "load_avg_1min": [
+      6.68,
+      6.68
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:15+00:00",
+     "fit_s": 0.8607,
+     "predict_s": 0.1625,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.2707969588145205,
+      "median_error": 2.366478449186043,
+      "p75_error": 4.126350533229566,
+      "p90_error": 6.842928010727572,
+      "p95_error": 9.04570986504222,
+      "rmse": 4.287667593682121,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 93.27956989247312,
+      "n_failed": 0,
+      "ipin_score": 4.1790218958162,
+      "mean_penalized_error": 6.631012012577962,
+      "p75_penalized_error": 4.1790218958162,
+      "mean_error_ci95": [
+       3.1406713996005506,
+       3.388731073909258
+      ],
+      "cdf": {
+       "<=1": 11.397849462365592,
+       "<=2": 39.56989247311828,
+       "<=5": 82.52688172043011,
+       "<=10": 95.75268817204301,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.8607,
+       "predict_s": 0.1625,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.2707969588145205,
+        "median_error": 2.366478449186043,
+        "p75_error": 4.126350533229566,
+        "p90_error": 6.842928010727572,
+        "floor_accuracy": null,
+        "building_accuracy": 93.27956989247312,
+        "n_failed": 0,
+        "ipin_score": 4.1790218958162
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method mlp --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 4.205,
+     "cpu_time_s": 23.01,
+     "peak_rss_mb": 822.7,
+     "load_avg_1min": [
+      6.68,
+      6.94
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:19+00:00",
+     "fit_s": 3.6024,
+     "predict_s": 0.004,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.46561831331067,
+      "median_error": 2.4612483451203406,
+      "p75_error": 4.36836012173381,
+      "p90_error": 7.068540660260174,
+      "p95_error": 10.045445173050327,
+      "rmse": 4.6299341557616875,
+      "max_error": 17.718919464157818,
+      "floor_accuracy": null,
+      "building_accuracy": 93.01075268817203,
+      "n_failed": 0,
+      "ipin_score": 4.379558167007868,
+      "mean_penalized_error": 6.960241969224649,
+      "p75_penalized_error": 4.379558167007868,
+      "mean_error_ci95": [
+       3.3178577071048028,
+       3.594039657525042
+      ],
+      "cdf": {
+       "<=1": 12.096774193548388,
+       "<=2": 39.56989247311828,
+       "<=5": 80.0,
+       "<=10": 94.78494623655914,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 3.6024,
+       "predict_s": 0.004,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.46561831331067,
+        "median_error": 2.4612483451203406,
+        "p75_error": 4.36836012173381,
+        "p90_error": 7.068540660260174,
+        "floor_accuracy": null,
+        "building_accuracy": 93.01075268817203,
+        "n_failed": 0,
+        "ipin_score": 4.379558167007868
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method svm --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.602,
+     "cpu_time_s": 2.73,
+     "peak_rss_mb": 221.7,
+     "load_avg_1min": [
+      6.94,
+      6.94
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:21+00:00",
+     "fit_s": 0.8597,
+     "predict_s": 0.3273,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.543601833425942,
+      "median_error": 2.513389925698481,
+      "p75_error": 4.335545752206991,
+      "p90_error": 7.282275966349261,
+      "p95_error": 10.388040280258965,
+      "rmse": 4.758036124279169,
+      "max_error": 18.022673369501238,
+      "floor_accuracy": null,
+      "building_accuracy": 91.61290322580645,
+      "n_failed": 0,
+      "ipin_score": 4.365944336474396,
+      "mean_penalized_error": 7.737150220522717,
+      "p75_penalized_error": 4.365944336474396,
+      "mean_error_ci95": [
+       3.390699212293834,
+       3.679884794831122
+      ],
+      "cdf": {
+       "<=1": 12.473118279569892,
+       "<=2": 37.8494623655914,
+       "<=5": 80.05376344086021,
+       "<=10": 93.9247311827957,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.8597,
+       "predict_s": 0.3273,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.543601833425942,
+        "median_error": 2.513389925698481,
+        "p75_error": 4.335545752206991,
+        "p90_error": 7.282275966349261,
+        "floor_accuracy": null,
+        "building_accuracy": 91.61290322580645,
+        "n_failed": 0,
+        "ipin_score": 4.365944336474396
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "hierarchical(position_model=gp_radiomap)",
+     "display": [
+      "GP radio map, per floor",
+      "GP 无线电地图（逐楼层）"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'hierarchical(position_model=gp_radiomap)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.75,
+     "peak_rss_mb": 65.5,
+     "load_avg_1min": [
+      6.94,
+      6.94
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:22+00:00",
+     "fit_s": 0.0237,
+     "predict_s": 0.0812,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 4.613447369547291,
+      "median_error": 2.9760015120963903,
+      "p75_error": 6.590000000000001,
+      "p90_error": 8.67651871432316,
+      "p95_error": 10.407548462534299,
+      "rmse": 5.454807697496463,
+      "max_error": 14.252324617408908,
+      "floor_accuracy": null,
+      "building_accuracy": 92.0967741935484,
+      "n_failed": 0,
+      "ipin_score": 6.9730129069147715,
+      "mean_penalized_error": 8.565060272773097,
+      "p75_penalized_error": 6.9730129069147715,
+      "mean_error_ci95": [
+       4.4805438385022684,
+       4.740375230194171
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 1.5053763440860215,
+       "<=5": 65.48387096774194,
+       "<=10": 93.01075268817205,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0237,
+       "predict_s": 0.0812,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 4.613447369547291,
+        "median_error": 2.9760015120963903,
+        "p75_error": 6.590000000000001,
+        "p90_error": 8.67651871432316,
+        "floor_accuracy": null,
+        "building_accuracy": 92.0967741935484,
+        "n_failed": 0,
+        "ipin_score": 6.9730129069147715
+       }
+      }
+     ],
+     "params": {
+      "position_model": "gp_radiomap"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.hierarchical:HierarchicalLocalizer",
+        "params": {
+         "building_model": "knn",
+         "floor_model": "knn",
+         "position_model": "gp_radiomap"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.53,
+     "peak_rss_mb": 63.9,
+     "load_avg_1min": [
+      6.94,
+      6.94
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:22+00:00",
+     "fit_s": 0.0009,
+     "predict_s": 0.0522,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 4.5905210156829925,
+      "median_error": 3.4609969661934112,
+      "p75_error": 6.590000000000001,
+      "p90_error": 8.744941966645632,
+      "p95_error": 10.656208941269874,
+      "rmse": 5.430186040645523,
+      "max_error": 14.509321589929696,
+      "floor_accuracy": null,
+      "building_accuracy": 93.33333333333333,
+      "n_failed": 0,
+      "ipin_score": 6.828777342980221,
+      "mean_penalized_error": 7.923854349016325,
+      "p75_penalized_error": 6.828777342980221,
+      "mean_error_ci95": [
+       4.452365310882549,
+       4.718144529534819
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 1.6666666666666667,
+       "<=5": 65.86021505376344,
+       "<=10": 92.90322580645162,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0009,
+       "predict_s": 0.0522,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 4.5905210156829925,
+        "median_error": 3.4609969661934112,
+        "p75_error": 6.590000000000001,
+        "p90_error": 8.744941966645632,
+        "floor_accuracy": null,
+        "building_accuracy": 93.33333333333333,
+        "n_failed": 0,
+        "ipin_score": 6.828777342980221
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.61,
+     "peak_rss_mb": 63.7,
+     "load_avg_1min": [
+      6.94,
+      6.94
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:23+00:00",
+     "fit_s": 0.0011,
+     "predict_s": 0.0628,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.510190788535797,
+      "median_error": 2.63260779707782,
+      "p75_error": 4.612315099193422,
+      "p90_error": 7.241946986826124,
+      "p95_error": 9.402320977290662,
+      "rmse": 4.517302796815655,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 92.63440860215054,
+      "n_failed": 0,
+      "ipin_score": 4.684548395477494,
+      "mean_penalized_error": 7.192986487460528,
+      "p75_penalized_error": 4.684548395477494,
+      "mean_error_ci95": [
+       3.3716155157136276,
+       3.625086563397667
+      ],
+      "cdf": {
+       "<=1": 11.720430107526882,
+       "<=2": 35.053763440860216,
+       "<=5": 78.65591397849462,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0011,
+       "predict_s": 0.0628,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.510190788535797,
+        "median_error": 2.63260779707782,
+        "p75_error": 4.612315099193422,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 92.63440860215054,
+        "n_failed": 0,
+        "ipin_score": 4.684548395477494
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess exponential --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.75,
+     "peak_rss_mb": 64.3,
+     "load_avg_1min": [
+      6.94,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:23+00:00",
+     "fit_s": 0.0033,
+     "predict_s": 0.0666,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.35733747296004,
+      "median_error": 2.3732045845227945,
+      "p75_error": 4.172110500480402,
+      "p90_error": 7.099686128741024,
+      "p95_error": 9.227768357421645,
+      "rmse": 4.38125164067533,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 92.63440860215054,
+      "n_failed": 0,
+      "ipin_score": 4.247423954140629,
+      "mean_penalized_error": 7.040133171884772,
+      "p75_penalized_error": 4.247423954140629,
+      "mean_error_ci95": [
+       3.222766358883475,
+       3.4740482258994003
+      ],
+      "cdf": {
+       "<=1": 10.21505376344086,
+       "<=2": 35.913978494623656,
+       "<=5": 81.18279569892474,
+       "<=10": 95.48387096774194,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0033,
+       "predict_s": 0.0666,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.35733747296004,
+        "median_error": 2.3732045845227945,
+        "p75_error": 4.172110500480402,
+        "p90_error": 7.099686128741024,
+        "floor_accuracy": null,
+        "building_accuracy": 92.63440860215054,
+        "n_failed": 0,
+        "ipin_score": 4.247423954140629
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess powed --method wknn --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.401,
+     "cpu_time_s": 1.86,
+     "peak_rss_mb": 63.7,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:23+00:00",
+     "fit_s": 0.0022,
+     "predict_s": 0.0672,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.352452553518727,
+      "median_error": 2.373204584522792,
+      "p75_error": 4.071709193938094,
+      "p90_error": 7.241946986826124,
+      "p95_error": 9.402320977290662,
+      "rmse": 4.402348765995251,
+      "max_error": 16.051468211973635,
+      "floor_accuracy": null,
+      "building_accuracy": 92.15053763440861,
+      "n_failed": 0,
+      "ipin_score": 4.111958624516012,
+      "mean_penalized_error": 7.277183736314425,
+      "p75_penalized_error": 4.111958624516012,
+      "mean_error_ci95": [
+       3.224864052208555,
+       3.470324166957731
+      ],
+      "cdf": {
+       "<=1": 10.64516129032258,
+       "<=2": 34.13978494623656,
+       "<=5": 81.45161290322581,
+       "<=10": 95.3225806451613,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0022,
+       "predict_s": 0.0672,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.352452553518727,
+        "median_error": 2.373204584522792,
+        "p75_error": 4.071709193938094,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 92.15053763440861,
+        "n_failed": 0,
+        "ipin_score": 4.111958624516012
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess none --method horus --seed 0 --no-download -q",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.201,
+     "cpu_time_s": 0.82,
+     "peak_rss_mb": 57.9,
+     "load_avg_1min": [
+      1.08,
+      1.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:25+00:00",
+     "fit_s": 0.003,
+     "predict_s": 0.0294,
+     "pooled": {
+      "n": 1860,
+      "mean_error": 3.745196861658922,
+      "median_error": 2.658060528600042,
+      "p75_error": 4.744046120691529,
+      "p90_error": 7.740375247196191,
+      "p95_error": 10.418627363073547,
+      "rmse": 4.736879875542849,
+      "max_error": 16.38603565083795,
+      "floor_accuracy": null,
+      "building_accuracy": 92.84946236559139,
+      "n_failed": 0,
+      "ipin_score": 4.753193471200492,
+      "mean_penalized_error": 7.320465678863223,
+      "p75_penalized_error": 4.753193471200492,
+      "mean_error_ci95": [
+       3.609896088350086,
+       3.8719199539080886
+      ],
+      "cdf": {
+       "<=1": 5.483870967741935,
+       "<=2": 24.462365591397848,
+       "<=5": 77.41935483870968,
+       "<=10": 94.56989247311827,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.003,
+       "predict_s": 0.0294,
+       "metrics": {
+        "n": 1860,
+        "mean_error": 3.745196861658922,
+        "median_error": 2.658060528600042,
+        "p75_error": 4.744046120691529,
+        "p90_error": 7.740375247196191,
+        "floor_accuracy": null,
+        "building_accuracy": 92.84946236559139,
+        "n_failed": 0,
+        "ipin_score": 4.753193471200492
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "0f31da0f8a2e57ccb2ea8285dfa1a61f83119ed1dc9d0b495e9891d8f07382ee",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  },
+  {
+   "id": "official-lib",
+   "title": {
+    "en": "UJI iBeacon RSS, zone lib, the authors' default train/test configuration",
+    "zh": "UJI iBeacon RSS，lib 区域，作者默认训练/测试配置"
+   },
+   "runner": "cli",
+   "protocol_spec": "official",
+   "options": {
+    "zone": "lib"
+   },
+   "dataset": {
+    "name": "ibeacon_rssi",
+    "class": "indoorloc.datasets.ibeacon_rssi:IBeaconRSSI",
+    "options": {
+     "zone": "lib"
+    },
+    "splits": [
+     "train",
+     "test",
+     "all"
+    ],
+    "n_samples": {
+     "train": 876,
+     "test": 1080,
+     "all": 2100
+    },
+    "n_pooled": 2100,
+    "duplicate_rows_dropped": {
+     "all": 1956
+    },
+    "sha256": {
+     "train": {
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     },
+     "test": {
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     },
+     "all": {
+      "data/rss/lib_rss.csv": "92f3ed84556facf38a0017cfce9a8c42673075168385dfc48dca10f389640707",
+      "data/rss/lib_crd.csv": "70c9eee5b5d6bf5f87171c33715df11198e60f0335009e47c4c0a91d77b56e2e",
+      "data/rss/lib_ids.csv": "6642b5f47ef59539e17969f4a1c37afcd135275141e1b9d60204ac30ac417035",
+      "data/dep/lib.csv": "fb502b04f5ff20c9973b5fe9da07edaef1e97516082aa8c37e18695371db23ff"
+     }
+    },
+    "modality": "ble_rssi",
+    "crs": "local (one frame per zone; see building)",
+    "pos_units": "m",
+    "citation": "Mendoza-Silva, Matey-Sanz, Torres-Sospedra, Huerta, BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning, Data 4(1), 12, 2019",
+    "doi": "10.5281/zenodo.1618692",
+    "license": "CC BY 4.0 (data), MIT (scripts)",
+    "url": "https://zenodo.org/records/1618692"
+   },
+   "protocol": {
+    "name": "official",
+    "summary": "the dataset's own train/test files (the setting of most published numbers)",
+    "folds": [
+     {
+      "name": "official",
+      "n_train": 876,
+      "n_test": 1080,
+      "train_sha256": "b60f6feb79430baf4655b1981a1a6e4c861b28569dc5ed31cf0335cd97a878f3",
+      "test_sha256": "793f6a3fe46c33d3baf444ce551efcbde46334ab9bdfe724aaba7d848ab44977",
+      "n_unused": 144
+     }
+    ]
+   },
+   "units": "m",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "see the table of both zones",
+     "zh": "见两区域合并表格"
+    }
+   ],
+   "notes": [],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.79,
+     "peak_rss_mb": 49.8,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:24+00:00",
+     "fit_s": 0.0003,
+     "predict_s": 0.0002,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 4.182800677474695,
+      "median_error": 4.167141196625103,
+      "p75_error": 5.752922078913587,
+      "p90_error": 6.588627407767544,
+      "p95_error": 6.658034088640635,
+      "rmse": 4.443332404514523,
+      "max_error": 6.681116620398361,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.752922078913587,
+      "mean_penalized_error": 4.182800677474695,
+      "p75_penalized_error": 5.752922078913587,
+      "mean_error_ci95": [
+       4.096451028191847,
+       4.270734356630527
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 70.0,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0003,
+       "predict_s": 0.0002,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 4.182800677474695,
+        "median_error": 4.167141196625103,
+        "p75_error": 5.752922078913587,
+        "p90_error": 6.588627407767544,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.752922078913587
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.201,
+     "cpu_time_s": 1.18,
+     "peak_rss_mb": 51.0,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:24+00:00",
+     "fit_s": 0.0003,
+     "predict_s": 0.0261,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 3.826606482822459,
+      "median_error": 2.3769728648009445,
+      "p75_error": 4.196724913548658,
+      "p90_error": 7.153878410725991,
+      "p95_error": 9.724299460629542,
+      "rmse": 4.592894592818427,
+      "max_error": 14.143790156814402,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.196724913548658,
+      "mean_penalized_error": 3.826606482822459,
+      "p75_penalized_error": 4.196724913548658,
+      "mean_error_ci95": [
+       3.68323735339965,
+       3.9866648251933965
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 80.0925925925926,
+       "<=10": 95.18518518518519,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0003,
+       "predict_s": 0.0261,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 3.826606482822459,
+        "median_error": 2.3769728648009445,
+        "p75_error": 4.196724913548658,
+        "p90_error": 7.153878410725991,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.196724913548658
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method knn --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.08,
+     "peak_rss_mb": 50.6,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:24+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0184,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.757320926905314,
+      "median_error": 2.2068701819545256,
+      "p75_error": 3.3280829316590053,
+      "p90_error": 5.7158681425895965,
+      "p95_error": 7.976317446039873,
+      "rmse": 3.544117700892252,
+      "max_error": 11.942734192805267,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.3280829316590053,
+      "mean_penalized_error": 2.757320926905314,
+      "p75_penalized_error": 3.3280829316590053,
+      "mean_error_ci95": [
+       2.6205049959271136,
+       2.886907980483986
+      ],
+      "cdf": {
+       "<=1": 16.85185185185185,
+       "<=2": 44.81481481481482,
+       "<=5": 87.5925925925926,
+       "<=10": 97.96296296296296,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0184,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.757320926905314,
+        "median_error": 2.2068701819545256,
+        "p75_error": 3.3280829316590053,
+        "p90_error": 5.7158681425895965,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.3280829316590053
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method wknn --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.06,
+     "peak_rss_mb": 51.1,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:24+00:00",
+     "fit_s": 0.0002,
+     "predict_s": 0.0201,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.7526889669494,
+      "median_error": 2.204858183840718,
+      "p75_error": 3.344737173981925,
+      "p90_error": 5.567214851769154,
+      "p95_error": 7.976317446039873,
+      "rmse": 3.5390248979893855,
+      "max_error": 11.905280405269057,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.344737173981925,
+      "mean_penalized_error": 2.7526889669494,
+      "p75_penalized_error": 3.344737173981925,
+      "mean_error_ci95": [
+       2.6159656503691555,
+       2.881286729451417
+      ],
+      "cdf": {
+       "<=1": 15.648148148148149,
+       "<=2": 45.092592592592595,
+       "<=5": 87.68518518518519,
+       "<=10": 97.96296296296296,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0002,
+       "predict_s": 0.0201,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.7526889669494,
+        "median_error": 2.204858183840718,
+        "p75_error": 3.344737173981925,
+        "p90_error": 5.567214851769154,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.344737173981925
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method horus --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.79,
+     "peak_rss_mb": 49.8,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:25+00:00",
+     "fit_s": 0.0009,
+     "predict_s": 0.0212,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 3.054892656622754,
+      "median_error": 2.35230238161855,
+      "p75_error": 3.5915454956285853,
+      "p90_error": 6.072648595108932,
+      "p95_error": 7.322312297727311,
+      "rmse": 3.6703150988448114,
+      "max_error": 11.999000823683804,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.5915454956285853,
+      "mean_penalized_error": 3.054892656622754,
+      "p75_penalized_error": 3.5915454956285853,
+      "mean_error_ci95": [
+       2.9380254721900303,
+       3.178758452059096
+      ],
+      "cdf": {
+       "<=1": 6.018518518518518,
+       "<=2": 30.09259259259259,
+       "<=5": 84.07407407407408,
+       "<=10": 98.88888888888889,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0009,
+       "predict_s": 0.0212,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 3.054892656622754,
+        "median_error": 2.35230238161855,
+        "p75_error": 3.5915454956285853,
+        "p90_error": 6.072648595108932,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.5915454956285853
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.19,
+     "peak_rss_mb": 202.4,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:25+00:00",
+     "fit_s": 0.5691,
+     "predict_s": 0.0085,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.4450139224893324,
+      "median_error": 2.045966504845339,
+      "p75_error": 3.160866389358417,
+      "p90_error": 4.655005031242662,
+      "p95_error": 5.6029779629249274,
+      "rmse": 2.904682687464795,
+      "max_error": 9.835150369829199,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.160866389358417,
+      "mean_penalized_error": 2.4450139224893324,
+      "p75_penalized_error": 3.160866389358417,
+      "mean_error_ci95": [
+       2.3593776090312013,
+       2.5378095159697702
+      ],
+      "cdf": {
+       "<=1": 14.62962962962963,
+       "<=2": 48.611111111111114,
+       "<=5": 92.03703703703704,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5691,
+       "predict_s": 0.0085,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.4450139224893324,
+        "median_error": 2.045966504845339,
+        "p75_error": 3.160866389358417,
+        "p90_error": 4.655005031242662,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.160866389358417
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.13,
+     "peak_rss_mb": 208.3,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:26+00:00",
+     "fit_s": 0.5426,
+     "predict_s": 0.009,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.4465675082220466,
+      "median_error": 2.0020646149120505,
+      "p75_error": 3.1709703746293147,
+      "p90_error": 4.726856636721942,
+      "p95_error": 5.650692681815164,
+      "rmse": 2.927685570333732,
+      "max_error": 9.84168549404077,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.1709703746293147,
+      "mean_penalized_error": 2.4465675082220466,
+      "p75_penalized_error": 3.1709703746293147,
+      "mean_error_ci95": [
+       2.356862569342597,
+       2.545059384707785
+      ],
+      "cdf": {
+       "<=1": 13.518518518518519,
+       "<=2": 50.0,
+       "<=5": 91.75925925925925,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5426,
+       "predict_s": 0.009,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.4465675082220466,
+        "median_error": 2.0020646149120505,
+        "p75_error": 3.1709703746293147,
+        "p90_error": 4.726856636721942,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.1709703746293147
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.92,
+     "peak_rss_mb": 204.7,
+     "load_avg_1min": [
+      6.47,
+      6.47
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:27+00:00",
+     "fit_s": 0.5895,
+     "predict_s": 0.0499,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.4204399309356455,
+      "median_error": 2.03969924414714,
+      "p75_error": 3.0893610962130924,
+      "p90_error": 4.686991837948391,
+      "p95_error": 5.5760861473417975,
+      "rmse": 2.912207775126506,
+      "max_error": 11.33458085838295,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.0893610962130924,
+      "mean_penalized_error": 2.4204399309356455,
+      "p75_penalized_error": 3.0893610962130924,
+      "mean_error_ci95": [
+       2.3270259031782095,
+       2.515959055095488
+      ],
+      "cdf": {
+       "<=1": 15.092592592592593,
+       "<=2": 48.888888888888886,
+       "<=5": 92.12962962962963,
+       "<=10": 99.81481481481481,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5895,
+       "predict_s": 0.0499,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.4204399309356455,
+        "median_error": 2.03969924414714,
+        "p75_error": 3.0893610962130924,
+        "p90_error": 4.686991837948391,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.0893610962130924
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method mlp --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 2.803,
+     "cpu_time_s": 12.21,
+     "peak_rss_mb": 813.3,
+     "load_avg_1min": [
+      6.47,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:30+00:00",
+     "fit_s": 2.2401,
+     "predict_s": 0.0029,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.4871146651367213,
+      "median_error": 2.038142607730876,
+      "p75_error": 3.2860502838389727,
+      "p90_error": 4.901275689088231,
+      "p95_error": 5.942087632121218,
+      "rmse": 2.9775297122755853,
+      "max_error": 10.285674472019787,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.2860502838389727,
+      "mean_penalized_error": 2.4871146651367213,
+      "p75_penalized_error": 3.2860502838389727,
+      "mean_error_ci95": [
+       2.39380580748103,
+       2.586603708801727
+      ],
+      "cdf": {
+       "<=1": 13.333333333333334,
+       "<=2": 49.25925925925926,
+       "<=5": 90.64814814814815,
+       "<=10": 99.9074074074074,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 2.2401,
+       "predict_s": 0.0029,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.4871146651367213,
+        "median_error": 2.038142607730876,
+        "p75_error": 3.2860502838389727,
+        "p90_error": 4.901275689088231,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.2860502838389727
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method svm --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.06,
+     "peak_rss_mb": 192.8,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:31+00:00",
+     "fit_s": 0.4968,
+     "predict_s": 0.0452,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.403320616126281,
+      "median_error": 1.9788981361270053,
+      "p75_error": 3.225607881945471,
+      "p90_error": 4.584022674356142,
+      "p95_error": 5.748598663868058,
+      "rmse": 2.874040587454609,
+      "max_error": 9.880033831763889,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.225607881945471,
+      "mean_penalized_error": 2.403320616126281,
+      "p75_penalized_error": 3.225607881945471,
+      "mean_error_ci95": [
+       2.310265399520235,
+       2.4932967779289523
+      ],
+      "cdf": {
+       "<=1": 16.01851851851852,
+       "<=2": 50.74074074074074,
+       "<=5": 92.5925925925926,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.4968,
+       "predict_s": 0.0452,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.403320616126281,
+        "median_error": 1.9788981361270053,
+        "p75_error": 3.225607881945471,
+        "p90_error": 4.584022674356142,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.225607881945471
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "gp_radiomap",
+     "display": [
+      "GP radio map",
+      "GP 无线电地图"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method gp_radiomap --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.78,
+     "peak_rss_mb": 56.5,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:32+00:00",
+     "fit_s": 0.0135,
+     "predict_s": 0.0055,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 3.6271986937021805,
+      "median_error": 2.3769728648009445,
+      "p75_error": 3.475068344651657,
+      "p90_error": 6.819127510173131,
+      "p95_error": 8.486813300644714,
+      "rmse": 4.234154579133833,
+      "max_error": 12.710094413496698,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.475068344651657,
+      "mean_penalized_error": 3.6271986937021805,
+      "p75_penalized_error": 3.475068344651657,
+      "mean_error_ci95": [
+       3.5016498755722396,
+       3.754542688617676
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 81.66666666666667,
+       "<=10": 97.4074074074074,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0135,
+       "predict_s": 0.0055,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 3.6271986937021805,
+        "median_error": 2.3769728648009445,
+        "p75_error": 3.475068344651657,
+        "p90_error": 6.819127510173131,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.475068344651657
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.gaussian_process:GPRadioMapLocalizer",
+        "params": {
+         "candidates": null,
+         "length_scales": null,
+         "n_candidates": 1,
+         "noise_ratios": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.12,
+     "peak_rss_mb": 50.7,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:32+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0236,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 3.826606482822459,
+      "median_error": 2.3769728648009445,
+      "p75_error": 4.196724913548658,
+      "p90_error": 7.153878410725991,
+      "p95_error": 9.724299460629542,
+      "rmse": 4.592894592818427,
+      "max_error": 14.143790156814402,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.196724913548658,
+      "mean_penalized_error": 3.826606482822459,
+      "p75_penalized_error": 4.196724913548658,
+      "mean_error_ci95": [
+       3.68323735339965,
+       3.9866648251933965
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 80.0925925925926,
+       "<=10": 95.18518518518519,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0236,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 3.826606482822459,
+        "median_error": 2.3769728648009445,
+        "p75_error": 4.196724913548658,
+        "p90_error": 7.153878410725991,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.196724913548658
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method wknn --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.07,
+     "peak_rss_mb": 50.2,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:32+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0252,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.7526889669494,
+      "median_error": 2.204858183840718,
+      "p75_error": 3.344737173981925,
+      "p90_error": 5.567214851769154,
+      "p95_error": 7.976317446039873,
+      "rmse": 3.5390248979893855,
+      "max_error": 11.905280405269057,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.344737173981925,
+      "mean_penalized_error": 2.7526889669494,
+      "p75_penalized_error": 3.344737173981925,
+      "mean_error_ci95": [
+       2.6159656503691555,
+       2.881286729451417
+      ],
+      "cdf": {
+       "<=1": 15.648148148148149,
+       "<=2": 45.092592592592595,
+       "<=5": 87.68518518518519,
+       "<=10": 97.96296296296296,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0252,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.7526889669494,
+        "median_error": 2.204858183840718,
+        "p75_error": 3.344737173981925,
+        "p90_error": 5.567214851769154,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.344737173981925
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess exponential --method wknn --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.05,
+     "peak_rss_mb": 50.9,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:32+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0169,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.691559224999664,
+      "median_error": 2.2000067558567693,
+      "p75_error": 2.9446584678095817,
+      "p90_error": 5.67277822355183,
+      "p95_error": 7.881030545970609,
+      "rmse": 3.4595735043628237,
+      "max_error": 11.937694758712343,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 2.9446584678095817,
+      "mean_penalized_error": 2.691559224999664,
+      "p75_penalized_error": 2.9446584678095817,
+      "mean_error_ci95": [
+       2.559790852447474,
+       2.8214017310310835
+      ],
+      "cdf": {
+       "<=1": 12.12962962962963,
+       "<=2": 43.425925925925924,
+       "<=5": 88.05555555555556,
+       "<=10": 97.96296296296296,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0169,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.691559224999664,
+        "median_error": 2.2000067558567693,
+        "p75_error": 2.9446584678095817,
+        "p90_error": 5.67277822355183,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 2.9446584678095817
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess powed --method wknn --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.2,
+     "peak_rss_mb": 50.6,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:32+00:00",
+     "fit_s": 0.0006,
+     "predict_s": 0.0199,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 2.7436182191301413,
+      "median_error": 2.217745618422434,
+      "p75_error": 2.986593306921815,
+      "p90_error": 5.444716962352375,
+      "p95_error": 7.976317446039873,
+      "rmse": 3.4917807287128295,
+      "max_error": 11.850043881775296,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 2.986593306921815,
+      "mean_penalized_error": 2.7436182191301413,
+      "p75_penalized_error": 2.986593306921815,
+      "mean_error_ci95": [
+       2.6106486459265343,
+       2.868367109692974
+      ],
+      "cdf": {
+       "<=1": 11.666666666666666,
+       "<=2": 39.72222222222222,
+       "<=5": 88.24074074074075,
+       "<=10": 98.05555555555556,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0006,
+       "predict_s": 0.0199,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 2.7436182191301413,
+        "median_error": 2.217745618422434,
+        "p75_error": 2.986593306921815,
+        "p90_error": 5.444716962352375,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 2.986593306921815
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess none --method horus --seed 0 --no-download -q --dataset-option zone=lib",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.77,
+     "peak_rss_mb": 49.5,
+     "load_avg_1min": [
+      1.08,
+      1.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:25+00:00",
+     "fit_s": 0.001,
+     "predict_s": 0.0182,
+     "pooled": {
+      "n": 1080,
+      "mean_error": 3.0639240763629885,
+      "median_error": 2.315403693568123,
+      "p75_error": 3.3643900222565,
+      "p90_error": 6.278853423298254,
+      "p95_error": 8.304690743952488,
+      "rmse": 3.814466293052147,
+      "max_error": 12.61203546898416,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.3643900222565,
+      "mean_penalized_error": 3.0639240763629885,
+      "p75_penalized_error": 3.3643900222565,
+      "mean_error_ci95": [
+       2.9283532679056243,
+       3.1990134907820766
+      ],
+      "cdf": {
+       "<=1": 7.12962962962963,
+       "<=2": 30.64814814814815,
+       "<=5": 84.62962962962963,
+       "<=10": 97.12962962962963,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.001,
+       "predict_s": 0.0182,
+       "metrics": {
+        "n": 1080,
+        "mean_error": 3.0639240763629885,
+        "median_error": 2.315403693568123,
+        "p75_error": 3.3643900222565,
+        "p90_error": 6.278853423298254,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.3643900222565
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "f840ab3d3a5efb9470cb0d94a7a02f4b9992aa8c8d4785e2506f0758eb05dfff",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  },
+  {
+   "id": "official-geo",
+   "title": {
+    "en": "UJI iBeacon RSS, zone geo, the authors' default train/test configuration",
+    "zh": "UJI iBeacon RSS，geo 区域，作者默认训练/测试配置"
+   },
+   "runner": "cli",
+   "protocol_spec": "official",
+   "options": {
+    "zone": "geo"
+   },
+   "dataset": {
+    "name": "ibeacon_rssi",
+    "class": "indoorloc.datasets.ibeacon_rssi:IBeaconRSSI",
+    "options": {
+     "zone": "geo"
+    },
+    "splits": [
+     "train",
+     "test",
+     "all"
+    ],
+    "n_samples": {
+     "train": 1872,
+     "test": 780,
+     "all": 2652
+    },
+    "n_pooled": 2652,
+    "duplicate_rows_dropped": {
+     "all": 2652
+    },
+    "sha256": {
+     "train": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38"
+     },
+     "test": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38"
+     },
+     "all": {
+      "data/rss/geo_rss.csv": "3b7e6cb0e47866e46a134187808bec77219aaf22a0bdd1dd8205ffa2b765febe",
+      "data/rss/geo_crd.csv": "ca7e326dc10f6cddc38924516c856baff2f4729814c1c6ec7aac6223c253888e",
+      "data/rss/geo_ids.csv": "88f9f6c14df21a84b9f2283558737bb161cc9d62777f408cdfe276b751b861bd",
+      "data/dep/geo.csv": "ec02d2e1e9e109fbaa414365fb8b0efecfccafdb086c798e1c42f36f4bf73c38"
+     }
+    },
+    "modality": "ble_rssi",
+    "crs": "local (one frame per zone; see building)",
+    "pos_units": "m",
+    "citation": "Mendoza-Silva, Matey-Sanz, Torres-Sospedra, Huerta, BLE RSS Measurements Dataset for Research on Accurate Indoor Positioning, Data 4(1), 12, 2019",
+    "doi": "10.5281/zenodo.1618692",
+    "license": "CC BY 4.0 (data), MIT (scripts)",
+    "url": "https://zenodo.org/records/1618692"
+   },
+   "protocol": {
+    "name": "official",
+    "summary": "the dataset's own train/test files (the setting of most published numbers)",
+    "folds": [
+     {
+      "name": "official",
+      "n_train": 1872,
+      "n_test": 780,
+      "train_sha256": "1a30cfb67fb1ee6774cff9a0a3fa522b0983a5719fc4a6b3272ea8d095acc202",
+      "test_sha256": "29bf06a7f6721079aea155f6a0748e1729ca6d9e8b83f49f03a6611f3e0a51cf",
+      "n_unused": 0
+     }
+    ]
+   },
+   "units": "m",
+   "scale": 1.0,
+   "seed": 0,
+   "same_folds_in_every_cell": true,
+   "skips": [
+    {
+     "method": "pathloss, centroid",
+     "en": "see the table of both zones",
+     "zh": "见两区域合并表格"
+    }
+   ],
+   "notes": [],
+   "cells": [
+    {
+     "preprocess": "fill",
+     "method": "benchmarks.baselines:TrainingCentroid",
+     "display": [
+      "training centroid (baseline)",
+      "训练集质心（基线）"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method benchmarks.baselines:TrainingCentroid --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.201,
+     "cpu_time_s": 0.79,
+     "peak_rss_mb": 48.3,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:33+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0001,
+     "pooled": {
+      "n": 780,
+      "mean_error": 4.072408823011962,
+      "median_error": 3.7389843688489144,
+      "p75_error": 5.331592777504593,
+      "p90_error": 5.897663458905814,
+      "p95_error": 6.039873815884356,
+      "rmse": 4.2892524653843305,
+      "max_error": 6.039873815884356,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.331592777504593,
+      "mean_penalized_error": 4.072408823011962,
+      "p75_penalized_error": 5.331592777504593,
+      "mean_error_ci95": [
+       3.980325665091007,
+       4.163187586515888
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 0.0,
+       "<=5": 60.0,
+       "<=10": 100.0,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0001,
+       "metrics": {
+        "n": 780,
+        "mean_error": 4.072408823011962,
+        "median_error": 3.7389843688489144,
+        "p75_error": 5.331592777504593,
+        "p90_error": 5.897663458905814,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.331592777504593
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "benchmarks.baselines:TrainingCentroid",
+        "params": {}
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'knn(k=1)' --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.11,
+     "peak_rss_mb": 52.8,
+     "load_avg_1min": [
+      6.11,
+      6.11
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:33+00:00",
+     "fit_s": 0.0006,
+     "predict_s": 0.02,
+     "pooled": {
+      "n": 780,
+      "mean_error": 5.814032543535769,
+      "median_error": 5.327657083559338,
+      "p75_error": 7.981423494590422,
+      "p90_error": 10.132000000000001,
+      "p95_error": 11.322,
+      "rmse": 6.593447836532638,
+      "max_error": 14.509321589929696,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 7.981423494590422,
+      "mean_penalized_error": 5.814032543535769,
+      "p75_penalized_error": 7.981423494590422,
+      "mean_error_ci95": [
+       5.599006372237327,
+       6.043843672862501
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 2.948717948717949,
+       "<=5": 44.23076923076923,
+       "<=10": 88.84615384615384,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0006,
+       "predict_s": 0.02,
+       "metrics": {
+        "n": 780,
+        "mean_error": 5.814032543535769,
+        "median_error": 5.327657083559338,
+        "p75_error": 7.981423494590422,
+        "p90_error": 10.132000000000001,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 7.981423494590422
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "knn",
+     "display": [
+      "k-NN (k=5)",
+      "k-NN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method knn --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.18,
+     "peak_rss_mb": 52.9,
+     "load_avg_1min": [
+      6.11,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:33+00:00",
+     "fit_s": 0.0006,
+     "predict_s": 0.0234,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.9239797038111637,
+      "median_error": 3.520358257721058,
+      "p75_error": 5.14950601125972,
+      "p90_error": 7.202535511267268,
+      "p95_error": 8.748028952855607,
+      "rmse": 4.5905256082333485,
+      "max_error": 12.313026800912926,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.14950601125972,
+      "mean_penalized_error": 3.9239797038111637,
+      "p75_penalized_error": 5.14950601125972,
+      "mean_error_ci95": [
+       3.750088424779967,
+       4.0883120870314675
+      ],
+      "cdf": {
+       "<=1": 6.538461538461538,
+       "<=2": 21.53846153846154,
+       "<=5": 71.7948717948718,
+       "<=10": 97.3076923076923,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0006,
+       "predict_s": 0.0234,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.9239797038111637,
+        "median_error": 3.520358257721058,
+        "p75_error": 5.14950601125972,
+        "p90_error": 7.202535511267268,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.14950601125972
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method wknn --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.01,
+     "peak_rss_mb": 53.3,
+     "load_avg_1min": [
+      6.34,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:33+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0199,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.984410641131335,
+      "median_error": 3.4754852667698035,
+      "p75_error": 5.193422204513709,
+      "p90_error": 7.317258838425962,
+      "p95_error": 8.748028952855607,
+      "rmse": 4.678868687743513,
+      "max_error": 13.911918990563452,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.193422204513709,
+      "mean_penalized_error": 3.984410641131335,
+      "p75_penalized_error": 5.193422204513709,
+      "mean_error_ci95": [
+       3.8036272554046686,
+       4.153172154709285
+      ],
+      "cdf": {
+       "<=1": 6.153846153846154,
+       "<=2": 22.435897435897434,
+       "<=5": 71.28205128205128,
+       "<=10": 97.05128205128206,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0199,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.984410641131335,
+        "median_error": 3.4754852667698035,
+        "p75_error": 5.193422204513709,
+        "p90_error": 7.317258838425962,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.193422204513709
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method horus --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.78,
+     "peak_rss_mb": 48.2,
+     "load_avg_1min": [
+      6.34,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:33+00:00",
+     "fit_s": 0.002,
+     "predict_s": 0.0132,
+     "pooled": {
+      "n": 780,
+      "mean_error": 4.321617302119013,
+      "median_error": 3.793788580311497,
+      "p75_error": 5.877113844031661,
+      "p90_error": 7.565560972943479,
+      "p95_error": 8.88562346316704,
+      "rmse": 4.984584468124723,
+      "max_error": 13.284259053690725,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.877113844031661,
+      "mean_penalized_error": 4.321617302119013,
+      "p75_penalized_error": 5.877113844031661,
+      "mean_error_ci95": [
+       4.152167611776546,
+       4.4865137926388305
+      ],
+      "cdf": {
+       "<=1": 3.2051282051282053,
+       "<=2": 18.58974358974359,
+       "<=5": 62.82051282051282,
+       "<=10": 97.17948717948718,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.002,
+       "predict_s": 0.0132,
+       "metrics": {
+        "n": 780,
+        "mean_error": 4.321617302119013,
+        "median_error": 3.793788580311497,
+        "p75_error": 5.877113844031661,
+        "p90_error": 7.565560972943479,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.877113844031661
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+        "params": {
+         "detection_smoothing": 0.5,
+         "min_std": 4.0,
+         "n_candidates": 3,
+         "unseen_std": 8.0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "rf(n_jobs=8)",
+     "display": [
+      "random forest",
+      "随机森林"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'rf(n_jobs=8)' --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.25,
+     "peak_rss_mb": 213.7,
+     "load_avg_1min": [
+      6.34,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:34+00:00",
+     "fit_s": 0.5598,
+     "predict_s": 0.0077,
+     "pooled": {
+      "n": 780,
+      "mean_error": 2.990482165873524,
+      "median_error": 2.659172039006058,
+      "p75_error": 3.9751070897274654,
+      "p90_error": 5.505140277655848,
+      "p95_error": 6.509929368523615,
+      "rmse": 3.5127065834770033,
+      "max_error": 11.705247427867548,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.9751070897274654,
+      "mean_penalized_error": 2.990482165873524,
+      "p75_penalized_error": 3.9751070897274654,
+      "mean_error_ci95": [
+       2.8627817566922875,
+       3.1226721029134943
+      ],
+      "cdf": {
+       "<=1": 9.871794871794872,
+       "<=2": 34.61538461538461,
+       "<=5": 86.66666666666667,
+       "<=10": 99.48717948717949,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5598,
+       "predict_s": 0.0077,
+       "metrics": {
+        "n": 780,
+        "mean_error": 2.990482165873524,
+        "median_error": 2.659172039006058,
+        "p75_error": 3.9751070897274654,
+        "p90_error": 5.505140277655848,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.9751070897274654
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:RandomForestLocalizer",
+        "params": {
+         "bootstrap": true,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "extratrees(n_jobs=8)",
+     "display": [
+      "extra trees",
+      "极端随机树"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'extratrees(n_jobs=8)' --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.21,
+     "peak_rss_mb": 221.1,
+     "load_avg_1min": [
+      6.34,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:35+00:00",
+     "fit_s": 0.5294,
+     "predict_s": 0.009,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.0570997244711715,
+      "median_error": 2.647528596675786,
+      "p75_error": 3.8931180363249522,
+      "p90_error": 5.714178401597662,
+      "p95_error": 6.645760436093559,
+      "rmse": 3.5911027853642308,
+      "max_error": 13.91191899056342,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 3.8931180363249522,
+      "mean_penalized_error": 3.0570997244711715,
+      "p75_penalized_error": 3.8931180363249522,
+      "mean_error_ci95": [
+       2.9284910344858144,
+       3.1962147720799123
+      ],
+      "cdf": {
+       "<=1": 7.564102564102564,
+       "<=2": 32.30769230769231,
+       "<=5": 86.53846153846153,
+       "<=10": 99.35897435897436,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5294,
+       "predict_s": 0.009,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.0570997244711715,
+        "median_error": 2.647528596675786,
+        "p75_error": 3.8931180363249522,
+        "p90_error": 5.714178401597662,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 3.8931180363249522
+       }
+      }
+     ],
+     "params": {
+      "n_jobs": 8,
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:ExtraTreesLocalizer",
+        "params": {
+         "bootstrap": false,
+         "max_depth": null,
+         "max_features": "sqrt",
+         "min_samples_leaf": 1,
+         "n_estimators": 100,
+         "n_jobs": 8,
+         "random_state": 0
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")",
+     "display": [
+      "ensemble: median of WKNN, RF, Horus",
+      "集成：WKNN/RF/Horus 中位数"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method 'ensemble(localizers=[\"wknn\",\"rf\",\"horus\"],combine=\"median\")' --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.96,
+     "peak_rss_mb": 220.5,
+     "load_avg_1min": [
+      6.34,
+      6.34
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:36+00:00",
+     "fit_s": 0.6483,
+     "predict_s": 0.0511,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.31166495528064,
+      "median_error": 2.942777738624016,
+      "p75_error": 4.416395426555928,
+      "p90_error": 6.206868960412515,
+      "p95_error": 7.439272328214653,
+      "rmse": 3.92672949135837,
+      "max_error": 11.705247427867548,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.416395426555928,
+      "mean_penalized_error": 3.31166495528064,
+      "p75_penalized_error": 4.416395426555928,
+      "mean_error_ci95": [
+       3.1606373920811133,
+       3.460105697537628
+      ],
+      "cdf": {
+       "<=1": 9.487179487179487,
+       "<=2": 31.53846153846154,
+       "<=5": 81.92307692307692,
+       "<=10": 99.61538461538461,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.6483,
+       "predict_s": 0.0511,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.31166495528064,
+        "median_error": 2.942777738624016,
+        "p75_error": 4.416395426555928,
+        "p90_error": 6.206868960412515,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.416395426555928
+       }
+      }
+     ],
+     "params": {
+      "localizers": [
+       "wknn",
+       "rf",
+       "horus"
+      ],
+      "combine": "median"
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.ensemble:EnsembleLocalizer",
+        "params": {
+         "combine": "median",
+         "localizers": [
+          "wknn",
+          "rf",
+          "horus"
+         ],
+         "weights": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "mlp",
+     "display": [
+      "MLP",
+      "MLP"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method mlp --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 2.603,
+     "cpu_time_s": 10.37,
+     "peak_rss_mb": 821.8,
+     "load_avg_1min": [
+      6.34,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:39+00:00",
+     "fit_s": 2.0733,
+     "predict_s": 0.0014,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.3163729099850006,
+      "median_error": 3.0578659234600707,
+      "p75_error": 4.402204018177835,
+      "p90_error": 5.871800849346214,
+      "p95_error": 6.534793190098915,
+      "rmse": 3.792914338241555,
+      "max_error": 12.213584813230261,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.402204018177835,
+      "mean_penalized_error": 3.3163729099850006,
+      "p75_penalized_error": 4.402204018177835,
+      "mean_error_ci95": [
+       3.1840995603380695,
+       3.440092900013948
+      ],
+      "cdf": {
+       "<=1": 6.923076923076923,
+       "<=2": 27.435897435897434,
+       "<=5": 82.56410256410257,
+       "<=10": 99.61538461538461,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 2.0733,
+       "predict_s": 0.0014,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.3163729099850006,
+        "median_error": 3.0578659234600707,
+        "p75_error": 4.402204018177835,
+        "p90_error": 5.871800849346214,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.402204018177835
+       }
+      }
+     ],
+     "params": {
+      "random_state": 0
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.deep.localizer:MLPLocalizer",
+        "params": {
+         "activation": "relu",
+         "batch_norm": true,
+         "batch_size": 256,
+         "device": "cpu",
+         "dropout": 0.3,
+         "epochs": 100,
+         "head_hidden": [],
+         "hidden": [
+          512,
+          256,
+          128
+         ],
+         "lr": 0.001,
+         "patience": 10,
+         "random_state": 0,
+         "scale_inputs": true,
+         "task_weights": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "validation_fraction": 0.1,
+         "verbose": 0,
+         "weight_decay": 0.0001
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "torch": "2.11.0+cu128"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "svm",
+     "display": [
+      "SVM (RBF)",
+      "SVM (RBF)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method svm --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 1.001,
+     "cpu_time_s": 2.16,
+     "peak_rss_mb": 201.2,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:40+00:00",
+     "fit_s": 0.5992,
+     "predict_s": 0.0668,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.2659782959366135,
+      "median_error": 2.9469210912104926,
+      "p75_error": 4.3130425352661526,
+      "p90_error": 5.658373692290774,
+      "p95_error": 6.252509394293532,
+      "rmse": 3.7324133301649502,
+      "max_error": 11.947865743589572,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.3130425352661526,
+      "mean_penalized_error": 3.2659782959366135,
+      "p75_penalized_error": 4.3130425352661526,
+      "mean_error_ci95": [
+       3.13284850398186,
+       3.38631777637694
+      ],
+      "cdf": {
+       "<=1": 6.666666666666667,
+       "<=2": 24.487179487179485,
+       "<=5": 83.33333333333333,
+       "<=10": 99.48717948717949,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.5992,
+       "predict_s": 0.0668,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.2659782959366135,
+        "median_error": 2.9469210912104926,
+        "p75_error": 4.3130425352661526,
+        "p90_error": 5.658373692290774,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.3130425352661526
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.sklearn_wrap:SVMLocalizer",
+        "params": {
+         "C": 1.0,
+         "cache_size": 500.0,
+         "epsilon": 0.01,
+         "gamma": "scale",
+         "kernel": "rbf"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {
+      "sklearn": "1.8.0",
+      "scipy": "1.17.1",
+      "pandas": "3.0.3"
+     },
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "fill",
+     "method": "gp_radiomap",
+     "display": [
+      "GP radio map",
+      "GP 无线电地图"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess fill --method gp_radiomap --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.77,
+     "peak_rss_mb": 52.5,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:40+00:00",
+     "fit_s": 0.0066,
+     "predict_s": 0.0046,
+     "pooled": {
+      "n": 780,
+      "mean_error": 5.707612175300832,
+      "median_error": 5.327657083559338,
+      "p75_error": 7.734155997909532,
+      "p90_error": 9.704109740633136,
+      "p95_error": 10.407548462534299,
+      "rmse": 6.43500773732924,
+      "max_error": 13.911918990563452,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 7.734155997909532,
+      "mean_penalized_error": 5.707612175300832,
+      "p75_penalized_error": 7.734155997909532,
+      "mean_error_ci95": [
+       5.5012113886332745,
+       5.913936907867552
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 2.5641025641025643,
+       "<=5": 45.64102564102564,
+       "<=10": 90.38461538461539,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0066,
+       "predict_s": 0.0046,
+       "metrics": {
+        "n": 780,
+        "mean_error": 5.707612175300832,
+        "median_error": 5.327657083559338,
+        "p75_error": 7.734155997909532,
+        "p90_error": 9.704109740633136,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 7.734155997909532
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.gaussian_process:GPRadioMapLocalizer",
+        "params": {
+         "candidates": null,
+         "length_scales": null,
+         "n_candidates": 1,
+         "noise_ratios": null
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:FillMissing",
+        "params": {
+         "missing": "nan",
+         "value": -104.0
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:FillMissing",
+      "params": {
+       "missing": "nan",
+       "value": -104.0
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "knn(k=1)",
+     "display": [
+      "1-NN",
+      "1-NN"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method 'knn(k=1)' --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.94,
+     "peak_rss_mb": 52.9,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:41+00:00",
+     "fit_s": 0.0004,
+     "predict_s": 0.0182,
+     "pooled": {
+      "n": 780,
+      "mean_error": 5.451221853339867,
+      "median_error": 4.295878257120425,
+      "p75_error": 7.356348618710236,
+      "p90_error": 10.132000000000001,
+      "p95_error": 11.193569046555261,
+      "rmse": 6.272335674130838,
+      "max_error": 14.509321589929696,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 7.356348618710236,
+      "mean_penalized_error": 5.451221853339867,
+      "p75_penalized_error": 7.356348618710236,
+      "mean_error_ci95": [
+       5.227267533224732,
+       5.688182020132608
+      ],
+      "cdf": {
+       "<=1": 0.0,
+       "<=2": 2.4358974358974357,
+       "<=5": 52.69230769230769,
+       "<=10": 89.48717948717949,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0004,
+       "predict_s": 0.0182,
+       "metrics": {
+        "n": 780,
+        "mean_error": 5.451221853339867,
+        "median_error": 4.295878257120425,
+        "p75_error": 7.356348618710236,
+        "p90_error": 10.132000000000001,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 7.356348618710236
+       }
+      }
+     ],
+     "params": {
+      "k": 1
+     },
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:KNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 1,
+         "weights": "uniform"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "positive",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess positive --method wknn --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.97,
+     "peak_rss_mb": 53.1,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:41+00:00",
+     "fit_s": 0.0005,
+     "predict_s": 0.0191,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.7744083693866135,
+      "median_error": 3.2832433173791635,
+      "p75_error": 4.94729313688969,
+      "p90_error": 7.241946986826124,
+      "p95_error": 8.748028952855607,
+      "rmse": 4.486976261089829,
+      "max_error": 13.911918990563452,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.94729313688969,
+      "mean_penalized_error": 3.7744083693866135,
+      "p75_penalized_error": 4.94729313688969,
+      "mean_error_ci95": [
+       3.588165326645725,
+       3.9496903186353887
+      ],
+      "cdf": {
+       "<=1": 7.564102564102564,
+       "<=2": 24.871794871794872,
+       "<=5": 76.15384615384616,
+       "<=10": 97.17948717948718,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0005,
+       "predict_s": 0.0191,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.7744083693866135,
+        "median_error": 3.2832433173791635,
+        "p75_error": 4.94729313688969,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.94729313688969
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PositiveRepresentation",
+        "params": {
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PositiveRepresentation",
+      "params": {
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "exponential",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess exponential --method wknn --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.99,
+     "peak_rss_mb": 53.1,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:41+00:00",
+     "fit_s": 0.001,
+     "predict_s": 0.0189,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.6301197063773536,
+      "median_error": 3.025005050609308,
+      "p75_error": 4.706793956347388,
+      "p90_error": 7.241946986826124,
+      "p95_error": 8.748028952855607,
+      "rmse": 4.381733280543694,
+      "max_error": 13.911918990563452,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.706793956347388,
+      "mean_penalized_error": 3.6301197063773536,
+      "p75_penalized_error": 4.706793956347388,
+      "mean_error_ci95": [
+       3.4476576891462667,
+       3.8004310968239525
+      ],
+      "cdf": {
+       "<=1": 8.205128205128204,
+       "<=2": 27.692307692307693,
+       "<=5": 77.82051282051282,
+       "<=10": 97.17948717948718,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.001,
+       "predict_s": 0.0189,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.6301197063773536,
+        "median_error": 3.025005050609308,
+        "p75_error": 4.706793956347388,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.706793956347388
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+        "params": {
+         "alpha": 24.0,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:ExponentialRepresentation",
+      "params": {
+       "alpha": 24.0,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "powed",
+     "method": "wknn",
+     "display": [
+      "WKNN (k=5)",
+      "WKNN (k=5)"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess powed --method wknn --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 1.1,
+     "peak_rss_mb": 53.0,
+     "load_avg_1min": [
+      6.55,
+      6.55
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-28T12:21:41+00:00",
+     "fit_s": 0.001,
+     "predict_s": 0.0198,
+     "pooled": {
+      "n": 780,
+      "mean_error": 3.6183033444437807,
+      "median_error": 2.952609716243736,
+      "p75_error": 4.6975329240988986,
+      "p90_error": 7.241946986826124,
+      "p95_error": 8.72924813588089,
+      "rmse": 4.368273953310346,
+      "max_error": 13.911918990563452,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 4.6975329240988986,
+      "mean_penalized_error": 3.6183033444437807,
+      "p75_penalized_error": 4.6975329240988986,
+      "mean_error_ci95": [
+       3.443099346580323,
+       3.7961300432162934
+      ],
+      "cdf": {
+       "<=1": 8.333333333333334,
+       "<=2": 27.435897435897434,
+       "<=5": 76.66666666666667,
+       "<=10": 97.3076923076923,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.001,
+       "predict_s": 0.0198,
+       "metrics": {
+        "n": 780,
+        "mean_error": 3.6183033444437807,
+        "median_error": 2.952609716243736,
+        "p75_error": 4.6975329240988986,
+        "p90_error": 7.241946986826124,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 4.6975329240988986
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.pipeline:LocalizerPipeline",
+      "params": {
+       "localizer": {
+        "class": "indoorloc.methods.neighbors:WKNNLocalizer",
+        "params": {
+         "chunk_size": 256,
+         "k": 5,
+         "weights": "distance"
+        }
+       },
+       "preprocess": {
+        "class": "indoorloc.signals.transforms:PowedRepresentation",
+        "params": {
+         "beta": 2.718281828459045,
+         "min_dbm": null
+        }
+       }
+      }
+     },
+     "preprocess_resolved": {
+      "class": "indoorloc.signals.transforms:PowedRepresentation",
+      "params": {
+       "beta": 2.718281828459045,
+       "min_dbm": null
+      }
+     },
+     "source_sha256": "84a6dc45715c3b84b473e589cc88fc6cc7e6de0bbd47c7d37a95fafd0fcf2f5c",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    },
+    {
+     "preprocess": "none",
+     "method": "horus",
+     "display": [
+      "Horus",
+      "Horus"
+     ],
+     "command": "indoorloc benchmark --dataset ibeacon_rssi --protocol official --preprocess none --method horus --seed 0 --no-download -q --dataset-option zone=geo",
+     "status": "ok",
+     "reason": null,
+     "wall_time_s": 0.2,
+     "cpu_time_s": 0.76,
+     "peak_rss_mb": 48.3,
+     "load_avg_1min": [
+      1.08,
+      1.08
+     ],
+     "memory_stall_s": {
+      "some": 0.0,
+      "full": 0.0
+     },
+     "created": "2026-09-29T01:00:25+00:00",
+     "fit_s": 0.0015,
+     "predict_s": 0.0098,
+     "pooled": {
+      "n": 780,
+      "mean_error": 4.106741134281948,
+      "median_error": 3.4106698824109456,
+      "p75_error": 5.484499894302298,
+      "p90_error": 7.669112769448253,
+      "p95_error": 9.038497180085125,
+      "rmse": 4.822519832388016,
+      "max_error": 13.705828392851565,
+      "floor_accuracy": null,
+      "building_accuracy": 100.0,
+      "n_failed": 0,
+      "ipin_score": 5.484499894302298,
+      "mean_penalized_error": 4.106741134281948,
+      "p75_penalized_error": 5.484499894302298,
+      "mean_error_ci95": [
+       3.9305541074879145,
+       4.280443388382692
+      ],
+      "cdf": {
+       "<=1": 3.2051282051282053,
+       "<=2": 18.46153846153846,
+       "<=5": 71.41025641025641,
+       "<=10": 96.28205128205128,
+       "<=20": 100.0
+      }
+     },
+     "folds": [
+      {
+       "fold": "official",
+       "fit_s": 0.0015,
+       "predict_s": 0.0098,
+       "metrics": {
+        "n": 780,
+        "mean_error": 4.106741134281948,
+        "median_error": 3.4106698824109456,
+        "p75_error": 5.484499894302298,
+        "p90_error": 7.669112769448253,
+        "floor_accuracy": null,
+        "building_accuracy": 100.0,
+        "n_failed": 0,
+        "ipin_score": 5.484499894302298
+       }
+      }
+     ],
+     "params": {},
+     "model_params": {
+      "class": "indoorloc.methods.probabilistic:HorusLocalizer",
+      "params": {
+       "detection_smoothing": 0.5,
+       "min_std": 4.0,
+       "n_candidates": 3,
+       "unseen_std": 8.0
+      }
+     },
+     "preprocess_resolved": null,
+     "source_sha256": "34d0d1b7013ddf9b87c15d580cac9a818d01bc836b92480d35859fed56b379c0",
+     "packages": {},
+     "thread_env": {
+      "OMP_NUM_THREADS": "8",
+      "OPENBLAS_NUM_THREADS": "8",
+      "MKL_NUM_THREADS": "8"
+     },
+     "folds_sha256": "e9cc9cd7fc8600f8af1de5b36f2d819f13327f4b645a70e111728834f9a072ce",
+     "limits": {
+      "timeout_s": 1800,
+      "max_rss_mb": 2500
+     }
+    }
+   ]
+  }
+ ],
+ "literature": {
+  "available": true,
+  "display_name": "iBeacon RSSI (UJI BLE RSS database)",
+  "metrics": {
+   "mean_error": {
+    "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+    "unit": "m"
+   },
+   "floor_accuracy": {
+    "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+    "unit": "%"
+   },
+   "building_accuracy": {
+    "definition": "percentage of test samples whose building is estimated correctly",
+    "unit": "%"
+   }
+  },
+  "entries": [],
+  "hidden": 2,
+  "checks_all": {
+   "literature/missing": 2
+  },
+  "rule": "shown: literature entries checked 'verified', 'corrected' or 'unchecked'; hidden: 'unidentified', 'missing' and numbers IndoorLoc 0.1 produced itself"
+ }
+}

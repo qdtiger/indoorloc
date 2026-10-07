@@ -1,6 +1,2 @@
-"""IndoorLoc version information."""
-
-__version__ = '0.1.3'
-__version_info__ = tuple(int(x) for x in __version__.split('.'))
-
-__all__ = ['__version__', '__version_info__']
+"""0.1 path, kept for 0.2.x (removed in 0.3): use ``indoorloc.__version__``."""
+from ._version import __version__  # noqa: F401

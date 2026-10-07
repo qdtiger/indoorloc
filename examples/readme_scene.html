@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="indoorloc-scene" content="__SCENE_SIGNATURE__">
+<title>IndoorLoc · five layers, one stack</title>
+<style>
+@font-face { font-family:"Inter"; font-weight:100 900; font-display:block; src:url(data:font/woff2;base64,__FONT_SANS__) format("woff2") }
+@font-face { font-family:"JetBrains Mono"; font-weight:100 800; font-display:block; src:url(data:font/woff2;base64,__FONT_MONO__) format("woff2") }
+@font-face { font-family:"Noto Sans SC"; font-weight:100 900; font-display:block; src:url(data:font/woff2;base64,__FONT_CJK__) format("woff2") }
+/* Sizes assume the 1280 px stage is shown about 880 px wide in a README: no text below 12.5 px here. */
+:root, :root[data-theme="light"] {
+  --page:#ffffff; --backdrop:#ffffff;
+  --ink:#16242f; --muted:#4f6372; --faint:#5f7180; --rule:#d5e0e6;
+  --accent:#0b8a9c; --truth:#0f9d80; --prediction:#e5672c; --match:#c98a06; --match-ink:#9c6700; --reference:#3f7fa6;
+  --card:rgba(255,255,255,.88); --card-edge:rgba(22,52,68,.10); --shadow:0 10px 30px rgba(30,60,80,.10);
+  --cell-empty:rgba(22,52,68,.07); --code:#28414f; --code-dim:#6d808c; --code-hl:rgba(11,138,156,.09);
+  --string:#b25a20; --fn:#0b7f90; --kw:#6d808c;
+}
+:root[data-theme="dark"] {
+  --page:#070b10; --backdrop:radial-gradient(120% 95% at 50% 36%,#132131 0%,#0c141e 50%,#070b10 100%);
+  --ink:#eaf2f7; --muted:#a3b6c2; --faint:#7d92a2; --rule:#243442;
+  --accent:#4fd1e0; --truth:#3ddbb4; --prediction:#ff8a4c; --match:#ffc75e; --match-ink:#ffc75e; --reference:#6bb8e6;
+  --card:rgba(12,20,29,.86); --card-edge:rgba(159,214,240,.13); --shadow:0 12px 34px rgba(0,0,0,.35);
+  --cell-empty:rgba(159,214,240,.07); --code:#d6e4ec; --code-dim:#7d92a2; --code-hl:rgba(79,209,224,.10);
+  --string:#ffb27a; --fn:#6fdce8; --kw:#8fa4b3;
+}
+* { box-sizing:border-box }
+html,body { margin:0; background:var(--page); color:var(--ink); font-family:Inter,"Noto Sans SC",Arial,Helvetica,sans-serif; -webkit-font-smoothing:antialiased }
+body { overflow:hidden }
+main { position:relative; width:1280px; height:720px; transform-origin:top left; overflow:hidden; background:var(--backdrop) }
+#scene { position:absolute; inset:0; cursor:grab; -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 90px,#000 175px); mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 90px,#000 175px) }
+#scene:active { cursor:grabbing }
+canvas { display:block; width:100%; height:100%; touch-action:none }
+#tags { position:absolute; inset:0; pointer-events:none }
+.tag { position:absolute; white-space:nowrap; transform:translate(-50%,-50%); font-size:13px; letter-spacing:.4px; color:var(--muted); font-variant-numeric:tabular-nums }
+.tag.building, .tag.floor { font-size:13px; font-weight:600; letter-spacing:1.4px; color:var(--muted); text-shadow:0 0 3px var(--page),0 0 6px var(--page),0 0 10px var(--page) }
+.tag.floor { transform:translate(-100%,-50%) }
+.tag.floor.active { color:var(--accent) }
+.tag.pin { transform:translate(12px,-50%); padding:5px 10px; border-radius:6px; background:var(--card); border:1px solid var(--card-edge); box-shadow:var(--shadow); font-size:15px; color:var(--ink) }
+.tag.pin b { font-weight:600 }
+.tag.pin i { font-style:normal; color:var(--muted) }
+.tag.pin.truth b { color:var(--truth) }
+.tag.pin.prediction b { color:var(--prediction) }
+.tag.pin.match b { color:var(--match-ink) }
+.tag.distance { font-size:16px; font-weight:600; color:var(--ink); padding:3px 9px; border-radius:6px; background:var(--card); border:1px solid var(--card-edge) }
+.caption { position:absolute; left:48px; top:38px; width:730px; pointer-events:none }
+.kicker { font-size:13px; font-weight:600; letter-spacing:2.2px; text-transform:uppercase; color:var(--accent) }
+.kicker span { color:var(--faint); margin:0 7px }
+h1 { margin:9px 0 0; font-size:36px; line-height:1.12; font-weight:600; letter-spacing:-.8px }
+h1 code { font:600 30px "JetBrains Mono","Noto Sans SC",Consolas,monospace; letter-spacing:-.6px; color:var(--accent) }
+.subline { margin:9px 0 0; font-size:17px; line-height:1.42; color:var(--muted); font-variant-numeric:tabular-nums }
+.subline b { color:var(--ink); font-weight:600 }
+.steps { position:absolute; right:48px; top:42px; display:flex; gap:18px; pointer-events:none }
+.step { font-size:13px; letter-spacing:1.2px; text-transform:uppercase; color:var(--faint); display:flex; align-items:center; gap:7px; font-weight:500 }
+.step small { width:23px; height:23px; border-radius:50%; display:grid; place-items:center; border:1px solid var(--rule); font-size:12.5px; letter-spacing:0; font-variant-numeric:tabular-nums }
+.step.active { color:var(--ink) }
+.step.active small { background:var(--accent); border-color:var(--accent); color:var(--page); font-weight:700 }
+.step.done small { border-color:var(--accent); color:var(--accent) }
+.card { position:absolute; right:48px; bottom:40px; width:420px; padding:16px 18px 14px; border-radius:12px; background:var(--card); border:1px solid var(--card-edge); box-shadow:var(--shadow) }
+.card.focus { border-color:var(--accent); box-shadow:var(--shadow),0 0 0 3px var(--code-hl) }
+.card-head { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; letter-spacing:1.2px; text-transform:uppercase; color:var(--faint); font-weight:600 }
+.card-head b { color:var(--ink); font-weight:600; letter-spacing:.2px; text-transform:none; font-size:14px; font-variant-numeric:tabular-nums }
+#print-title { text-transform:none; letter-spacing:0; font:500 13.5px "JetBrains Mono","Noto Sans SC",Consolas,monospace; color:var(--muted) }
+.prints { margin-top:12px; display:grid; grid-template-columns:auto 1fr; column-gap:14px; row-gap:5px; align-items:center }
+.cells { display:grid; grid-auto-flow:column; grid-auto-columns:12px; gap:2px; height:12px }
+.cells i { display:block; border-radius:2px; background:var(--cell-empty) }
+.row-note { display:grid; grid-template-columns:26px 34px 48px; align-items:center; column-gap:6px; font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap }
+.row-note.query { grid-template-columns:auto; color:var(--ink); font-weight:600 }
+.row-note .weight { text-align:right }
+.row-note .bar { width:34px; height:5px; border-radius:3px; background:var(--cell-empty); overflow:hidden }
+.row-note .bar i { display:block; height:100%; background:var(--match) }
+.card-foot { margin-top:12px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--faint) }
+.scale { display:flex; align-items:center; gap:6px }
+.scale i { width:64px; height:7px; border-radius:4px }
+.facts { margin-top:12px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px }
+.facts div { display:flex; flex-direction:column; gap:2px }
+.facts b { font-size:26px; font-weight:600; letter-spacing:-.6px; font-variant-numeric:tabular-nums }
+.facts span { font-size:13px; line-height:1.25; color:var(--muted) }
+.data-note { margin-top:12px; padding-top:10px; border-top:1px solid var(--rule); font-size:12.5px; color:var(--faint) }
+.metrics { width:100%; margin-top:8px; border-collapse:collapse; font-variant-numeric:tabular-nums }
+.metrics th { font-size:12px; font-weight:600; letter-spacing:1px; color:var(--faint); text-align:right; padding:0 0 4px }
+.metrics th:first-child, .metrics td:first-child { text-align:left }
+.metrics td { font-size:22px; font-weight:500; text-align:right; padding:2px 0; color:var(--muted); letter-spacing:-.3px }
+.metrics td small { font-size:13px; color:var(--faint); margin-left:3px; font-weight:400 }
+.metrics td:first-child { font-size:13px; font-weight:600; letter-spacing:1.2px }
+.metrics tr.active td { color:var(--ink) }
+.metrics tr.active td:first-child { color:var(--accent) }
+.cdf { position:relative; margin-top:8px; height:62px }
+.cdf svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible }
+.cdf-note { position:absolute; left:8px; top:0; font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap }
+.cdf-note b { color:var(--ink); font-weight:600 }
+.cdf-axis { position:relative; height:16px; margin-top:4px; font-size:12.5px; color:var(--faint); font-variant-numeric:tabular-nums }
+.cdf-axis span { position:absolute; white-space:nowrap }
+.bands { margin-top:8px; display:flex; gap:16px; font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums }
+.bands span { display:flex; align-items:center; gap:6px; white-space:nowrap }
+.bands i { width:9px; height:9px; border-radius:50% }
+.bands b { color:var(--ink); font-weight:600 }
+.code { position:absolute; left:48px; bottom:40px; width:560px; margin:0; padding:12px 0; border-radius:12px; background:var(--card); border:1px solid var(--card-edge); box-shadow:var(--shadow); font:14.5px/25px "JetBrains Mono","Noto Sans SC",Consolas,monospace; color:var(--code-dim) }
+.code .line { display:block; padding:0 16px; border-left:2px solid transparent; white-space:pre }
+.code .line.active { color:var(--code); background:var(--code-hl); border-left-color:var(--accent) }
+.code .kw { color:var(--kw) } .code .fn { color:var(--fn) } .code .str { color:var(--string) } .code .cm { color:var(--faint) }
+.controls { position:absolute; right:48px; top:80px; display:flex; gap:8px; align-items:center; font-size:12px; color:var(--muted) }
+.controls button { font:500 12px Inter,"Noto Sans SC",Arial,sans-serif; letter-spacing:.3px; color:var(--muted); border:1px solid var(--rule); background:var(--card); padding:5px 10px; border-radius:6px; cursor:pointer }
+.controls button[aria-pressed="true"] { color:var(--ink); border-color:var(--accent) }
+button:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.exporting .controls { display:none }
+#load-error { position:absolute; inset:30%; font-size:14px; line-height:1.8; z-index:4 }
+
+:root { --l1:#2563eb; --l2:#0d9488; --l3:#7c3aed; --l4:#d97706; --l5:#db2777 }
+.tag.layer { transform:translate(-100%,-50%); display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; color:var(--ink); letter-spacing:.2px; text-shadow:0 0 4px var(--page),0 0 8px var(--page) }
+.tag.layer small { font:700 12.5px "JetBrains Mono","Noto Sans SC",monospace; color:#fff; padding:3px 7px; border-radius:5px; background:var(--c); text-shadow:none }
+.tag.layer em { font-style:normal; font-weight:500; font-size:13px; color:var(--faint) }
+.tag.exit { transform:translate(0,-50%); font:500 13.5px "JetBrains Mono","Noto Sans SC",monospace; color:var(--c); padding:4px 9px; border-radius:6px; background:var(--card); border:1px solid var(--card-edge); box-shadow:var(--shadow) }
+.tag.chip { font-size:13px; color:var(--muted); text-shadow:0 0 3px var(--page),0 0 6px var(--page) }
+.tag.chip.on { color:var(--ink); font-weight:600 }
+.tag.axis { font-size:12.5px; color:var(--faint); text-shadow:0 0 3px var(--page),0 0 6px var(--page) }
+.code .line i { font-style:normal; float:right; margin-left:14px; font:700 11.5px/25px "JetBrains Mono","Noto Sans SC",monospace; color:var(--faint); opacity:.7 }
+.code .line.active i { color:var(--c); opacity:1 }
+.code .line.active { border-left-color:var(--c) }
+.info-rows { margin-top:10px; display:grid; gap:7px; font-size:14px; color:var(--muted); font-variant-numeric:tabular-nums }
+.info-rows div { display:flex; justify-content:space-between; gap:14px }
+.info-rows b { color:var(--ink); font-weight:600 }
+.info-rows .dot { display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:8px; vertical-align:1px }
+.info-note { margin-top:10px; padding-top:9px; border-top:1px solid var(--rule); font-size:12.5px; color:var(--faint) }
+.status { font-size:12.5px; font-weight:600; letter-spacing:.3px }
+main:not(.ready) .card { visibility:hidden }
+</style>
+<script>
+// Theme before the first paint: white by default, ?theme=dark for the dark variant.
+document.documentElement.dataset.theme = new URLSearchParams(location.search).get('theme') === 'dark' ? 'dark' : 'light';
+</script>
+</head>
+<body>
+<main id="stage" aria-label="IndoorLoc's five layers as a 3D stack: a real UJIIndoorLoc scan goes from the data layer through signals, methods and evaluation; the application layer is planned">
+<div id="scene"></div>
+<div id="tags"></div>
+<header class="caption" id="caption"><div class="kicker" id="kicker"></div><h1 id="headline"></h1><p class="subline" id="subline"></p></header>
+<div class="controls" id="controls"><button type="button" id="play" aria-label="Pause animation">Pause</button></div>
+<section class="card" id="info-card" aria-live="polite"><div class="card-head"><span id="info-title"></span><b id="info-badge"></b></div><div id="info-body"></div></section>
+<pre class="code" id="code" aria-label="Runnable Python example, one line per layer"><code><span class="line" data-line="0"><span class="kw">import</span> indoorloc <span class="kw">as</span> iloc</span><span class="line" data-line="1">train, test = iloc.<span class="fn">load_dataset</span>(<span class="str">"ujiindoorloc"</span>)<i>L1</i></span><span class="line" data-line="2">fill = iloc.<span class="fn">FillMissing</span>(-104)  <span class="cm"># fill(test.X[<span id="code-index"></span>])</span><i>L2</i></span><span class="line" data-line="3">model = iloc.<span class="fn">WKNNLocalizer</span>().<span class="fn">fit</span>(fill(train))<i>L3</i></span><span class="line" data-line="4">metrics = model.<span class="fn">evaluate</span>(fill(test))<i>L4</i></span><span class="line" data-line="5">live = iloc.<span class="fn">OnlineLocalizer</span>(model).<span class="fn">run</span>(scans)<i>L5</i></span></code></pre>
+<div id="load-error" hidden></div>
+</main>
+<script>
+window.fitStage = function fitStage() {
+  // Fit the 16:9 stage inside the window, so the whole scene is visible without scrolling.
+  const width=document.documentElement.clientWidth, scale=Math.min(width/1280, innerHeight/720);
+  const stage=document.getElementById('stage');
+  stage.style.transform=`scale(${scale})`;
+  stage.style.marginLeft=`${Math.max(0,(width-1280*scale)/2)}px`;
+  document.body.style.height=`${720*scale}px`;
+  return scale;
+};
+fitStage();
+window.addEventListener('resize',fitStage);
+</script>
+
+<script id="scene-fallback" type="application/json">__SCENE_FALLBACK__</script>
+<script type="module">
+import * as THREE from 'data:text/javascript;base64,__THREE_MODULE__';
+const DATA = __SCENE_DATA__;
+try {
+await document.fonts.ready;
+__SCENE_SCRIPT__
+window.__sceneMode='webgl';
+} catch(error) {
+  const fallback=JSON.parse(document.getElementById('scene-fallback').textContent);
+  if(fallback) {
+    const image=new Image();image.alt='IndoorLoc animated localization replay';image.src=fallback;
+    image.style.cssText='display:block;width:100%;height:100%;object-fit:contain';
+    image.onload=()=>{window.__sceneReady=true;window.__sceneMode='animation';};
+    document.getElementById('stage').replaceChildren(image);
+  } else {
+    const message=document.getElementById('load-error');message.hidden=false;
+    message.textContent='Open this 3D scene in a browser with WebGL support. Exporting the animation also enables playback without WebGL.';
+  }
+  console.warn('3D scene:',error.message);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{
+ "format": "indoorloc-literature",
+ "format_version": 1,
+ "dataset": "wificsid2d",
+ "aliases": [
+  "wifi_csi_d2d"
+ ],
+ "display_name": "WiFi CSI D2D",
+ "dataset_citation": {
+  "authors": "M. Bocus",
+  "title": "WiFi CSI dataset for device-to-device localization",
+  "venue": "figshare",
+  "year": 2022,
+  "doi": "10.6084/m9.figshare.20943706.v1",
+  "url": null
+ },
+ "ported_from": "indoorloc 0.1 indoorloc/evaluation/benchmark_data/wificsid2d.py",
+ "protocols": {},
+ "metrics": {
+  "mean_error": {
+   "definition": "mean 2-D Euclidean distance between estimated and true positions, as reported (papers use the dataset's own coordinates)",
+   "unit": "m"
+  },
+  "floor_accuracy": {
+   "definition": "percentage of test samples whose floor is estimated correctly (floor hit rate)",
+   "unit": "%"
+  },
+  "building_accuracy": {
+   "definition": "percentage of test samples whose building is estimated correctly",
+   "unit": "%"
+  }
+ },
+ "notes": "No 0.2 loader. The 0.1 table held only numbers computed by IndoorLoc 0.1 on synthetic demo data.",
+ "entries": [
+  {
+   "method": "ResNet18",
+   "values": {
+    "mean_error": 2.54
+   },
+   "kind": "indoorloc-0.1-demo",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 on synthetic demo data, not on the dataset; meaningless as a benchmark. Kept for traceability only; never shown by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library (Demo Data, 10 epochs)",
+    "values": {
+     "mean_error": 2.54
+    },
+    "notes": "Demo data; replace with real data results",
+    "is_sota": false
+   }
+  },
+  {
+   "method": "KNN (k=3)",
+   "values": {
+    "mean_error": 2.65
+   },
+   "kind": "indoorloc-0.1-demo",
+   "check": "not-literature",
+   "check_note": "Produced by IndoorLoc 0.1 on synthetic demo data, not on the dataset; meaningless as a benchmark. Kept for traceability only; never shown by default.",
+   "location": null,
+   "protocol": "unspecified",
+   "source": null,
+   "ported": {
+    "citation": "IndoorLoc Library Baseline (Demo Data)",
+    "values": {
+     "mean_error": 2.65
+    },
+    "notes": "Demo data baseline",
+    "is_sota": false
+   }
+  }
+ ],
+ "checked_on": "2026-09-28",
+ "check_method": "Sources resolved with the Crossref / DataCite REST APIs; numbers compared with the paper's full text where an open-access copy could be retrieved (arXiv, Europe PMC, author preprint). 'check' says what was done for each entry."
+}
